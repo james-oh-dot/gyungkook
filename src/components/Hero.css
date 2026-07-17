@@ -32,6 +32,8 @@
   width: min(78.125vw, 1500px);
   height: min(74.07vh, 800px);
   object-fit: cover;
+  --parallax-y: 0px;
+  transform: translate3d(0, var(--parallax-y), 0) scale(1.02);
 }
 
 .hero__bg-veil {
@@ -86,7 +88,7 @@
   font-size: clamp(36px, 3.75vw, 72px);
   font-weight: 600;
   letter-spacing: -0.025em;
-  line-height: 1.25;
+  line-height: 1.28;
   color: #f1f1f5;
 }
 
@@ -307,6 +309,11 @@
 
   .hero__title {
     font-size: 34px;
+    line-height: 1.45;
+  }
+
+  .hero__desc {
+    line-height: 1.7;
   }
 
   .hero__swipe {

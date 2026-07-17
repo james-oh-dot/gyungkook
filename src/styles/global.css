@@ -136,16 +136,23 @@ p {
 
 .reveal {
   opacity: 0;
-  transform: translate3d(0, 72px, 0);
+  transform: translate3d(0, 84px, 0);
+  filter: blur(2px);
   transition:
-    opacity 1.05s var(--ease-premium),
-    transform 1.2s var(--ease-premium);
-  will-change: opacity, transform;
+    opacity 1.15s var(--ease-premium),
+    transform 1.35s var(--ease-premium),
+    filter 1.15s var(--ease-premium);
+  will-change: opacity, transform, filter;
 }
 
 .reveal.is-revealed {
   opacity: 1;
   transform: translate3d(0, 0, 0);
+  filter: blur(0);
+}
+
+.parallax-img {
+  will-change: transform;
 }
 
 .media-card {
@@ -158,14 +165,25 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1);
+  --parallax-y: 0px;
+  transform: scale(1.02) translate3d(0, var(--parallax-y), 0);
+  transform-origin: center center;
   transition: transform 1.15s var(--ease-premium);
   will-change: transform;
 }
 
 .media-card:hover .media-card__img,
 .media-card:focus-within .media-card__img {
-  transform: scale(1.07);
+  transform: scale(1.1) translate3d(0, var(--parallax-y), 0);
+}
+
+.notice-card,
+.practice-card,
+.pro-card,
+.press-card__media,
+.achieve-row__media,
+.about__media {
+  overflow: hidden;
 }
 
 .notice-grid {
@@ -678,7 +696,9 @@ p {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, #052e2b 55%, rgba(5, 46, 43, 0) 100%);
+  background:
+    linear-gradient(180deg, rgba(5, 46, 43, 0.92) 0%, rgba(5, 46, 43, 0.55) 48%, rgba(5, 46, 43, 0.35) 100%),
+    rgba(0, 0, 0, 0.35);
 }
 
 .social__row {
@@ -825,11 +845,16 @@ p {
 
 @media (max-width: 1024px) {
   .notice-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .notice-card {
     min-height: 420px;
+  }
+
+  .press-track {
+    grid-auto-columns: minmax(280px, calc(50% - 12px));
+    gap: 24px;
   }
 
   .about,
@@ -885,8 +910,13 @@ p {
 }
 
 @media (max-width: 767px) {
+  .notice-grid {
+    grid-template-columns: 1fr;
+  }
+
   .press-track {
     gap: 24px;
+    grid-auto-columns: minmax(280px, 85%);
   }
 
   .achieve-row__card {
