@@ -10,10 +10,13 @@
 - Dev: `npm run dev` (http://localhost:5173)
 - Lint: `npm run lint` (oxlint)
 - Build: `npm run build`
+- Live: https://james-oh-dot.github.io/gyungkook/ (GitHub Pages, deploys on `main` via `.github/workflows/deploy-pages.yml`)
 
 ### Non-obvious notes
 - Styling is plain CSS (no Tailwind). Design tokens live in `src/styles/global.css`.
 - Hero carousel timing is `HERO_DURATION_MS = 10000` in `src/data/slides.ts`.
 - Scroll reveal + light parallax are wired in `src/hooks/useScrollReveal.ts` via `[data-reveal]` and `--parallax-y`.
+- Public asset URLs must go through `asset()` in `src/utils/asset.ts` so GitHub Pages `base` (`/gyungkook/`) works.
+- Production Pages builds set `GITHUB_PAGES=true` (see workflow). Local `npm run dev` uses `base: '/'`.
 - Figma MCP asset URLs expire (~7 days); committed binaries under `public/assets/` are the source of truth.
 - PR creation may require collaborator permission on the GitHub repo.

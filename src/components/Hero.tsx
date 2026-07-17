@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CharReveal } from './CharReveal'
 import { HERO_DURATION_MS, heroSlides } from '../data/slides'
+import { asset } from '../utils/asset'
 import './Hero.css'
 
 export function Hero() {
@@ -154,10 +155,10 @@ export function Hero() {
           </div>
           <div className="hero__gage-btns">
             <button type="button" onClick={prev} aria-label="이전 화면">
-              <img src="/assets/icon-arrow.png" alt="" className="is-flip" />
+              <img src={asset('assets/icon-arrow.png')} alt="" className="is-flip" />
             </button>
             <button type="button" onClick={next} aria-label="다음 화면">
-              <img src="/assets/icon-arrow.png" alt="" />
+              <img src={asset('assets/icon-arrow.png')} alt="" />
             </button>
           </div>
         </div>
