@@ -9,6 +9,7 @@
   --color-gray-100: #f1f1f5;
   --color-white: #fff;
   --page-pad: clamp(20px, 10.42vw, 200px);
+  --content-max: min(1520px, 100%);
   --section-y: clamp(80px, 12.5vw, 240px);
   --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-serif: 'Nanum Myeongjo', Georgia, serif;
@@ -241,12 +242,17 @@ p {
   z-index: 2;
 }
 
+.section--about {
+  padding-bottom: 0;
+}
+
 .about {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 680px);
   gap: clamp(32px, 4vw, 80px);
   align-items: stretch;
-  padding-bottom: calc(var(--section-y) + 114px);
+  /* Figma: 126px gap below image, then 114px appeal band */
+  padding-bottom: calc(126px + 114px);
 }
 
 .about__copy {
@@ -320,6 +326,7 @@ p {
 }
 
 .practice-grid {
+  position: relative;
   display: grid;
   grid-template-columns: 1.8fr 1fr 1fr;
   min-height: clamp(360px, 28vw, 540px);
@@ -334,11 +341,36 @@ p {
   flex-direction: column;
   justify-content: space-between;
   overflow: hidden;
+  cursor: pointer;
+  outline: none;
 }
 
 .practice-card__media {
   position: absolute;
   inset: 0;
+}
+
+.practice-card__media .media-card__img {
+  transform: scale(1.02);
+  transition:
+    transform 0.8s var(--ease-premium),
+    filter 0.75s var(--ease-premium);
+  will-change: transform, filter;
+}
+
+.practice-card.media-card:hover .practice-card__media .media-card__img,
+.practice-card.media-card:focus-within .practice-card__media .media-card__img {
+  transform: scale(1.02);
+}
+
+.practice-grid.is-hovering .practice-card.is-active .practice-card__media .media-card__img {
+  transform: scale(1.12);
+  filter: blur(0);
+}
+
+.practice-grid.is-hovering .practice-card.is-dimmed .practice-card__media .media-card__img {
+  filter: blur(8px);
+  transform: scale(1.02);
 }
 
 .practice-card__shade {
@@ -375,10 +407,21 @@ p {
   font-size: clamp(20px, 2.08vw, 40px);
   font-weight: 600;
   letter-spacing: -0.025em;
+  transform-origin: center bottom;
+  transition: transform 0.7s var(--ease-premium);
 }
 
 .practice-card:not(.is-featured) .practice-card__title {
   font-size: clamp(18px, 1.25vw, 24px);
+}
+
+.practice-grid.is-hovering .practice-card.is-active .practice-card__title {
+  transform: scale(1.08);
+}
+
+.practice-grid.is-hovering .practice-card.is-dimmed .practice-card__title {
+  opacity: 0.72;
+  transition: opacity 0.55s var(--ease-premium);
 }
 
 .practice-card__title img {
@@ -506,7 +549,8 @@ p {
 
 .pro-card {
   position: relative;
-  min-height: clamp(320px, 20.8vw, 400px);
+  height: clamp(320px, 20.8vw, 400px);
+  min-height: 0;
   overflow: hidden;
   background: #2f2f33;
   cursor: pointer;
@@ -522,13 +566,12 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scale(1.02);
+  transform: none;
   filter: blur(0);
   transition:
     filter 0.7s var(--ease-premium),
-    transform 0.9s var(--ease-premium),
     opacity 0.7s var(--ease-premium);
-  will-change: filter, transform;
+  will-change: opacity, filter;
 }
 
 .pro-card__veil {
@@ -587,7 +630,7 @@ p {
 }
 
 .pro-card__headline {
-  font-size: clamp(28px, 2.08vw, 40px);
+  font-size: clamp(28px, 3vw, 40px);
   font-weight: 500;
   letter-spacing: -0.025em;
   line-height: 1.3;
@@ -628,7 +671,6 @@ p {
 
 .pro-card.is-active .pro-card__media img {
   filter: blur(0);
-  transform: scale(1.04);
 }
 
 .pro-card.is-active .pro-card__default {
@@ -642,7 +684,6 @@ p {
 
 .professionals.is-hovering .pro-card.is-dimmed .pro-card__media img {
   filter: blur(6px);
-  transform: scale(1.06);
   opacity: 0.85;
 }
 
@@ -655,22 +696,23 @@ p {
   opacity: 0.4;
 }
 
-.press-breakout {
-  width: 100vw;
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
+.press-list-wrap {
+  width: 100%;
+  max-width: var(--content-max);
 }
 
 .press-track {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(280px, 600px);
+  grid-auto-columns: min(600px, 100%);
   gap: 48px;
   overflow-x: auto;
-  padding: 0 var(--page-pad) 8px;
+  padding: 0 0 8px;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  /* Last card stops at 1520px content right edge */
+  padding-right: max(0px, calc(100% - min(600px, 100%)));
 }
 
 .press-track::-webkit-scrollbar {
@@ -682,6 +724,14 @@ p {
   flex-direction: column;
   gap: 32px;
   scroll-snap-align: start;
+  min-width: 0;
+}
+
+.press-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-inline: 12px;
 }
 
 .press-card__media {
@@ -710,9 +760,9 @@ p {
 }
 
 .press-card__desc {
-  margin-top: 12px;
   color: #767676;
   font-size: 18px;
+  line-height: 1.45;
 }
 
 .press-gage {
@@ -838,6 +888,8 @@ p {
   .pro-card__veil,
   .pro-card__default,
   .pro-card__hover,
+  .practice-card__media .media-card__img,
+  .practice-card__title,
   .press-gage,
   .awards__item,
   .awards__preview,
@@ -891,11 +943,16 @@ p {
   color: #a6f0e3;
 }
 
+.social .section-title {
+  color: #fff;
+}
+
 .social__quote {
   font-family: var(--font-serif);
   font-size: 24px;
   font-weight: 700;
   line-height: 52px;
+  color: #fff;
 }
 
 .social__quote p:last-child {
@@ -1030,8 +1087,9 @@ p {
   }
 
   .press-track {
-    grid-auto-columns: minmax(280px, calc(50% - 12px));
+    grid-auto-columns: minmax(280px, calc(50% - 24px));
     gap: 24px;
+    padding-right: max(0px, calc(100% - minmax(280px, calc(50% - 24px))));
   }
 
   .about,
@@ -1041,8 +1099,12 @@ p {
     grid-template-columns: 1fr;
   }
 
-  .about {
+  .section--about {
     padding-bottom: var(--section-y);
+  }
+
+  .about {
+    padding-bottom: 0;
   }
 
   .about__appeal {
@@ -1094,6 +1156,7 @@ p {
   .press-track {
     gap: 24px;
     grid-auto-columns: minmax(280px, 85%);
+    padding-right: max(0px, calc(100% - minmax(280px, 85%)));
   }
 
   .achieve-row__card {
