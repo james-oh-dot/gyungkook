@@ -65,7 +65,7 @@ export function NoticeSection() {
 
 export function AboutSection() {
   return (
-    <section className="section section--gray" aria-labelledby="about-title">
+    <section className="section section--gray section--about" aria-labelledby="about-title">
       <div className="about">
         <Reveal className="about__copy">
           <div>
@@ -102,6 +102,9 @@ export function AboutSection() {
 }
 
 export function PracticeSection() {
+  const [hovered, setHovered] = useState<number | null>(null)
+  const hasHover = hovered !== null
+
   return (
     <section className="section" aria-labelledby="practice-title">
       <div className="practice-head">
@@ -116,27 +119,37 @@ export function PracticeSection() {
           개별 사건 대응을 위한 분야별 전문팀이 구성되어 있습니다.
         </Reveal>
       </div>
-      <div className="practice-grid">
-        {practices.map((item, index) => (
-          <Reveal
-            key={item.title}
-            delay={index * 100}
-            className={`practice-card media-card${item.featured ? ' is-featured' : ''}`}
-          >
-            <div className="practice-card__media">
-              <img className="media-card__img" src={item.image} alt="" />
-              {item.featured ? <div className="practice-card__shade" /> : null}
-            </div>
-            <div className="practice-card__top">
-              <span className="practice-card__line" />
-              <span>{item.no}</span>
-            </div>
-            <div className="practice-card__title">
-              <span>{item.title}</span>
-              <img src={asset('assets/icon-link-white.svg')} alt="" />
-            </div>
-          </Reveal>
-        ))}
+      <div className={`practice-grid${hasHover ? ' is-hovering' : ''}`}>
+        {practices.map((item, index) => {
+          const isActive = hovered === index
+          const isDimmed = hasHover && !isActive
+          return (
+            <article
+              key={item.title}
+              className={`practice-card media-card${item.featured ? ' is-featured' : ''}${
+                isActive ? ' is-active' : ''
+              }${isDimmed ? ' is-dimmed' : ''}`}
+              onMouseEnter={() => setHovered(index)}
+              onMouseLeave={() => setHovered(null)}
+              onFocus={() => setHovered(index)}
+              onBlur={() => setHovered(null)}
+              tabIndex={0}
+            >
+              <div className="practice-card__media">
+                <img className="media-card__img" src={item.image} alt="" />
+                {item.featured ? <div className="practice-card__shade" /> : null}
+              </div>
+              <div className="practice-card__top">
+                <span className="practice-card__line" />
+                <span>{item.no}</span>
+              </div>
+              <div className="practice-card__title">
+                <span>{item.title}</span>
+                <img src={asset('assets/icon-link-white.svg')} alt="" />
+              </div>
+            </article>
+          )
+        })}
       </div>
     </section>
   )
@@ -331,14 +344,14 @@ export function PressSection() {
         </Reveal>
       </div>
 
-      <div className="press-breakout">
+      <div className="press-list-wrap">
         <div className="press-track" ref={trackRef}>
           {items.map((item) => (
             <article key={`${item.title}-${item.desc}`} className="press-card">
               <div className="press-card__media media-card">
                 <img className="media-card__img" src={item.image} alt="" />
               </div>
-              <div>
+              <div className="press-card__body">
                 <div className="press-card__title">
                   <span className="press-card__chip">{item.chip}</span>
                   <span>{item.title}</span>
