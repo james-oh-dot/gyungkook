@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { CharReveal } from './CharReveal'
+import { LineReveal } from './LineReveal'
 import { HERO_DURATION_MS, heroSlides } from '../data/slides'
 import { asset } from '../utils/asset'
 import './Hero.css'
@@ -13,18 +14,24 @@ export function Hero() {
   const startRef = useRef(performance.now())
   const pausedRef = useRef(false)
   const pauseElapsedRef = useRef(0)
+  const lastJumpAtRef = useRef(0)
 
   const slide = heroSlides[index]
   const nextSlide = heroSlides[(index + 1) % heroSlides.length]
 
   const jumpTo = useCallback((next: number) => {
+    const now = performance.now()
+    // Guard against double-advance (Strict Mode / stacked pointer events / rAF race)
+    if (now - lastJumpAtRef.current < 180) return
+    lastJumpAtRef.current = now
+
     const total = heroSlides.length
     const resolved = ((next % total) + total) % total
     indexRef.current = resolved
     setIndex(resolved)
     setProgress(0)
     setAnimKey((k) => k + 1)
-    startRef.current = performance.now()
+    startRef.current = now
     pauseElapsedRef.current = 0
     pausedRef.current = false
     setPreviewHover(false)
@@ -34,26 +41,38 @@ export function Hero() {
   const prev = useCallback(() => jumpTo(indexRef.current - 1), [jumpTo])
 
   useEffect(() => {
+    // Preload all slide images so advance never flashes empty/black
+    heroSlides.forEach((item) => {
+      const img = new Image()
+      img.src = item.image
+    })
+  }, [])
+
+  useEffect(() => {
     let raf = 0
+    let alive = true
+
     const tick = (now: number) => {
-      if (pausedRef.current) {
-        raf = requestAnimationFrame(tick)
-        return
-      }
+      if (!alive) return
 
-      const elapsed = now - startRef.current
-      const ratio = Math.min(1, elapsed / HERO_DURATION_MS)
-      setProgress(ratio)
-
-      if (ratio >= 1) {
-        jumpTo(indexRef.current + 1)
+      if (!pausedRef.current) {
+        const elapsed = now - startRef.current
+        if (elapsed >= HERO_DURATION_MS) {
+          // Advance exactly one slide; jumpTo debounce blocks double fire
+          jumpTo(indexRef.current + 1)
+        } else {
+          setProgress(Math.min(1, elapsed / HERO_DURATION_MS))
+        }
       }
 
       raf = requestAnimationFrame(tick)
     }
 
     raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
+    return () => {
+      alive = false
+      cancelAnimationFrame(raf)
+    }
   }, [jumpTo])
 
   const titleBlocks = useMemo(
@@ -63,12 +82,12 @@ export function Hero() {
           .slice(0, lineIndex)
           .reduce((sum, item) => sum + Array.from(item).length, 0)
         return (
-          <p key={`${animKey}-${line}`} className="hero__title-line">
+          <p key={`${animKey}-title-${lineIndex}`} className="hero__title-line">
             <CharReveal
               text={line}
               active
-              baseDelay={120 + previous * 28 + lineIndex * 80}
-              step={28}
+              baseDelay={100 + previous * 26 + lineIndex * 70}
+              step={26}
             />
           </p>
         )
@@ -88,35 +107,31 @@ export function Hero() {
                 : ''
             }`}
           >
-            <img src={item.image} alt="" />
+            <img src={item.image} alt="" decoding="async" />
             <div className="hero__bg-veil" />
           </div>
         ))}
       </div>
 
       <div className="hero__content" key={animKey}>
-        <div className="hero__maincopy">
+        <div className="hero__maincopy" data-name="hero_maincopy">
           <p className="hero__index">
-            <CharReveal text={slide.index} baseDelay={40} step={40} />
+            <CharReveal text={slide.index} baseDelay={40} step={36} />
           </p>
           <div className="hero__title">{titleBlocks}</div>
         </div>
 
-        <div className="hero__copy">
-          <p className="hero__label">
-            <CharReveal text={slide.label} baseDelay={420} step={22} />
-          </p>
+        <div className="hero__copy" data-name="hero_copy">
+          <div className="hero__label">
+            <LineReveal lines={[slide.label]} baseDelay={380} step={0} />
+          </div>
           <div className="hero__desc">
-            {slide.description.map((line, i) => (
-              <p key={line}>
-                <CharReveal text={line} baseDelay={520 + i * 180} step={12} />
-              </p>
-            ))}
+            <LineReveal lines={slide.description} baseDelay={480} step={150} />
           </div>
         </div>
       </div>
 
-      <div className="hero__swipe">
+      <div className="hero__swipe" data-name="hero_swipe">
         <button
           type="button"
           className="hero__swipe-preview"
@@ -130,35 +145,68 @@ export function Hero() {
             pausedRef.current = false
             setPreviewHover(false)
           }}
-          onClick={next}
-          aria-label={`다음 화면 ${nextSlide.index} ${nextSlide.nextLabel}로 이동`}
+          onClick={(e) => {
+            e.preventDefault()
+            next()
+          }}
+          aria-label={`다음 화면 ${nextSlide.index} ${slide.nextLabel}로 이동`}
         >
           <div className="hero__swipe-thumb">
-            <img src={nextSlide.image} alt="" />
+            <img src={nextSlide.image} alt="" decoding="async" />
           </div>
           <div className="hero__swipe-meta">
             <span>{nextSlide.index}</span>
-            <span>{nextSlide.nextLabel}</span>
+            <span>{slide.nextLabel}</span>
           </div>
         </button>
 
-        <div className="hero__gage">
+        <div className="hero__gage" data-name="swipe_gage">
           <div className="hero__gage-track">
             <span className="hero__gage-no">01</span>
-            <div className="hero__gage-bar" aria-hidden="true">
+            <div
+              className="hero__gage-bar"
+              aria-hidden="true"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(progress * 100)}
+            >
               <div
                 className="hero__gage-fill"
-                style={{ width: `${progress * 100}%` }}
+                style={{ transform: `scaleX(${progress})` }}
               />
             </div>
             <span className="hero__gage-no">05</span>
           </div>
           <div className="hero__gage-btns">
-            <button type="button" onClick={prev} aria-label="이전 화면">
-              <img src={asset('assets/icon-arrow.png')} alt="" className="is-flip" />
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                prev()
+              }}
+              aria-label="이전 화면"
+            >
+              <img
+                src={asset('assets/icon-arrow.svg')}
+                alt=""
+                className="is-flip"
+                draggable={false}
+              />
             </button>
-            <button type="button" onClick={next} aria-label="다음 화면">
-              <img src={asset('assets/icon-arrow.png')} alt="" />
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                next()
+              }}
+              aria-label="다음 화면"
+            >
+              <img
+                src={asset('assets/icon-arrow.svg')}
+                alt=""
+                draggable={false}
+              />
             </button>
           </div>
         </div>

@@ -15,8 +15,12 @@
 ### Non-obvious notes
 - Styling is plain CSS (no Tailwind). Design tokens live in `src/styles/global.css`.
 - Hero carousel timing is `HERO_DURATION_MS = 10000` in `src/data/slides.ts`.
-- Scroll reveal + light parallax are wired in `src/hooks/useScrollReveal.ts` via `[data-reveal]` and `--parallax-y`.
+- Hero motion contract (do not regress): `hero_maincopy` = `CharReveal` (char-by-char); `hero_copy` = `LineReveal` (line parallax, not chars); `swipe_gage` = rAF `scaleX(progress)` with **no CSS width transition**; prev/next/preview click must `jumpTo` immediately (gage → 0, remount via `animKey`).
+- Slide 02 background **must** be the jewel (`public/assets/hero-02.jpg`). Do not re-pull the architecture fill from Figma `02rebuild` without checking with design — user override.
+- Icons are **`.svg` only** under `public/assets/`. Never reintroduce SVG XML saved as `.png` (causes broken-image X boxes). Hero arrows are already white — do not `filter: invert(1)`.
+- Scroll reveal + light parallax: `src/hooks/useScrollReveal.ts` via `[data-reveal]` and `--parallax-y`.
 - Public asset URLs must go through `asset()` in `src/utils/asset.ts` so GitHub Pages `base` (`/gyungkook/`) works.
 - Production Pages builds set `GITHUB_PAGES=true` (see workflow). Local `npm run dev` uses `base: '/'`.
 - Figma MCP asset URLs expire (~7 days); committed binaries under `public/assets/` are the source of truth.
+- UI craft skill: `.cursor/skills/impeccable/` (also `.claude/skills`, `.agents/skills`). Brand: premium + sharp rect; interactions soft. See `WORKLOG.md` for full handoff.
 - PR creation may require collaborator permission on the GitHub repo.
