@@ -93,6 +93,7 @@ export const professionals = [
       '실무형 해법을 제시합니다.',
     ],
     image: asset('assets/profile-1.jpg'),
+    imagePosition: '50% 18%',
   },
   {
     role: '대표변호사',
@@ -105,6 +106,7 @@ export const professionals = [
       '전략적으로 대응합니다.',
     ],
     image: asset('assets/profile-2.jpg'),
+    imagePosition: '50% 15%',
   },
   {
     role: '변호사',
@@ -117,6 +119,7 @@ export const professionals = [
       '실행 가능한 전략을 설계합니다.',
     ],
     image: asset('assets/profile-3.jpg'),
+    imagePosition: '50% 12%',
   },
   {
     role: '변호사',
@@ -129,6 +132,7 @@ export const professionals = [
       '끝까지 함께합니다.',
     ],
     image: asset('assets/profile-4.jpg'),
+    imagePosition: '50% 16%',
   },
 ]
 
