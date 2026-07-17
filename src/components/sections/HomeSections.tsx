@@ -270,7 +270,11 @@ export function ProfessionalsSection() {
                 tabIndex={0}
               >
                 <div className="pro-card__media">
-                  <img src={person.image} alt={person.name} />
+                  <img
+                    src={person.image}
+                    alt={person.name}
+                    style={{ objectPosition: person.imagePosition }}
+                  />
                 </div>
                 <div className="pro-card__veil" aria-hidden="true" />
 

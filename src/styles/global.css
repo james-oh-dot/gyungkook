@@ -11,6 +11,11 @@
   --page-pad: clamp(20px, 10.42vw, 200px);
   --content-max: min(1520px, 100%);
   --section-y: clamp(80px, 12.5vw, 240px);
+  /* Figma desktop pro card: 368 × 400 */
+  --pro-card-ratio: 368 / 400;
+  --pro-text-swap-out: 0.42s;
+  --pro-text-swap-gap: 0.44s;
+  --pro-text-swap-in: 0.52s;
   --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-serif: 'Nanum Myeongjo', Georgia, serif;
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
@@ -549,7 +554,9 @@ p {
 
 .pro-card {
   position: relative;
-  height: clamp(320px, 20.8vw, 400px);
+  width: 100%;
+  aspect-ratio: var(--pro-card-ratio);
+  height: auto;
   min-height: 0;
   overflow: hidden;
   background: #2f2f33;
@@ -566,6 +573,7 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center top;
   transform: none;
   filter: blur(0);
   transition:
@@ -591,21 +599,23 @@ p {
   flex-direction: column;
   pointer-events: none;
   z-index: 2;
+  transition:
+    opacity var(--pro-text-swap-out) var(--ease-premium),
+    transform var(--pro-text-swap-in) var(--ease-premium);
 }
 
 .pro-card__default {
   justify-content: flex-end;
   opacity: 1;
-  transition: opacity 0.55s var(--ease-premium);
+  transform: translate3d(0, 0, 0);
+  transition-delay: var(--pro-text-swap-gap);
 }
 
 .pro-card__hover {
   justify-content: space-between;
   opacity: 0;
-  transform: translate3d(0, 12px, 0);
-  transition:
-    opacity 0.65s var(--ease-premium),
-    transform 0.75s var(--ease-premium);
+  transform: translate3d(0, 22px, 0);
+  transition-delay: 0ms;
 }
 
 .pro-card__hover-top,
@@ -675,11 +685,16 @@ p {
 
 .pro-card.is-active .pro-card__default {
   opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition-duration: var(--pro-text-swap-out);
+  transition-delay: 0ms;
 }
 
 .pro-card.is-active .pro-card__hover {
   opacity: 1;
   transform: translate3d(0, 0, 0);
+  transition-duration: var(--pro-text-swap-in);
+  transition-delay: var(--pro-text-swap-gap);
 }
 
 .professionals.is-hovering .pro-card.is-dimmed .pro-card__media img {
@@ -1123,6 +1138,11 @@ p {
   .practice-grid,
   .pro-grid {
     grid-template-columns: 1fr;
+  }
+
+  .pro-card {
+    max-width: 100%;
+    aspect-ratio: var(--pro-card-ratio);
   }
 
   .practice-head {
