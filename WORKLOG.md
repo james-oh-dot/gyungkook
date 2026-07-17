@@ -77,16 +77,17 @@ jumpTo(n):
 Buttons (prev / next / swipe preview click):
   - call jumpTo immediately (no wait)
 
-Hover swipe preview:
-  - pauses timer; shows next bg at reduced opacity (preview)
+Hover swipe thumbnail:
+  - pauses timer only
+  - scales thumbnail image ONLY (never peeks next slide onto .hero__bg)
   - leave resumes from paused elapsed
 ```
 
 ### Reveal timing (soft, sequential)
 
-- Main title chars: ~26ms step, line offset, ease-out expo-ish curves.
-- Copy lines: ~150ms between lines, each line starts with larger Y offset (`22 + i*12` px) → parallax feel.
-- BG crossfade ~1.15s opacity / ~1.55s scale — soft, not snappy.
+- Main title chars: ~30ms step, line offset, ease-out expo-ish curves.
+- Copy lines: ~160ms between lines, each line starts with larger Y offset (`22 + i*12` px) → parallax feel.
+- BG crossfade ~1.05s opacity / ~1.35s scale — soft, not snappy. Inactive slides stay `visibility: hidden`.
 
 ---
 
@@ -114,18 +115,19 @@ GITHUB_PAGES=true npm run build
 
 ---
 
-## QA checklist (manual)
+## QA checklist (manual) — blocking
 
 - [ ] Slide 01: eaves image; maincopy chars cascade; copy lines parallax in
 - [ ] Slide 02: **jewel** image; Rebuild copy
-- [ ] Gage fills smoothly over ~10s; at end advances
+- [ ] Gage fills smoothly over ~10s; at end advances; image Ken Burns zooms slowly over those 10s
 - [ ] Click next: gage → 0 instantly; image + copy switch immediately; reveals restart
 - [ ] Click prev: same
 - [ ] Click swipe preview: advances; gage resets
-- [ ] Hover preview: timer pauses; next bg peeks; leave resumes
+- [ ] **Hover thumbnail: ONLY thumb image scales; full hero background does NOT show next slide** (critical)
+- [ ] Desktop / tablet / mobile: hero copy never covered by swipe; long labels wrap (no clipped English)
 - [ ] Arrows visible (white chevrons), not X boxes
 - [ ] Section icons (notice link, office, awards, text buttons) render
-- [ ] Mobile / tablet: swipe stack, copy column, no overflow
+- [ ] Responsive: thumb morphs softly via `--hero-thumb-scale` / size transitions
 - [ ] No rubber-banding / stutter on gage or text
 
 ---
@@ -155,6 +157,23 @@ GITHUB_PAGES=true npm run build
 - Playwright headless confirms sequential nav `01→02→03→04→05→01` and gage reset (`scaleX≈0` after click).
 - Swipe meta must use `slide.nextLabel` + `nextSlide.index` (not `nextSlide.nextLabel`).
 
+---
+
+## 2026-07-17 — Hero responsive QA + hover regression (critical)
+
+### Bugs fixed
+1. **Critical:** Thumbnail hover applied `.is-preview` on next `.hero__bg-slide` (opacity ~0.42 over full hero). Removed entirely. Hover may only scale `.hero__swipe-thumb img`. Timer pause on hover remains.
+2. Copy overlapped by absolute `hero__swipe` — added `--hero-swipe-reserve` bottom padding; mid-width right padding keeps left column clear; long labels wrap.
+3. Inactive slides now `visibility: hidden` when opacity 0 (no ghost stacks).
+4. Responsive thumb morph via `--hero-thumb-scale` + size transitions.
+5. **LineReveal never activated:** hero `setProgress` re-renders every frame; `lines={[…]}` new array ref reset the reveal effect. Fixed with stable `contentKey = lines.join('\n')` dependency (this made `VALUE` / desc appear invisible — opacity stuck at 0).
+
+### Docs
+- `AGENTS.md` → **Hero QA quality bar** section (blocking rules).
+- This checklist updated (hover preview of full BG is forbidden).
+
+### Automated QA (Playwright)
+Viewports 1440 / 1280 / 1024 / 390: no copy↔swipe overlap; no `.is-preview`; no ghost inactive slides on thumb hover; labels/desc `is-active` + opacity 1.
 ---
 
 ## 2026-07-17 — Section interactions (Professionals / Press / Awards)

@@ -17,6 +17,8 @@ export function LineReveal({
   active = true,
 }: LineRevealProps) {
   const [revealed, setRevealed] = useState(false)
+  // Primitive key: parent may pass a new array each render (hero rAF setProgress)
+  const contentKey = lines.join('\n')
 
   useEffect(() => {
     setRevealed(false)
@@ -31,7 +33,7 @@ export function LineReveal({
       cancelAnimationFrame(raf1)
       cancelAnimationFrame(raf2)
     }
-  }, [lines, active])
+  }, [contentKey, active])
 
   const show = active && revealed
 

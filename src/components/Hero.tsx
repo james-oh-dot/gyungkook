@@ -9,7 +9,6 @@ export function Hero() {
   const [index, setIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const [animKey, setAnimKey] = useState(0)
-  const [previewHover, setPreviewHover] = useState(false)
   const indexRef = useRef(0)
   const startRef = useRef(performance.now())
   const pausedRef = useRef(false)
@@ -34,7 +33,6 @@ export function Hero() {
     startRef.current = now
     pauseElapsedRef.current = 0
     pausedRef.current = false
-    setPreviewHover(false)
   }, [])
 
   const next = useCallback(() => jumpTo(indexRef.current + 1), [jumpTo])
@@ -84,7 +82,7 @@ export function Hero() {
         return (
           <p key={`${animKey}-title-${lineIndex}`} className="hero__title-line">
             <CharReveal
-              key={`${animKey}-title-${lineIndex}`}
+              key={`${animKey}-char-${lineIndex}`}
               text={line}
               baseDelay={120 + previous * 30 + lineIndex * 80}
               step={30}
@@ -101,11 +99,7 @@ export function Hero() {
         {heroSlides.map((item, i) => (
           <div
             key={item.id}
-            className={`hero__bg-slide${i === index ? ' is-active' : ''}${
-              previewHover && i === (index + 1) % heroSlides.length
-                ? ' is-preview'
-                : ''
-            }`}
+            className={`hero__bg-slide${i === index ? ' is-active' : ''}`}
           >
             <img
               src={item.image}
@@ -157,12 +151,10 @@ export function Hero() {
           onMouseEnter={() => {
             pausedRef.current = true
             pauseElapsedRef.current = progress * HERO_DURATION_MS
-            setPreviewHover(true)
           }}
           onMouseLeave={() => {
             startRef.current = performance.now() - pauseElapsedRef.current
             pausedRef.current = false
-            setPreviewHover(false)
           }}
           onClick={(e) => {
             e.preventDefault()

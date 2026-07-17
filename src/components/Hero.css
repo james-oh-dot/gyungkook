@@ -1,4 +1,12 @@
 .hero {
+  --hero-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Must clear full swipe block (thumb + meta + gage + bottom offset) */
+  --hero-swipe-reserve: clamp(280px, 34vh, 380px);
+  --hero-pad-x: clamp(20px, 10.42vw, 200px);
+  --hero-pad-top: clamp(120px, 18vh, 200px);
+  --hero-thumb-h: 170px;
+  --hero-thumb-scale: 1;
+
   position: relative;
   width: 100%;
   min-height: 100vh;
@@ -11,18 +19,24 @@
 .hero__bg {
   position: absolute;
   inset: 0;
+  z-index: 0;
+  /* Never show inactive slides through — only .is-active is visible */
+  background: #000;
 }
 
 .hero__bg-slide {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transform: scale(1.035);
+  visibility: hidden;
+  transform: scale(1.02);
   transition:
-    opacity 1.15s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 1.55s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 1.05s var(--hero-ease),
+    transform 1.35s var(--hero-ease),
+    visibility 0s linear 1.05s;
   will-change: opacity, transform;
   pointer-events: none;
+  z-index: 0;
 }
 
 .hero__bg-slide img {
@@ -48,7 +62,9 @@
 }
 
 .hero__bg-slide:not(.is-active) img {
-  transition: transform 1.55s cubic-bezier(0.22, 1, 0.36, 1);
+  /* Reset zoom instantly when inactive; do not animate next image in */
+  --hero-zoom: 0;
+  transition: none;
 }
 
 .hero__bg-veil {
@@ -61,16 +77,21 @@
 
 .hero__bg-slide.is-active {
   opacity: 1;
+  visibility: visible;
   transform: scale(1);
   z-index: 1;
+  transition:
+    opacity 1.05s var(--hero-ease),
+    transform 1.35s var(--hero-ease),
+    visibility 0s linear 0s;
 }
 
-.hero__bg-slide.is-preview {
-  opacity: 0.42;
-  transform: scale(1.05);
-  z-index: 2;
-  transition-duration: 0.65s;
-}
+/*
+  CRITICAL QA RULE — DO NOT REINTRODUCE:
+  Thumbnail hover must NEVER fade / peek the next slide onto .hero__bg.
+  No .is-preview / opacity on inactive slides from swipe hover.
+  Hover effects belong only on .hero__swipe-thumb img.
+*/
 
 .hero__content {
   position: relative;
@@ -79,15 +100,21 @@
   margin: 0 auto;
   min-height: 100vh;
   min-height: 100svh;
-  padding: clamp(120px, 18vh, 200px) clamp(20px, 10.42vw, 200px) 120px;
+  padding:
+    var(--hero-pad-top)
+    var(--hero-pad-x)
+    calc(var(--hero-swipe-reserve) + 32px);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  gap: clamp(48px, 8vh, 120px);
+  gap: clamp(32px, 6vh, 96px);
+  box-sizing: border-box;
+  /* Copy stays in left column; swipe sits bottom-right without covering it */
+  max-width: 100%;
 }
 
 .hero__maincopy {
-  max-width: 640px;
+  max-width: min(640px, 100%);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -100,7 +127,7 @@
 }
 
 .hero__title {
-  font-size: clamp(36px, 3.75vw, 72px);
+  font-size: clamp(32px, 3.75vw, 72px);
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.28;
@@ -110,26 +137,30 @@
 
 .hero__title-line {
   margin: 0;
+  /* Clip vertical reveal without clipping glyph tops/bottoms mid-animation */
   overflow: hidden;
+  padding-bottom: 0.08em;
 }
 
 .hero__copy {
   display: flex;
   align-items: flex-start;
-  gap: clamp(24px, 7.6vw, 147px);
-  max-width: 760px;
+  gap: clamp(20px, 7.6vw, 147px);
+  max-width: min(760px, 100%);
 }
 
 .hero__label {
-  flex: 0 0 auto;
-  font-size: clamp(18px, 1.25vw, 24px);
+  flex: 0 1 auto;
+  max-width: 100%;
+  font-size: clamp(16px, 1.25vw, 24px);
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.4;
   color: #f1f1f5;
   text-transform: uppercase;
-  white-space: nowrap;
-  overflow: hidden;
+  /* Long labels (e.g. Fair Compensation…) must wrap, not clip */
+  white-space: normal;
+  overflow: visible;
 }
 
 .hero__label .line-reveal__item {
@@ -142,12 +173,12 @@
 }
 
 .hero__desc {
-  max-width: 448px;
+  max-width: min(448px, 100%);
   color: #999;
   font-size: 16px;
   line-height: 1.5;
   letter-spacing: -0.025em;
-  overflow: hidden;
+  overflow: visible;
 }
 
 .hero__desc .line-reveal__item {
@@ -161,12 +192,19 @@
 .hero__swipe {
   position: absolute;
   z-index: 4;
-  right: clamp(16px, 5.2vw, 100px);
+  right: var(--hero-pad-x);
   bottom: clamp(24px, 5.5vh, 80px);
-  width: min(574px, calc(100% - 32px));
+  width: min(574px, calc(100% - (var(--hero-pad-x) * 2)));
   display: flex;
   flex-direction: column;
   gap: 28px;
+  /* Soft layout morph across breakpoints */
+  transition:
+    width 0.55s var(--hero-ease),
+    right 0.55s var(--hero-ease),
+    left 0.55s var(--hero-ease),
+    bottom 0.55s var(--hero-ease),
+    gap 0.45s var(--hero-ease);
 }
 
 .hero__swipe-preview {
@@ -179,20 +217,28 @@
   color: inherit;
   cursor: pointer;
   text-align: left;
-  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: scale(var(--hero-thumb-scale));
+  transform-origin: bottom right;
+  transition:
+    transform 0.55s var(--hero-ease),
+    opacity 0.45s var(--hero-ease);
 }
 
 .hero__swipe-preview:hover,
 .hero__swipe-preview:focus-visible {
-  opacity: 0.92;
+  /* Keep chrome stable; only thumb image scales */
+  opacity: 1;
 }
 
 .hero__swipe-thumb {
   width: min(300px, 52%);
-  height: 170px;
+  height: var(--hero-thumb-h);
   overflow: hidden;
   flex: 0 0 auto;
   background: #111;
+  transition:
+    width 0.55s var(--hero-ease),
+    height 0.55s var(--hero-ease);
 }
 
 .hero__swipe-thumb img {
@@ -200,9 +246,11 @@
   height: 100%;
   object-fit: cover;
   transform: scale(1);
-  transition: transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 1.05s var(--hero-ease);
+  will-change: transform;
 }
 
+/* ONLY thumbnail image effect on hover — never the full hero background */
 .hero__swipe-preview:hover .hero__swipe-thumb img,
 .hero__swipe-preview:focus-visible .hero__swipe-thumb img {
   transform: scale(1.06);
@@ -219,6 +267,10 @@
   font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.025em;
+  transition:
+    min-height 0.55s var(--hero-ease),
+    width 0.55s var(--hero-ease),
+    padding 0.45s var(--hero-ease);
 }
 
 .hero__gage {
@@ -278,8 +330,8 @@
   cursor: pointer;
   opacity: 0.85;
   transition:
-    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.35s var(--hero-ease),
+    transform 0.35s var(--hero-ease);
 }
 
 .hero__gage-btns button:hover,
@@ -353,7 +405,11 @@
 @media (prefers-reduced-motion: reduce) {
   .hero__bg-slide,
   .hero__bg-slide img,
+  .hero__swipe,
+  .hero__swipe-preview,
+  .hero__swipe-thumb,
   .hero__swipe-thumb img,
+  .hero__swipe-meta,
   .hero__gage-btns button,
   .char-reveal__item,
   .line-reveal__item {
@@ -376,7 +432,15 @@
   }
 }
 
+/* --- Tablet --- */
 @media (max-width: 1024px) {
+  .hero {
+    --hero-pad-x: 40px;
+    --hero-swipe-reserve: 300px;
+    --hero-thumb-h: 120px;
+    --hero-thumb-scale: 0.98;
+  }
+
   .hero__bg-slide img {
     width: 100%;
     height: 58%;
@@ -385,24 +449,25 @@
   }
 
   .hero__content {
-    padding: 120px 40px 220px;
-    justify-content: flex-end;
+    gap: 28px;
   }
 
   .hero__copy {
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
+    /* Leave clear lane above full-width swipe */
+    max-width: 100%;
   }
 
   .hero__swipe {
-    right: 40px;
-    left: 40px;
+    right: var(--hero-pad-x);
+    left: var(--hero-pad-x);
     width: auto;
     bottom: 40px;
   }
 
-  .hero__swipe-thumb {
-    height: 120px;
+  .hero__swipe-preview {
+    transform-origin: bottom center;
   }
 
   .hero__swipe-meta {
@@ -411,14 +476,37 @@
   }
 }
 
-@media (max-width: 767px) {
+/* Mid widths: swipe still right-aligned but content must stay left of it */
+@media (min-width: 768px) and (max-width: 1400px) {
+  .hero {
+    --hero-swipe-reserve: clamp(300px, 36vh, 400px);
+  }
+
   .hero__content {
-    padding: 100px 20px 250px;
+    /* Keep main copy from colliding with bottom-right swipe */
+    padding-right: max(var(--hero-pad-x), min(48vw, 600px));
+  }
+
+  .hero__maincopy,
+  .hero__copy {
+    max-width: min(520px, 100%);
+  }
+}
+
+/* --- Mobile --- */
+@media (max-width: 767px) {
+  .hero {
+    --hero-pad-x: 20px;
+    --hero-pad-top: 100px;
+    /* Thumb stacked + meta + gage */
+    --hero-swipe-reserve: 380px;
+    --hero-thumb-h: 132px;
+    --hero-thumb-scale: 0.96;
   }
 
   .hero__title {
-    font-size: 34px;
-    line-height: 1.45;
+    font-size: 32px;
+    line-height: 1.4;
   }
 
   .hero__desc {
@@ -426,8 +514,8 @@
   }
 
   .hero__swipe {
-    right: 20px;
-    left: 20px;
+    right: var(--hero-pad-x);
+    left: var(--hero-pad-x);
     bottom: 24px;
     gap: 16px;
   }
@@ -435,6 +523,7 @@
   .hero__swipe-preview {
     flex-direction: column;
     align-items: stretch;
+    transform-origin: bottom center;
   }
 
   .hero__swipe-thumb,
@@ -442,8 +531,8 @@
     width: 100%;
   }
 
-  .hero__swipe-thumb {
-    height: 140px;
+  .hero__swipe-meta {
+    min-height: 56px;
   }
 
   .hero__gage {
@@ -452,5 +541,19 @@
 
   .hero__gage-bar {
     width: min(160px, 40vw);
+  }
+}
+
+/* Short viewports: prioritize readable copy over tall thumb */
+@media (max-height: 720px) {
+  .hero {
+    --hero-swipe-reserve: clamp(240px, 38vh, 320px);
+    --hero-thumb-h: 110px;
+    --hero-thumb-scale: 0.94;
+    --hero-pad-top: 80px;
+  }
+
+  .hero__content {
+    gap: 24px;
   }
 }
