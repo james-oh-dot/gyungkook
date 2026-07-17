@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { CharReveal } from './CharReveal'
 import { LineReveal } from './LineReveal'
 import { HERO_DURATION_MS, heroSlides } from '../data/slides'
@@ -84,10 +84,10 @@ export function Hero() {
         return (
           <p key={`${animKey}-title-${lineIndex}`} className="hero__title-line">
             <CharReveal
+              key={`${animKey}-title-${lineIndex}`}
               text={line}
-              active
-              baseDelay={100 + previous * 26 + lineIndex * 70}
-              step={26}
+              baseDelay={120 + previous * 30 + lineIndex * 80}
+              step={30}
             />
           </p>
         )
@@ -107,7 +107,16 @@ export function Hero() {
                 : ''
             }`}
           >
-            <img src={item.image} alt="" decoding="async" />
+            <img
+              src={item.image}
+              alt=""
+              decoding="async"
+              style={
+                i === index
+                  ? ({ '--hero-zoom': progress } as CSSProperties)
+                  : undefined
+              }
+            />
             <div className="hero__bg-veil" />
           </div>
         ))}
@@ -116,17 +125,27 @@ export function Hero() {
       <div className="hero__content" key={animKey}>
         <div className="hero__maincopy" data-name="hero_maincopy">
           <p className="hero__index">
-            <CharReveal text={slide.index} baseDelay={40} step={36} />
+            <CharReveal
+              key={`${animKey}-index`}
+              text={slide.index}
+              baseDelay={60}
+              step={34}
+            />
           </p>
           <div className="hero__title">{titleBlocks}</div>
         </div>
 
         <div className="hero__copy" data-name="hero_copy">
           <div className="hero__label">
-            <LineReveal lines={[slide.label]} baseDelay={380} step={0} />
+            <LineReveal key={`${animKey}-label`} lines={[slide.label]} baseDelay={420} step={0} />
           </div>
           <div className="hero__desc">
-            <LineReveal lines={slide.description} baseDelay={480} step={150} />
+            <LineReveal
+              key={`${animKey}-desc`}
+              lines={slide.description}
+              baseDelay={520}
+              step={160}
+            />
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import type { CSSProperties } from 'react'
+import { useEffect, useState, type CSSProperties } from 'react'
 
 type LineRevealProps = {
   lines: string[]
@@ -16,6 +16,25 @@ export function LineReveal({
   step = 140,
   active = true,
 }: LineRevealProps) {
+  const [revealed, setRevealed] = useState(false)
+
+  useEffect(() => {
+    setRevealed(false)
+    if (!active) return
+
+    let raf2 = 0
+    const raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => setRevealed(true))
+    })
+
+    return () => {
+      cancelAnimationFrame(raf1)
+      cancelAnimationFrame(raf2)
+    }
+  }, [lines, active])
+
+  const show = active && revealed
+
   return (
     <div className={`line-reveal ${className}`.trim()} aria-label={lines.join(' ')}>
       {lines.map((line, index) => {
@@ -27,7 +46,7 @@ export function LineReveal({
         return (
           <p
             key={`${line}-${index}`}
-            className={`line-reveal__item${active ? ' is-active' : ''}`}
+            className={`line-reveal__item${show ? ' is-active' : ''}`}
             style={style}
             aria-hidden="true"
           >
