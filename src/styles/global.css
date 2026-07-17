@@ -13,9 +13,7 @@
   --section-y: clamp(80px, 12.5vw, 240px);
   /* Figma desktop pro card: 368 × 400 */
   --pro-card-ratio: 368 / 400;
-  --pro-text-swap-out: 0.42s;
-  --pro-text-swap-gap: 0.44s;
-  --pro-text-swap-in: 0.52s;
+  --pro-text-swap: 0.5s;
   --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-serif: 'Nanum Myeongjo', Georgia, serif;
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
@@ -554,6 +552,7 @@ p {
 
 .pro-card {
   position: relative;
+  z-index: 1;
   width: 100%;
   aspect-ratio: var(--pro-card-ratio);
   height: auto;
@@ -562,6 +561,15 @@ p {
   background: #2f2f33;
   cursor: pointer;
   outline: none;
+  transform: scale(1);
+  transform-origin: center center;
+  transition: transform 0.65s var(--ease-premium);
+  will-change: transform;
+}
+
+.pro-card.is-active {
+  z-index: 2;
+  transform: scale(1.05);
 }
 
 .pro-card__media {
@@ -600,22 +608,20 @@ p {
   pointer-events: none;
   z-index: 2;
   transition:
-    opacity var(--pro-text-swap-out) var(--ease-premium),
-    transform var(--pro-text-swap-in) var(--ease-premium);
+    opacity var(--pro-text-swap) var(--ease-premium),
+    transform var(--pro-text-swap) var(--ease-premium);
 }
 
 .pro-card__default {
   justify-content: flex-end;
   opacity: 1;
   transform: translate3d(0, 0, 0);
-  transition-delay: var(--pro-text-swap-gap);
 }
 
 .pro-card__hover {
   justify-content: space-between;
   opacity: 0;
   transform: translate3d(0, 22px, 0);
-  transition-delay: 0ms;
 }
 
 .pro-card__hover-top,
@@ -686,15 +692,11 @@ p {
 .pro-card.is-active .pro-card__default {
   opacity: 0;
   transform: translate3d(0, 24px, 0);
-  transition-duration: var(--pro-text-swap-out);
-  transition-delay: 0ms;
 }
 
 .pro-card.is-active .pro-card__hover {
   opacity: 1;
   transform: translate3d(0, 0, 0);
-  transition-duration: var(--pro-text-swap-in);
-  transition-delay: var(--pro-text-swap-gap);
 }
 
 .professionals.is-hovering .pro-card.is-dimmed .pro-card__media img {
@@ -903,6 +905,7 @@ p {
   .pro-card__veil,
   .pro-card__default,
   .pro-card__hover,
+  .pro-card,
   .practice-card__media .media-card__img,
   .practice-card__title,
   .press-gage,
