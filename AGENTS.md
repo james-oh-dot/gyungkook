@@ -24,3 +24,4 @@
 - Figma MCP asset URLs expire (~7 days); committed binaries under `public/assets/` are the source of truth.
 - UI craft skill: `.cursor/skills/impeccable/` (also `.claude/skills`, `.agents/skills`). Brand: premium + sharp rect; interactions soft. See `WORKLOG.md` for full handoff.
 - PR creation may require collaborator permission on the GitHub repo.
+- **User rule:** If the agent cannot create/merge the PR itself, always end the turn with a direct link the user can open (e.g. `https://github.com/james-oh-dot/gyungkook/pull/new/<branch>` or the existing PR URL). Do not assume merge happened.
