@@ -192,11 +192,28 @@ export function ProfessionalsSection() {
   const [hovered, setHovered] = useState<number | null>(null)
   const hasHover = hovered !== null
 
+  const leaveTimerRef = useRef<number | null>(null)
+  const clearLeaveTimer = () => {
+    if (leaveTimerRef.current !== null) {
+      window.clearTimeout(leaveTimerRef.current)
+      leaveTimerRef.current = null
+    }
+  }
+
+  const scheduleClear = (index: number) => {
+    // Reset should be card-scoped: leaving the hovered card returns to default.
+    // Use a short delay to avoid flicker when moving between adjacent cards.
+    if (leaveTimerRef.current !== null) window.clearTimeout(leaveTimerRef.current)
+    leaveTimerRef.current = window.setTimeout(() => {
+      setHovered((v) => (v === index ? null : v))
+      leaveTimerRef.current = null
+    }, 80)
+  }
+
   return (
     <section
       className={`section professionals${hasHover ? ' is-hovering' : ''}`}
       aria-labelledby="pro-title"
-      onMouseLeave={() => setHovered(null)}
     >
       <div className="professionals__bg">
         <img src={asset('assets/professionals-bg.jpg')} alt="" />
@@ -223,8 +240,20 @@ export function ProfessionalsSection() {
                 className={`pro-card${isActive ? ' is-active' : ''}${
                   isDimmed ? ' is-dimmed' : ''
                 }`}
-                onMouseEnter={() => setHovered(index)}
-                onFocus={() => setHovered(index)}
+                onMouseEnter={() => {
+                  clearLeaveTimer()
+                  setHovered(index)
+                }}
+                onMouseLeave={() => {
+                  if (hovered === index) scheduleClear(index)
+                }}
+                onFocus={() => {
+                  clearLeaveTimer()
+                  setHovered(index)
+                }}
+                onBlur={() => {
+                  if (hovered === index) scheduleClear(index)
+                }}
                 tabIndex={0}
               >
                 <div className="pro-card__media">
