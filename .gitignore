@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Agent harness copies of impeccable (canonical: .cursor/skills/impeccable)
+.agents/
+.claude/
+.codex/

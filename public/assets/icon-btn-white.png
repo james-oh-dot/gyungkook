@@ -1,6 +1,0 @@
-<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-<g id="icon_btn">
-<rect width="32" height="32" rx="16" fill="var(--fill-0, #F7F7FB)"/>
-<path id="Union" d="M21.3535 16L18 19.3535L17.293 18.6465L19.4395 16.5H10.6465V15.5H19.4395L17.293 13.3535L18 12.6465L21.3535 16Z" fill="var(--fill-0, #111111)"/>
-</g>
-</svg>

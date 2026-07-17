@@ -11,6 +11,7 @@ export type HeroSlide = {
   nextImage: string
 }
 
+/** Auto-advance + swipe_gage fill duration. Button jumps must reset immediately. */
 export const HERO_DURATION_MS = 10000
 
 export const heroSlides: HeroSlide[] = [
@@ -24,6 +25,7 @@ export const heroSlides: HeroSlide[] = [
       '신중한 판단과 신속한 Performance를 수행합니다.',
     ],
     nextLabel: 'Rebuild',
+    // Traditional Korean eaves / dancheong
     image: asset('assets/hero-01.jpg'),
     nextImage: asset('assets/hero-01-next.jpg'),
   },
@@ -38,6 +40,7 @@ export const heroSlides: HeroSlide[] = [
       '고객 가치를 정확히 평가하여 최상으로 끌어올리고 있습니다',
     ],
     nextLabel: 'FAIR',
+    // Jewel / diamond (user-required; do not replace with architecture fill)
     image: asset('assets/hero-02.jpg'),
     nextImage: asset('assets/hero-02-next.jpg'),
   },
