@@ -33,8 +33,22 @@
   width: min(78.125vw, 1500px);
   height: min(74.07vh, 800px);
   object-fit: cover;
+  object-position: center center;
   --parallax-y: 0px;
-  transform: translate3d(0, var(--parallax-y), 0) scale(1.02);
+  --hero-zoom: 0;
+  transform: translate3d(0, var(--parallax-y), 0)
+    scale(calc(1.02 + var(--hero-zoom) * 0.08));
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.hero__bg-slide.is-active img {
+  /* Driven by rAF progress over 10s — no CSS transition */
+  transition: none;
+}
+
+.hero__bg-slide:not(.is-active) img {
+  transition: transform 1.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .hero__bg-veil {
@@ -298,12 +312,12 @@
 .char-reveal__item {
   display: inline-block;
   opacity: 0;
-  transform: translate3d(0, 0.85em, 0);
-  filter: blur(3px);
+  transform: translate3d(0, 0.55em, 0);
+  filter: blur(4px);
   transition:
-    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-    filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.82s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.82s cubic-bezier(0.16, 1, 0.3, 1);
   will-change: opacity, transform, filter;
 }
 
@@ -338,6 +352,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero__bg-slide,
+  .hero__bg-slide img,
   .hero__swipe-thumb img,
   .hero__gage-btns button,
   .char-reveal__item,
@@ -348,6 +363,10 @@
 
   .hero__bg-slide {
     transform: none;
+  }
+
+  .hero__bg-slide img {
+    transform: scale(1.02);
   }
 
   .char-reveal__item,
