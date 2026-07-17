@@ -458,6 +458,7 @@ p {
   font-weight: 500;
 }
 
+
 .professionals {
   color: #fff;
   overflow: hidden;
@@ -478,12 +479,17 @@ p {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.35);
+  background:
+    linear-gradient(180deg, rgba(8, 12, 16, 0.55) 0%, rgba(8, 12, 16, 0.35) 45%, rgba(8, 12, 16, 0.72) 100%);
 }
 
 .professionals__inner {
   position: relative;
   z-index: 1;
+}
+
+.professionals .section-head {
+  align-items: flex-end;
 }
 
 .professionals .section-title,
@@ -495,13 +501,16 @@ p {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
+  margin-top: 40px;
 }
 
 .pro-card {
   position: relative;
-  min-height: 400px;
+  min-height: clamp(320px, 20.8vw, 400px);
   overflow: hidden;
-  background: #f1f1f5;
+  background: #2f2f33;
+  cursor: pointer;
+  outline: none;
 }
 
 .pro-card__media {
@@ -509,25 +518,89 @@ p {
   inset: 0;
 }
 
-.pro-card__body {
+.pro-card__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.02);
+  filter: blur(0);
+  transition:
+    filter 0.7s var(--ease-premium),
+    transform 0.9s var(--ease-premium),
+    opacity 0.7s var(--ease-premium);
+  will-change: filter, transform;
+}
+
+.pro-card__veil {
   position: absolute;
-  inset: auto 0 0;
+  inset: 0;
+  background: rgba(14, 24, 24, 0.1);
+  transition: background 0.65s var(--ease-premium);
+  pointer-events: none;
+}
+
+.pro-card__default,
+.pro-card__hover {
+  position: absolute;
+  inset: 0;
   padding: 24px;
   display: flex;
   flex-direction: column;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.pro-card__default {
   justify-content: flex-end;
-  gap: 4px;
-  min-height: 50%;
-  background: linear-gradient(180deg, rgba(14, 24, 24, 0) 0%, rgba(14, 24, 24, 0.55) 70%);
+  opacity: 1;
+  transition: opacity 0.55s var(--ease-premium);
+}
+
+.pro-card__hover {
+  justify-content: space-between;
+  opacity: 0;
+  transform: translate3d(0, 12px, 0);
+  transition:
+    opacity 0.65s var(--ease-premium),
+    transform 0.75s var(--ease-premium);
+}
+
+.pro-card__hover-top,
+.pro-card__hover-bottom {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
 .pro-card__role {
   font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.45;
 }
 
 .pro-card__name {
   font-size: 24px;
   font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.4;
+}
+
+.pro-card__headline {
+  font-size: clamp(28px, 2.08vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+}
+
+.pro-card__bio {
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+.pro-card__bio p {
+  margin: 0;
 }
 
 .pro-card__tags {
@@ -545,14 +618,59 @@ p {
   font-size: 13px;
 }
 
+.pro-card__hover .pro-card__tags {
+  margin-top: 0;
+}
+
+.pro-card.is-active .pro-card__veil {
+  background: rgba(14, 24, 24, 0.8);
+}
+
+.pro-card.is-active .pro-card__media img {
+  filter: blur(0);
+  transform: scale(1.04);
+}
+
+.pro-card.is-active .pro-card__default {
+  opacity: 0;
+}
+
+.pro-card.is-active .pro-card__hover {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+.professionals.is-hovering .pro-card.is-dimmed .pro-card__media img {
+  filter: blur(6px);
+  transform: scale(1.06);
+  opacity: 0.85;
+}
+
+.professionals.is-hovering .pro-card.is-dimmed .pro-card__veil {
+  background: rgba(14, 24, 24, 0.1);
+  backdrop-filter: blur(3px);
+}
+
+.professionals.is-hovering .pro-card.is-dimmed .pro-card__default {
+  opacity: 0.4;
+}
+
+.press-breakout {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+
 .press-track {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(280px, 600px);
   gap: 48px;
   overflow-x: auto;
-  padding-bottom: 24px;
+  padding: 0 var(--page-pad) 8px;
+  scroll-snap-type: x proximity;
   scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .press-track::-webkit-scrollbar {
@@ -563,6 +681,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 32px;
+  scroll-snap-align: start;
 }
 
 .press-card__media {
@@ -597,18 +716,38 @@ p {
 }
 
 .press-gage {
+  position: relative;
   margin-top: 40px;
   width: 100%;
   max-width: 1520px;
-  height: 2px;
+  height: var(--gage-h, 2px);
   background: #f1f1f5;
+  cursor: pointer;
+  touch-action: none;
+  transition: height 0.35s var(--ease-premium);
+}
+
+.press-gage.is-active,
+.press-gage:hover,
+.press-gage:focus-visible {
+  height: 20px;
 }
 
 .press-gage > span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
   display: block;
   width: 20%;
-  height: 100%;
   background: #111;
+  will-change: transform, width;
+  pointer-events: none;
+}
+
+.awards-section {
+  position: relative;
+  overflow: hidden;
 }
 
 .awards {
@@ -627,6 +766,7 @@ p {
 
 .awards__list {
   position: relative;
+  z-index: 2;
 }
 
 .awards__item {
@@ -640,7 +780,7 @@ p {
   font-size: clamp(20px, 1.88vw, 36px);
   letter-spacing: -0.025em;
   cursor: pointer;
-  transition: color 0.35s var(--ease-premium);
+  transition: color 0.4s var(--ease-premium);
 }
 
 .awards__item.is-active,
@@ -657,21 +797,58 @@ p {
 
 .awards__preview {
   position: absolute;
-  top: 60px;
-  left: 50%;
-  width: min(360px, 38%);
-  height: 500px;
-  transform: translateX(-20%);
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: min(360px, 42vw);
+  height: min(500px, 58vh);
   box-shadow: 30px 30px 50px rgba(0, 0, 0, 0.5);
   overflow: hidden;
   pointer-events: none;
   opacity: 0;
+  transform: translate3d(0, 0, 0);
   transition: opacity 0.45s var(--ease-premium);
+  will-change: transform, opacity;
 }
 
-.awards__list:hover .awards__preview,
-.awards__list:focus-within .awards__preview {
+.awards__preview.is-visible {
   opacity: 1;
+}
+
+.awards__preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: awards-img-in 0.55s var(--ease-premium);
+}
+
+@keyframes awards-img-in {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pro-card__media img,
+  .pro-card__veil,
+  .pro-card__default,
+  .pro-card__hover,
+  .press-gage,
+  .awards__item,
+  .awards__preview,
+  .awards__preview img {
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .pro-card__hover {
+    transform: none;
+  }
 }
 
 .social {

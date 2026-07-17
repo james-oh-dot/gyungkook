@@ -1,6 +1,7 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import { Reveal } from '../Reveal'
 import { asset } from '../../utils/asset'
+import { useScrollGage } from '../../hooks/useScrollGage'
 import {
   achievements,
   awards,
@@ -188,8 +189,15 @@ export function AchievementsSection() {
 }
 
 export function ProfessionalsSection() {
+  const [hovered, setHovered] = useState<number | null>(null)
+  const hasHover = hovered !== null
+
   return (
-    <section className="section professionals" aria-labelledby="pro-title">
+    <section
+      className={`section professionals${hasHover ? ' is-hovering' : ''}`}
+      aria-labelledby="pro-title"
+      onMouseLeave={() => setHovered(null)}
+    >
       <div className="professionals__bg">
         <img src={asset('assets/professionals-bg.jpg')} alt="" />
       </div>
@@ -206,22 +214,56 @@ export function ProfessionalsSection() {
           </Reveal>
         </div>
         <div className="pro-grid">
-          {professionals.map((person, index) => (
-            <Reveal key={person.name} delay={index * 90} className="pro-card media-card">
-              <div className="pro-card__media">
-                <img className="media-card__img" src={person.image} alt={person.name} />
-              </div>
-              <div className="pro-card__body">
-                <p className="pro-card__role">{person.role}</p>
-                <p className="pro-card__name">{person.name}</p>
-                <div className="pro-card__tags">
-                  {person.tags.map((tag) => (
-                    <span key={tag}>{tag}</span>
-                  ))}
+          {professionals.map((person, index) => {
+            const isActive = hovered === index
+            const isDimmed = hasHover && !isActive
+            return (
+              <article
+                key={person.name}
+                className={`pro-card${isActive ? ' is-active' : ''}${
+                  isDimmed ? ' is-dimmed' : ''
+                }`}
+                onMouseEnter={() => setHovered(index)}
+                onFocus={() => setHovered(index)}
+                tabIndex={0}
+              >
+                <div className="pro-card__media">
+                  <img src={person.image} alt={person.name} />
                 </div>
-              </div>
-            </Reveal>
-          ))}
+                <div className="pro-card__veil" aria-hidden="true" />
+
+                <div className="pro-card__default">
+                  <p className="pro-card__role">{person.role}</p>
+                  <p className="pro-card__name">{person.name}</p>
+                  <div className="pro-card__tags">
+                    {person.tags.map((tag) => (
+                      <span key={tag}>{tag}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="pro-card__hover">
+                  <div className="pro-card__hover-top">
+                    <p className="pro-card__name">{person.name}</p>
+                    <p className="pro-card__role">{person.role}</p>
+                  </div>
+                  <div className="pro-card__hover-bottom">
+                    <p className="pro-card__headline">{person.headline}</p>
+                    <div className="pro-card__tags">
+                      {person.tags.map((tag) => (
+                        <span key={tag}>{tag}</span>
+                      ))}
+                    </div>
+                    <div className="pro-card__bio">
+                      {person.bio.map((line) => (
+                        <p key={line}>{line}</p>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </article>
+            )
+          })}
         </div>
       </div>
     </section>
@@ -229,8 +271,21 @@ export function ProfessionalsSection() {
 }
 
 export function PressSection() {
+  const {
+    trackRef,
+    gageRef,
+    ratio,
+    offset,
+    active,
+    activeHeight,
+    setGageHover,
+    onGagePointerDown,
+  } = useScrollGage({ activeHeight: 20 })
+
+  const items = pressItems.slice(0, 5)
+
   return (
-    <section className="section" aria-labelledby="press-title">
+    <section className="section press" aria-labelledby="press-title">
       <div className="section-head">
         <Reveal className="section-head__copy">
           <p className="eyebrow">PRESS</p>
@@ -246,24 +301,47 @@ export function PressSection() {
           <TextBtn label="전체보기" />
         </Reveal>
       </div>
-      <div className="press-track">
-        {pressItems.map((item, index) => (
-          <Reveal key={item.title} delay={index * 100} className="press-card">
-            <div className="press-card__media media-card">
-              <img className="media-card__img" src={item.image} alt="" />
-            </div>
-            <div>
-              <div className="press-card__title">
-                <span className="press-card__chip">{item.chip}</span>
-                <span>{item.title}</span>
+
+      <div className="press-breakout">
+        <div className="press-track" ref={trackRef}>
+          {items.map((item) => (
+            <article key={`${item.title}-${item.desc}`} className="press-card">
+              <div className="press-card__media media-card">
+                <img className="media-card__img" src={item.image} alt="" />
               </div>
-              <p className="press-card__desc">{item.desc}</p>
-            </div>
-          </Reveal>
-        ))}
+              <div>
+                <div className="press-card__title">
+                  <span className="press-card__chip">{item.chip}</span>
+                  <span>{item.title}</span>
+                </div>
+                <p className="press-card__desc">{item.desc}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
-      <div className="press-gage" aria-hidden="true">
-        <span />
+
+      <div
+        ref={gageRef}
+        className={`press-gage${active ? ' is-active' : ''}`}
+        style={{ '--gage-h': `${active ? activeHeight : 2}px` } as CSSProperties}
+        onMouseEnter={() => setGageHover(true)}
+        onMouseLeave={() => setGageHover(false)}
+        onPointerDown={onGagePointerDown}
+        role="scrollbar"
+        aria-orientation="horizontal"
+        aria-controls="press-title"
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={Math.round(offset * 100)}
+        tabIndex={0}
+      >
+        <span
+          style={{
+            width: `${Math.max(8, ratio * 100)}%`,
+            transform: `translate3d(${offset * ((1 - ratio) / Math.max(ratio, 0.001)) * 100}%, 0, 0)`,
+          }}
+        />
       </div>
     </section>
   )
@@ -271,9 +349,55 @@ export function PressSection() {
 
 export function AwardsSection() {
   const [active, setActive] = useState(2)
+  const [visible, setVisible] = useState(false)
+  const sectionRef = useRef<HTMLElement>(null)
+  const previewRef = useRef<HTMLDivElement>(null)
+  const posRef = useRef({ x: 0, y: 0 })
+  const rafRef = useRef(0)
+
+  const movePreview = useCallback((clientX: number, clientY: number) => {
+    const section = sectionRef.current
+    const preview = previewRef.current
+    if (!section || !preview) return
+
+    const rect = section.getBoundingClientRect()
+    const pw = preview.offsetWidth
+    const ph = preview.offsetHeight
+    const pad = 16
+
+    let x = clientX - rect.left - pw / 2
+    let y = clientY - rect.top - ph / 2
+    x = Math.min(Math.max(pad, x), rect.width - pw - pad)
+    y = Math.min(Math.max(pad, y), rect.height - ph - pad)
+
+    posRef.current = { x, y }
+    if (rafRef.current) return
+    rafRef.current = requestAnimationFrame(() => {
+      rafRef.current = 0
+      const { x: px, y: py } = posRef.current
+      preview.style.transform = `translate3d(${px}px, ${py}px, 0)`
+    })
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current)
+    }
+  }, [])
+
+  const activeAward = awards[active] ?? awards[0]
 
   return (
-    <section className="section section--dark" aria-labelledby="awards-title">
+    <section
+      ref={sectionRef}
+      className={`section section--dark awards-section${visible ? ' is-previewing' : ''}`}
+      aria-labelledby="awards-title"
+      onMouseMove={(e) => {
+        if (!visible) return
+        movePreview(e.clientX, e.clientY)
+      }}
+      onMouseLeave={() => setVisible(false)}
+    >
       <div className="awards">
         <Reveal>
           <p className="eyebrow">AWARDS</p>
@@ -289,11 +413,15 @@ export function AwardsSection() {
         <Reveal delay={120} className="awards__list">
           {awards.map((item, index) => (
             <div
-              key={item}
+              key={item.title}
               className={`awards__item${active === index ? ' is-active' : ''}`}
-              onMouseEnter={() => setActive(index)}
+              onMouseEnter={(e) => {
+                setActive(index)
+                setVisible(true)
+                movePreview(e.clientX, e.clientY)
+              }}
             >
-              <span>{item}</span>
+              <span>{item.title}</span>
               <img
                 src={
                   active === index
@@ -304,10 +432,20 @@ export function AwardsSection() {
               />
             </div>
           ))}
-          <div className="awards__preview media-card">
-            <img className="media-card__img" src={asset('assets/award-hover.jpg')} alt="" />
-          </div>
         </Reveal>
+      </div>
+
+      <div
+        ref={previewRef}
+        className={`awards__preview media-card${visible ? ' is-visible' : ''}`}
+        aria-hidden={!visible}
+      >
+        <img
+          className="media-card__img"
+          src={activeAward.image}
+          alt=""
+          key={activeAward.title}
+        />
       </div>
     </section>
   )
