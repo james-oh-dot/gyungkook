@@ -1,3 +1,5 @@
+import { asset } from '../utils/asset'
+
 export type HeroSlide = {
   id: number
   index: string
@@ -22,8 +24,8 @@ export const heroSlides: HeroSlide[] = [
       '신중한 판단과 신속한 Performance를 수행합니다.',
     ],
     nextLabel: 'Rebuild',
-    image: '/assets/hero-01.jpg',
-    nextImage: '/assets/hero-01-next.jpg',
+    image: asset('assets/hero-01.jpg'),
+    nextImage: asset('assets/hero-01-next.jpg'),
   },
   {
     id: 2,
@@ -36,8 +38,8 @@ export const heroSlides: HeroSlide[] = [
       '고객 가치를 정확히 평가하여 최상으로 끌어올리고 있습니다',
     ],
     nextLabel: 'FAIR',
-    image: '/assets/hero-02.jpg',
-    nextImage: '/assets/hero-02-next.jpg',
+    image: asset('assets/hero-02.jpg'),
+    nextImage: asset('assets/hero-02-next.jpg'),
   },
   {
     id: 3,
@@ -49,8 +51,8 @@ export const heroSlides: HeroSlide[] = [
       '막연한 추정이 아닌 정확한 분석을 통해 합리적인 결과를 확보합니다',
     ],
     nextLabel: 'Communicate',
-    image: '/assets/hero-03.jpg',
-    nextImage: '/assets/hero-03-next.jpg',
+    image: asset('assets/hero-03.jpg'),
+    nextImage: asset('assets/hero-03-next.jpg'),
   },
   {
     id: 4,
@@ -62,8 +64,8 @@ export const heroSlides: HeroSlide[] = [
       '적극적인 접근과 경청으로 만들어가는 법무법인경국입니다',
     ],
     nextLabel: 'SPEED',
-    image: '/assets/hero-04.jpg',
-    nextImage: '/assets/hero-04-next.jpg',
+    image: asset('assets/hero-04.jpg'),
+    nextImage: asset('assets/hero-04-next.jpg'),
   },
   {
     id: 5,
@@ -75,7 +77,7 @@ export const heroSlides: HeroSlide[] = [
       '온오프라인 빠른 대응이 가능한 경쟁력',
     ],
     nextLabel: 'VALUE',
-    image: '/assets/hero-05.jpg',
-    nextImage: '/assets/hero-05-next.jpg',
+    image: asset('assets/hero-05.jpg'),
+    nextImage: asset('assets/hero-05-next.jpg'),
   },
 ]

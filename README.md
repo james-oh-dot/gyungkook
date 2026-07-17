@@ -13,6 +13,12 @@ npm run dev
 - Lint: `npm run lint`
 - Build: `npm run build`
 
+## Live (GitHub Pages)
+
+https://james-oh-dot.github.io/gyungkook/
+
+`main` 푸시 시 GitHub Actions로 자동 배포됩니다.
+
 ## 구현 포인트
 
 - Desktop / Tablet(768) / Mobile(390) 반응형

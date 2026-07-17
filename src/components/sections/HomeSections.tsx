@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Reveal } from '../Reveal'
+import { asset } from '../../utils/asset'
 import {
   achievements,
   awards,
@@ -11,7 +12,7 @@ import {
 
 function TextBtn({
   label,
-  icon = '/assets/icon-btn.png',
+  icon = asset('assets/icon-btn.png'),
 }: {
   label: string
   icon?: string
@@ -48,7 +49,7 @@ export function NoticeSection() {
             <div className="notice-card__media media-card">
               <img className="media-card__img" src={item.image} alt="" />
             </div>
-            <img className="notice-card__icon" src="/assets/icon-link.png" alt="" />
+            <img className="notice-card__icon" src={asset('assets/icon-link.png')} alt="" />
             <div className="notice-card__overlay">
               <h3 className="notice-card__title">{item.title}</h3>
               <p className="notice-card__desc">{item.desc}</p>
@@ -85,7 +86,7 @@ export function AboutSection() {
           </div>
         </Reveal>
         <Reveal delay={160} className="about__media media-card">
-          <img className="media-card__img" src="/assets/about.jpg" alt="법인 소개 이미지" />
+          <img className="media-card__img" src={asset('assets/about.jpg')} alt="법인 소개 이미지" />
         </Reveal>
       </div>
       <Reveal delay={220} className="about__appeal">
@@ -131,7 +132,7 @@ export function PracticeSection() {
             </div>
             <div className="practice-card__title">
               <span>{item.title}</span>
-              <img src="/assets/icon-link-white.png" alt="" />
+              <img src={asset('assets/icon-link-white.png')} alt="" />
             </div>
           </Reveal>
         ))}
@@ -190,7 +191,7 @@ export function ProfessionalsSection() {
   return (
     <section className="section professionals" aria-labelledby="pro-title">
       <div className="professionals__bg">
-        <img src="/assets/professionals-bg.jpg" alt="" />
+        <img src={asset('assets/professionals-bg.jpg')} alt="" />
       </div>
       <div className="professionals__inner">
         <div className="section-head">
@@ -201,7 +202,7 @@ export function ProfessionalsSection() {
             </h2>
           </Reveal>
           <Reveal delay={100}>
-            <TextBtn label="변호사 자문단 보기" icon="/assets/icon-btn-white.png" />
+            <TextBtn label="변호사 자문단 보기" icon={asset('assets/icon-btn-white.png')} />
           </Reveal>
         </div>
         <div className="pro-grid">
@@ -283,7 +284,7 @@ export function AwardsSection() {
             법무법인경국의 가치는 다양한 수상, 위촉, 인증 경력에서 더욱 빛을
             발합니다.
           </p>
-          <TextBtn label="전체보기" icon="/assets/icon-btn-award.png" />
+          <TextBtn label="전체보기" icon={asset('assets/icon-btn-award.png')} />
         </Reveal>
         <Reveal delay={120} className="awards__list">
           {awards.map((item, index) => (
@@ -296,15 +297,15 @@ export function AwardsSection() {
               <img
                 src={
                   active === index
-                    ? '/assets/icon-award-active.png'
-                    : '/assets/icon-award.png'
+                    ? asset('assets/icon-award-active.png')
+                    : asset('assets/icon-award.png')
                 }
                 alt=""
               />
             </div>
           ))}
           <div className="awards__preview media-card">
-            <img className="media-card__img" src="/assets/award-hover.jpg" alt="" />
+            <img className="media-card__img" src={asset('assets/award-hover.jpg')} alt="" />
           </div>
         </Reveal>
       </div>
@@ -316,7 +317,7 @@ export function SocialSection() {
   return (
     <section className="section social" aria-labelledby="social-title">
       <div className="social__bg">
-        <img src="/assets/social-bg.jpg" alt="" />
+        <img src={asset('assets/social-bg.jpg')} alt="" />
       </div>
       <div className="social__row">
         <Reveal>
@@ -337,7 +338,7 @@ export function SocialSection() {
             <br />
             걸음이 무거운 분들과 동행하는 것에 있습니다.
           </p>
-          <TextBtn label="전체보기" icon="/assets/icon-btn-social.png" />
+          <TextBtn label="전체보기" icon={asset('assets/icon-btn-social.png')} />
         </Reveal>
       </div>
     </section>
@@ -364,7 +365,7 @@ export function OfficeSection() {
           <div className="office__info">
             <div className="office__info-row">
               <div className="office__icon">
-                <img src="/assets/icon-tram.png" alt="" />
+                <img src={asset('assets/icon-tram.png')} alt="" />
               </div>
               <div>
                 <p className="office__info-title">지하철</p>
@@ -380,7 +381,7 @@ export function OfficeSection() {
             </div>
             <div className="office__info-row">
               <div className="office__icon">
-                <img src="/assets/icon-parking.png" alt="" />
+                <img src={asset('assets/icon-parking.png')} alt="" />
               </div>
               <div>
                 <p className="office__info-title">주차</p>
@@ -402,12 +403,12 @@ export function OfficeSection() {
 
         <Reveal delay={140} className="office__panel">
           <div className="office__map media-card">
-            <img className="media-card__img" src="/assets/office-map.jpg" alt="오피스 위치" />
+            <img className="media-card__img" src={asset('assets/office-map.jpg')} alt="오피스 위치" />
           </div>
           <div className="office__panel-body">
             <div className="office__info-row">
               <div className="office__icon">
-                <img src="/assets/icon-location.png" alt="" />
+                <img src={asset('assets/icon-location.png')} alt="" />
               </div>
               <div>
                 <p className="office__info-title">서울특별시 서초구 서초대로 264, 15층</p>
@@ -416,7 +417,7 @@ export function OfficeSection() {
             </div>
             <div className="office__info-row">
               <div className="office__icon">
-                <img src="/assets/icon-phone.png" alt="" />
+                <img src={asset('assets/icon-phone.png')} alt="" />
               </div>
               <div>
                 <p className="office__info-title">02-1111-1111</p>
@@ -425,7 +426,7 @@ export function OfficeSection() {
             </div>
             <div className="office__info-row">
               <div className="office__icon">
-                <img src="/assets/icon-clock.png" alt="" />
+                <img src={asset('assets/icon-clock.png')} alt="" />
               </div>
               <div>
                 <p className="office__info-title">오전9시 ~ 오후10시</p>
