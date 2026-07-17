@@ -86,24 +86,48 @@ export const professionals = [
     role: '변호사',
     name: '박효영',
     tags: ['재개발/재건축 전문', '수용보상 전문'],
+    headline: '전문 · 집중',
+    bio: [
+      '정비사업과 수용보상 현장에서',
+      '의뢰인의 권익을 끝까지 지키며',
+      '실무형 해법을 제시합니다.',
+    ],
     image: asset('assets/profile-1.jpg'),
   },
   {
     role: '대표변호사',
     name: '공대호',
     tags: ['재개발/재건축 전문', '행정법 전문', '법원감정인', '감정평가사'],
+    headline: '실력 · 신뢰',
+    bio: [
+      '1천 세대 이상 규모의 사건을 직접 수행하며',
+      '초기 상담부터 최종 해결까지',
+      '전략적으로 대응합니다.',
+    ],
     image: asset('assets/profile-2.jpg'),
   },
   {
     role: '변호사',
     name: '공성준',
     tags: ['재개발/재건축 전문', '감정평가사', '공인중개사', '공학석사'],
+    headline: '분석 · 실행',
+    bio: [
+      '감정평가와 법률을 아우르는 시각으로',
+      '사업 리스크를 정확히 읽고',
+      '실행 가능한 전략을 설계합니다.',
+    ],
     image: asset('assets/profile-3.jpg'),
   },
   {
     role: '변호사',
     name: '신지호',
     tags: ['재개발/재건축 전문'],
+    headline: '소통 · 동행',
+    bio: [
+      '복잡한 이해관계를 정리하고',
+      '의뢰인과 한 방향으로 움직이며',
+      '끝까지 함께합니다.',
+    ],
     image: asset('assets/profile-4.jpg'),
   },
 ]
@@ -127,14 +151,47 @@ export const pressItems = [
     desc: '쫒겨나는 주민들',
     image: asset('assets/press-3.jpg'),
   },
+  {
+    chip: '컬럼',
+    title: '보상금 산정의 핵심',
+    desc: '정비사업 보상 실무에서 놓치기 쉬운 쟁점',
+    image: asset('assets/press-2.jpg'),
+  },
+  {
+    chip: 'TV방송',
+    title: '[방송] 재개발 현장 리포트',
+    desc: '주민과 함께 만드는 정비사업의 해법',
+    image: asset('assets/press-1.jpg'),
+  },
 ]
 
 export const awards = [
-  '2025 한경비즈니스 브랜드대상',
-  '철거현장 인권지킴이단',
-  '관악경찰서장 표창',
-  '정비사업지원기구 전문가 자문위원회',
-  '북한인권 특별위원회 위원',
-  '전문분야 등록증서 - 행정법',
-  '한국청소년육성회 법률자문위촉',
+  {
+    title: '2025 한경비즈니스 브랜드대상',
+    image: asset('assets/award-hover.jpg'),
+  },
+  {
+    title: '철거현장 인권지킴이단',
+    image: asset('assets/award-hover.jpg'),
+  },
+  {
+    title: '관악경찰서장 표창',
+    image: asset('assets/award-hover.jpg'),
+  },
+  {
+    title: '정비사업지원기구 전문가 자문위원회',
+    image: asset('assets/award-hover.jpg'),
+  },
+  {
+    title: '북한인권 특별위원회 위원',
+    image: asset('assets/award-hover.jpg'),
+  },
+  {
+    title: '전문분야 등록증서 - 행정법',
+    image: asset('assets/award-hover.jpg'),
+  },
+  {
+    title: '한국청소년육성회 법률자문위촉',
+    image: asset('assets/award-hover.jpg'),
+  },
 ]

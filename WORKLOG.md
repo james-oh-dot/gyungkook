@@ -154,3 +154,40 @@ GITHUB_PAGES=true npm run build
 - After restart on :5173: slide 02 jewel ✅, icons ✅.
 - Playwright headless confirms sequential nav `01→02→03→04→05→01` and gage reset (`scaleX≈0` after click).
 - Swipe meta must use `slide.nextLabel` + `nextSlide.index` (not `nextSlide.nextLabel`).
+
+---
+
+## 2026-07-17 — Section interactions (Professionals / Press / Awards)
+
+### Figma naming caveat (critical)
+| Frame name in Figma | Actual content implemented |
+|---|---|
+| `Home Section / 실적` (`21:1931`) | **Professionals** default cards |
+| `Home Section / 실적_hover …` (`21:2035`) | **Professionals** hover: dim + full copy / siblings blur + opacity 0.4 |
+| `Home Section / OFFICE` (`1:7480`) | **Press (활동·보도)** horizontal `list_swipe` + gage (not the map Office) |
+| `Section` (`1:7516`) | **Awards** + `호버시imgs` mouse-follow |
+
+Real map Office remains `1:7571` / `OfficeSection` (unchanged).
+
+### Behavior shipped
+1. **Professionals** (`ProfessionalsSection`)
+   - Hovered card: veil `rgba(14,24,24,0.8)` + hover copy (headline/bio/tags) soft fade/slide in
+   - Sibling cards: image blur ~6px + default text opacity 0.4
+2. **Press** (`PressSection`) — Figma “OFFICE” swipe list
+   - Full-bleed horizontal track (`press-breakout`), starts padded to `--page-pad` (title align), scrolls across viewport
+   - Max 5 items (`pressItems.slice(0,5)`)
+   - `useScrollGage`: bottom gage thickens to **20px** on hover/scroll; thumb draggable / mirrors scroll
+3. **Awards** (`AwardsSection`)
+   - Default active index **2** (3rd list)
+   - `호버시imgs` fades in and follows pointer **inside the section** only
+   - Image keyed by list; currently all map to `award-hover.jpg` until per-item assets arrive
+
+### Key files
+- `src/components/sections/HomeSections.tsx`
+- `src/hooks/useScrollGage.ts`
+- `src/data/content.ts` (professionals headline/bio; awards objects; 5 press items)
+- `src/styles/global.css`
+
+### Follow-ups
+- Replace awards per-item images when provided
+- Optional: apply same hover language to Achievements white-card rows if design wants parity (separate from misnamed Figma frames)
