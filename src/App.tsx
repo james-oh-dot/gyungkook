@@ -7,6 +7,7 @@ import {
   useLocation,
 } from 'react-router-dom'
 import { SiteLayout } from './layouts/SiteLayout'
+import { CaseStudiesPage } from './pages/CaseStudiesPage'
 import { ColumnMediaLayout } from './pages/ColumnMediaLayout'
 import { ColumnMediaListPage } from './pages/ColumnMediaListPage'
 import { HomePage } from './pages/HomePage'
@@ -27,6 +28,7 @@ function ScrollToTop() {
  * Main SPA routes (index.html).
  *
  * Subpages:
+ * - /press/cases                          → 업무사례 (sub-04-01)
  * - /press/column-media/:tab              → 컬럼 | 간행물 | 미디어 list
  * - /press/column-media/:tab/:postId      → shared post detail
  *
@@ -42,6 +44,7 @@ function App() {
       <Routes>
         <Route element={<SiteLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="press/cases" element={<CaseStudiesPage />} />
           <Route
             path="press/column-media"
             element={<Navigate to="column" replace />}
