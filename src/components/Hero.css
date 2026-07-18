@@ -16,8 +16,9 @@
   /* Communicate (long word) — slightly smaller so copy never overflows viewport */
   --hero-copy-scale-compact: 0.62;
   --hero-swipe-scale: 1;
-  --hero-swipe-w: 574px;
-  --hero-swipe-reserve: 372px;
+  /* Desktop cap — keep flush to the right edge */
+  --hero-swipe-w: 460px;
+  --hero-swipe-reserve: 320px;
   /*
     Preview (thumb + meta) ≈ 80% of Figma 300×170 / 274×84.
     Sized via layout px (not transform/zoom) so meta type stays crisp.
@@ -403,11 +404,14 @@
   bottom: 0;
   left: auto;
   width: var(--hero-swipe-w);
+  max-width: 460px;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
+  /* Flush preview + gage to the right edge of the viewport */
+  align-items: flex-end;
   gap: 10px;
-  padding: 40px 0;
+  padding: 40px 0 40px 0;
+  margin: 0;
   box-sizing: border-box;
   zoom: var(--hero-swipe-scale);
   transform-origin: bottom right;
@@ -423,10 +427,12 @@
 .hero__swipe-preview {
   display: flex;
   align-items: flex-end;
-  width: max-content;
+  justify-content: flex-end;
+  width: 100%;
   max-width: 100%;
   flex-direction: row;
   padding: 0;
+  margin: 0;
   border: 0;
   background: transparent;
   color: inherit;
@@ -482,9 +488,12 @@
 .hero__gage {
   display: flex;
   align-items: center;
-  gap: 26px;
+  justify-content: flex-end;
+  gap: 16px;
   flex-wrap: nowrap;
-  width: 417px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .hero__gage-track {
