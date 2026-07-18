@@ -6,9 +6,7 @@
   background: #fff;
 }
 
-.column-media__top {
-  display: flex;
-  flex-direction: column;
+.column-media__visual {
   width: 100%;
 }
 
