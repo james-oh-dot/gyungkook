@@ -10,6 +10,11 @@ export type HeroSlide = {
   /** Pretendard description above maincopy */
   description: string[]
   nextLabel: string
+  /**
+   * Tablet/mobile swipe card subtitle (line 2 under “02 Rebuild”).
+   * Describes the next slide — Figma HOME_TABLET2 / HOME_MOBILE2 Hero Swipe.
+   */
+  nextSwipeTitle: string
   image: string
   nextImage: string
   /**
@@ -38,6 +43,7 @@ export const heroSlides: HeroSlide[] = [
       '신중한 판단과 신속한 Performance를 수행합니다.',
     ],
     nextLabel: 'REBUILD',
+    nextSwipeTitle: '가치를 다시 세우는 관점',
     image: asset('assets/hero-01.png'),
     nextImage: asset('assets/hero-01-next.jpg'),
     visual: 'statue',
@@ -54,6 +60,7 @@ export const heroSlides: HeroSlide[] = [
       '고객 가치를 정확히 평가하여 최상으로 끌어올리고 있습니다.',
     ],
     nextLabel: 'FAIR',
+    nextSwipeTitle: '합리적인 보상과 배상',
     image: asset('assets/hero-02.png'),
     nextImage: asset('assets/hero-02-next.jpg'),
     visual: 'jewel',
@@ -70,6 +77,7 @@ export const heroSlides: HeroSlide[] = [
       '막연한 추정이 아닌 정확한 분석을 통해 합리적인 결과를 확보합니다',
     ],
     nextLabel: 'COMMUNICATE',
+    nextSwipeTitle: '사람을 연결하는 교감',
     image: asset('assets/hero-03.jpg'),
     nextImage: asset('assets/hero-03-next.jpg'),
     visual: 'cubes',
@@ -85,6 +93,7 @@ export const heroSlides: HeroSlide[] = [
       '적극적인 접근과 경청으로 만들어가는 법무법인경국입니다',
     ],
     nextLabel: 'SPEED',
+    nextSwipeTitle: '더 빠르고 가까운 접근',
     image: asset('assets/hero-04.png'),
     nextImage: asset('assets/hero-04-next.jpg'),
     visual: 'birds',
@@ -101,6 +110,7 @@ export const heroSlides: HeroSlide[] = [
       '온오프라인 빠른 대응이 가능한 경쟁력',
     ],
     nextLabel: 'VALUE',
+    nextSwipeTitle: '오래된 가치를 지키다',
     image: asset('assets/hero-05.jpg'),
     nextImage: asset('assets/hero-05-next.jpg'),
     visual: 'campus',

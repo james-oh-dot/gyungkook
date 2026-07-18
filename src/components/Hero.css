@@ -3,12 +3,13 @@
   --hero-teal: #58bdc2;
   /*
     Figma AI-hero-change artboards:
-    HOME_DESKTOP2 hero 1920×1400 — pad-x 138, copy scale 1, swipe BR flush
-    HOME_TABLET2  hero 768×1000  — pad-x ~50, copy scale 0.5
-    HOME_MOBILE2  hero 390×900   — pad-x 24, stacked copy (no desktop scale)
+    HOME_DESKTOP2 hero 1920×1400 — pad-x 138, copy scale, swipe BR flush + gage
+    HOME_TABLET2  hero 768×1000  — pad-x 50, stacked native type, inset card swipe
+    HOME_MOBILE2  hero 390×900   — pad-x 24, stacked 12/60/18, inset card swipe
 
     NOTE: `zoom` only accepts literal numbers (not calc()). Scale steps
-    are set via max-width media queries below.
+    are set via max-width media queries below. Tablet/mobile (≤1024) use
+    a separate card swipe (no zoom) — see bottom of this file.
   */
   --hero-pad-x: 138px;
   /* Desktop copy scale ≈ 80% of previous baseline (1 → 0.8) */
@@ -40,8 +41,7 @@
   overflow: hidden;
 }
 
-/* Desktop → tablet scale ramp (preserves Figma side-by-side copy)
-   Desktop bands (≤1600 / ≤1280) also at ~80% of prior values. */
+/* Desktop → mid-width scale ramp (desktop anatomy + gage; card takes over ≤1024) */
 @media (max-width: 1600px) {
   .hero {
     --hero-pad-x: 110px;
@@ -62,23 +62,12 @@
   }
 }
 
+/* 1025–1280 still desktop swipe; ≤1024 card block overrides swipe vars */
 @media (max-width: 1024px) {
   .hero {
     --hero-pad-x: 56px;
     --hero-copy-scale: 0.58;
     --hero-copy-scale-compact: 0.46;
-    --hero-swipe-scale: 0.6;
-    --hero-swipe-reserve: 260px;
-  }
-}
-
-@media (max-width: 768px) {
-  .hero {
-    --hero-pad-x: 50px;
-    --hero-copy-scale: 0.5;
-    --hero-copy-scale-compact: 0.4;
-    --hero-swipe-scale: 0.55;
-    --hero-swipe-reserve: 240px;
   }
 }
 
@@ -467,6 +456,7 @@
 
 .hero__swipe-meta {
   display: flex;
+  flex-direction: row;
   align-items: center;
   gap: 6px;
   min-height: var(--hero-swipe-meta-h);
@@ -483,6 +473,23 @@
   -webkit-font-smoothing: antialiased;
   text-rendering: geometricPrecision;
   box-sizing: border-box;
+}
+
+.hero__swipe-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.hero__swipe-meta-name {
+  text-transform: uppercase;
+}
+
+/* Card-only lines — desktop keeps index + label row */
+.hero__swipe-meta-title,
+.hero__swipe-meta-count {
+  display: none;
 }
 
 .hero__gage {
@@ -662,8 +669,20 @@
   }
 }
 
-/* Tablet band — copy/swipe scales already via CSS vars; only tune visuals */
+/*
+  Tablet / mobile swipe — Figma HOME_TABLET2 / HOME_MOBILE2 Hero / auto:
+  white inset card, square thumb, 3-line meta, NO gage/arrows.
+  Desktop (>1024) keeps flush-right preview + gage.
+*/
 @media (max-width: 1024px) {
+  .hero {
+    --hero-swipe-scale: 1;
+    --hero-swipe-w: auto;
+    --hero-swipe-reserve: 186px;
+    --hero-thumb-w: 138px;
+    --hero-thumb-h: 138px;
+  }
+
   .hero__bg-slide--statue .hero__visual img,
   .hero__bg-slide--cubes .hero__visual img,
   .hero__bg-slide--campus .hero__visual img {
@@ -680,20 +699,94 @@
     height: auto;
     margin: 0;
   }
+
+  .hero__swipe {
+    right: 24px;
+    bottom: 24px;
+    left: auto;
+    width: auto;
+    max-width: calc(100% - 48px);
+    padding: 0;
+    gap: 0;
+    zoom: 1;
+    transform: none;
+    align-items: stretch;
+  }
+
+  .hero__swipe-preview {
+    width: auto;
+    max-width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 14px;
+    padding: 0 24px 0 0;
+    background: #fff;
+    color: #111;
+    opacity: 0.94;
+    border: 4px solid #fff;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .hero__swipe-thumb {
+    width: var(--hero-thumb-w);
+    height: var(--hero-thumb-h);
+    border: 4px solid #fff;
+    background: #dff5f5;
+  }
+
+  .hero__swipe-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+    width: auto;
+    min-width: 128px;
+    min-height: 0;
+    padding: 0;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.45;
+    letter-spacing: -0.025em;
+  }
+
+  .hero__swipe-meta-row {
+    gap: 0.35em;
+    font-weight: 600;
+    min-height: 18px;
+  }
+
+  .hero__swipe-meta-name {
+    text-transform: none;
+  }
+
+  .hero__swipe-meta-title {
+    display: block;
+    font-weight: 400;
+    white-space: nowrap;
+  }
+
+  .hero__swipe-meta-count {
+    display: block;
+    font-weight: 600;
+    min-height: 18px;
+  }
+
+  .hero__gage {
+    display: none;
+  }
 }
 
-/*
-  Mobile (HOME_MOBILE2 390): structural change — stacked maincopy.
-  Do NOT keep desktop scale here; Figma uses native 60/18/12 sizes.
-  Swipe stays bottom-right (scaled), never full-width / stacked.
-*/
-@media (max-width: 767px) {
+/* Tablet band (HOME_TABLET2 768): native stacked copy + 138px card thumb */
+@media (max-width: 768px) {
   .hero {
-    --hero-pad-x: 24px;
+    --hero-pad-x: 50px;
     --hero-copy-scale: 1;
-    --hero-copy-scale-compact: 0.62;
-    --hero-swipe-scale: 0.45;
-    --hero-swipe-reserve: calc(324px * 0.45 + 32px);
+    --hero-copy-scale-compact: 0.8;
+    --hero-swipe-reserve: 186px;
+    --hero-thumb-w: 138px;
+    --hero-thumb-h: 138px;
   }
 
   .hero__copy-scale {
@@ -709,44 +802,97 @@
 
   .hero__copy {
     gap: 20px;
-    max-width: min(342px, 100%);
+    max-width: min(354px, 100%);
     width: auto;
   }
 
   .hero__desc {
-    font-size: 12px;
-    max-width: min(342px, 100%);
+    font-size: 14px;
+    max-width: min(354px, 100%);
   }
 
   .hero__maincopy {
     flex-direction: column;
     align-items: flex-start;
+    gap: 8px;
+  }
+
+  .hero__word {
+    font-size: 120px;
+    white-space: nowrap;
+  }
+
+  .hero__word.is-md {
+    font-size: 96px;
+    white-space: nowrap;
+  }
+
+  .hero__title {
+    font-size: 36px;
+    filter: drop-shadow(0 5px 10px rgba(35, 48, 59, 0.4));
+  }
+
+  .hero__swipe-preview {
+    padding-right: 24px;
+  }
+}
+
+/*
+  Mobile (HOME_MOBILE2 390): 12/60/18 type + 100px card thumb, 24px pad-x.
+*/
+@media (max-width: 767px) {
+  .hero {
+    --hero-pad-x: 24px;
+    --hero-copy-scale: 1;
+    --hero-copy-scale-compact: 0.72;
+    --hero-swipe-reserve: 148px;
+    --hero-thumb-w: 100px;
+    --hero-thumb-h: 100px;
+  }
+
+  .hero__copy {
+    gap: 20px;
+    max-width: min(177px, 100%);
+    width: auto;
+  }
+
+  .hero__desc {
+    font-size: 12px;
+    max-width: min(177px, 100%);
+  }
+
+  .hero__maincopy {
     gap: 4px;
   }
 
   .hero__word {
     font-size: 60px;
-    white-space: nowrap;
   }
 
   .hero__word.is-md {
     font-size: 48px;
-    white-space: nowrap;
   }
 
   .hero__title {
     font-size: 18px;
+    filter: drop-shadow(0 2.5px 5px rgba(35, 48, 59, 0.4));
   }
 
-  .hero__swipe {
-    right: 0;
-    bottom: 0;
-    left: auto;
-    /* keep desktop swipe anatomy; scale handles size */
+  .hero__swipe-preview {
+    padding-right: 14px;
+    gap: 14px;
+  }
+
+  .hero__swipe-thumb {
+    border-width: 3px;
+  }
+
+  .hero__swipe-meta {
+    gap: 2px;
   }
 }
 
-@media (max-height: 720px) and (min-width: 768px) {
+@media (max-height: 720px) and (min-width: 1025px) {
   .hero {
     --hero-swipe-reserve: calc(280px * var(--hero-swipe-scale) + 24px);
   }
