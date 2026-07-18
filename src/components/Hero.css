@@ -162,6 +162,11 @@
   /* Raise statue ~20%; Ken Burns zoom grows from near the head */
   transform: translateY(-20%) scale(calc(1 + var(--hero-zoom) * 0.08));
   transform-origin: 42% 14%;
+  /*
+    Figma hero_1 statue reads brighter / higher-key than the raw PNG.
+    Exposure lift only — do not alter aspect (never object-fit: fill).
+  */
+  filter: brightness(1.28) contrast(0.97);
 }
 
 .hero__bg-slide--jewel .hero__visual {
@@ -654,6 +659,8 @@
   /* Keep statue raised offset even when Ken Burns is disabled */
   .hero__bg-slide--statue .hero__visual img {
     transform: translateY(-20%);
+    /* Preserve Figma exposure lift (reduced-motion zeroes filters above) */
+    filter: brightness(1.28) contrast(0.97) !important;
   }
 
   /* Keep birds / cubes mirror on the wrapper even when Ken Burns is disabled */
@@ -684,26 +691,33 @@
   }
 
   /*
-    Statue (slide 01) — Figma HOME_TABLET2 image 611×1023 on 768 artboard.
-    Figma uses size-full stretch into that box (full PNG L→R, including scales
-    + sword). Desktop tall/narrow cover was cropping L/R — do not reuse it.
+    Statue (slide 01) — Figma HOME_TABLET2 image 42:
+    artboard 768×1000; node 611×1023 at x=78.5, absolute top = 814 + (-657) = 157
+    → top: 15.7%. Width 611, centered. Native aspect (no squash).
   */
   .hero__bg-slide--statue .hero__visual {
-    place-items: end center;
+    place-items: unset;
     overflow: hidden;
   }
 
-  .hero__bg-slide--statue .hero__visual img {
+  .hero__bg-slide--statue .hero__visual-media {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 15.7%; /* 157 / 1000 */
     width: min(79.557vw, 611px);
+    transform: translateX(-50%);
+  }
+
+  .hero__bg-slide--statue .hero__visual img {
+    width: 100%;
     height: auto;
-    aspect-ratio: 611 / 1023;
     max-height: none;
-    /* Match Figma size-full: show entire asset width (scales + sword) */
-    object-fit: fill;
-    object-position: center bottom;
-    /* Bottom overflow like Figma; no scale zoom — scale crops L/R in overflow:hidden */
-    transform: translateY(18%);
-    transform-origin: center bottom;
+    aspect-ratio: 2117 / 4096;
+    object-fit: contain;
+    object-position: center top;
+    transform: none;
+    transform-origin: center top;
     margin: 0;
   }
 
@@ -877,14 +891,19 @@
     padding-right: 24px;
   }
 
-  /* Exact Figma tablet statue box on 768 artboard */
-  .hero__bg-slide--statue .hero__visual img {
+  /* Tablet statue — exact Figma HOME_TABLET2 image 42 box */
+  .hero__bg-slide--statue .hero__visual-media {
+    top: 15.7%;
     width: 611px;
-    max-width: none;
-    aspect-ratio: 611 / 1023;
-    object-fit: fill;
-    transform: translateY(18%);
-    transform-origin: center bottom;
+  }
+
+  .hero__bg-slide--statue .hero__visual img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2117 / 4096;
+    object-fit: contain;
+    object-position: center top;
+    transform: none;
   }
 }
 
@@ -947,21 +966,25 @@
     gap: 2px;
   }
 
+  /*
+    Mobile statue — Figma HOME_MOBILE2 image 42:
+    artboard 390×900; node 418.1×700 at x≈-14.3, absolute top = 752 + (-533.5) = 218.5
+    → top: 24.28%. Width 107.2vw (418.1/390), centered.
+  */
+  .hero__bg-slide--statue .hero__visual-media {
+    top: 24.28%; /* 218.5 / 900 */
+    width: 107.2vw;
+  }
+
   .hero__bg-slide--statue .hero__visual img {
-    /*
-      Figma node is 418×700 on 390 (slight overflow). Prefer no L/R crop:
-      width = 100vw, height ≈ Figma 700/900 so object scale matches vertically.
-      object-fit:fill = Figma size-full (full PNG including scales + sword).
-    */
-    width: 100vw;
-    height: 77.78vh; /* 700 / 900 */
+    width: 100%;
+    height: auto;
     max-width: none;
     max-height: none;
-    aspect-ratio: auto;
-    object-fit: fill;
-    object-position: center bottom;
-    transform: translateY(2.06%);
-    transform-origin: center bottom;
+    aspect-ratio: 2117 / 4096;
+    object-fit: contain;
+    object-position: center top;
+    transform: none;
   }
 }
 
@@ -971,15 +994,19 @@
   }
 }
 
-/* Keep statue bottom-anchored framing when motion is reduced (tablet/mobile) */
+/* Keep Figma tops when motion is reduced (tablet/mobile) */
 @media (prefers-reduced-motion: reduce) and (max-width: 1024px) {
   .hero__bg-slide--statue .hero__visual img {
-    transform: translateY(18%);
+    transform: none;
+  }
+
+  .hero__bg-slide--statue .hero__visual-media {
+    top: 15.7%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) and (max-width: 767px) {
-  .hero__bg-slide--statue .hero__visual img {
-    transform: translateY(2.06%);
+  .hero__bg-slide--statue .hero__visual-media {
+    top: 24.28%;
   }
 }
