@@ -22,6 +22,8 @@ export type HeroSlide = {
   /** Optional edge fade for jewel-style assets */
   fadeEdges?: boolean
   wordSize?: 'lg' | 'md'
+  /** Horizontally flip the swipe thumbnail (next preview) */
+  flipSwipe?: boolean
 }
 
 /** Auto-advance + swipe_gage fill duration. Button jumps must reset immediately. */
@@ -42,6 +44,7 @@ export const heroSlides: HeroSlide[] = [
     nextImage: asset('assets/hero-01-next.jpg'),
     visual: 'statue',
     wordSize: 'lg',
+    flipSwipe: true,
   },
   {
     id: 2,
@@ -105,5 +108,6 @@ export const heroSlides: HeroSlide[] = [
     nextImage: asset('assets/hero-05-next.jpg'),
     visual: 'campus',
     wordSize: 'lg',
+    flipSwipe: true,
   },
 ]

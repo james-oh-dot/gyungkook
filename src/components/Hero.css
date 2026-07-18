@@ -187,6 +187,14 @@
   );
 }
 
+/* hero_3 visual — horizontal flip (centered wrapper, same pattern as birds) */
+.hero__bg-slide--cubes .hero__visual-media {
+  display: block;
+  transform: scaleX(-1);
+  transform-origin: center center;
+  will-change: transform;
+}
+
 .hero__bg-slide--cubes .hero__visual img {
   width: min(51vw, 982px);
   height: min(67vh, 941px);
@@ -412,10 +420,20 @@
   will-change: transform;
 }
 
+/* Slide 01 / 05 — flip swipe (next) thumbnail */
+.hero__swipe-thumb img.is-flip-x {
+  transform: scaleX(-1);
+}
+
 /* ONLY thumbnail image effect on hover — never the full hero background */
 .hero__swipe-preview:hover .hero__swipe-thumb img,
 .hero__swipe-preview:focus-visible .hero__swipe-thumb img {
   transform: scale(1.06);
+}
+
+.hero__swipe-preview:hover .hero__swipe-thumb img.is-flip-x,
+.hero__swipe-preview:focus-visible .hero__swipe-thumb img.is-flip-x {
+  transform: scaleX(-1) scale(1.06);
 }
 
 .hero__swipe-meta {
@@ -588,8 +606,13 @@
     transform: translateY(-20%);
   }
 
-  /* Keep birds mirror on the wrapper even when Ken Burns is disabled */
-  .hero__bg-slide--birds .hero__visual-media {
+  /* Keep birds / cubes mirror on the wrapper even when Ken Burns is disabled */
+  .hero__bg-slide--birds .hero__visual-media,
+  .hero__bg-slide--cubes .hero__visual-media {
+    transform: scaleX(-1);
+  }
+
+  .hero__swipe-thumb img.is-flip-x {
     transform: scaleX(-1);
   }
 
