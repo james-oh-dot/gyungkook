@@ -35,6 +35,10 @@ jobs:
         env:
           GITHUB_PAGES: 'true'
 
+      # SPA deep links (e.g. /press/column-media/column) → serve index.html
+      - name: SPA fallback for GitHub Pages
+        run: cp dist/index.html dist/404.html
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:

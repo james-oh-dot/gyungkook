@@ -1,10 +1,16 @@
+import { COLUMN_MEDIA_PAGE } from './columnMedia'
 import { asset } from '../utils/asset'
 
 export type NavSubItem = {
   id: string
   label: string
+  /**
+   * Nav target:
+   * - `#section` → home section (resolved via `resolveNavHref`)
+   * - `/path` → SPA route (no base prefix; React Router + GH Pages)
+   */
   href: string
-  /** Page sub-visual image — swap later per page; shared placeholder for now */
+  /** Fullmenu / drawer sub-visual — per-page asset when available */
   visual: string
 }
 
@@ -17,6 +23,9 @@ export type NavItem = {
 
 /** Shared placeholder until per-page sub-visuals are wired. */
 export const GNB_SUB_VISUAL_PLACEHOLDER = asset('assets/gnb-sub-visual.png')
+
+/** Figma sub-04-03 — 활동·보도 > 컬럼미디어 */
+export const GNB_SUB_VISUAL_PRESS_COLUMN = COLUMN_MEDIA_PAGE.visual
 
 export const NAV_ITEMS: NavItem[] = [
   {
@@ -57,7 +66,12 @@ export const NAV_ITEMS: NavItem[] = [
     children: [
       { id: 'press-cases', label: '업무사례', href: '#achievements', visual: GNB_SUB_VISUAL_PLACEHOLDER },
       { id: 'press-media', label: '언론보도', href: '#press', visual: GNB_SUB_VISUAL_PLACEHOLDER },
-      { id: 'press-column', label: '컬럼미디어', href: '#press', visual: GNB_SUB_VISUAL_PLACEHOLDER },
+      {
+        id: 'press-column',
+        label: '컬럼미디어',
+        href: '/press/column-media/column',
+        visual: GNB_SUB_VISUAL_PRESS_COLUMN,
+      },
       { id: 'press-social', label: '사회공헌', href: '#social', visual: GNB_SUB_VISUAL_PLACEHOLDER },
     ],
   },

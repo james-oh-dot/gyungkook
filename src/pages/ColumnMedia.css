@@ -1,0 +1,55 @@
+.column-media {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  background: #fff;
+}
+
+.column-media__top {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.column-media__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  /* Figma desktop: gap 140 between SUB_LAYOUT and Contents */
+  padding: 140px var(--page-pad) 160px;
+  background: #f7f7fb;
+}
+
+.column-media__list {
+  width: 100%;
+  max-width: 1280px;
+}
+
+.column-media__list-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .column-media__main {
+    padding: 80px var(--page-pad) 120px;
+  }
+
+  .column-media__list-wrap {
+    gap: 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  .column-media__main {
+    padding: 56px var(--page-pad) 96px;
+  }
+
+  .column-media__list-wrap {
+    gap: 20px;
+  }
+}

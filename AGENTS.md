@@ -6,13 +6,25 @@
 법무법인 경국 홈페이지 퍼블리싱 (Vite + React + TypeScript). Figma 소스: `AI_dev` 파일의 `HOME` / tablet / mobile 프레임.
 
 ### Shared chrome (GNB + Footer)
-- Every page mounts chrome via `src/layouts/SiteLayout.tsx` (`Gnb` + children + `Footer`). Do not re-import GNB/Footer in page apps — wrap content in `SiteLayout` (home today; same for future subpages).
+- Every page mounts chrome via `src/layouts/SiteLayout.tsx` (`Gnb` + `<Outlet />` or children + `Footer`). Do not re-import GNB/Footer in page apps.
 - GNB: `src/components/Gnb.tsx` + `src/data/nav.ts`. Footer: `src/components/Footer.tsx`.
-- Desktop (>1024): hover top item → Fullmenu; spring **sharp-rect** indicator on `.gnb__nav-list`; submenu hover swaps left `sub-visual` (shared placeholder `public/assets/gnb-sub-visual.png` until per-page assets land — keep `visual` field on each sub item).
+- Nav `href` rules: `#section` = home anchor; `/path` = SPA route. Always resolve with `resolveNavHref()` from `src/utils/path.ts` (GitHub Pages `base`).
+- Desktop (>1024): hover top item → Fullmenu; spring **sharp-rect** indicator on `.gnb__nav-list`; submenu hover swaps left `sub-visual` (`visual` on each sub item).
 - Compact (≤1024): hamburger opens **left drawer** (accordion + scrim + Esc + focus trap). Do not use mega-menu hover on touch widths.
-- Over-hero = transparent/white type; solid/open = white bar + dark type. Section anchors use `id` on home sections (`#about`, `#notice`, …).
-- Brand chrome: **no border-radius** on GNB buttons / indicator / glass actions (sharp rect). Call/Search icons: white over hero (`brightness(0) invert(1)`); on solid/open white bar use `brightness(0)` so they match dark label type. Keep transitions on all GNB interactions (premium baseline).
-- Site search: `SearchOverlay` from GNB 검색하기 — white 80% dim, 48px brand-underline input, results list with left depth chips; index from `NAV_ITEMS`.
+- Over-hero = transparent/white type; solid/open = white bar + dark type.
+- Brand chrome: **no border-radius** on GNB buttons / indicator / glass actions (sharp rect). Call/Search icons: white over hero (`brightness(0) invert(1)`); on solid/open white bar use `brightness(0)`.
+- Site search: `SearchOverlay` — index from `NAV_ITEMS`.
+
+### Subpages (React Router on main SPA)
+- Router lives in `src/App.tsx` (`BrowserRouter` + `basename` from `import.meta.env.BASE_URL`). `classic.html` stays a separate MPA entry without these routes.
+- **컬럼·미디어** (활동·보도 3rd / Figma `sub-04-03`):
+  - List: `/press/column-media/:tab` where `tab` = `column` | `publication` | `media`
+  - Detail (shared board layout): `/press/column-media/:tab/:postId` → `PostDetail`
+  - Shell: `ColumnMediaLayout` = `SubVisual` + `LocalTabs` + Outlet
+  - Mock data + CMS notes: `src/data/columnMedia.ts`
+  - GNB item `press-column` → `/press/column-media/column`, visual `public/assets/sub/sub-04-03.jpg`
+- Local tabs: hover moves underline indicator; click selects + routes.
+- GitHub Pages deep links: deploy copies `dist/index.html` → `dist/404.html`.
 
 ### Commands
 - Install: `npm install`
