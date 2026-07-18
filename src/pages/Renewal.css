@@ -459,24 +459,43 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* —— Advisory services (horizontal scroll) —— */
+/* —— Advisory Quote Block: full-bleed rail + press-gage —— */
 .renewal-services {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
   width: 100vw;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
   padding: 100px 0 50px;
   background: #f7f7fb;
-  overflow: hidden;
 }
 
 .renewal-services__rail {
   display: flex;
   gap: 10px;
   width: 100%;
-  padding: 0 var(--page-pad);
+  /* Start at page inset; scroll across the full viewport edge */
+  padding-left: var(--page-pad);
+  /* Last card can rest at the right content edge (same idea as .press-track) */
+  padding-right: max(var(--page-pad), calc(100% - 353px));
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: thin;
+  scroll-snap-type: x proximity;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.renewal-services__rail::-webkit-scrollbar {
+  display: none;
+}
+
+.renewal-services__gage {
+  /* Align with content inset; reuse home .press-gage behavior */
+  margin-top: 0;
+  margin-left: var(--page-pad);
+  width: min(1520px, calc(100% - 2 * var(--page-pad)));
+  max-width: none;
 }
 
 .renewal-service-card {
@@ -488,6 +507,7 @@
   min-height: 242px;
   padding: 20px;
   background: #fff;
+  scroll-snap-align: start;
 }
 
 .renewal-service-card__head {
@@ -606,7 +626,8 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding-top: 20px;
+  /* Figma / user: 40px between result cards and 더보기 */
+  padding-top: 40px;
 }
 
 .renewal-results__btn {
@@ -797,6 +818,15 @@
   .renewal-service-card {
     flex-basis: 280px;
     width: 280px;
+  }
+
+  .renewal-services__rail {
+    padding-right: max(var(--page-pad), calc(100% - 280px));
+  }
+
+  .renewal-services {
+    padding: 64px 0 40px;
+    gap: 32px;
   }
 
   .renewal-service-card__title {
