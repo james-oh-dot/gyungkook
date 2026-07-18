@@ -8,6 +8,7 @@ import {
   type KeyboardEvent,
 } from 'react'
 import { NAV_ITEMS } from '../data/nav'
+import { asset } from '../utils/asset'
 import './SearchOverlay.css'
 
 export type SearchHit = {
@@ -47,7 +48,7 @@ type SearchOverlayProps = {
 
 export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const inputRef = useRef<HTMLInputElement>(null)
-  const panelRef = useRef<HTMLDivElement>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
   const reactId = useId()
   const [query, setQuery] = useState('')
 
@@ -82,10 +83,10 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
     }
   }, [open, onClose])
 
-  const onPanelKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key !== 'Tab' || !panelRef.current) return
-    const focusables = panelRef.current.querySelectorAll<HTMLElement>(
-      'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])',
+  const onRootKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Tab' || !rootRef.current) return
+    const focusables = rootRef.current.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]):not(.search-overlay__dim), input, [tabindex]:not([tabindex="-1"])',
     )
     if (!focusables.length) return
     const first = focusables[0]
@@ -116,11 +117,12 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
 
   return (
     <div
+      ref={rootRef}
       className="search-overlay"
       role="dialog"
       aria-modal="true"
       aria-labelledby={`${reactId}-label`}
-      onKeyDown={onPanelKeyDown}
+      onKeyDown={onRootKeyDown}
     >
       <button
         type="button"
@@ -129,20 +131,27 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
         onClick={onClose}
       />
 
+      <button
+        type="button"
+        className="search-overlay__close"
+        aria-label="검색 닫기"
+        onClick={onClose}
+      >
+        <img
+          src={asset('assets/icon-close.svg')}
+          alt=""
+          className="search-overlay__close-icon"
+        />
+      </button>
+
       <div
-        ref={panelRef}
         className={`search-overlay__panel${searching ? ' is-searching' : ''}${
           hasResults ? ' has-results' : ''
         }`}
       >
-        <div className="search-overlay__toolbar">
-          <p id={`${reactId}-label`} className="search-overlay__sr-only">
-            사이트 검색
-          </p>
-          <button type="button" className="search-overlay__close" onClick={onClose}>
-            닫기
-          </button>
-        </div>
+        <p id={`${reactId}-label`} className="search-overlay__sr-only">
+          사이트 검색
+        </p>
 
         <form className="search-overlay__form" onSubmit={onSubmit}>
           <input

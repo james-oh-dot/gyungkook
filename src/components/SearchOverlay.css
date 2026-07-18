@@ -51,32 +51,49 @@
   padding-top: clamp(72px, 10vh, 120px);
 }
 
-.search-overlay__toolbar {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 16px;
-}
-
+/* Match GNB 검색하기 glass control: 50×50 square, 20px icon, sharp rect */
 .search-overlay__close {
+  position: fixed;
+  top: 24px;
+  right: 32px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
+  min-height: 50px;
+  padding: 15px;
   border: 1px solid rgba(17, 17, 17, 0.12);
   border-radius: 0;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.92);
   color: #111;
-  padding: 10px 16px;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  box-shadow: 1px 1px 2px rgba(17, 17, 17, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   cursor: pointer;
   transition:
     background 0.3s var(--search-ease),
     border-color 0.3s var(--search-ease),
+    box-shadow 0.3s var(--search-ease),
     transform 0.3s var(--search-ease);
 }
 
 .search-overlay__close:hover,
 .search-overlay__close:focus-visible {
-  background: var(--search-bg);
+  background: #fff;
   transform: translateY(-1px);
+}
+
+.search-overlay__close-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  flex: 0 0 auto;
+  /* SVG uses currentColor — force dark like solid GNB icons */
+  filter: brightness(0);
+  transition: opacity 0.3s var(--search-ease);
 }
 
 .search-overlay__sr-only {
@@ -250,6 +267,11 @@
   .search-overlay__panel {
     width: calc(100% - 32px);
     padding-inline: 0;
+  }
+
+  .search-overlay__close {
+    top: 16px;
+    right: 16px;
   }
 
   .search-overlay__input {
