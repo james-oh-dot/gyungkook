@@ -28,7 +28,8 @@
   - Shell: `ColumnMediaLayout` = `SubVisual` + `LocalTabs` + Outlet
   - Mock data + CMS notes: `src/data/columnMedia.ts`
   - GNB item `press-column` → `/press/column-media/column`, visual `public/assets/sub/sub-04-03.jpg`
-- Local tabs (컬럼미디어): hover moves underline indicator; click selects + routes; in-section nav scrolls to tabs.
+- Local tabs (컬럼미디어): hover moves underline indicator; click selects + routes.
+- Scroll: menu / tab list → top (sub-visual visible). List→detail and detail prev/next → scroll to local tabs (`useScrollToLocalTabs`).
 - GitHub Pages deep links: deploy copies `dist/index.html` → `dist/404.html`.
 
 ### Commands
