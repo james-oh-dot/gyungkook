@@ -30,6 +30,7 @@
   - `jewel`: centered `object-fit: contain` on near-square 2× PNG
   - `birds`: `scaleX(-1)` (large lamp on **right**), bottom-anchored, keep pigeons; reduced-motion must keep the flip
 - `hero__title` shadow: Figma DROP_SHADOW → CSS `filter: drop-shadow(...)` on `.hero__title` (not `text-shadow`). Inherited `text-shadow` on CharReveal glyphs gets clipped into hard frames.
+- CharReveal / LineReveal `filter: blur` clips paint to the border box — keep top (+ side) padding with compensating negative margins on reveal items and `.hero__title-line` (overflow mask). Do not remove that padding or Hangul / ExtraBold serif tops get sliced.
 - Slide 04 `Communicate` uses `.hero__copy-scale.is-compact` (`--hero-copy-scale-compact`) so the long word never overflows the viewport.
 - Hero responsive source: Figma `AI-hero-change` → `HOME_DESKTOP2` / `HOME_TABLET2` / `HOME_MOBILE2`
   - `hero_copy`: desktop artboard type (24 / 240 / 72, gap 40, maincopy row). Tablet keeps that structure via `--hero-copy-scale` (`zoom`; **literal** media steps — `zoom` rejects `calc()`). Mobile stacks maincopy (12 / 60 / 18).
