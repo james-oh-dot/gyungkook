@@ -6,6 +6,8 @@
   padding: 20px var(--page-pad);
   border-bottom: 1px solid #e5e5ec;
   background: #fff;
+  /* Keep bar clear of fixed GNB when scrollIntoView(block: start) runs */
+  scroll-margin-top: var(--gnb-bar-h, 100px);
 }
 
 .local-tabs__list {

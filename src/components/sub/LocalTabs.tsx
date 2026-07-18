@@ -10,6 +10,7 @@ import {
 import { NavLink, useLocation } from 'react-router-dom'
 import type { ColumnMediaTab, ColumnMediaTabDef } from '../../data/columnMedia'
 import { tabListPath } from '../../data/columnMedia'
+import { LOCAL_TABS_ANCHOR_ID } from '../../hooks/useScrollToLocalTabs'
 import './LocalTabs.css'
 
 type LocalTabsProps = {
@@ -80,6 +81,7 @@ export function LocalTabs({ tabs, activeTab }: LocalTabsProps) {
   return (
     <nav
       ref={navRef}
+      id={LOCAL_TABS_ANCHOR_ID}
       className="local-tabs"
       data-name="Section / Bread"
       aria-label="컬럼미디어 로컬 메뉴"
