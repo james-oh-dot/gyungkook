@@ -12,6 +12,7 @@ import {
 } from 'react'
 import { GNB_SUB_VISUAL_PLACEHOLDER, NAV_ITEMS } from '../data/nav'
 import { asset } from '../utils/asset'
+import { SearchOverlay } from './SearchOverlay'
 import './Gnb.css'
 
 type Indicator = { x: number; y: number; w: number; h: number }
@@ -53,6 +54,7 @@ export function Gnb() {
   const [indicator, setIndicator] = useState<Indicator | null>(null)
   const [indicatorReady, setIndicatorReady] = useState(false)
   const [drawerExpanded, setDrawerExpanded] = useState<string | null>(null)
+  const [searchOpen, setSearchOpen] = useState(false)
 
   const solid = scrolled || menuOpen
 
@@ -280,12 +282,25 @@ export function Gnb() {
             <img src={asset('assets/icon-call.svg')} alt="" className="gnb__icon" />
             <span className="gnb__action-label">상담하기</span>
           </a>
-          <button type="button" className="gnb__glass gnb__action" aria-label="검색하기">
+          <button
+            type="button"
+            className="gnb__glass gnb__action"
+            aria-label="검색하기"
+            aria-expanded={searchOpen}
+            onClick={() => {
+              closeDesktopMenu()
+              setMenuOpen(false)
+              setDrawerExpanded(null)
+              setSearchOpen(true)
+            }}
+          >
             <img src={asset('assets/icon-search.svg')} alt="" className="gnb__icon" />
             <span className="gnb__action-label">검색하기</span>
           </button>
         </div>
       </div>
+
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
 
       {/* Desktop Fullmenu */}
       {!isCompact && (
