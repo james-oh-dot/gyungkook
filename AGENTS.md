@@ -44,7 +44,7 @@
   - `hero_copy`: desktop artboard type (24 / 240 / 72, gap 40, maincopy **row**) + `--hero-copy-scale` (`zoom`; **literal** media steps — `zoom` rejects `calc()`).
   - ≤768 (`HOME_TABLET2`): stacked maincopy, native **14 / 120 / 36**, pad-x 50; `hero__content` absolute at **top ≈ 49.7%** (Figma 497/1000) — not flex-end.
   - ≤767 (`HOME_MOBILE2`): stacked **12 / 60 / 18**, pad-x 24; copy **top ≈ 49.22%** (443/900).
-  - Statue (slide 01) ≤1024: width-driven + **native** aspect `2117/4096` (`height: auto`, `object-fit: contain`) — **never** `object-fit: fill` / forced box aspect (that squashes). Tablet width **611**, mobile **100vw**. Brightness: `filter: brightness(1.28) contrast(0.97)` to match Figma high-key marble (all breakpoints).
+  - Statue (slide 01) ≤1024: pin via `.hero__visual-media` absolute **top** from Figma (`15.7%` = 157/1000 tablet, `24.28%` = 218.5/900 mobile), width **611** / **107.2vw**, native aspect — no `translateY` guessing, never `object-fit: fill`. Brightness `1.28` / contrast `0.97`.
   - `hero_swipe` **desktop (>1024)**: flush `right: 0; bottom: 0` + gage/arrows; preview ~80% via layout vars (`--hero-thumb-w` / `--hero-swipe-meta-*`), not `transform`/`zoom` on meta text.
   - `hero_swipe` **tablet/mobile (≤1024)**: Figma inset **card** (24px BR) — white card, square thumb (138 / 100), 3-line meta (`02 Rebuild` / `nextSwipeTitle` / `01 / 05`), **hide gage**. Do not flush-right or scale the desktop anatomy down.
   - Each slide has `nextSwipeTitle` in `slides.ts` for the card subtitle line.

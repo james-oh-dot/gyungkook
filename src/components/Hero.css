@@ -691,25 +691,33 @@
   }
 
   /*
-    Statue (slide 01) — Figma HOME_TABLET2 ≈ width 611 on 768, bottom-anchored.
-    NEVER object-fit:fill / forced non-native aspect — that squashes the marble.
-    Width-driven + height:auto keeps PNG 2117×4096 proportions; teal letterbox OK.
+    Statue (slide 01) — Figma HOME_TABLET2 image 42:
+    artboard 768×1000; node 611×1023 at x=78.5, absolute top = 814 + (-657) = 157
+    → top: 15.7%. Width 611, centered. Native aspect (no squash).
   */
   .hero__bg-slide--statue .hero__visual {
-    place-items: end center;
+    place-items: unset;
     overflow: hidden;
   }
 
-  .hero__bg-slide--statue .hero__visual img {
+  .hero__bg-slide--statue .hero__visual-media {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: 15.7%; /* 157 / 1000 */
     width: min(79.557vw, 611px);
+    transform: translateX(-50%);
+  }
+
+  .hero__bg-slide--statue .hero__visual img {
+    width: 100%;
     height: auto;
     max-height: none;
     aspect-ratio: 2117 / 4096;
     object-fit: contain;
-    object-position: center bottom;
-    /* Nudged down 20% from -18% → +2% */
-    transform: translateY(2%);
-    transform-origin: center bottom;
+    object-position: center top;
+    transform: none;
+    transform-origin: center top;
     margin: 0;
   }
 
@@ -883,16 +891,19 @@
     padding-right: 24px;
   }
 
-  /* Tablet statue — Figma width 611, native aspect (no squash) */
-  .hero__bg-slide--statue .hero__visual img {
+  /* Tablet statue — exact Figma HOME_TABLET2 image 42 box */
+  .hero__bg-slide--statue .hero__visual-media {
+    top: 15.7%;
     width: 611px;
-    max-width: none;
+  }
+
+  .hero__bg-slide--statue .hero__visual img {
+    width: 100%;
     height: auto;
     aspect-ratio: 2117 / 4096;
     object-fit: contain;
-    object-position: center bottom;
-    transform: translateY(2%);
-    transform-origin: center bottom;
+    object-position: center top;
+    transform: none;
   }
 }
 
@@ -955,21 +966,25 @@
     gap: 2px;
   }
 
+  /*
+    Mobile statue — Figma HOME_MOBILE2 image 42:
+    artboard 390×900; node 418.1×700 at x≈-14.3, absolute top = 752 + (-533.5) = 218.5
+    → top: 24.28%. Width 107.2vw (418.1/390), centered.
+  */
+  .hero__bg-slide--statue .hero__visual-media {
+    top: 24.28%; /* 218.5 / 900 */
+    width: 107.2vw;
+  }
+
   .hero__bg-slide--statue .hero__visual img {
-    /*
-      Full width, native aspect — no L/R crop, no distortion.
-      Height follows 2117×4096 (≈754px at 390vw).
-    */
-    width: 100vw;
+    width: 100%;
     height: auto;
     max-width: none;
     max-height: none;
     aspect-ratio: 2117 / 4096;
     object-fit: contain;
-    object-position: center bottom;
-    /* Nudged down 20% from -20% → 0 */
-    transform: translateY(0);
-    transform-origin: center bottom;
+    object-position: center top;
+    transform: none;
   }
 }
 
@@ -979,15 +994,19 @@
   }
 }
 
-/* Keep statue framing when motion is reduced (tablet/mobile) */
+/* Keep Figma tops when motion is reduced (tablet/mobile) */
 @media (prefers-reduced-motion: reduce) and (max-width: 1024px) {
   .hero__bg-slide--statue .hero__visual img {
-    transform: translateY(2%);
+    transform: none;
+  }
+
+  .hero__bg-slide--statue .hero__visual-media {
+    top: 15.7%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) and (max-width: 767px) {
-  .hero__bg-slide--statue .hero__visual img {
-    transform: translateY(0);
+  .hero__bg-slide--statue .hero__visual-media {
+    top: 24.28%;
   }
 }
