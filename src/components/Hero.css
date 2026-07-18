@@ -683,7 +683,30 @@
     --hero-thumb-h: 138px;
   }
 
-  .hero__bg-slide--statue .hero__visual img,
+  /*
+    Statue (slide 01) — Figma HOME_TABLET2 image 611×1023 on 768 artboard.
+    Figma uses size-full stretch into that box (full PNG L→R, including scales
+    + sword). Desktop tall/narrow cover was cropping L/R — do not reuse it.
+  */
+  .hero__bg-slide--statue .hero__visual {
+    place-items: end center;
+    overflow: hidden;
+  }
+
+  .hero__bg-slide--statue .hero__visual img {
+    width: min(79.557vw, 611px);
+    height: auto;
+    aspect-ratio: 611 / 1023;
+    max-height: none;
+    /* Match Figma size-full: show entire asset width (scales + sword) */
+    object-fit: fill;
+    object-position: center bottom;
+    /* Bottom overflow like Figma; no scale zoom — scale crops L/R in overflow:hidden */
+    transform: translateY(18%);
+    transform-origin: center bottom;
+    margin: 0;
+  }
+
   .hero__bg-slide--cubes .hero__visual img,
   .hero__bg-slide--campus .hero__visual img {
     width: min(72vw, 640px);
@@ -789,6 +812,24 @@
     --hero-thumb-h: 138px;
   }
 
+  /*
+    Figma hero_copy is absolute at top:497 / 1000 (not flex-end).
+    Pin content so type sits mid-frame like the artboard.
+  */
+  .hero__shell {
+    justify-content: flex-start;
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .hero__content {
+    position: absolute;
+    left: var(--hero-pad-x);
+    top: 49.7%; /* 497 / 1000 */
+    z-index: 3;
+  }
+
   .hero__copy-scale {
     zoom: 1;
     transform: none;
@@ -835,10 +876,21 @@
   .hero__swipe-preview {
     padding-right: 24px;
   }
+
+  /* Exact Figma tablet statue box on 768 artboard */
+  .hero__bg-slide--statue .hero__visual img {
+    width: 611px;
+    max-width: none;
+    aspect-ratio: 611 / 1023;
+    object-fit: fill;
+    transform: translateY(18%);
+    transform-origin: center bottom;
+  }
 }
 
 /*
   Mobile (HOME_MOBILE2 390): 12/60/18 type + 100px card thumb, 24px pad-x.
+  Statue: Figma image 418.1×700, centered, bottom ≈ -18.5.
 */
 @media (max-width: 767px) {
   .hero {
@@ -848,6 +900,10 @@
     --hero-swipe-reserve: 148px;
     --hero-thumb-w: 100px;
     --hero-thumb-h: 100px;
+  }
+
+  .hero__content {
+    top: 49.22%; /* 443 / 900 */
   }
 
   .hero__copy {
@@ -890,10 +946,40 @@
   .hero__swipe-meta {
     gap: 2px;
   }
+
+  .hero__bg-slide--statue .hero__visual img {
+    /*
+      Figma node is 418×700 on 390 (slight overflow). Prefer no L/R crop:
+      width = 100vw, height ≈ Figma 700/900 so object scale matches vertically.
+      object-fit:fill = Figma size-full (full PNG including scales + sword).
+    */
+    width: 100vw;
+    height: 77.78vh; /* 700 / 900 */
+    max-width: none;
+    max-height: none;
+    aspect-ratio: auto;
+    object-fit: fill;
+    object-position: center bottom;
+    transform: translateY(2.06%);
+    transform-origin: center bottom;
+  }
 }
 
 @media (max-height: 720px) and (min-width: 1025px) {
   .hero {
     --hero-swipe-reserve: calc(280px * var(--hero-swipe-scale) + 24px);
+  }
+}
+
+/* Keep statue bottom-anchored framing when motion is reduced (tablet/mobile) */
+@media (prefers-reduced-motion: reduce) and (max-width: 1024px) {
+  .hero__bg-slide--statue .hero__visual img {
+    transform: translateY(18%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) and (max-width: 767px) {
+  .hero__bg-slide--statue .hero__visual img {
+    transform: translateY(2.06%);
   }
 }
