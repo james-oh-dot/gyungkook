@@ -20,7 +20,6 @@ export function Hero() {
 
   const jumpTo = useCallback((next: number) => {
     const now = performance.now()
-    // Guard against double-advance (Strict Mode / stacked pointer events / rAF race)
     if (now - lastJumpAtRef.current < 180) return
     lastJumpAtRef.current = now
 
@@ -39,10 +38,11 @@ export function Hero() {
   const prev = useCallback(() => jumpTo(indexRef.current - 1), [jumpTo])
 
   useEffect(() => {
-    // Preload all slide images so advance never flashes empty/black
     heroSlides.forEach((item) => {
       const img = new Image()
       img.src = item.image
+      const thumb = new Image()
+      thumb.src = item.nextImage
     })
   }, [])
 
@@ -56,7 +56,6 @@ export function Hero() {
       if (!pausedRef.current) {
         const elapsed = now - startRef.current
         if (elapsed >= HERO_DURATION_MS) {
-          // Advance exactly one slide; jumpTo debounce blocks double fire
           jumpTo(indexRef.current + 1)
         } else {
           setProgress(Math.min(1, elapsed / HERO_DURATION_MS))
@@ -73,6 +72,7 @@ export function Hero() {
     }
   }, [jumpTo])
 
+  const wordCharCount = Array.from(slide.word).length
   const titleBlocks = useMemo(
     () =>
       slide.titleLines.map((line, lineIndex) => {
@@ -82,143 +82,147 @@ export function Hero() {
         return (
           <p key={`${animKey}-title-${lineIndex}`} className="hero__title-line">
             <CharReveal
-              key={`${animKey}-char-${lineIndex}`}
+              key={`${animKey}-title-char-${lineIndex}`}
               text={line}
-              baseDelay={120 + previous * 30 + lineIndex * 80}
-              step={30}
+              baseDelay={280 + wordCharCount * 28 + previous * 28 + lineIndex * 60}
+              step={28}
             />
           </p>
         )
       }),
-    [animKey, slide.titleLines],
+    [animKey, slide.titleLines, wordCharCount],
   )
 
   return (
     <section className="hero" aria-label="메인 비주얼">
-      <div className="hero__bg">
+      <div className="hero__stage" aria-hidden="true">
         {heroSlides.map((item, i) => (
           <div
             key={item.id}
-            className={`hero__bg-slide${i === index ? ' is-active' : ''}`}
+            className={`hero__bg-slide hero__bg-slide--${item.visual}${
+              i === index ? ' is-active' : ''
+            }${item.fadeEdges ? ' has-fade' : ''}`}
           >
-            <img
-              src={item.image}
-              alt=""
-              decoding="async"
-              style={
-                i === index
-                  ? ({ '--hero-zoom': progress } as CSSProperties)
-                  : undefined
-              }
-            />
-            <div className="hero__bg-veil" />
+            <div className="hero__visual">
+              <img
+                src={item.image}
+                alt=""
+                decoding="async"
+                style={
+                  i === index
+                    ? ({ '--hero-zoom': progress } as CSSProperties)
+                    : undefined
+                }
+              />
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="hero__content" key={animKey}>
-        <div className="hero__maincopy" data-name="hero_maincopy">
-          <p className="hero__index">
-            <CharReveal
-              key={`${animKey}-index`}
-              text={slide.index}
-              baseDelay={60}
-              step={34}
-            />
-          </p>
-          <div className="hero__title">{titleBlocks}</div>
-        </div>
-
-        <div className="hero__copy" data-name="hero_copy">
-          <div className="hero__label">
-            <LineReveal key={`${animKey}-label`} lines={[slide.label]} baseDelay={420} step={0} />
-          </div>
-          <div className="hero__desc">
-            <LineReveal
-              key={`${animKey}-desc`}
-              lines={slide.description}
-              baseDelay={520}
-              step={160}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="hero__swipe" data-name="hero_swipe">
-        <button
-          type="button"
-          className="hero__swipe-preview"
-          onMouseEnter={() => {
-            pausedRef.current = true
-            pauseElapsedRef.current = progress * HERO_DURATION_MS
-          }}
-          onMouseLeave={() => {
-            startRef.current = performance.now() - pauseElapsedRef.current
-            pausedRef.current = false
-          }}
-          onClick={(e) => {
-            e.preventDefault()
-            next()
-          }}
-          aria-label={`다음 화면 ${nextSlide.index} ${slide.nextLabel}로 이동`}
-        >
-          <div className="hero__swipe-thumb">
-            <img src={nextSlide.image} alt="" decoding="async" />
-          </div>
-          <div className="hero__swipe-meta">
-            <span>{nextSlide.index}</span>
-            <span>{slide.nextLabel}</span>
-          </div>
-        </button>
-
-        <div className="hero__gage" data-name="swipe_gage">
-          <div className="hero__gage-track">
-            <span className="hero__gage-no">01</span>
-            <div
-              className="hero__gage-bar"
-              aria-hidden="true"
-              role="progressbar"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={Math.round(progress * 100)}
-            >
-              <div
-                className="hero__gage-fill"
-                style={{ transform: `scaleX(${progress})` }}
+      <div className="hero__shell">
+        <div className="hero__content" key={animKey}>
+          <div className="hero__copy" data-name="hero_copy">
+            <div className="hero__desc">
+              <LineReveal
+                key={`${animKey}-desc`}
+                lines={slide.description}
+                baseDelay={80}
+                step={120}
               />
             </div>
-            <span className="hero__gage-no">05</span>
+
+            <div className="hero__maincopy" data-name="hero_maincopy">
+              <p
+                className={`hero__word${slide.wordSize === 'md' ? ' is-md' : ''}`}
+              >
+                <CharReveal
+                  key={`${animKey}-word`}
+                  text={slide.word}
+                  baseDelay={220}
+                  step={32}
+                />
+              </p>
+              <div className="hero__title">{titleBlocks}</div>
+            </div>
           </div>
-          <div className="hero__gage-btns">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                prev()
-              }}
-              aria-label="이전 화면"
-            >
-              <img
-                src={asset('assets/icon-arrow.svg')}
-                alt=""
-                className="is-flip"
-                draggable={false}
-              />
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                next()
-              }}
-              aria-label="다음 화면"
-            >
-              <img
-                src={asset('assets/icon-arrow.svg')}
-                alt=""
-                draggable={false}
-              />
-            </button>
+        </div>
+
+        <div className="hero__swipe" data-name="hero_swipe">
+          <button
+            type="button"
+            className="hero__swipe-preview"
+            onMouseEnter={() => {
+              pausedRef.current = true
+              pauseElapsedRef.current = progress * HERO_DURATION_MS
+            }}
+            onMouseLeave={() => {
+              startRef.current = performance.now() - pauseElapsedRef.current
+              pausedRef.current = false
+            }}
+            onClick={(e) => {
+              e.preventDefault()
+              next()
+            }}
+            aria-label={`다음 화면 ${nextSlide.index} ${slide.nextLabel}로 이동`}
+          >
+            <div className="hero__swipe-thumb">
+              <img src={slide.nextImage} alt="" decoding="async" />
+            </div>
+            <div className="hero__swipe-meta">
+              <span>{nextSlide.index}</span>
+              <span>{slide.nextLabel}</span>
+            </div>
+          </button>
+
+          <div className="hero__gage" data-name="swipe_gage">
+            <div className="hero__gage-track">
+              <span className="hero__gage-no">01</span>
+              <div
+                className="hero__gage-bar"
+                aria-hidden="true"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(progress * 100)}
+              >
+                <div
+                  className="hero__gage-fill"
+                  style={{ transform: `scaleX(${progress})` }}
+                />
+              </div>
+              <span className="hero__gage-no">05</span>
+            </div>
+            <div className="hero__gage-btns">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  prev()
+                }}
+                aria-label="이전 화면"
+              >
+                <img
+                  src={asset('assets/icon-arrow.svg')}
+                  alt=""
+                  className="is-flip"
+                  draggable={false}
+                />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  next()
+                }}
+                aria-label="다음 화면"
+              >
+                <img
+                  src={asset('assets/icon-arrow.svg')}
+                  alt=""
+                  draggable={false}
+                />
+              </button>
+            </div>
           </div>
         </div>
       </div>

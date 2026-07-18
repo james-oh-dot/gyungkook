@@ -14,9 +14,15 @@
 
 ### Non-obvious notes
 - Styling is plain CSS (no Tailwind). Design tokens live in `src/styles/global.css`.
+- Hero source of truth: Figma canvas `AI-hero-change` (`22:10492`) → frames `hero_1`…`hero_5`.
 - Hero carousel timing is `HERO_DURATION_MS = 10000` in `src/data/slides.ts`.
-- Hero motion contract (do not regress): `hero_maincopy` = `CharReveal` (char-by-char); `hero_copy` = `LineReveal` (line parallax, not chars); `swipe_gage` = rAF `scaleX(progress)` with **no CSS width transition**; prev/next/preview click must `jumpTo` immediately (gage → 0, remount via `animKey`).
-- Slide 02 background **must** be the jewel (`public/assets/hero-02.jpg`). Do not re-pull the architecture fill from Figma `02rebuild` without checking with design — user override.
+- Hero structure (do not regress to the old black/right-panel layout):
+  - Stage: solid teal `#58bdc2` + centered per-slide visual (`hero__bg-slide--statue|jewel|cubes|birds|campus`)
+  - `hero_copy`: description (Pretendard) **above** `hero_maincopy`
+  - `hero_maincopy`: large Nanum Myeongjo English **word** + Korean **title** side-by-side
+  - Swipe meta is **white** card + white-border thumb (not dark chrome)
+- Hero motion contract: description = `LineReveal`; English word + Korean title = `CharReveal`; image Ken Burns via `--hero-zoom` over 10s; `swipe_gage` = rAF `scaleX(progress)` with **no CSS width transition**; prev/next/thumb click = instant `jumpTo`.
+- Slide 02 visual **must** be the jewel (`public/assets/hero-02.jpg`).
 - Icons are **`.svg` only** under `public/assets/`. Never reintroduce SVG XML saved as `.png` (causes broken-image X boxes). Hero arrows are already white — do not `filter: invert(1)`.
 - Scroll reveal + light parallax: `src/hooks/useScrollReveal.ts` via `[data-reveal]` and `--parallax-y`.
 - Public asset URLs must go through `asset()` in `src/utils/asset.ts` so GitHub Pages `base` (`/gyungkook/`) works.

@@ -159,6 +159,32 @@ GITHUB_PAGES=true npm run build
 
 ---
 
+## 2026-07-18 — Hero full rebuild from Figma `AI-hero-change`
+
+### Source
+Figma file `AI_dev` canvas `AI-hero-change` (`22:10492`) → `hero_1`…`hero_5`.
+
+### Structure (replaces old black / right-panel hero)
+| Layer | Spec |
+|---|---|
+| Stage | Solid `#58bdc2` |
+| Visual | Per-slide centered subject (`statue` / `jewel` / `cubes` / `birds` / `campus`) |
+| `hero_copy` | Description (Pretendard 24) **above** maincopy |
+| `hero_maincopy` | Large Nanum Myeongjo English word + Korean title (side-by-side) |
+| `hero_swipe` | White-border thumb + **white** meta card (`02 REBUILD`) + gage |
+
+### Motion (unchanged contract)
+- 10s Ken Burns on active visual (`--hero-zoom`)
+- Desc = `LineReveal`; word + title = `CharReveal`
+- Gage `scaleX(progress)`; instant `jumpTo` on controls
+- Thumb hover: thumb image scale only — **never** full-stage next peek
+
+### Assets
+- `public/assets/hero-0{1..5}.jpg` + `hero-0{1..5}-next.jpg` from Figma MCP
+- Transparent PNG fills composited onto `#58bdc2` before JPEG (avoids black boxes)
+
+---
+
 ## 2026-07-17 — Hero responsive QA + hover regression (critical)
 
 ### Bugs fixed
