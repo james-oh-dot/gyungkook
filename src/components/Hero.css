@@ -300,6 +300,7 @@
   align-items: flex-start;
   width: max-content;
   max-width: 1306px;
+  overflow: visible;
 }
 
 .hero__desc {
@@ -309,10 +310,15 @@
   font-weight: 400;
   line-height: 1.4;
   letter-spacing: -0.025em;
+  overflow: visible;
+  /* Room for LineReveal blur + Hangul ascenders (filter clips to border box) */
+  padding-top: 0.2em;
+  margin-top: -0.2em;
 }
 
 .hero__desc .line-reveal__item {
-  margin: 0;
+  margin: -0.12em 0;
+  padding: 0.12em 0;
   font: inherit;
   color: inherit;
   letter-spacing: inherit;
@@ -325,6 +331,10 @@
   align-items: center;
   gap: 16px;
   max-width: none;
+  overflow: visible;
+  /* Keep large serif tops (V, etc.) inside the filtered CharReveal boxes */
+  padding-top: 0.08em;
+  margin-top: -0.08em;
 }
 
 .hero__word {
@@ -335,6 +345,9 @@
   line-height: 1;
   letter-spacing: -0.02em;
   white-space: nowrap;
+  overflow: visible;
+  padding-top: 0.14em;
+  margin-top: -0.14em;
 }
 
 .hero__word.is-md {
@@ -359,9 +372,13 @@
 }
 
 .hero__title-line {
-  margin: 0;
+  margin: -0.14em -0.12em -0.1em -0.06em;
+  /*
+    CharReveal mask needs overflow:hidden — pad TOP as well as bottom
+    so Hangul / ExtraBold serif tops are not sliced.
+  */
   overflow: hidden;
-  padding-bottom: 0.08em;
+  padding: 0.14em 0.12em 0.1em 0.06em;
 }
 
 /*
@@ -550,6 +567,9 @@
   display: inline-block;
   opacity: 0;
   transform: translate3d(0, 0.45em, 0);
+  /* filter creates a clip box — pad so glyph tops/sides aren’t cut */
+  padding: 0.16em 0.04em 0.06em;
+  margin: -0.16em -0.04em -0.06em;
   filter: blur(4px);
   transition:
     opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1),
@@ -568,11 +588,15 @@
 .line-reveal {
   display: flex;
   flex-direction: column;
+  overflow: visible;
 }
 
 .line-reveal__item {
   opacity: 0;
   transform: translate3d(0, var(--line-parallax, 24px), 0);
+  /* Same filter clip issue as CharReveal — keep Hangul tops inside the box */
+  padding: 0.14em 0.02em;
+  margin: -0.14em -0.02em;
   filter: blur(2px);
   transition:
     opacity 0.95s cubic-bezier(0.16, 1, 0.3, 1),
