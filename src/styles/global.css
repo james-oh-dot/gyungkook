@@ -24,6 +24,8 @@
   --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-serif: 'Nanum Myeongjo', Georgia, serif;
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Match GNB bar height — used by sticky local tabs / scroll-margin */
+  --gnb-bar-h: 100px;
 }
 
 /* HOME_TABLET2 — section content inset 48px; footer inset 40px */
@@ -34,11 +36,12 @@
   }
 }
 
-/* HOME_MOBILE2 — section + footer inset 24px */
+/* HOME_MOBILE2 — section + footer inset 24px; compact GNB bar */
 @media (max-width: 767px) {
   :root {
     --page-pad: 24px;
     --footer-pad: 24px;
+    --gnb-bar-h: 82px;
   }
 }
 

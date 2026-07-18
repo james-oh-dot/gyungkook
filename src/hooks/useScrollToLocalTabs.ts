@@ -4,6 +4,11 @@ import { useLocation } from 'react-router-dom'
 /** Anchor id on the column-media local tab bar. */
 export const LOCAL_TABS_ANCHOR_ID = 'column-media-local-tabs'
 
+/** Location state set by LocalTabs NavLinks — keep sticky tab position on tab change. */
+export type ColumnMediaLocationState = {
+  scrollToLocalTabs?: boolean
+}
+
 /**
  * True for detail routes: `/press/column-media/:tab/:postId`
  * False for list / tab routes: `/press/column-media/:tab`
@@ -16,16 +21,26 @@ export function isColumnMediaDetailPath(pathname: string): boolean {
   return parts.length >= idx + 3
 }
 
+export function shouldScrollToLocalTabs(
+  pathname: string,
+  state: unknown,
+): boolean {
+  if (isColumnMediaDetailPath(pathname)) return true
+  return Boolean((state as ColumnMediaLocationState | null)?.scrollToLocalTabs)
+}
+
 /**
- * Scroll to the local tab bar only when entering / switching post detail
- * (list→detail, detail prev/next). Menu entry and tab switches keep the
- * sub-visual in view (handled by ScrollToTop → y=0).
+ * Scroll to the local tab bar (sticky under GNB) when:
+ * - list → detail / detail prev·next
+ * - local tab click (`state.scrollToLocalTabs`)
+ *
+ * GNB/menu entry has no state → ScrollToTop keeps the sub-visual in view.
  */
 export function useScrollToLocalTabs() {
-  const { pathname } = useLocation()
+  const { pathname, state } = useLocation()
 
   useLayoutEffect(() => {
-    if (!isColumnMediaDetailPath(pathname)) return
+    if (!shouldScrollToLocalTabs(pathname, state)) return
 
     const el = document.getElementById(LOCAL_TABS_ANCHOR_ID)
     if (!el) return
@@ -42,5 +57,5 @@ export function useScrollToLocalTabs() {
       window.cancelAnimationFrame(raf1)
       window.cancelAnimationFrame(raf2)
     }
-  }, [pathname])
+  }, [pathname, state])
 }

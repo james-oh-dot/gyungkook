@@ -6,7 +6,7 @@ import {
   Routes,
   useLocation,
 } from 'react-router-dom'
-import { isColumnMediaDetailPath } from './hooks/useScrollToLocalTabs'
+import { shouldScrollToLocalTabs } from './hooks/useScrollToLocalTabs'
 import { SiteLayout } from './layouts/SiteLayout'
 import { CaseStudiesPage } from './pages/CaseStudiesPage'
 import { ColumnMediaLayout } from './pages/ColumnMediaLayout'
@@ -16,13 +16,13 @@ import { PostDetailPage } from './pages/PostDetailPage'
 import './styles/global.css'
 
 function ScrollToTop() {
-  const { pathname } = useLocation()
+  const { pathname, state } = useLocation()
   useEffect(() => {
-    // Detail routes scroll to local tabs instead (list→detail / prev·next)
-    if (isColumnMediaDetailPath(pathname)) return
-    // Menu entry + tab list: keep sub-visual visible at top
+    // Detail / local-tab clicks scroll to tabs (sticky under GNB)
+    if (shouldScrollToLocalTabs(pathname, state)) return
+    // GNB/menu entry: keep sub-visual visible at top
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
-  }, [pathname])
+  }, [pathname, state])
   return null
 }
 

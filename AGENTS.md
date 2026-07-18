@@ -29,7 +29,8 @@
   - Mock data + CMS notes: `src/data/columnMedia.ts`
   - GNB item `press-column` → `/press/column-media/column`, visual `public/assets/sub/sub-04-03.jpg`
 - Local tabs (컬럼미디어): hover moves underline indicator; click selects + routes.
-- Scroll: menu / tab list → top (sub-visual visible). List→detail and detail prev/next → scroll to local tabs (`useScrollToLocalTabs`).
+- Local tabs under a sub-visual are `position: sticky; top: var(--gnb-bar-h)` (must be a sibling of the main content, not wrapped with the hero only — see `ColumnMediaLayout`).
+- Scroll: GNB/menu entry → top (sub-visual visible). Local tab click, list→detail, detail prev/next → scroll to local tabs / sticky under GNB (`state.scrollToLocalTabs` + `useScrollToLocalTabs`).
 - GitHub Pages deep links: deploy copies `dist/index.html` → `dist/404.html`.
 
 ### Commands
