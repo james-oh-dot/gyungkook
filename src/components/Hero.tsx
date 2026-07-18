@@ -129,7 +129,9 @@ export function Hero() {
             .hero__copy-scale applies zoom/scale so tablet keeps the same
             side-by-side structure (Figma HOME_TABLET2 ≈ 0.5× desktop).
           */}
-          <div className="hero__copy-scale">
+          <div
+            className={`hero__copy-scale${slide.wordSize === 'md' ? ' is-compact' : ''}`}
+          >
             <div className="hero__copy" data-name="hero_copy">
               <div className="hero__desc">
                 <LineReveal
