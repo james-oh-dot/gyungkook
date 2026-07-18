@@ -579,40 +579,42 @@ export function RenewalPage() {
                 title={RENEWAL_TRACK_RECORD.resultsTitle}
               />
               <div className="renewal-split__body">
-                <ul className="renewal-results" aria-label="정비사업 실적 목록">
-                  {visibleResults.map((item) => (
-                    <li key={item.id} className="renewal-result-card">
-                      <span className="renewal-result-card__cat">
-                        {item.category}
-                      </span>
-                      <p className="renewal-result-card__result">{item.result}</p>
-                    </li>
-                  ))}
-                </ul>
-                <div className="renewal-results__actions">
-                  {canCollapse ? (
-                    <button
-                      type="button"
-                      className="renewal-results__btn"
-                      onClick={collapse}
-                    >
-                      접기
-                      <span className="renewal-results__chev is-up" aria-hidden="true" />
-                    </button>
-                  ) : null}
-                  {canShowMore ? (
-                    <button
-                      type="button"
-                      className="renewal-results__btn"
-                      onClick={showMore}
-                    >
-                      실적 더보기
-                      <span className="renewal-results__count">
-                        {visibleCount}/{RENEWAL_TRACK_RECORD.total}
-                      </span>
-                      <span className="renewal-results__chev" aria-hidden="true" />
-                    </button>
-                  ) : null}
+                <div className="renewal-results-wrap">
+                  <ul className="renewal-results" aria-label="정비사업 실적 목록">
+                    {visibleResults.map((item) => (
+                      <li key={item.id} className="renewal-result-card">
+                        <span className="renewal-result-card__cat">
+                          {item.category}
+                        </span>
+                        <p className="renewal-result-card__result">{item.result}</p>
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="renewal-results__actions">
+                    {canCollapse ? (
+                      <button
+                        type="button"
+                        className="renewal-results__btn"
+                        onClick={collapse}
+                      >
+                        접기
+                        <span className="renewal-results__chev is-up" aria-hidden="true" />
+                      </button>
+                    ) : null}
+                    {canShowMore ? (
+                      <button
+                        type="button"
+                        className="renewal-results__btn"
+                        onClick={showMore}
+                      >
+                        실적 더보기
+                        <span className="renewal-results__count">
+                          {visibleCount}/{RENEWAL_TRACK_RECORD.total}
+                        </span>
+                        <span className="renewal-results__chev" aria-hidden="true" />
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>
