@@ -28,6 +28,8 @@
   --gnb-muted: #767676;
   --gnb-glass: rgba(17, 17, 17, 0.04);
   --gnb-glass-border: rgba(17, 17, 17, 0.12);
+  /* Match dark label type (#111) — pure black glyphs, not washed “none” */
+  --gnb-icon-filter: brightness(0);
   background: #fff;
   box-shadow: 0 1px 0 rgba(17, 17, 17, 0.06);
 }
@@ -42,12 +44,11 @@
   --gnb-muted: #767676;
   --gnb-glass: rgba(17, 17, 17, 0.04);
   --gnb-glass-border: rgba(17, 17, 17, 0.12);
-  /* Menu open on white bar — invert white icons to dark */
-  --gnb-icon-filter: none;
+  --gnb-icon-filter: brightness(0);
 }
 
 .gnb--open.gnb--compact {
-  --gnb-icon-filter: none;
+  --gnb-icon-filter: brightness(0);
 }
 
 .gnb__bar {

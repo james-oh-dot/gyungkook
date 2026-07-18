@@ -10,7 +10,8 @@
 - Desktop (>1024): hover top item → Fullmenu; spring **sharp-rect** indicator on `.gnb__nav-list`; submenu hover swaps left `sub-visual` (shared placeholder `public/assets/gnb-sub-visual.png` until per-page assets land — keep `visual` field on each sub item).
 - Compact (≤1024): hamburger opens **left drawer** (accordion + scrim + Esc + focus trap). Do not use mega-menu hover on touch widths.
 - Over-hero = transparent/white type; solid/open = white bar + dark type. Section anchors use `id` on home sections (`#about`, `#notice`, …).
-- Brand chrome: **no border-radius** on GNB buttons / indicator / glass actions (sharp rect). Call/Search icons stay white via `filter`; invert only when menu open (`--gnb-icon-filter`). Keep transitions on all GNB interactions (premium baseline).
+- Brand chrome: **no border-radius** on GNB buttons / indicator / glass actions (sharp rect). Call/Search icons: white over hero (`brightness(0) invert(1)`); on solid/open white bar use `brightness(0)` so they match dark label type. Keep transitions on all GNB interactions (premium baseline).
+- Site search: `SearchOverlay` from GNB 검색하기 — white 80% dim, 48px brand-underline input, results list with left depth chips; index from `NAV_ITEMS`.
 
 ### Commands
 - Install: `npm install`
