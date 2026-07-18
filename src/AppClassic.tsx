@@ -1,3 +1,4 @@
+import { Gnb } from './components/Gnb'
 import { HeroClassic } from './components/HeroClassic'
 import { VersionSwitch } from './components/VersionSwitch'
 import {
@@ -19,6 +20,7 @@ function AppClassic() {
 
   return (
     <main className="page">
+      <Gnb />
       <VersionSwitch current="classic" />
       <HeroClassic />
       <NoticeSection />

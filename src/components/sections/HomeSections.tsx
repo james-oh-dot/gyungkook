@@ -28,7 +28,7 @@ function TextBtn({
 
 export function NoticeSection() {
   return (
-    <section className="section" aria-labelledby="notice-title">
+    <section id="notice" className="section" aria-labelledby="notice-title">
       <div className="section-head">
         <Reveal className="section-head__copy">
           <p className="eyebrow">NOTICE</p>
@@ -65,7 +65,7 @@ export function NoticeSection() {
 
 export function AboutSection() {
   return (
-    <section className="section section--gray section--about" aria-labelledby="about-title">
+    <section id="about" className="section section--gray section--about" aria-labelledby="about-title">
       <div className="about">
         <Reveal className="about__copy">
           <div>
@@ -106,7 +106,7 @@ export function PracticeSection() {
   const hasHover = hovered !== null
 
   return (
-    <section className="section" aria-labelledby="practice-title">
+    <section id="practice" className="section" aria-labelledby="practice-title">
       <div className="practice-head">
         <Reveal>
           <p className="eyebrow">PRACTICE AREAS</p>
@@ -157,7 +157,7 @@ export function PracticeSection() {
 
 export function AchievementsSection() {
   return (
-    <section className="section section--gray" aria-labelledby="achieve-title">
+    <section className="section section--gray" id="achievements" aria-labelledby="achieve-title">
       <Reveal className="section-head__copy" style={{ marginBottom: 40 }}>
         <p className="eyebrow">ACHIEVEMENTS</p>
         <h2 id="achieve-title" className="section-title">
@@ -226,7 +226,7 @@ export function ProfessionalsSection() {
   return (
     <section
       className={`section professionals${hasHover ? ' is-hovering' : ''}`}
-      aria-labelledby="pro-title"
+      id="professionals" aria-labelledby="pro-title"
     >
       <div className="professionals__bg">
         <img src={asset('assets/professionals-bg.jpg')} alt="" />
@@ -331,7 +331,7 @@ export function PressSection() {
   const items = pressItems.slice(0, 5)
 
   return (
-    <section className="section press" aria-labelledby="press-title">
+    <section id="press" className="section press" aria-labelledby="press-title">
       <div className="section-head">
         <Reveal className="section-head__copy">
           <p className="eyebrow">PRESS</p>
@@ -437,7 +437,7 @@ export function AwardsSection() {
     <section
       ref={sectionRef}
       className={`section section--dark awards-section${visible ? ' is-previewing' : ''}`}
-      aria-labelledby="awards-title"
+      id="awards" aria-labelledby="awards-title"
       onMouseMove={(e) => {
         if (!visible) return
         movePreview(e.clientX, e.clientY)
@@ -499,7 +499,7 @@ export function AwardsSection() {
 
 export function SocialSection() {
   return (
-    <section className="section social" aria-labelledby="social-title">
+    <section id="social" className="section social" aria-labelledby="social-title">
       <div className="social__bg">
         <img src={asset('assets/social-bg.jpg')} alt="" />
       </div>
@@ -531,7 +531,7 @@ export function SocialSection() {
 
 export function OfficeSection() {
   return (
-    <section className="section" aria-labelledby="office-title">
+    <section id="office" className="section" aria-labelledby="office-title">
       <div className="office">
         <Reveal className="office__left">
           <div>
