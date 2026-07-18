@@ -1,3 +1,4 @@
+import { Footer } from './components/Footer'
 import { Gnb } from './components/Gnb'
 import { Hero } from './components/Hero'
 import { VersionSwitch } from './components/VersionSwitch'
@@ -32,6 +33,7 @@ function App() {
       <AwardsSection />
       <SocialSection />
       <OfficeSection />
+      <Footer />
     </main>
   )
 }

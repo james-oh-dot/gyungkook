@@ -81,3 +81,9 @@ These failures are treated as **blocking bugs**. Never ship a hero change withou
 5. **Char/line reveals must actually animate**  
    `CharReveal` / `LineReveal` need double-rAF before `is-active` (mounting with `is-active` already on skips CSS transitions).  
    **Never** put unstable array/object identities in reveal `useEffect` deps — hero `setProgress` re-renders every frame. Use a string content key (`lines.join('\\n')`) for `LineReveal`.
+
+### Section / footer horizontal padding (Figma)
+- Global tokens in `src/styles/global.css`: `--page-pad` (section inset) and `--footer-pad` (footer inset).
+- Desktop: `--page-pad` stays the existing clamp; `--footer-pad` follows it. Tablet (≤768): sections `48px`, footer `40px`. Mobile (≤767): both `24px`.
+- Below-hero sections use `var(--page-pad)`. Footer uses `var(--footer-pad)`.
+- Achieve cards: on tablet/mobile reduce card own horizontal margin so it does not double-inset against `--page-pad`.
