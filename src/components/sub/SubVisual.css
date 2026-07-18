@@ -1,0 +1,95 @@
+/* Figma SUB_* sub-04-03 hero — desktop py 280 / tablet·mobile shorter */
+.sub-visual {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 659px;
+  padding: 180px var(--page-pad);
+  overflow: clip;
+  color: #fff;
+}
+
+.sub-visual__media {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sub-visual__img {
+  position: absolute;
+  left: 0;
+  top: -12.65%;
+  width: 100%;
+  height: 163.88%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.sub-visual__scrim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(17, 17, 17, 0.4) 0%,
+    rgba(17, 17, 17, 0.8) 100%
+  );
+}
+
+.sub-visual__copy {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.sub-visual__chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 20px;
+  background: #00838f;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.45px;
+  color: #fff;
+}
+
+.sub-visual__title {
+  margin: 0;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -1.2px;
+}
+
+@media (max-width: 768px) {
+  .sub-visual {
+    min-height: 550px;
+    padding: 160px var(--page-pad);
+  }
+
+  .sub-visual__chip {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .sub-visual {
+    min-height: 387px;
+    padding: 120px var(--page-pad);
+  }
+
+  .sub-visual__chip {
+    font-size: 14px;
+    padding: 5px 14px;
+  }
+
+  .sub-visual__title {
+    font-size: 28px;
+  }
+}

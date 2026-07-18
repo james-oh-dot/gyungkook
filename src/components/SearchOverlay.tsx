@@ -9,6 +9,7 @@ import {
 } from 'react'
 import { NAV_ITEMS } from '../data/nav'
 import { asset } from '../utils/asset'
+import { resolveNavHref } from '../utils/path'
 import './SearchOverlay.css'
 
 export type SearchHit = {
@@ -183,7 +184,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
                 <li key={hit.id} className="search-overlay__item">
                   <a
                     className="search-overlay__link"
-                    href={hit.href}
+                    href={resolveNavHref(hit.href)}
                     onClick={onClose}
                   >
                     <span className="search-overlay__chips" aria-hidden="true">

@@ -12,6 +12,7 @@ import {
 } from 'react'
 import { GNB_SUB_VISUAL_PLACEHOLDER, NAV_ITEMS } from '../data/nav'
 import { asset } from '../utils/asset'
+import { resolveNavHref } from '../utils/path'
 import { SearchOverlay } from './SearchOverlay'
 import './Gnb.css'
 
@@ -234,7 +235,7 @@ export function Gnb() {
             <span className="gnb__menu-label">메뉴</span>
           </button>
         ) : (
-          <a className="gnb__logo" href="./" aria-label="법무법인 경국 홈">
+          <a className="gnb__logo" href={resolveNavHref("/")} aria-label="법무법인 경국 홈">
             <img className="gnb__logo-mark" src={asset('assets/logo-mark.png')} alt="" />
             <img
               className="gnb__logo-word"
@@ -266,7 +267,7 @@ export function Gnb() {
                 >
                   <a
                     className="gnb__nav-link"
-                    href={item.href}
+                    href={resolveNavHref(item.href)}
                     onClick={() => closeDesktopMenu()}
                   >
                     {item.label}
@@ -278,7 +279,7 @@ export function Gnb() {
         )}
 
         <div className="gnb__actions">
-          <a className="gnb__glass gnb__action" href="#office">
+          <a className="gnb__glass gnb__action" href={resolveNavHref("#office")}>
             <img src={asset('assets/icon-call.svg')} alt="" className="gnb__icon" />
             <span className="gnb__action-label">상담하기</span>
           </a>
@@ -335,7 +336,7 @@ export function Gnb() {
                       <li key={sub.id}>
                         <a
                           className={`gnb__sublink${activeSubId === sub.id ? ' is-active' : ''}`}
-                          href={sub.href}
+                          href={resolveNavHref(sub.href)}
                           onMouseEnter={() => swapVisual(sub.visual, sub.id)}
                           onFocus={() => {
                             openDesktopMenu(index)
@@ -376,7 +377,7 @@ export function Gnb() {
             onKeyDown={onDrawerKeyDown}
           >
             <div className="gnb__drawer-head">
-              <a className="gnb__logo gnb__logo--drawer" href="./" onClick={closeDrawer}>
+              <a className="gnb__logo gnb__logo--drawer" href={resolveNavHref("/")} onClick={closeDrawer}>
                 <img className="gnb__logo-mark" src={asset('assets/logo-mark.png')} alt="" />
                 <img
                   className="gnb__logo-word"
@@ -424,7 +425,7 @@ export function Gnb() {
                             <li key={sub.id}>
                               <a
                                 className="gnb__drawer-sublink"
-                                href={sub.href}
+                                href={resolveNavHref(sub.href)}
                                 onClick={closeDrawer}
                               >
                                 {sub.label}
@@ -440,7 +441,7 @@ export function Gnb() {
             </nav>
 
             <div className="gnb__drawer-foot">
-              <a className="gnb__drawer-cta" href="#office" onClick={closeDrawer}>
+              <a className="gnb__drawer-cta" href={resolveNavHref("#office")} onClick={closeDrawer}>
                 <img src={asset('assets/icon-call.svg')} alt="" className="gnb__icon" />
                 상담 신청
               </a>
