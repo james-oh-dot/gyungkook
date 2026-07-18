@@ -27,12 +27,12 @@ export function Footer() {
           <a className="site-footer__logo" href="./" aria-label="법무법인 경국 홈">
             <img
               className="site-footer__logo-mark"
-              src={asset('assets/logo-mark.png')}
+              src={asset('assets/footer/logo-mark-grey.png')}
               alt=""
             />
             <img
               className="site-footer__logo-word"
-              src={asset('assets/logo-wordmark-light.svg')}
+              src={asset('assets/footer/logo-wordmark-grey.svg')}
               alt="법무법인 경국"
             />
           </a>
@@ -82,7 +82,7 @@ export function Footer() {
             {SNS.map((item) => (
               <a
                 key={item.name}
-                className="site-footer__sns-link"
+                className={`site-footer__sns-link site-footer__sns-link--${item.name.toLowerCase()}`}
                 href={item.href}
                 aria-label={item.name}
               >
