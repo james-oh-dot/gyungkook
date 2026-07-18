@@ -11,9 +11,10 @@
     are set via max-width media queries below.
   */
   --hero-pad-x: 138px;
-  --hero-copy-scale: 1;
+  /* Desktop copy scale ≈ 80% of previous baseline (1 → 0.8) */
+  --hero-copy-scale: 0.8;
   /* Communicate (long word) — slightly smaller so copy never overflows viewport */
-  --hero-copy-scale-compact: 0.78;
+  --hero-copy-scale-compact: 0.62;
   --hero-swipe-scale: 1;
   --hero-swipe-w: 574px;
   --hero-swipe-reserve: 372px;
@@ -28,12 +29,13 @@
   overflow: hidden;
 }
 
-/* Desktop → tablet scale ramp (preserves Figma side-by-side copy) */
+/* Desktop → tablet scale ramp (preserves Figma side-by-side copy)
+   Desktop bands (≤1600 / ≤1280) also at ~80% of prior values. */
 @media (max-width: 1600px) {
   .hero {
     --hero-pad-x: 110px;
-    --hero-copy-scale: 0.85;
-    --hero-copy-scale-compact: 0.66;
+    --hero-copy-scale: 0.68;
+    --hero-copy-scale-compact: 0.53;
     --hero-swipe-scale: 0.85;
     --hero-swipe-reserve: 324px;
   }
@@ -42,8 +44,8 @@
 @media (max-width: 1280px) {
   .hero {
     --hero-pad-x: 72px;
-    --hero-copy-scale: 0.68;
-    --hero-copy-scale-compact: 0.54;
+    --hero-copy-scale: 0.54;
+    --hero-copy-scale-compact: 0.43;
     --hero-swipe-scale: 0.7;
     --hero-swipe-reserve: 280px;
   }
@@ -140,7 +142,8 @@
 */
 .hero__bg-slide--statue .hero__visual {
   place-items: start center;
-  padding-top: clamp(20px, 5.5vh, 96px);
+  /* Shifted up ~20% vs prior clamp(20px, 5.5vh, 96px) framing */
+  padding-top: 0;
 }
 
 .hero__bg-slide--statue .hero__visual img {
@@ -151,6 +154,8 @@
   /* NEVER center bottom — that clips the raised scales + head */
   object-position: center top;
   margin-top: 0;
+  /* Raise statue ~20% of its box; combine with Ken Burns zoom */
+  transform: translateY(-20%) scale(calc(1 + var(--hero-zoom) * 0.08));
   transform-origin: 42% 14%;
 }
 
@@ -576,6 +581,11 @@
 
   .hero__visual img {
     transform: none;
+  }
+
+  /* Keep statue raised offset even when Ken Burns is disabled */
+  .hero__bg-slide--statue .hero__visual img {
+    transform: translateY(-20%);
   }
 
   /* Keep birds mirror on the wrapper even when Ken Burns is disabled */
