@@ -115,3 +115,45 @@ These failures are treated as **blocking bugs**. Never ship a hero change withou
 - Desktop: `--page-pad` stays the existing clamp; `--footer-pad` follows it. Tablet (≤768): sections `48px`, footer `40px`. Mobile (≤767): both `24px`.
 - Below-hero sections use `var(--page-pad)`. Footer uses `var(--footer-pad)`.
 - Achieve cards: on tablet/mobile reduce card own horizontal margin so it does not double-inset against `--page-pad`.
+
+### Responsive system (desktop → tablet → mobile)
+
+Figma artboards: `HOME_DESKTOP2` / `HOME_TABLET2` / `HOME_MOBILE2` (and matching `SUB_*` frames). Agents should treat this as the **default adaptation contract** when only a desktop frame is provided.
+
+#### Breakpoint axes (two jobs)
+| Axis | CSS | What changes |
+|------|-----|----------------|
+| **Chrome / columns** | `max-width: 1024px` | GNB fullmenu → drawer; multi-col grids often 4→2 or multi→1 |
+| **Gutters / type step** | `max-width: 768px` (tablet) then `767px` (mobile) | `--page-pad` / `--footer-pad`, subpage vertical rhythm, smaller type |
+
+Exact **768 vs 767**: at 768px use tablet gutters (48/40); at ≤767 use mobile (24/24) + `--gnb-bar-h: 82px`.
+
+#### Gutters (always use tokens — do not hardcode L/R pad per page)
+| Token | Desktop | ≤768 | ≤767 |
+|-------|---------|------|------|
+| `--page-pad` | `clamp(20px, 10.42vw, 200px)` | `48px` | `24px` |
+| `--footer-pad` | follows page-pad | `40px` | `24px` |
+| `--gnb-bar-h` | `100px` | `100px` | `82px` |
+
+#### Grid defaults (subpage boards + home)
+- **Subpage card boards** (업무사례, 언론보도, similar): **4 → 2 (≤1024) → 1 (≤767)**; content `max-width: 1280px` + `var(--page-pad)`.
+- **Home notice**: 3 → 2 (≤1024) → 1 (≤767).
+- **Home practice / professionals / about-style splits**: collapse to **1 column at ≤1024**.
+- **Subpage main vertical pad** (shared boards): `140/160` → `80/120` (≤768) → `56/96` (≤767).
+
+#### Type defaults
+- UI font: Pretendard; hero English word: Nanum Myeongjo.
+- **Display / hero**: hard Figma steps (desktop 24/240/72 → tablet 14/120/36 → mobile 12/60/18) — see Hero notes above.
+- **Section titles**: prefer `clamp(...)` on desktop; don’t invent a third scale unless Figma specifies.
+- **Card / board UI**: small steps only (e.g. title 18→16, list title 24→20→18); body/meta **14** usually stays; chips ~11.
+- Tracking roughly `-0.025em` / Figma letter-spacing.
+
+#### Desktop-only Figma → agent duty
+When the user ships **desktop-only** designs, agents **should auto-apply** this contract (tokens, 4/2/1 or home grid collapses, type steps, GNB ≤1024 drawer) without waiting for tablet/mobile frames.
+
+**Exceptions — ask or wait for a tablet/mobile frame (or an explicit note):**
+- Layout that is **not** a simple column collapse (new IA, different component, sticky/side panels, unique swipe anatomy).
+- Type that must **not** follow the half-step / 18→16 pattern (legal fine print, special display lockups).
+- Breakpoints other than 1024 / 768 / 767.
+
+Hero remains special-cased (see Hero responsive bullets); do not “generic 4/2/1” the hero.
