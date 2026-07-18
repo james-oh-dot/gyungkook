@@ -5,8 +5,9 @@
 ### Product
 법무법인 경국 홈페이지 퍼블리싱 (Vite + React + TypeScript). Figma 소스: `AI_dev` 파일의 `HOME` / tablet / mobile 프레임.
 
-### GNB (site nav)
-- Component: `src/components/Gnb.tsx` + `src/data/nav.ts`. Mounted in `App.tsx` / `AppClassic.tsx`.
+### Shared chrome (GNB + Footer)
+- Every page mounts chrome via `src/layouts/SiteLayout.tsx` (`Gnb` + children + `Footer`). Do not re-import GNB/Footer in page apps — wrap content in `SiteLayout` (home today; same for future subpages).
+- GNB: `src/components/Gnb.tsx` + `src/data/nav.ts`. Footer: `src/components/Footer.tsx`.
 - Desktop (>1024): hover top item → Fullmenu; spring **sharp-rect** indicator on `.gnb__nav-list`; submenu hover swaps left `sub-visual` (shared placeholder `public/assets/gnb-sub-visual.png` until per-page assets land — keep `visual` field on each sub item).
 - Compact (≤1024): hamburger opens **left drawer** (accordion + scrim + Esc + focus trap). Do not use mega-menu hover on touch widths.
 - Over-hero = transparent/white type; solid/open = white bar + dark type. Section anchors use `id` on home sections (`#about`, `#notice`, …).

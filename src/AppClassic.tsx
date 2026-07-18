@@ -1,5 +1,3 @@
-import { Footer } from './components/Footer'
-import { Gnb } from './components/Gnb'
 import { HeroClassic } from './components/HeroClassic'
 import { VersionSwitch } from './components/VersionSwitch'
 import {
@@ -14,14 +12,14 @@ import {
   SocialSection,
 } from './components/sections/HomeSections'
 import { useScrollReveal } from './hooks/useScrollReveal'
+import { SiteLayout } from './layouts/SiteLayout'
 import './styles/global.css'
 
 function AppClassic() {
   useScrollReveal()
 
   return (
-    <main className="page">
-      <Gnb />
+    <SiteLayout>
       <VersionSwitch current="classic" />
       <HeroClassic />
       <NoticeSection />
@@ -33,8 +31,7 @@ function AppClassic() {
       <AwardsSection />
       <SocialSection />
       <OfficeSection />
-      <Footer />
-    </main>
+    </SiteLayout>
   )
 }
 
