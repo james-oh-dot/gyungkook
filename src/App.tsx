@@ -1,3 +1,4 @@
+import { Gnb } from './components/Gnb'
 import { Hero } from './components/Hero'
 import { VersionSwitch } from './components/VersionSwitch'
 import {
@@ -19,6 +20,7 @@ function App() {
 
   return (
     <main className="page">
+      <Gnb />
       <VersionSwitch current="teal" />
       <Hero />
       <NoticeSection />

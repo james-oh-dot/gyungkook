@@ -1,7 +1,8 @@
 .version-switch {
   position: fixed;
   z-index: 1000;
-  top: 16px;
+  /* Sit below fixed GNB so it doesn’t collide with logo / hamburger */
+  top: 108px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -53,9 +54,20 @@
   font-weight: 600;
 }
 
+@media (max-width: 1024px) {
+  .version-switch {
+    top: auto;
+    bottom: 16px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+}
+
 @media (max-width: 767px) {
   .version-switch {
-    top: 10px;
+    top: auto;
+    bottom: 12px;
     left: 10px;
     right: 10px;
     transform: none;
