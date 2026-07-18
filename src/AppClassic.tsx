@@ -1,3 +1,4 @@
+import { Footer } from './components/Footer'
 import { Gnb } from './components/Gnb'
 import { HeroClassic } from './components/HeroClassic'
 import { VersionSwitch } from './components/VersionSwitch'
@@ -32,6 +33,7 @@ function AppClassic() {
       <AwardsSection />
       <SocialSection />
       <OfficeSection />
+      <Footer />
     </main>
   )
 }

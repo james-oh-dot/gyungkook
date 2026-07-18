@@ -8,7 +8,14 @@
   --color-gray-50: #f9f9f9;
   --color-gray-100: #f1f1f5;
   --color-white: #fff;
+  /*
+    Figma HOME gutters (below-hero sections):
+    Desktop — fluid up to 200px
+    HOME_TABLET2 — content x=48 → 48px
+    HOME_MOBILE2 — content x=24 → 24px
+  */
   --page-pad: clamp(20px, 10.42vw, 200px);
+  --footer-pad: var(--page-pad);
   --content-max: min(1520px, 100%);
   --section-y: clamp(80px, 12.5vw, 240px);
   /* Figma desktop pro card: 368 × 400 */
@@ -17,6 +24,22 @@
   --font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-serif: 'Nanum Myeongjo', Georgia, serif;
   --ease-premium: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* HOME_TABLET2 — section content inset 48px; footer inset 40px */
+@media (max-width: 768px) {
+  :root {
+    --page-pad: 48px;
+    --footer-pad: 40px;
+  }
+}
+
+/* HOME_MOBILE2 — section + footer inset 24px */
+@media (max-width: 767px) {
+  :root {
+    --page-pad: 24px;
+    --footer-pad: 24px;
+  }
 }
 
 *,
@@ -1166,7 +1189,8 @@ p {
   .achieve-row.is-left .achieve-row__card,
   .achieve-row.is-right .achieve-row__card {
     width: min(100%, 560px);
-    margin: auto 24px 24px;
+    /* Section already has --page-pad; avoid double horizontal inset */
+    margin: auto 0 24px;
     box-shadow: 0 24px 40px rgba(0, 0, 0, 0.18);
   }
 }
@@ -1183,7 +1207,7 @@ p {
   }
 
   .achieve-row__card {
-    margin: auto 12px 12px;
+    margin: auto 0 12px;
     padding: 24px;
   }
 
