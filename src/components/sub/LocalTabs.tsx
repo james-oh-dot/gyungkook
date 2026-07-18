@@ -16,13 +16,25 @@ export type LocalTabItem = {
   label: string
 }
 
-type LocalTabsProps = {
+type LocalTabsBase = {
   tabs: LocalTabItem[]
   activeTab: string
-  /** Build list path for a tab id */
-  toTab: (tabId: string) => string
   ariaLabel?: string
 }
+
+/** Route mode — used by column-media / press coverage shells */
+type LocalTabsRouteProps = LocalTabsBase & {
+  toTab: (tabId: string) => string
+  onTabSelect?: never
+}
+
+/** Scroll mode — in-page section tabs (e.g. 정비사업) */
+type LocalTabsScrollProps = LocalTabsBase & {
+  toTab?: never
+  onTabSelect: (tabId: string) => void
+}
+
+export type LocalTabsProps = LocalTabsRouteProps | LocalTabsScrollProps
 
 type Indicator = { x: number; w: number }
 
@@ -37,15 +49,14 @@ function readGnbBarH(): number {
 /**
  * Local menu under a sub-page visual.
  * - Hover: teal underline follows the hovered tab
- * - Click: selected + route (sticky scroll via `state.scrollToLocalTabs`)
+ * - Click: route (`toTab`) or scroll callback (`onTabSelect`)
  * - Sticky under fixed GNB while the page scrolls
  */
-export function LocalTabs({
-  tabs,
-  activeTab,
-  toTab,
-  ariaLabel = '로컬 메뉴',
-}: LocalTabsProps) {
+export function LocalTabs(props: LocalTabsProps) {
+  const { tabs, activeTab, ariaLabel = '로컬 메뉴' } = props
+  const toTab = 'toTab' in props ? props.toTab : undefined
+  const onTabSelect = 'onTabSelect' in props ? props.onTabSelect : undefined
+
   const location = useLocation()
   const navRef = useRef<HTMLElement>(null)
   const sentinelRef = useRef<HTMLDivElement>(null)
@@ -66,7 +77,7 @@ export function LocalTabs({
     const item = itemRefs.current[index]
     if (!nav || !item) return
     const navBox = nav.getBoundingClientRect()
-    const link = item.querySelector('a')
+    const link = item.querySelector('a, button.local-tabs__link')
     const target = (link ?? item).getBoundingClientRect()
     setIndicator({
       x: target.left - navBox.left,
@@ -77,7 +88,7 @@ export function LocalTabs({
   useLayoutEffect(() => {
     measure(focusIndex)
     setReady(true)
-  }, [focusIndex, measure, location.pathname])
+  }, [focusIndex, measure, location.pathname, activeTab])
 
   useEffect(() => {
     const onResize = () => measure(focusIndex)
@@ -137,7 +148,7 @@ export function LocalTabs({
       <nav
         ref={navRef}
         id={LOCAL_TABS_ANCHOR_ID}
-        className={`local-tabs${stuck ? ' is-stuck' : ''}`}
+        className={`local-tabs${stuck ? ' is-stuck' : ''}${onTabSelect ? ' local-tabs--scroll' : ''}`}
         data-name="Section / Bread"
         aria-label={ariaLabel}
         onMouseLeave={onLeave}
@@ -154,16 +165,27 @@ export function LocalTabs({
               onFocus={() => setHoverIndex(index)}
             >
               {index > 0 ? <span className="local-tabs__sep" aria-hidden="true" /> : null}
-              <NavLink
-                to={toTab(tab.id)}
-                state={{ scrollToLocalTabs: true }}
-                className={() =>
-                  `local-tabs__link${tab.id === activeTab ? ' is-selected' : ''}`
-                }
-                end
-              >
-                {tab.label}
-              </NavLink>
+              {toTab ? (
+                <NavLink
+                  to={toTab(tab.id)}
+                  state={{ scrollToLocalTabs: true }}
+                  className={() =>
+                    `local-tabs__link${tab.id === activeTab ? ' is-selected' : ''}`
+                  }
+                  end
+                >
+                  {tab.label}
+                </NavLink>
+              ) : (
+                <button
+                  type="button"
+                  className={`local-tabs__link${tab.id === activeTab ? ' is-selected' : ''}`}
+                  aria-current={tab.id === activeTab ? 'true' : undefined}
+                  onClick={() => onTabSelect?.(tab.id)}
+                >
+                  {tab.label}
+                </button>
+              )}
             </li>
           ))}
         </ul>

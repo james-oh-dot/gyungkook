@@ -18,6 +18,13 @@
   /* Keep bar clear of fixed GNB when scrollIntoView(block: start) runs */
   scroll-margin-top: var(--gnb-bar-h, 100px);
   transition: box-shadow 0.25s var(--ease-premium, ease);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.local-tabs::-webkit-scrollbar {
+  display: none;
 }
 
 /* Soft lift once stuck under the GNB */
@@ -34,6 +41,9 @@
   margin: 0;
   padding: 0;
   list-style: none;
+  flex-wrap: nowrap;
+  width: max-content;
+  min-width: 100%;
 }
 
 .local-tabs__item {
@@ -62,12 +72,16 @@
   z-index: 1;
   display: inline-flex;
   padding: 4px 0;
+  border: 0;
+  background: transparent;
   font-size: 16px;
   font-weight: 400;
   line-height: 1.4;
   letter-spacing: -0.4px;
   color: #111;
   text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
   transition: color 0.25s var(--ease-premium, ease);
 }
 

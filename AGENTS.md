@@ -35,10 +35,15 @@
   - Shell: `ColumnMediaLayout` = `SubVisual` + `LocalTabs` + Outlet
   - Mock data + CMS notes: `src/data/columnMedia.ts`
   - GNB item `press-column` → `/press/column-media/column`, visual `public/assets/sub/sub-04-03.jpg`
-- Local tabs (컬럼미디어 / 언론보도): hover moves underline indicator; click selects + routes.
+- **정비사업** (재개발·보상업무 1st / Figma `sub-02-01`):
+  - Single page: `/practice/renewal` → `RenewalPage` (all 9 sections on one scroll)
+  - Local tabs use **scroll mode** (`onTabSelect`) — click scrolls to section under sticky tabs; **not** route tabs
+  - Hero: `SubVisual` with `showChip={false}` (Figma `hero_type2`)
+  - Mock data: `src/data/renewal.ts`; GNB `redev-renewal` → `/practice/renewal`, visual `public/assets/sub/sub-02-01.jpg`
+- Local tabs: route mode (`toTab`) for 컬럼미디어 / 언론보도; scroll mode (`onTabSelect`) for 정비사업. Hover underline works in both.
 - Shared board types: `src/data/board.ts` (`BoardPost` / `BoardTabDef`) — used by list cards + `PostDetail`.
-- Local tabs under a sub-visual are `position: sticky; top: var(--gnb-bar-h)` (must be a sibling of the main content, not wrapped with the hero only — see `ColumnMediaLayout`).
-- Scroll: GNB/menu entry → top (sub-visual visible). Local tab click, list→detail, detail prev/next → scroll to local tabs / sticky under GNB (`state.scrollToLocalTabs` + `useScrollToLocalTabs`).
+- Local tabs under a sub-visual are `position: sticky; top: var(--gnb-bar-h)` (must be a sibling of the main content, not wrapped with the hero only — see `ColumnMediaLayout` / `RenewalPage`).
+- Scroll: GNB/menu entry → top (sub-visual visible). Board local tab / list→detail / prev·next → sticky under GNB (`state.scrollToLocalTabs` + `useScrollToLocalTabs`). 정비사업 tab click → scroll to section (offset = GNB + local tabs).
 - GitHub Pages deep links: deploy copies `dist/index.html` → `dist/404.html`.
 
 ### Commands
