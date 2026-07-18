@@ -707,8 +707,8 @@
     aspect-ratio: 2117 / 4096;
     object-fit: contain;
     object-position: center bottom;
-    /* Was +18% (too low). Raise ~2× that offset → -18% */
-    transform: translateY(-18%);
+    /* Nudged down 20% from -18% → +2% */
+    transform: translateY(2%);
     transform-origin: center bottom;
     margin: 0;
   }
@@ -891,7 +891,7 @@
     aspect-ratio: 2117 / 4096;
     object-fit: contain;
     object-position: center bottom;
-    transform: translateY(-18%);
+    transform: translateY(2%);
     transform-origin: center bottom;
   }
 }
@@ -967,7 +967,8 @@
     aspect-ratio: 2117 / 4096;
     object-fit: contain;
     object-position: center bottom;
-    transform: translateY(-20%);
+    /* Nudged down 20% from -20% → 0 */
+    transform: translateY(0);
     transform-origin: center bottom;
   }
 }
@@ -978,15 +979,15 @@
   }
 }
 
-/* Keep statue raised framing when motion is reduced (tablet/mobile) */
+/* Keep statue framing when motion is reduced (tablet/mobile) */
 @media (prefers-reduced-motion: reduce) and (max-width: 1024px) {
   .hero__bg-slide--statue .hero__visual img {
-    transform: translateY(-18%);
+    transform: translateY(2%);
   }
 }
 
 @media (prefers-reduced-motion: reduce) and (max-width: 767px) {
   .hero__bg-slide--statue .hero__visual img {
-    transform: translateY(-20%);
+    transform: translateY(0);
   }
 }
