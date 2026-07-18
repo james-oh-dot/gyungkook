@@ -142,19 +142,24 @@
 */
 .hero__bg-slide--statue .hero__visual {
   place-items: start center;
-  /* Shifted up ~20% vs prior clamp(20px, 5.5vh, 96px) framing */
   padding-top: 0;
+  /* Clip any asset edge outside the hero stage — never show a hard cut line */
+  overflow: hidden;
 }
 
 .hero__bg-slide--statue .hero__visual img {
-  /* 2x PNG 2117×4096 — keep head/arms/scales; legs may crop */
+  /*
+    2x PNG 2117×4096 — head/arms/scales in frame.
+    Height must stay tall enough that after translateY(-20%) the PNG’s
+    bottom cut edge remains BELOW the section (0.8 × 145vh ≈ 116vh).
+  */
   width: min(47.4vw, 910px);
-  height: min(118vh, 1680px);
+  height: min(145vh, 2200px);
   object-fit: cover;
   /* NEVER center bottom — that clips the raised scales + head */
   object-position: center top;
   margin-top: 0;
-  /* Raise statue ~20% of its box; combine with Ken Burns zoom */
+  /* Raise statue ~20%; Ken Burns zoom grows from near the head */
   transform: translateY(-20%) scale(calc(1 + var(--hero-zoom) * 0.08));
   transform-origin: 42% 14%;
 }
