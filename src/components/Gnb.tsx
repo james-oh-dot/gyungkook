@@ -3,6 +3,7 @@ import {
   useEffect,
   useId,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
@@ -10,8 +11,10 @@ import {
   type KeyboardEvent,
   type MouseEvent,
 } from 'react'
+import { useLocation } from 'react-router-dom'
 import { GNB_SUB_VISUAL_PLACEHOLDER, NAV_ITEMS } from '../data/nav'
 import { asset } from '../utils/asset'
+import { matchActiveNav } from '../utils/navMatch'
 import { resolveNavHref } from '../utils/path'
 import { SearchOverlay } from './SearchOverlay'
 import './Gnb.css'
@@ -38,6 +41,7 @@ function useMediaQuery(query: string) {
 
 export function Gnb() {
   const isCompact = useMediaQuery(MQ_COMPACT)
+  const location = useLocation()
   const rootRef = useRef<HTMLElement>(null)
   const navListRef = useRef<HTMLUListElement>(null)
   const itemRefs = useRef<(HTMLLIElement | null)[]>([])
@@ -56,6 +60,12 @@ export function Gnb() {
   const [indicatorReady, setIndicatorReady] = useState(false)
   const [drawerExpanded, setDrawerExpanded] = useState<string | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
+
+  /** Current page → GNB top/sub (SPA prefix or home hash). */
+  const routeMatch = useMemo(
+    () => matchActiveNav(location.pathname, location.hash),
+    [location.pathname, location.hash],
+  )
 
   const solid = scrolled || menuOpen
 
@@ -168,7 +178,8 @@ export function Gnb() {
 
   const openDrawer = () => {
     setMenuOpen(true)
-    setDrawerExpanded(NAV_ITEMS[0]?.id ?? null)
+    // Expand the top menu that owns the current page (not always “법무법인경국”).
+    setDrawerExpanded(routeMatch.topId)
   }
 
   const closeDrawer = () => {
@@ -332,22 +343,33 @@ export function Gnb() {
                   onMouseEnter={() => openDesktopMenu(index)}
                 >
                   <ul className="gnb__sublist" role="list">
-                    {item.children.map((sub) => (
-                      <li key={sub.id}>
-                        <a
-                          className={`gnb__sublink${activeSubId === sub.id ? ' is-active' : ''}`}
-                          href={resolveNavHref(sub.href)}
-                          onMouseEnter={() => swapVisual(sub.visual, sub.id)}
-                          onFocus={() => {
-                            openDesktopMenu(index)
-                            swapVisual(sub.visual, sub.id)
-                          }}
-                          onClick={() => closeDesktopMenu()}
-                        >
-                          {sub.label}
-                        </a>
-                      </li>
-                    ))}
+                    {item.children.map((sub) => {
+                      const selected = routeMatch.subId === sub.id
+                      const hovered = activeSubId === sub.id
+                      return (
+                        <li key={sub.id}>
+                          <a
+                            className={[
+                              'gnb__sublink',
+                              hovered ? 'is-active' : '',
+                              selected ? 'is-selected' : '',
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                            href={resolveNavHref(sub.href)}
+                            aria-current={selected ? 'page' : undefined}
+                            onMouseEnter={() => swapVisual(sub.visual, sub.id)}
+                            onFocus={() => {
+                              openDesktopMenu(index)
+                              swapVisual(sub.visual, sub.id)
+                            }}
+                            onClick={() => closeDesktopMenu()}
+                          >
+                            {sub.label}
+                          </a>
+                        </li>
+                      )
+                    })}
                   </ul>
                 </div>
               ))}
@@ -401,8 +423,12 @@ export function Gnb() {
                 {NAV_ITEMS.map((item) => {
                   const expanded = drawerExpanded === item.id
                   const panelId = `${reactId}-panel-${item.id}`
+                  const sectionCurrent = routeMatch.topId === item.id
                   return (
-                    <li key={item.id} className="gnb__drawer-item">
+                    <li
+                      key={item.id}
+                      className={`gnb__drawer-item${sectionCurrent ? ' is-current' : ''}`}
+                    >
                       <button
                         type="button"
                         className={`gnb__drawer-top${expanded ? ' is-expanded' : ''}`}
@@ -421,17 +447,21 @@ export function Gnb() {
                         hidden={!expanded}
                       >
                         <ul role="list">
-                          {item.children.map((sub) => (
-                            <li key={sub.id}>
-                              <a
-                                className="gnb__drawer-sublink"
-                                href={resolveNavHref(sub.href)}
-                                onClick={closeDrawer}
-                              >
-                                {sub.label}
-                              </a>
-                            </li>
-                          ))}
+                          {item.children.map((sub) => {
+                            const selected = routeMatch.subId === sub.id
+                            return (
+                              <li key={sub.id}>
+                                <a
+                                  className={`gnb__drawer-sublink${selected ? ' is-selected' : ''}`}
+                                  href={resolveNavHref(sub.href)}
+                                  aria-current={selected ? 'page' : undefined}
+                                  onClick={closeDrawer}
+                                >
+                                  {sub.label}
+                                </a>
+                              </li>
+                            )
+                          })}
                         </ul>
                       </div>
                     </li>
