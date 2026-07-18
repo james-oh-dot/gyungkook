@@ -14,7 +14,8 @@
 
 ### Non-obvious notes
 - Styling is plain CSS (no Tailwind). Design tokens live in `src/styles/global.css`.
-- Hero source of truth: Figma canvas `AI-hero-change` (`22:10492`) → frames `hero_1`…`hero_5`.
+- Hero source of truth (default `/`): Figma canvas `AI-hero-change` (`22:10492`) → frames `hero_1`…`hero_5` (teal).
+- **Alternate hero for client review:** dark previous hero lives at `classic.html` → `HeroClassic` + `public/assets/classic/*`. Top `VersionSwitch` toggles A Teal / B Dark. Vite MPA inputs: `index.html` + `classic.html`.
 - Hero carousel timing is `HERO_DURATION_MS = 10000` in `src/data/slides.ts`.
 - Hero structure (do not regress to the old black/right-panel layout):
   - Stage: solid teal `#58bdc2` + centered per-slide visual (`hero__bg-slide--statue|jewel|cubes|birds|campus`)

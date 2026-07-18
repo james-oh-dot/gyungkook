@@ -1,3 +1,4 @@
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
@@ -9,4 +10,12 @@ export default defineConfig({
   // Project Pages: https://james-oh-dot.github.io/gyungkook/
   // Local/dev keeps `/` so http://localhost:5173 works as before.
   base: isGitHubPages ? '/gyungkook/' : '/',
+  build: {
+    rollupOptions: {
+      input: {
+        main: resolve(__dirname, 'index.html'),
+        classic: resolve(__dirname, 'classic.html'),
+      },
+    },
+  },
 })

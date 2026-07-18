@@ -159,6 +159,24 @@ GITHUB_PAGES=true npm run build
 
 ---
 
+## 2026-07-18 — Classic dark hero preserved as separate page
+
+Client still comparing two art directions. Current default = teal rebuild; previous dark hero restored as MPA page:
+
+| URL | Entry | Hero |
+|---|---|---|
+| `/` (`index.html`) | `src/main.tsx` → `App` | Teal `Hero` (AI-hero-change) |
+| `/classic.html` | `src/main-classic.tsx` → `AppClassic` | Dark `HeroClassic` |
+
+- Assets: `public/assets/classic/hero-0{1..5}.jpg` (+ next thumbs) restored from pre-rebuild commit
+- Data: `src/data/slidesClassic.ts`
+- Floating compare control: `VersionSwitch` on both pages (`A · Teal` / `B · Dark`)
+- Vite `build.rollupOptions.input` includes both HTML entries (GitHub Pages deploys both)
+
+Live after merge: `https://james-oh-dot.github.io/gyungkook/` and `…/classic.html`
+
+---
+
 ## 2026-07-18 — Hero full rebuild from Figma `AI-hero-change`
 
 ### Source
