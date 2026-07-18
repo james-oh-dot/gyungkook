@@ -67,7 +67,8 @@
   .hero {
     --hero-pad-x: 56px;
     --hero-copy-scale: 0.58;
-    --hero-copy-scale-compact: 0.46;
+    /* Communicate: same scale as other slides on tablet — do not shrink further */
+    --hero-copy-scale-compact: 0.58;
   }
 }
 
@@ -722,9 +723,26 @@
     margin: 0;
   }
 
-  .hero__bg-slide--cubes .hero__visual img,
-  .hero__bg-slide--campus .hero__visual img {
+  .hero__bg-slide--cubes .hero__visual img {
     width: min(72vw, 640px);
+  }
+
+  /*
+    Campus (slide 05): desktop sets equal width/height. Overriding only width
+    left height at 49.4vw → non-square box + object-fit:cover crops top/bottom.
+    Keep a square frame (or contain) so the full building stays visible.
+  */
+  .hero__bg-slide--campus .hero__visual {
+    place-items: center;
+  }
+
+  .hero__bg-slide--campus .hero__visual img {
+    width: min(78vw, 640px);
+    height: min(78vw, 640px);
+    max-height: none;
+    object-fit: contain;
+    object-position: center center;
+    margin-top: 0;
   }
 
   .hero__bg-slide--jewel .hero__visual img {
@@ -736,6 +754,8 @@
     width: 100%;
     height: auto;
     margin: 0;
+    /* Keep full scene; mild Ken Burns still OK — no extra shrink */
+    transform: scale(calc(1 + var(--hero-zoom) * 0.05));
   }
 
   .hero__swipe {
@@ -821,7 +841,8 @@
   .hero {
     --hero-pad-x: 50px;
     --hero-copy-scale: 1;
-    --hero-copy-scale-compact: 0.8;
+    /* Slide 04 Communicate — release compact shrink on tablet */
+    --hero-copy-scale-compact: 1;
     --hero-swipe-reserve: 186px;
     --hero-thumb-w: 138px;
     --hero-thumb-h: 138px;
@@ -878,8 +899,9 @@
     white-space: nowrap;
   }
 
+  /* Same size as other slides — compact scale already released above */
   .hero__word.is-md {
-    font-size: 96px;
+    font-size: 120px;
     white-space: nowrap;
   }
 
@@ -916,7 +938,8 @@
   .hero {
     --hero-pad-x: 24px;
     --hero-copy-scale: 1;
-    --hero-copy-scale-compact: 0.72;
+    /* Slide 04 Communicate — release compact shrink on mobile */
+    --hero-copy-scale-compact: 1;
     --hero-swipe-reserve: 148px;
     --hero-thumb-w: 100px;
     --hero-thumb-h: 100px;
@@ -946,7 +969,7 @@
   }
 
   .hero__word.is-md {
-    font-size: 48px;
+    font-size: 60px;
   }
 
   .hero__title {
