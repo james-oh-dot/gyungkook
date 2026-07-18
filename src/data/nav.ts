@@ -1,6 +1,7 @@
 import { CASE_STUDIES_PAGE } from './caseStudies'
 import { COLUMN_MEDIA_PAGE } from './columnMedia'
 import { PRESS_COVERAGE_PAGE } from './pressCoverage'
+import { RENEWAL_PAGE } from './renewal'
 import { asset } from '../utils/asset'
 
 export type NavSubItem = {
@@ -25,6 +26,9 @@ export type NavItem = {
 
 /** Shared placeholder until per-page sub-visuals are wired. */
 export const GNB_SUB_VISUAL_PLACEHOLDER = asset('assets/gnb-sub-visual.png')
+
+/** Figma sub-02-01 — 재개발·보상업무 > 정비사업 */
+export const GNB_SUB_VISUAL_RENEWAL = RENEWAL_PAGE.visual
 
 /** Figma sub-04-01 — 활동·보도 > 업무사례 */
 export const GNB_SUB_VISUAL_PRESS_CASES = CASE_STUDIES_PAGE.visual
@@ -54,7 +58,12 @@ export const NAV_ITEMS: NavItem[] = [
     label: '재개발 · 보상업무',
     href: '#practice',
     children: [
-      { id: 'redev-renewal', label: '정비사업', href: '#practice', visual: GNB_SUB_VISUAL_PLACEHOLDER },
+      {
+        id: 'redev-renewal',
+        label: '정비사업',
+        href: '/practice/renewal',
+        visual: GNB_SUB_VISUAL_RENEWAL,
+      },
       { id: 'redev-public', label: '공익사업', href: '#practice', visual: GNB_SUB_VISUAL_PLACEHOLDER },
     ],
   },

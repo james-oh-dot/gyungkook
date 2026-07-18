@@ -9,13 +9,24 @@ type SubVisualProps = {
   image: string
   /** Figma layer name for future agents (e.g. sub-04-03) */
   visualKey?: string
+  /**
+   * Show parent chip above title.
+   * Figma `hero_type2` (e.g. 정비사업) has no chip — pass `false`.
+   */
+  showChip?: boolean
 }
 
 /**
  * Shared sub-page hero (SUB_LAYOUT visual).
  * Same chrome for list + detail under a menu family.
  */
-export function SubVisual({ parentLabel, title, image, visualKey }: SubVisualProps) {
+export function SubVisual({
+  parentLabel,
+  title,
+  image,
+  visualKey,
+  showChip = true,
+}: SubVisualProps) {
   return (
     <section
       className="sub-visual"
@@ -27,7 +38,7 @@ export function SubVisual({ parentLabel, title, image, visualKey }: SubVisualPro
         <div className="sub-visual__scrim" />
       </div>
       <div className="sub-visual__copy">
-        <span className="sub-visual__chip">{parentLabel}</span>
+        {showChip ? <span className="sub-visual__chip">{parentLabel}</span> : null}
         <h1 className="sub-visual__title">{title}</h1>
       </div>
     </section>

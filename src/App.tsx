@@ -16,6 +16,7 @@ import { PostDetailPage } from './pages/PostDetailPage'
 import { PressCoverageDetailPage } from './pages/PressCoverageDetailPage'
 import { PressCoverageLayout } from './pages/PressCoverageLayout'
 import { PressCoverageListPage } from './pages/PressCoverageListPage'
+import { RenewalPage } from './pages/RenewalPage'
 import './styles/global.css'
 
 function ScrollToTop() {
@@ -38,6 +39,7 @@ function ScrollToTop() {
  * - /press/coverage/:tab/:postId          → shared post detail
  * - /press/column-media/:tab              → 컬럼 | 간행물 | 미디어 list (sub-04-03)
  * - /press/column-media/:tab/:postId      → shared post detail
+ * - /practice/renewal                     → 정비사업 (sub-02-01)
  *
  * GitHub Pages deep links require dist/404.html → index.html (see deploy workflow).
  */
@@ -51,6 +53,7 @@ function App() {
       <Routes>
         <Route element={<SiteLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="practice/renewal" element={<RenewalPage />} />
           <Route path="press/cases" element={<CaseStudiesPage />} />
           <Route
             path="press/coverage"
