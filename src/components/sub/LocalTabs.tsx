@@ -8,15 +8,20 @@ import {
   type MouseEvent,
 } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
-import type { ColumnMediaTab, ColumnMediaTabDef } from '../../data/columnMedia'
-import { tabListPath } from '../../data/columnMedia'
 import { LOCAL_TABS_ANCHOR_ID } from '../../hooks/useScrollToLocalTabs'
 import './LocalTabs.css'
 
+export type LocalTabItem = {
+  id: string
+  label: string
+}
+
 type LocalTabsProps = {
-  tabs: ColumnMediaTabDef[]
-  /** Currently selected tab (from route) */
-  activeTab: ColumnMediaTab
+  tabs: LocalTabItem[]
+  activeTab: string
+  /** Build list path for a tab id */
+  toTab: (tabId: string) => string
+  ariaLabel?: string
 }
 
 type Indicator = { x: number; w: number }
@@ -30,12 +35,17 @@ function readGnbBarH(): number {
 }
 
 /**
- * Local menu under a sub-page (컬럼 / 간행물 / 미디어).
+ * Local menu under a sub-page visual.
  * - Hover: teal underline follows the hovered tab
- * - Click: selected state + route to that tab’s list
+ * - Click: selected + route (sticky scroll via `state.scrollToLocalTabs`)
  * - Sticky under fixed GNB while the page scrolls
  */
-export function LocalTabs({ tabs, activeTab }: LocalTabsProps) {
+export function LocalTabs({
+  tabs,
+  activeTab,
+  toTab,
+  ariaLabel = '로컬 메뉴',
+}: LocalTabsProps) {
   const location = useLocation()
   const navRef = useRef<HTMLElement>(null)
   const sentinelRef = useRef<HTMLDivElement>(null)
@@ -75,7 +85,6 @@ export function LocalTabs({ tabs, activeTab }: LocalTabsProps) {
     return () => window.removeEventListener('resize', onResize)
   }, [focusIndex, measure])
 
-  // Detect sticky pin: sentinel leaves the band below the GNB
   useEffect(() => {
     const sentinel = sentinelRef.current
     if (!sentinel) return
@@ -130,7 +139,7 @@ export function LocalTabs({ tabs, activeTab }: LocalTabsProps) {
         id={LOCAL_TABS_ANCHOR_ID}
         className={`local-tabs${stuck ? ' is-stuck' : ''}`}
         data-name="Section / Bread"
-        aria-label="컬럼미디어 로컬 메뉴"
+        aria-label={ariaLabel}
         onMouseLeave={onLeave}
       >
         <ul className="local-tabs__list" role="list">
@@ -146,8 +155,7 @@ export function LocalTabs({ tabs, activeTab }: LocalTabsProps) {
             >
               {index > 0 ? <span className="local-tabs__sep" aria-hidden="true" /> : null}
               <NavLink
-                to={tabListPath(tab.id)}
-                // Keep sticky tab position when switching 컬럼/간행물/미디어
+                to={toTab(tab.id)}
                 state={{ scrollToLocalTabs: true }}
                 className={() =>
                   `local-tabs__link${tab.id === activeTab ? ' is-selected' : ''}`

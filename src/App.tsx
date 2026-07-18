@@ -13,6 +13,9 @@ import { ColumnMediaLayout } from './pages/ColumnMediaLayout'
 import { ColumnMediaListPage } from './pages/ColumnMediaListPage'
 import { HomePage } from './pages/HomePage'
 import { PostDetailPage } from './pages/PostDetailPage'
+import { PressCoverageDetailPage } from './pages/PressCoverageDetailPage'
+import { PressCoverageLayout } from './pages/PressCoverageLayout'
+import { PressCoverageListPage } from './pages/PressCoverageListPage'
 import './styles/global.css'
 
 function ScrollToTop() {
@@ -31,7 +34,9 @@ function ScrollToTop() {
  *
  * Subpages:
  * - /press/cases                          → 업무사례 (sub-04-01)
- * - /press/column-media/:tab              → 컬럼 | 간행물 | 미디어 list
+ * - /press/coverage/:tab                  → TV방송 | 보도자료 list (sub-04-02)
+ * - /press/coverage/:tab/:postId          → shared post detail
+ * - /press/column-media/:tab              → 컬럼 | 간행물 | 미디어 list (sub-04-03)
  * - /press/column-media/:tab/:postId      → shared post detail
  *
  * GitHub Pages deep links require dist/404.html → index.html (see deploy workflow).
@@ -47,6 +52,14 @@ function App() {
         <Route element={<SiteLayout />}>
           <Route index element={<HomePage />} />
           <Route path="press/cases" element={<CaseStudiesPage />} />
+          <Route
+            path="press/coverage"
+            element={<Navigate to="tv" replace />}
+          />
+          <Route path="press/coverage/:tab" element={<PressCoverageLayout />}>
+            <Route index element={<PressCoverageListPage />} />
+            <Route path=":postId" element={<PressCoverageDetailPage />} />
+          </Route>
           <Route
             path="press/column-media"
             element={<Navigate to="column" replace />}

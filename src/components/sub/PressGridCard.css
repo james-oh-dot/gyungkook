@@ -1,0 +1,120 @@
+/* Figma SUB_활동보도_언론보도_* card — thumb on top, chip at bottom */
+.press-grid-card {
+  width: 100%;
+  background: #fff;
+  border: 1px solid #f1f1f5;
+  box-shadow: 0 16px 20px -2px rgba(35, 48, 59, 0.1);
+  overflow: clip;
+  transition:
+    transform 0.35s var(--ease-premium, ease),
+    box-shadow 0.35s var(--ease-premium, ease);
+}
+
+.press-grid-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 28px -2px rgba(35, 48, 59, 0.14);
+}
+
+.press-grid-card__link {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.press-grid-card__thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4096 / 3072;
+  overflow: hidden;
+  background: #e5e5ec;
+}
+
+.press-grid-card__thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.press-grid-card__copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  padding: 24px;
+}
+
+.press-grid-card__title {
+  margin: 0;
+  width: 100%;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.45px;
+  color: #111;
+  word-break: keep-all;
+}
+
+.press-grid-card__summary {
+  margin: 0;
+  width: 100%;
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.35px;
+  color: #767676;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.press-grid-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  width: 100%;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.35px;
+  color: #767676;
+  white-space: nowrap;
+}
+
+.press-grid-card__dot {
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: -0.4px;
+  color: #111;
+}
+
+.press-grid-card__chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 2px;
+  background: #101010;
+  box-shadow: 1px 1px 2px rgba(17, 17, 17, 0.1);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.275px;
+  color: #fff;
+}
+
+@media (max-width: 767px) {
+  .press-grid-card__copy {
+    padding: 20px;
+  }
+
+  .press-grid-card__title {
+    font-size: 16px;
+    letter-spacing: -0.4px;
+  }
+}

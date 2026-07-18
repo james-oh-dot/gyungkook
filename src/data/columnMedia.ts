@@ -273,6 +273,6 @@ export function tabListPath(tab: ColumnMediaTab): string {
   return `${COLUMN_MEDIA_PAGE.basePath}/${tab}`
 }
 
-export function postDetailPath(tab: ColumnMediaTab, postId: string): string {
+export function postDetailPath(tab: string, postId: string): string {
   return `${COLUMN_MEDIA_PAGE.basePath}/${tab}/${postId}`
 }
