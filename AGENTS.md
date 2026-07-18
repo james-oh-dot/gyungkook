@@ -24,6 +24,10 @@
   - Swipe meta is **white** card + white-border thumb (not dark chrome)
 - Hero motion contract: description = `LineReveal`; English word + Korean title = `CharReveal`; image Ken Burns via `--hero-zoom` over 10s; `swipe_gage` = rAF `scaleX(progress)` with **no CSS width transition**; prev/next/thumb click = instant `jumpTo`.
 - Slide 02 visual **must** be the jewel (`public/assets/hero-02.jpg`).
+- Hero visual framing (teal rebuild — do not regress):
+  - `statue`: `object-position: center top` + Ken Burns origin near head/scales — never `center bottom` (clips raised arm)
+  - `jewel`: subject viewport-centered via `object-position: center 62%` (jewel sits low in source asset)
+  - `birds`: `scaleX(-1)` (large lamp on **right**), bottom-anchored, keep pigeons; reduced-motion must keep the flip
 - Icons are **`.svg` only** under `public/assets/`. Never reintroduce SVG XML saved as `.png` (causes broken-image X boxes). Hero arrows are already white — do not `filter: invert(1)`.
 - Scroll reveal + light parallax: `src/hooks/useScrollReveal.ts` via `[data-reveal]` and `--parallax-y`.
 - Public asset URLs must go through `asset()` in `src/utils/asset.ts` so GitHub Pages `base` (`/gyungkook/`) works.

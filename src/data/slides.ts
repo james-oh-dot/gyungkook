@@ -12,7 +12,12 @@ export type HeroSlide = {
   nextLabel: string
   image: string
   nextImage: string
-  /** Per-slide visual layout modifier */
+  /**
+   * Per-slide visual layout modifier (framing lives in Hero.css):
+   * - statue: object-position top — head/arms/scales in frame; legs may crop
+   * - jewel: viewport-centered subject (object-position ~62% Y)
+   * - birds: scaleX(-1) + bottom-anchored; large lamp on right; pigeons visible
+   */
   visual: 'statue' | 'jewel' | 'cubes' | 'birds' | 'campus'
   /** Optional edge fade for jewel-style assets */
   fadeEdges?: boolean
