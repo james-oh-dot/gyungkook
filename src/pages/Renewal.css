@@ -735,7 +735,8 @@
   }
 
   .renewal-results {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    /* Head stacks above → body is full-bleed; 4 fluid cards */
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .renewal-procedure__item.is-highlight {
@@ -837,7 +838,8 @@
   }
 
   .renewal-results {
-    grid-template-columns: 1fr;
+    /* Mobile: 2 fluid cards across full body width */
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .renewal-service-card {
