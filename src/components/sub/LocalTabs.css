@@ -1,5 +1,14 @@
+.local-tabs__sentinel {
+  height: 1px;
+  margin: 0;
+  pointer-events: none;
+}
+
 .local-tabs {
-  position: relative;
+  /* Stick under fixed GNB while the subpage content scrolls */
+  position: sticky;
+  top: var(--gnb-bar-h, 100px);
+  z-index: 800; /* below GNB (900), above page content */
   display: flex;
   justify-content: center;
   width: 100%;
@@ -8,6 +17,12 @@
   background: #fff;
   /* Keep bar clear of fixed GNB when scrollIntoView(block: start) runs */
   scroll-margin-top: var(--gnb-bar-h, 100px);
+  transition: box-shadow 0.25s var(--ease-premium, ease);
+}
+
+/* Soft lift once stuck under the GNB */
+.local-tabs.is-stuck {
+  box-shadow: 0 8px 20px -12px rgba(17, 17, 17, 0.18);
 }
 
 .local-tabs__list {
