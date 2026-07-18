@@ -1,6 +1,6 @@
 .version-switch {
   position: fixed;
-  z-index: 1000;
+  z-index: 850; /* below GNB (900) so Fullmenu / drawer cover the switcher */
   /* Sit below fixed GNB so it doesn’t collide with logo / hamburger */
   top: 108px;
   left: 50%;
