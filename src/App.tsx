@@ -16,6 +16,8 @@ import './styles/global.css'
 function ScrollToTop() {
   const { pathname } = useLocation()
   useEffect(() => {
+    // Column-media handles its own scroll-to-tabs (tab / detail / prev·next)
+    if (pathname.includes('/press/column-media')) return
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
   }, [pathname])
   return null
