@@ -14,6 +14,9 @@ import './ColumnMedia.css'
  * Shell for 컬럼·미디어 list + detail.
  * Visual (sub-04-03) + local tabs stay mounted; only the Outlet content swaps.
  * Scroll-to-tabs only on detail entry / prev·next (not menu or tab clicks).
+ *
+ * LocalTabs is a direct child of `.column-media` (not wrapped with the hero)
+ * so `position: sticky` can pin under the GNB through the main content.
  */
 export function ColumnMediaLayout() {
   const { tab } = useParams<{ tab: string }>()
@@ -27,15 +30,15 @@ export function ColumnMediaLayout() {
 
   return (
     <div className="column-media" data-name="SUB_활동보도_컬럼미디어">
-      <div className="column-media__top" data-name="SUB_LAYOUT">
+      <div className="column-media__visual" data-name="SUB_LAYOUT">
         <SubVisual
           parentLabel={COLUMN_MEDIA_PAGE.parentLabel}
           title={COLUMN_MEDIA_PAGE.title}
           image={COLUMN_MEDIA_PAGE.visual}
           visualKey="sub-04-03"
         />
-        <LocalTabs tabs={COLUMN_MEDIA_TABS} activeTab={activeTab} />
       </div>
+      <LocalTabs tabs={COLUMN_MEDIA_TABS} activeTab={activeTab} />
       <div className="column-media__main">
         <Outlet context={{ activeTab }} />
       </div>
