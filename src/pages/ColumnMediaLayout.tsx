@@ -13,7 +13,7 @@ import './ColumnMedia.css'
 /**
  * Shell for 컬럼·미디어 list + detail.
  * Visual (sub-04-03) + local tabs stay mounted; only the Outlet content swaps.
- * Route changes (tab / detail / prev·next) scroll to the local tab bar.
+ * Scroll-to-tabs only on detail entry / prev·next (not menu or tab clicks).
  */
 export function ColumnMediaLayout() {
   const { tab } = useParams<{ tab: string }>()

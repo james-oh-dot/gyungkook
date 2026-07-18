@@ -5,13 +5,28 @@ import { useLocation } from 'react-router-dom'
 export const LOCAL_TABS_ANCHOR_ID = 'column-media-local-tabs'
 
 /**
- * On every in-section route change (tab / detail / prev·next),
- * scroll so the local tab bar sits just below the fixed GNB.
+ * True for detail routes: `/press/column-media/:tab/:postId`
+ * False for list / tab routes: `/press/column-media/:tab`
+ */
+export function isColumnMediaDetailPath(pathname: string): boolean {
+  const parts = pathname.replace(/\/+$/, '').split('/').filter(Boolean)
+  const idx = parts.indexOf('column-media')
+  if (idx < 0) return false
+  // [..., 'column-media', tab, postId]
+  return parts.length >= idx + 3
+}
+
+/**
+ * Scroll to the local tab bar only when entering / switching post detail
+ * (list→detail, detail prev/next). Menu entry and tab switches keep the
+ * sub-visual in view (handled by ScrollToTop → y=0).
  */
 export function useScrollToLocalTabs() {
   const { pathname } = useLocation()
 
   useLayoutEffect(() => {
+    if (!isColumnMediaDetailPath(pathname)) return
+
     const el = document.getElementById(LOCAL_TABS_ANCHOR_ID)
     if (!el) return
 
