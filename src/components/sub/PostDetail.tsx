@@ -1,23 +1,31 @@
 import { Link } from 'react-router-dom'
-import type { ColumnMediaPost, ColumnMediaTabDef } from '../../data/columnMedia'
-import { postDetailPath, tabListPath } from '../../data/columnMedia'
+import type { BoardPost, BoardTabDef } from '../../data/board'
 import './PostDetail.css'
 
 type PostDetailProps = {
-  post: ColumnMediaPost
-  tabDef: ColumnMediaTabDef
-  prev?: ColumnMediaPost
-  next?: ColumnMediaPost
+  post: BoardPost
+  tabDef: BoardTabDef
+  prev?: BoardPost
+  next?: BoardPost
+  /** Path back to the active tab list */
+  listPath: string
+  /** Build detail path for adjacent posts */
+  detailPath: (tab: string, postId: string) => string
 }
 
 /**
  * Shared post detail layout (Figma: SUB_게시글_상세_*).
- * Used when a list thumbnail/card is opened — keep this layout generic
- * so other board types can reuse it later with the same props shape.
+ * Used by 컬럼미디어 / 언론보도 (and future boards) — keep props generic.
  */
-export function PostDetail({ post, tabDef, prev, next }: PostDetailProps) {
+export function PostDetail({
+  post,
+  tabDef,
+  prev,
+  next,
+  listPath,
+  detailPath,
+}: PostDetailProps) {
   const image = post.detailImage ?? post.thumbnail
-  const listTo = tabListPath(post.tab)
 
   return (
     <div className="post-detail" data-name="SUB_게시글_상세">
@@ -44,7 +52,6 @@ export function PostDetail({ post, tabDef, prev, next }: PostDetailProps) {
             {post.body.map((paragraph, i) => (
               <p key={i}>{paragraph}</p>
             ))}
-            {/* CMS: render rich HTML here instead of plain paragraphs */}
             <p className="post-detail__copyright">
               저작권자 © 법무법인 경국 / 무단전재 및 재배포, AI학습 및 활용 금지
             </p>
@@ -54,7 +61,7 @@ export function PostDetail({ post, tabDef, prev, next }: PostDetailProps) {
 
       <div className="post-detail__nav" data-name="btn">
         {next ? (
-          <Link className="post-detail__adj" to={postDetailPath(next.tab, next.id)}>
+          <Link className="post-detail__adj" to={detailPath(next.tab, next.id)}>
             <span className="post-detail__adj-icon" aria-hidden="true">
               ↑
             </span>
@@ -63,7 +70,7 @@ export function PostDetail({ post, tabDef, prev, next }: PostDetailProps) {
           </Link>
         ) : null}
         {prev ? (
-          <Link className="post-detail__adj" to={postDetailPath(prev.tab, prev.id)}>
+          <Link className="post-detail__adj" to={detailPath(prev.tab, prev.id)}>
             <span className="post-detail__adj-icon" aria-hidden="true">
               ↓
             </span>
@@ -71,7 +78,11 @@ export function PostDetail({ post, tabDef, prev, next }: PostDetailProps) {
             <span className="post-detail__adj-title">{prev.title}</span>
           </Link>
         ) : null}
-        <Link className="post-detail__list-btn" to={listTo}>
+        <Link
+          className="post-detail__list-btn"
+          to={listPath}
+          state={{ scrollToLocalTabs: true }}
+        >
           목록으로
         </Link>
       </div>

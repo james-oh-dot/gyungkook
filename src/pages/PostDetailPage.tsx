@@ -6,15 +6,13 @@ import {
   COLUMN_MEDIA_TABS,
   findPost,
   isColumnMediaTab,
+  postDetailPath,
   tabListPath,
 } from '../data/columnMedia'
 
 /**
- * Shared board detail route (Figma SUB_게시글_상세_*).
+ * 컬럼·미디어 detail route (Figma SUB_게시글_상세_*).
  * URL: /press/column-media/:tab/:postId
- *
- * Future: other boards can mount the same `PostDetail` component
- * with their own data adapters — keep this page thin.
  */
 export function PostDetailPage() {
   const { tab, postId } = useParams<{ tab: string; postId: string }>()
@@ -31,5 +29,14 @@ export function PostDetailPage() {
   const tabDef = COLUMN_MEDIA_TABS.find((t) => t.id === tab)!
   const { prev, next } = adjacentPosts(tab, postId)
 
-  return <PostDetail post={post} tabDef={tabDef} prev={prev} next={next} />
+  return (
+    <PostDetail
+      post={post}
+      tabDef={tabDef}
+      prev={prev}
+      next={next}
+      listPath={tabListPath(tab)}
+      detailPath={postDetailPath}
+    />
+  )
 }

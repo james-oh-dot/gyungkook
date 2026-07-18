@@ -1,32 +1,36 @@
 import { useLayoutEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
-/** Anchor id on the column-media local tab bar. */
-export const LOCAL_TABS_ANCHOR_ID = 'column-media-local-tabs'
+/** Anchor id shared by subpage local tab bars (only one mounts at a time). */
+export const LOCAL_TABS_ANCHOR_ID = 'subpage-local-tabs'
 
 /** Location state set by LocalTabs NavLinks — keep sticky tab position on tab change. */
-export type ColumnMediaLocationState = {
+export type LocalTabsLocationState = {
   scrollToLocalTabs?: boolean
 }
 
+const BOARD_SECTIONS = new Set(['column-media', 'coverage'])
+
 /**
- * True for detail routes: `/press/column-media/:tab/:postId`
- * False for list / tab routes: `/press/column-media/:tab`
+ * True for board detail routes:
+ * `/press/column-media/:tab/:postId` | `/press/coverage/:tab/:postId`
  */
-export function isColumnMediaDetailPath(pathname: string): boolean {
+export function isBoardDetailPath(pathname: string): boolean {
   const parts = pathname.replace(/\/+$/, '').split('/').filter(Boolean)
-  const idx = parts.indexOf('column-media')
-  if (idx < 0) return false
-  // [..., 'column-media', tab, postId]
-  return parts.length >= idx + 3
+  // ['press', section, tab, postId]
+  if (parts[0] !== 'press' || !BOARD_SECTIONS.has(parts[1] ?? '')) return false
+  return parts.length >= 4
 }
+
+/** @deprecated use isBoardDetailPath */
+export const isColumnMediaDetailPath = isBoardDetailPath
 
 export function shouldScrollToLocalTabs(
   pathname: string,
   state: unknown,
 ): boolean {
-  if (isColumnMediaDetailPath(pathname)) return true
-  return Boolean((state as ColumnMediaLocationState | null)?.scrollToLocalTabs)
+  if (isBoardDetailPath(pathname)) return true
+  return Boolean((state as LocalTabsLocationState | null)?.scrollToLocalTabs)
 }
 
 /**
@@ -45,7 +49,6 @@ export function useScrollToLocalTabs() {
     const el = document.getElementById(LOCAL_TABS_ANCHOR_ID)
     if (!el) return
 
-    // Double rAF: wait for Outlet content paint so scroll height is final
     let raf2 = 0
     const raf1 = window.requestAnimationFrame(() => {
       raf2 = window.requestAnimationFrame(() => {

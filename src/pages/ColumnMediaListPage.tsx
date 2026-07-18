@@ -3,6 +3,7 @@ import { PostListCard } from '../components/sub/PostListCard'
 import {
   COLUMN_MEDIA_TABS,
   isColumnMediaTab,
+  postDetailPath,
   postsByTab,
 } from '../data/columnMedia'
 
@@ -21,7 +22,12 @@ export function ColumnMediaListPage() {
     <section className="column-media__list" data-name="Contents" aria-label={`${tabDef.label} 목록`}>
       <div className="column-media__list-wrap" data-name="list_wrap">
         {posts.map((post) => (
-          <PostListCard key={post.id} post={post} tabDef={tabDef} />
+          <PostListCard
+            key={post.id}
+            post={post}
+            tabDef={tabDef}
+            detailPath={postDetailPath}
+          />
         ))}
       </div>
     </section>

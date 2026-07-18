@@ -1,0 +1,67 @@
+/* Figma SUB_활동보도_언론보도_* — list shell (white page, 4/2/1 grid) */
+.press-coverage {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 100%;
+  background: #fff;
+}
+
+.press-coverage__visual {
+  width: 100%;
+}
+
+.press-coverage__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  /* Figma desktop: gap 140 between SUB_LAYOUT and Contents */
+  padding: 140px var(--page-pad) 160px;
+  background: #fff;
+}
+
+.press-coverage__list {
+  width: 100%;
+  max-width: 1280px;
+}
+
+.press-coverage__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: 40px;
+  row-gap: 48px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 1024px) {
+  .press-coverage__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .press-coverage__main {
+    padding: 80px var(--page-pad) 120px;
+  }
+
+  .press-coverage__grid {
+    column-gap: 28px;
+    row-gap: 36px;
+  }
+}
+
+@media (max-width: 767px) {
+  .press-coverage__main {
+    padding: 56px var(--page-pad) 96px;
+  }
+
+  .press-coverage__grid {
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+    row-gap: 24px;
+  }
+}

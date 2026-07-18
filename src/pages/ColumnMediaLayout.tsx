@@ -5,6 +5,7 @@ import {
   COLUMN_MEDIA_PAGE,
   COLUMN_MEDIA_TABS,
   isColumnMediaTab,
+  tabListPath,
   type ColumnMediaTab,
 } from '../data/columnMedia'
 import { useScrollToLocalTabs } from '../hooks/useScrollToLocalTabs'
@@ -39,7 +40,12 @@ export function ColumnMediaLayout() {
           visualKey="sub-04-03"
         />
       </div>
-      <LocalTabs tabs={COLUMN_MEDIA_TABS} activeTab={activeTab} />
+      <LocalTabs
+        tabs={COLUMN_MEDIA_TABS}
+        activeTab={activeTab}
+        toTab={(id) => tabListPath(id as ColumnMediaTab)}
+        ariaLabel="컬럼 · 미디어 로컬 메뉴"
+      />
       <div className="column-media__main">
         <Outlet context={{ activeTab }} />
       </div>

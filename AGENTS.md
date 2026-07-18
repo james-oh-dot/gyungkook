@@ -22,13 +22,21 @@
   - Hover: hovered card highlight + siblings dim (see `CaseStudies.css`)
   - GNB `press-cases` → `/press/cases`, visual `public/assets/sub/sub-04-01.jpg`
   - Mock data: `src/data/caseStudies.ts`
+- **언론보도** (활동·보도 2nd / Figma `sub-04-02`):
+  - List: `/press/coverage/:tab` where `tab` = `tv` | `release` (TV방송 / 보도자료)
+  - Detail (shared board layout): `/press/coverage/:tab/:postId` → `PostDetail`
+  - Shell: `PressCoverageLayout` = `SubVisual` + `LocalTabs` + Outlet
+  - List UI: 4/2/1 **card grid** (`PressGridCard`) — not the horizontal list used by 컬럼미디어
+  - Mock data: `src/data/pressCoverage.ts`
+  - GNB item `press-media` → `/press/coverage/tv`, visual `public/assets/sub/sub-04-02.jpg`
 - **컬럼·미디어** (활동·보도 3rd / Figma `sub-04-03`):
   - List: `/press/column-media/:tab` where `tab` = `column` | `publication` | `media`
   - Detail (shared board layout): `/press/column-media/:tab/:postId` → `PostDetail`
   - Shell: `ColumnMediaLayout` = `SubVisual` + `LocalTabs` + Outlet
   - Mock data + CMS notes: `src/data/columnMedia.ts`
   - GNB item `press-column` → `/press/column-media/column`, visual `public/assets/sub/sub-04-03.jpg`
-- Local tabs (컬럼미디어): hover moves underline indicator; click selects + routes.
+- Local tabs (컬럼미디어 / 언론보도): hover moves underline indicator; click selects + routes.
+- Shared board types: `src/data/board.ts` (`BoardPost` / `BoardTabDef`) — used by list cards + `PostDetail`.
 - Local tabs under a sub-visual are `position: sticky; top: var(--gnb-bar-h)` (must be a sibling of the main content, not wrapped with the hero only — see `ColumnMediaLayout`).
 - Scroll: GNB/menu entry → top (sub-visual visible). Local tab click, list→detail, detail prev/next → scroll to local tabs / sticky under GNB (`state.scrollToLocalTabs` + `useScrollToLocalTabs`).
 - GitHub Pages deep links: deploy copies `dist/index.html` → `dist/404.html`.

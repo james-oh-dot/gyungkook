@@ -1,5 +1,6 @@
 import { CASE_STUDIES_PAGE } from './caseStudies'
 import { COLUMN_MEDIA_PAGE } from './columnMedia'
+import { PRESS_COVERAGE_PAGE } from './pressCoverage'
 import { asset } from '../utils/asset'
 
 export type NavSubItem = {
@@ -27,6 +28,9 @@ export const GNB_SUB_VISUAL_PLACEHOLDER = asset('assets/gnb-sub-visual.png')
 
 /** Figma sub-04-01 — 활동·보도 > 업무사례 */
 export const GNB_SUB_VISUAL_PRESS_CASES = CASE_STUDIES_PAGE.visual
+
+/** Figma sub-04-02 — 활동·보도 > 언론보도 */
+export const GNB_SUB_VISUAL_PRESS_MEDIA = PRESS_COVERAGE_PAGE.visual
 
 /** Figma sub-04-03 — 활동·보도 > 컬럼미디어 */
 export const GNB_SUB_VISUAL_PRESS_COLUMN = COLUMN_MEDIA_PAGE.visual
@@ -74,7 +78,12 @@ export const NAV_ITEMS: NavItem[] = [
         href: '/press/cases',
         visual: GNB_SUB_VISUAL_PRESS_CASES,
       },
-      { id: 'press-media', label: '언론보도', href: '#press', visual: GNB_SUB_VISUAL_PLACEHOLDER },
+      {
+        id: 'press-media',
+        label: '언론보도',
+        href: '/press/coverage/tv',
+        visual: GNB_SUB_VISUAL_PRESS_MEDIA,
+      },
       {
         id: 'press-column',
         label: '컬럼미디어',
