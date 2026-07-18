@@ -363,6 +363,16 @@
   font-weight: 600;
 }
 
+/* Current page (desktop fullmenu) — light mint + brand teal */
+.gnb__sublink.is-selected,
+.gnb__sublink.is-selected:hover,
+.gnb__sublink.is-selected:focus-visible,
+.gnb__sublink.is-selected.is-active {
+  color: #58bdc2;
+  background: rgba(88, 189, 194, 0.14);
+  font-weight: 600;
+}
+
 /* ---------- Compact bar / drawer ---------- */
 .gnb--compact {
   --gnb-bar-h: 82px;
@@ -616,6 +626,16 @@
 .gnb__drawer-sublink:focus-visible {
   color: #111;
   background: #f7f7fb;
+}
+
+/* Current page (compact drawer) — light mint + brand teal */
+.gnb__drawer-sublink.is-selected,
+.gnb__drawer-sublink.is-selected:hover,
+.gnb__drawer-sublink.is-selected:focus-visible,
+.gnb__drawer-sublink.is-selected:active {
+  color: #58bdc2;
+  background: rgba(88, 189, 194, 0.14);
+  font-weight: 600;
 }
 
 .gnb__drawer-foot {

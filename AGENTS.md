@@ -11,6 +11,8 @@
 - Nav `href` rules: `#section` = home anchor; `/path` = SPA route. Always resolve with `resolveNavHref()` from `src/utils/path.ts` (GitHub Pages `base`).
 - Desktop (>1024): hover top item → Fullmenu; spring **sharp-rect** indicator on `.gnb__nav-list`; submenu hover swaps left `sub-visual` (`visual` on each sub item).
 - Compact (≤1024): hamburger opens **left drawer** (accordion + scrim + Esc + focus trap). Do not use mega-menu hover on touch widths.
+- Drawer open expands the **current page’s top menu** via `matchActiveNav` (`src/utils/navMatch.ts`) — never hardcode the first item (`법무법인경국`).
+- Current-page sublink uses `.is-selected`: light mint `rgba(88, 189, 194, 0.14)` + brand teal `#58bdc2` (desktop fullmenu + compact drawer). Hover-only state stays `.is-active` (neutral).
 - Over-hero = transparent/white type; solid/open = white bar + dark type.
 - Brand chrome: **no border-radius** on GNB buttons / indicator / glass actions (sharp rect). Call/Search icons: white over hero (`brightness(0) invert(1)`); on solid/open white bar use `brightness(0)`.
 - Site search: `SearchOverlay` — index from `NAV_ITEMS`.

@@ -1,3 +1,4 @@
+import { BrowserRouter } from 'react-router-dom'
 import { HeroClassic } from './components/HeroClassic'
 import { VersionSwitch } from './components/VersionSwitch'
 import {
@@ -17,21 +18,24 @@ import './styles/global.css'
 
 function AppClassic() {
   useScrollReveal()
+  const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined
 
   return (
-    <SiteLayout>
-      <VersionSwitch current="classic" />
-      <HeroClassic />
-      <NoticeSection />
-      <AboutSection />
-      <PracticeSection />
-      <AchievementsSection />
-      <ProfessionalsSection />
-      <PressSection />
-      <AwardsSection />
-      <SocialSection />
-      <OfficeSection />
-    </SiteLayout>
+    <BrowserRouter basename={basename}>
+      <SiteLayout>
+        <VersionSwitch current="classic" />
+        <HeroClassic />
+        <NoticeSection />
+        <AboutSection />
+        <PracticeSection />
+        <AchievementsSection />
+        <ProfessionalsSection />
+        <PressSection />
+        <AwardsSection />
+        <SocialSection />
+        <OfficeSection />
+      </SiteLayout>
+    </BrowserRouter>
   )
 }
 
