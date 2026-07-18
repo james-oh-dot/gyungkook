@@ -1,4 +1,4 @@
-import { Hero } from './components/Hero'
+import { HeroClassic } from './components/HeroClassic'
 import { VersionSwitch } from './components/VersionSwitch'
 import {
   AboutSection,
@@ -14,13 +14,13 @@ import {
 import { useScrollReveal } from './hooks/useScrollReveal'
 import './styles/global.css'
 
-function App() {
+function AppClassic() {
   useScrollReveal()
 
   return (
     <main className="page">
-      <VersionSwitch current="teal" />
-      <Hero />
+      <VersionSwitch current="classic" />
+      <HeroClassic />
       <NoticeSection />
       <AboutSection />
       <PracticeSection />
@@ -34,4 +34,4 @@ function App() {
   )
 }
 
-export default App
+export default AppClassic
