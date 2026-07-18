@@ -28,6 +28,9 @@
   - `statue`: `object-position: center top` + Ken Burns origin near head/scales — never `center bottom` (clips raised arm)
   - `jewel`: subject viewport-centered via `object-position: center 62%` (jewel sits low in source asset)
   - `birds`: `scaleX(-1)` (large lamp on **right**), bottom-anchored, keep pigeons; reduced-motion must keep the flip
+- Hero responsive source: Figma `AI-hero-change` → `HOME_DESKTOP2` / `HOME_TABLET2` / `HOME_MOBILE2`
+  - `hero_copy`: desktop artboard type (24 / 240 / 72, gap 40, maincopy row). Tablet keeps that structure via `--hero-copy-scale` (`zoom`; **literal** media steps — `zoom` rejects `calc()`). Mobile stacks maincopy (12 / 60 / 18).
+  - `hero_swipe` + `swipe_gage`: always `right: 0; bottom: 0` at every breakpoint; scale with `--hero-swipe-scale`. Never full-bleed / never stack thumb above meta on mobile.
 - Icons are **`.svg` only** under `public/assets/`. Never reintroduce SVG XML saved as `.png` (causes broken-image X boxes). Hero arrows are already white — do not `filter: invert(1)`.
 - Scroll reveal + light parallax: `src/hooks/useScrollReveal.ts` via `[data-reveal]` and `--parallax-y`.
 - Public asset URLs must go through `asset()` in `src/utils/asset.ts` so GitHub Pages `base` (`/gyungkook/`) works.

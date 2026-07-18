@@ -124,28 +124,35 @@ export function Hero() {
 
       <div className="hero__shell">
         <div className="hero__content" key={animKey}>
-          <div className="hero__copy" data-name="hero_copy">
-            <div className="hero__desc">
-              <LineReveal
-                key={`${animKey}-desc`}
-                lines={slide.description}
-                baseDelay={80}
-                step={120}
-              />
-            </div>
-
-            <div className="hero__maincopy" data-name="hero_maincopy">
-              <p
-                className={`hero__word${slide.wordSize === 'md' ? ' is-md' : ''}`}
-              >
-                <CharReveal
-                  key={`${animKey}-word`}
-                  text={slide.word}
-                  baseDelay={220}
-                  step={32}
+          {/*
+            Desktop artboard sizes live inside .hero__copy.
+            .hero__copy-scale applies zoom/scale so tablet keeps the same
+            side-by-side structure (Figma HOME_TABLET2 ≈ 0.5× desktop).
+          */}
+          <div className="hero__copy-scale">
+            <div className="hero__copy" data-name="hero_copy">
+              <div className="hero__desc">
+                <LineReveal
+                  key={`${animKey}-desc`}
+                  lines={slide.description}
+                  baseDelay={80}
+                  step={120}
                 />
-              </p>
-              <div className="hero__title">{titleBlocks}</div>
+              </div>
+
+              <div className="hero__maincopy" data-name="hero_maincopy">
+                <p
+                  className={`hero__word${slide.wordSize === 'md' ? ' is-md' : ''}`}
+                >
+                  <CharReveal
+                    key={`${animKey}-word`}
+                    text={slide.word}
+                    baseDelay={220}
+                    step={32}
+                  />
+                </p>
+                <div className="hero__title">{titleBlocks}</div>
+              </div>
             </div>
           </div>
         </div>
