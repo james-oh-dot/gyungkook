@@ -39,7 +39,8 @@
   - `birds`: `scaleX(-1)` (large lamp on **right**), bottom-anchored, keep pigeons; reduced-motion must keep the flip
 - `hero__title` shadow: Figma DROP_SHADOW → CSS `filter: drop-shadow(...)` on `.hero__title` (not `text-shadow`). Inherited `text-shadow` on CharReveal glyphs gets clipped into hard frames.
 - CharReveal / LineReveal `filter: blur` clips paint to the border box — keep top (+ side) padding with compensating negative margins on reveal items and `.hero__title-line` (overflow mask). Do not remove that padding or Hangul / ExtraBold serif tops get sliced.
-- Slide 04 `Communicate` uses `.hero__copy-scale.is-compact` (`--hero-copy-scale-compact`) so the long word never overflows the viewport.
+- Slide 04 `Communicate` uses `.hero__copy-scale.is-compact` on **desktop only** (long word). On tablet/mobile (≤1024) compact scale is released (`--hero-copy-scale-compact` = same as normal / `1`) so type isn’t undersized.
+- Slide 05 `campus`: on ≤1024 keep a **square** frame (`width` = `height`) + `object-fit: contain` — do not override only width (leaves short height + `cover` → top/bottom crop).
 - Hero responsive source: Figma `AI-hero-change` → `HOME_DESKTOP2` / `HOME_TABLET2` / `HOME_MOBILE2`
   - `hero_copy`: desktop artboard type (24 / 240 / 72, gap 40, maincopy **row**) + `--hero-copy-scale` (`zoom`; **literal** media steps — `zoom` rejects `calc()`).
   - ≤768 (`HOME_TABLET2`): stacked maincopy, native **14 / 120 / 36**, pad-x 50; `hero__content` absolute at **top ≈ 49.7%** (Figma 497/1000) — not flex-end.
