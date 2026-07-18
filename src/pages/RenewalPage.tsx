@@ -30,6 +30,7 @@ import './Renewal.css'
 
 const BULLET_SRC = asset('assets/icon-bullet.svg')
 const SAFETY_SRC = asset('assets/icon-safety.svg')
+const QUOT_SRC = asset('assets/renewal/quot.svg')
 
 function readGnbBarH(): number {
   const raw = getComputedStyle(document.documentElement)
@@ -561,7 +562,15 @@ export function RenewalPage() {
               </div>
             </div>
 
-            <div className="renewal-quotes" aria-label="경국 약속">
+            <div className="renewal-quotes" aria-label="경국 약속" data-name="특징">
+              <img
+                className="renewal-quotes__mark"
+                src={QUOT_SRC}
+                alt=""
+                width={301}
+                height={242}
+                data-name="quot"
+              />
               {RENEWAL_TRACK_RECORD.quotes.map((q) => (
                 <p key={q.slice(0, 32)} className="renewal-quotes__item">
                   {q.split('\n').map((line) => (

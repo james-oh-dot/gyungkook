@@ -9,8 +9,6 @@
   position: sticky;
   top: var(--gnb-bar-h, 100px);
   z-index: 800; /* below GNB (900), above page content */
-  display: flex;
-  justify-content: center;
   width: 100%;
   padding: 20px var(--page-pad);
   border-bottom: 1px solid #e5e5ec;
@@ -18,18 +16,30 @@
   /* Keep bar clear of fixed GNB when scrollIntoView(block: start) runs */
   scroll-margin-top: var(--gnb-bar-h, 100px);
   transition: box-shadow 0.25s var(--ease-premium, ease);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-
-.local-tabs::-webkit-scrollbar {
-  display: none;
 }
 
 /* Soft lift once stuck under the GNB */
 .local-tabs.is-stuck {
   box-shadow: 0 8px 20px -12px rgba(17, 17, 17, 0.18);
+}
+
+/**
+ * Horizontal scroll host for overflowing tabs (tablet / mobile).
+ * Indicator lives inside the list so it scrolls with the tabs.
+ */
+.local-tabs__viewport {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.local-tabs__viewport::-webkit-scrollbar {
+  display: none;
 }
 
 .local-tabs__list {
@@ -51,6 +61,7 @@
   display: flex;
   align-items: center;
   gap: 24px;
+  flex: 0 0 auto;
 }
 
 .local-tabs__item + .local-tabs__item {
@@ -93,7 +104,7 @@
 .local-tabs__indicator {
   position: absolute;
   left: 0;
-  bottom: -1px;
+  bottom: -21px; /* sit on nav border: item + nav padding-bottom */
   height: 6px;
   background: #58bdc2;
   pointer-events: none;
@@ -106,6 +117,14 @@
     transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.2s ease;
+}
+
+/* Chrome / columns axis — overflow tabs start from the left for easier swipe */
+@media (max-width: 1024px) {
+  .local-tabs__list {
+    justify-content: flex-start;
+    min-width: max-content;
+  }
 }
 
 @media (max-width: 767px) {
@@ -130,6 +149,7 @@
   }
 
   .local-tabs__indicator {
+    bottom: -17px; /* 16px pad + 1px border */
     height: 4px;
   }
 }

@@ -563,7 +563,22 @@
   padding: 80px 0;
 }
 
+/* Figma `quot` (68:12355) — closing double quote mark */
+.renewal-quotes__mark {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: min(300.865px, 28vw);
+  height: auto;
+  aspect-ratio: 300.865 / 242;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
 .renewal-quotes__item {
+  position: relative;
+  z-index: 1;
   margin: 0;
   font-family: var(--font-serif);
   font-size: 36px;
@@ -764,6 +779,10 @@
     padding: 48px 0;
   }
 
+  .renewal-quotes__mark {
+    width: min(200px, 36vw);
+  }
+
   .renewal-quotes__item {
     font-size: 28px;
   }
@@ -851,6 +870,10 @@
 
   .renewal-quotes__item {
     font-size: 22px;
+  }
+
+  .renewal-quotes__mark {
+    width: min(140px, 42vw);
   }
 
   .renewal-results__actions {

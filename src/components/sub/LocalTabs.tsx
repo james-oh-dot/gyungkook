@@ -51,6 +51,7 @@ function readGnbBarH(): number {
  * - Hover: teal underline follows the hovered tab
  * - Click: route (`toTab`) or scroll callback (`onTabSelect`)
  * - Sticky under fixed GNB while the page scrolls
+ * - Tablet/mobile: horizontal scroll when tabs overflow
  */
 export function LocalTabs(props: LocalTabsProps) {
   const { tabs, activeTab, ariaLabel = '로컬 메뉴' } = props
@@ -59,6 +60,8 @@ export function LocalTabs(props: LocalTabsProps) {
 
   const location = useLocation()
   const navRef = useRef<HTMLElement>(null)
+  const viewportRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLUListElement>(null)
   const sentinelRef = useRef<HTMLDivElement>(null)
   const itemRefs = useRef<(HTMLLIElement | null)[]>([])
   const [indicator, setIndicator] = useState<Indicator | null>(null)
@@ -73,14 +76,14 @@ export function LocalTabs(props: LocalTabsProps) {
   const focusIndex = hoverIndex ?? selectedIndex
 
   const measure = useCallback((index: number) => {
-    const nav = navRef.current
+    const list = listRef.current
     const item = itemRefs.current[index]
-    if (!nav || !item) return
-    const navBox = nav.getBoundingClientRect()
+    if (!list || !item) return
+    const listBox = list.getBoundingClientRect()
     const link = item.querySelector('a, button.local-tabs__link')
     const target = (link ?? item).getBoundingClientRect()
     setIndicator({
-      x: target.left - navBox.left,
+      x: target.left - listBox.left,
       w: target.width,
     })
   }, [])
@@ -95,6 +98,29 @@ export function LocalTabs(props: LocalTabsProps) {
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [focusIndex, measure])
+
+  /* Keep active tab visible when the bar overflows (tablet / mobile). */
+  useEffect(() => {
+    const item = itemRefs.current[selectedIndex]
+    const viewport = viewportRef.current
+    if (!item || !viewport) return
+    if (viewport.scrollWidth <= viewport.clientWidth + 1) return
+
+    const itemBox = item.getBoundingClientRect()
+    const viewBox = viewport.getBoundingClientRect()
+    const pad = 24
+    if (itemBox.left < viewBox.left + pad) {
+      viewport.scrollBy({
+        left: itemBox.left - viewBox.left - pad,
+        behavior: 'smooth',
+      })
+    } else if (itemBox.right > viewBox.right - pad) {
+      viewport.scrollBy({
+        left: itemBox.right - viewBox.right + pad,
+        behavior: 'smooth',
+      })
+    }
+  }, [selectedIndex, activeTab])
 
   useEffect(() => {
     const sentinel = sentinelRef.current
@@ -153,47 +179,51 @@ export function LocalTabs(props: LocalTabsProps) {
         aria-label={ariaLabel}
         onMouseLeave={onLeave}
       >
-        <ul className="local-tabs__list" role="list">
-          {tabs.map((tab, index) => (
-            <li
-              key={tab.id}
-              ref={(el) => {
-                itemRefs.current[index] = el
-              }}
-              className="local-tabs__item"
-              onMouseEnter={() => setHoverIndex(index)}
-              onFocus={() => setHoverIndex(index)}
-            >
-              {index > 0 ? <span className="local-tabs__sep" aria-hidden="true" /> : null}
-              {toTab ? (
-                <NavLink
-                  to={toTab(tab.id)}
-                  state={{ scrollToLocalTabs: true }}
-                  className={() =>
-                    `local-tabs__link${tab.id === activeTab ? ' is-selected' : ''}`
-                  }
-                  end
-                >
-                  {tab.label}
-                </NavLink>
-              ) : (
-                <button
-                  type="button"
-                  className={`local-tabs__link${tab.id === activeTab ? ' is-selected' : ''}`}
-                  aria-current={tab.id === activeTab ? 'true' : undefined}
-                  onClick={() => onTabSelect?.(tab.id)}
-                >
-                  {tab.label}
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
-        <span
-          className={`local-tabs__indicator${ready ? ' is-ready' : ''}`}
-          style={style}
-          aria-hidden="true"
-        />
+        <div ref={viewportRef} className="local-tabs__viewport">
+          <ul ref={listRef} className="local-tabs__list" role="list">
+            {tabs.map((tab, index) => (
+              <li
+                key={tab.id}
+                ref={(el) => {
+                  itemRefs.current[index] = el
+                }}
+                className="local-tabs__item"
+                onMouseEnter={() => setHoverIndex(index)}
+                onFocus={() => setHoverIndex(index)}
+              >
+                {index > 0 ? (
+                  <span className="local-tabs__sep" aria-hidden="true" />
+                ) : null}
+                {toTab ? (
+                  <NavLink
+                    to={toTab(tab.id)}
+                    state={{ scrollToLocalTabs: true }}
+                    className={() =>
+                      `local-tabs__link${tab.id === activeTab ? ' is-selected' : ''}`
+                    }
+                    end
+                  >
+                    {tab.label}
+                  </NavLink>
+                ) : (
+                  <button
+                    type="button"
+                    className={`local-tabs__link${tab.id === activeTab ? ' is-selected' : ''}`}
+                    aria-current={tab.id === activeTab ? 'true' : undefined}
+                    onClick={() => onTabSelect?.(tab.id)}
+                  >
+                    {tab.label}
+                  </button>
+                )}
+              </li>
+            ))}
+            <span
+              className={`local-tabs__indicator${ready ? ' is-ready' : ''}`}
+              style={style}
+              aria-hidden="true"
+            />
+          </ul>
+        </div>
       </nav>
     </>
   )
