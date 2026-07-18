@@ -125,9 +125,8 @@ export function Hero() {
       <div className="hero__shell">
         <div className="hero__content" key={animKey}>
           {/*
-            Desktop artboard sizes live inside .hero__copy.
-            .hero__copy-scale applies zoom/scale so tablet keeps the same
-            side-by-side structure (Figma HOME_TABLET2 ≈ 0.5× desktop).
+            Desktop: artboard sizes + zoom scale (side-by-side maincopy).
+            ≤768 (HOME_TABLET2 / MOBILE2): native stacked sizes — see Hero.css.
           */}
           <div
             className={`hero__copy-scale${slide.wordSize === 'md' ? ' is-compact' : ''}`}
@@ -175,14 +174,21 @@ export function Hero() {
               e.preventDefault()
               next()
             }}
-            aria-label={`다음 화면 ${nextSlide.index} ${slide.nextLabel}로 이동`}
+            aria-label={`다음 화면 ${nextSlide.index} ${nextSlide.word}로 이동`}
           >
             <div className="hero__swipe-thumb">
               <img src={slide.nextImage} alt="" decoding="async" />
             </div>
             <div className="hero__swipe-meta">
-              <span>{nextSlide.index}</span>
-              <span>{slide.nextLabel}</span>
+              {/* Desktop: index + nextLabel row. Card (≤1024): 3-line stack. */}
+              <span className="hero__swipe-meta-row">
+                <span className="hero__swipe-meta-index">{nextSlide.index}</span>
+                <span className="hero__swipe-meta-name">{nextSlide.word}</span>
+              </span>
+              <span className="hero__swipe-meta-title">{slide.nextSwipeTitle}</span>
+              <span className="hero__swipe-meta-count">
+                {slide.index} / {String(heroSlides.length).padStart(2, '0')}
+              </span>
             </div>
           </button>
 
