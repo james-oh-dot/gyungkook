@@ -104,16 +104,19 @@ export function Hero() {
             }${item.fadeEdges ? ' has-fade' : ''}`}
           >
             <div className="hero__visual">
-              <img
-                src={item.image}
-                alt=""
-                decoding="async"
-                style={
-                  i === index
-                    ? ({ '--hero-zoom': progress } as CSSProperties)
-                    : undefined
-                }
-              />
+              {/* birds: flip wrapper keeps scaleX(-1) at center; Ken Burns stays on img */}
+              <div className="hero__visual-media">
+                <img
+                  src={item.image}
+                  alt=""
+                  decoding="async"
+                  style={
+                    i === index
+                      ? ({ '--hero-zoom': progress } as CSSProperties)
+                      : undefined
+                  }
+                />
+              </div>
             </div>
           </div>
         ))}
