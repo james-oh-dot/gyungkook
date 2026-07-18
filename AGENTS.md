@@ -7,9 +7,10 @@
 
 ### GNB (site nav)
 - Component: `src/components/Gnb.tsx` + `src/data/nav.ts`. Mounted in `App.tsx` / `AppClassic.tsx`.
-- Desktop (>1024): hover top item → Fullmenu; spring pill indicator on `.gnb__nav-list`; submenu hover swaps left `sub-visual` (shared placeholder `public/assets/gnb-sub-visual.png` until per-page assets land — keep `visual` field on each sub item).
+- Desktop (>1024): hover top item → Fullmenu; spring **sharp-rect** indicator on `.gnb__nav-list`; submenu hover swaps left `sub-visual` (shared placeholder `public/assets/gnb-sub-visual.png` until per-page assets land — keep `visual` field on each sub item).
 - Compact (≤1024): hamburger opens **left drawer** (accordion + scrim + Esc + focus trap). Do not use mega-menu hover on touch widths.
 - Over-hero = transparent/white type; solid/open = white bar + dark type. Section anchors use `id` on home sections (`#about`, `#notice`, …).
+- Brand chrome: **no border-radius** on GNB buttons / indicator / glass actions (sharp rect). Call/Search icons stay white via `filter`; invert only when menu open (`--gnb-icon-filter`). Keep transitions on all GNB interactions (premium baseline).
 
 ### Commands
 - Install: `npm install`
