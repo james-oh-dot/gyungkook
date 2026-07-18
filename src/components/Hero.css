@@ -693,7 +693,8 @@
   /*
     Statue (slide 01) — Figma HOME_TABLET2 image 42:
     artboard 768×1000; node 611×1023 at x=78.5, absolute top = 814 + (-657) = 157
-    → top: 15.7%. Width 611, centered. Native aspect (no squash).
+    Midpoint between prior raise (top ≈ -213) and Figma (157) → top -2.8%.
+    Width 611, centered. Native aspect (no squash).
   */
   .hero__bg-slide--statue .hero__visual {
     place-items: unset;
@@ -704,7 +705,7 @@
     display: block;
     position: absolute;
     left: 50%;
-    top: 15.7%; /* 157 / 1000 */
+    top: -2.8%; /* mid: raised ↔ Figma */
     width: min(79.557vw, 611px);
     transform: translateX(-50%);
   }
@@ -891,9 +892,9 @@
     padding-right: 24px;
   }
 
-  /* Tablet statue — exact Figma HOME_TABLET2 image 42 box */
+  /* Tablet statue — mid between prior raise and Figma top */
   .hero__bg-slide--statue .hero__visual-media {
-    top: 15.7%;
+    top: -2.8%;
     width: 611px;
   }
 
@@ -969,10 +970,11 @@
   /*
     Mobile statue — Figma HOME_MOBILE2 image 42:
     artboard 390×900; node 418.1×700 at x≈-14.3, absolute top = 752 + (-533.5) = 218.5
-    → top: 24.28%. Width 107.2vw (418.1/390), centered.
+    Midpoint between prior raise (top ≈ -5) and Figma (218.5) → top 11.9%.
+    Width 107.2vw (418.1/390), centered.
   */
   .hero__bg-slide--statue .hero__visual-media {
-    top: 24.28%; /* 218.5 / 900 */
+    top: 11.9%; /* mid: raised ↔ Figma */
     width: 107.2vw;
   }
 
@@ -994,19 +996,19 @@
   }
 }
 
-/* Keep Figma tops when motion is reduced (tablet/mobile) */
+/* Keep statue tops when motion is reduced (tablet/mobile) */
 @media (prefers-reduced-motion: reduce) and (max-width: 1024px) {
   .hero__bg-slide--statue .hero__visual img {
     transform: none;
   }
 
   .hero__bg-slide--statue .hero__visual-media {
-    top: 15.7%;
+    top: -2.8%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) and (max-width: 767px) {
   .hero__bg-slide--statue .hero__visual-media {
-    top: 24.28%;
+    top: 11.9%;
   }
 }
