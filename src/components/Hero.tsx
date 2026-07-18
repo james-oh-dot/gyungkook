@@ -178,7 +178,12 @@ export function Hero() {
             aria-label={`다음 화면 ${nextSlide.index} ${slide.nextLabel}로 이동`}
           >
             <div className="hero__swipe-thumb">
-              <img src={slide.nextImage} alt="" decoding="async" />
+              <img
+                src={slide.nextImage}
+                alt=""
+                decoding="async"
+                className={slide.flipSwipe ? 'is-flip-x' : undefined}
+              />
             </div>
             <div className="hero__swipe-meta">
               <span>{nextSlide.index}</span>
