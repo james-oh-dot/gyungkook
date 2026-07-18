@@ -12,6 +12,8 @@
   */
   --hero-pad-x: 138px;
   --hero-copy-scale: 1;
+  /* Communicate (long word) — slightly smaller so copy never overflows viewport */
+  --hero-copy-scale-compact: 0.78;
   --hero-swipe-scale: 1;
   --hero-swipe-w: 574px;
   --hero-swipe-reserve: 372px;
@@ -31,6 +33,7 @@
   .hero {
     --hero-pad-x: 110px;
     --hero-copy-scale: 0.85;
+    --hero-copy-scale-compact: 0.66;
     --hero-swipe-scale: 0.85;
     --hero-swipe-reserve: 324px;
   }
@@ -40,6 +43,7 @@
   .hero {
     --hero-pad-x: 72px;
     --hero-copy-scale: 0.68;
+    --hero-copy-scale-compact: 0.54;
     --hero-swipe-scale: 0.7;
     --hero-swipe-reserve: 280px;
   }
@@ -49,6 +53,7 @@
   .hero {
     --hero-pad-x: 56px;
     --hero-copy-scale: 0.58;
+    --hero-copy-scale-compact: 0.46;
     --hero-swipe-scale: 0.6;
     --hero-swipe-reserve: 260px;
   }
@@ -58,6 +63,7 @@
   .hero {
     --hero-pad-x: 50px;
     --hero-copy-scale: 0.5;
+    --hero-copy-scale-compact: 0.4;
     --hero-swipe-scale: 0.55;
     --hero-swipe-reserve: 240px;
   }
@@ -138,6 +144,7 @@
 }
 
 .hero__bg-slide--statue .hero__visual img {
+  /* 2x PNG 2117×4096 — keep head/arms/scales; legs may crop */
   width: min(47.4vw, 910px);
   height: min(118vh, 1680px);
   object-fit: cover;
@@ -152,13 +159,13 @@
 }
 
 .hero__bg-slide--jewel .hero__visual img {
-  width: min(48vw, 920px);
-  height: min(72vh, 1100px);
-  object-fit: cover;
-  /* Jewel sits low in the source — bias position so subject is viewport-centered */
-  object-position: center 62%;
+  /* 2x PNG 1066×1054 (near-square) — subject centered in asset */
+  width: min(52vw, 980px);
+  height: min(72vh, 980px);
+  object-fit: contain;
+  object-position: center center;
   margin: 0;
-  transform-origin: 50% 55%;
+  transform-origin: 50% 50%;
 }
 
 .hero__bg-slide--jewel.has-fade .hero__visual::after {
@@ -201,12 +208,12 @@
 }
 
 .hero__bg-slide--birds .hero__visual img {
-  /* Full-bleed width, natural landscape ratio — both pigeons stay in frame */
+  /* 2x PNG 4096×2907 — full-bleed width, both pigeons stay in frame */
   display: block;
   width: 100%;
   height: auto;
   max-width: 100%;
-  aspect-ratio: 1264 / 710;
+  aspect-ratio: 4096 / 2907;
   object-fit: cover;
   object-position: center bottom;
   margin: 0;
@@ -252,10 +259,18 @@
   zoom: var(--hero-copy-scale);
 }
 
+.hero__copy-scale.is-compact {
+  zoom: var(--hero-copy-scale-compact);
+}
+
 @supports not (zoom: 1) {
   .hero__copy-scale {
     transform: scale(var(--hero-copy-scale));
     transform-origin: left bottom;
+  }
+
+  .hero__copy-scale.is-compact {
+    transform: scale(var(--hero-copy-scale-compact));
   }
 }
 
@@ -314,14 +329,21 @@
   font-size: 72px;
   line-height: 1;
   letter-spacing: -0.025em;
-  text-shadow: 0 10px 30px rgba(35, 48, 59, 0.4);
+  /*
+    Figma DROP_SHADOW: y=10, blur=30, spread=-4, rgba(35,48,59,0.4).
+    Use filter (not text-shadow): CharReveal chars use `filter`/`overflow`,
+    and inherited text-shadow gets clipped per-glyph into hard “frames”.
+  */
+  text-shadow: none;
+  filter: drop-shadow(0 10px 20px rgba(35, 48, 59, 0.45));
   flex: 0 0 auto;
+  overflow: visible;
 }
 
 .hero__title-line {
   margin: 0;
   overflow: hidden;
-  padding-bottom: 0.06em;
+  padding-bottom: 0.08em;
 }
 
 /*
@@ -597,6 +619,7 @@
   .hero {
     --hero-pad-x: 24px;
     --hero-copy-scale: 1;
+    --hero-copy-scale-compact: 0.62;
     --hero-swipe-scale: 0.45;
     --hero-swipe-reserve: calc(324px * 0.45 + 32px);
   }
@@ -605,6 +628,11 @@
     zoom: 1;
     transform: none;
     max-width: 100%;
+  }
+
+  .hero__copy-scale.is-compact {
+    zoom: var(--hero-copy-scale-compact);
+    max-width: none;
   }
 
   .hero__copy {
@@ -624,9 +652,13 @@
     gap: 4px;
   }
 
-  .hero__word,
-  .hero__word.is-md {
+  .hero__word {
     font-size: 60px;
+    white-space: nowrap;
+  }
+
+  .hero__word.is-md {
+    font-size: 48px;
     white-space: nowrap;
   }
 

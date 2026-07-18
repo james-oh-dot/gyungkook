@@ -23,11 +23,14 @@
   - `hero_maincopy`: large Nanum Myeongjo English **word** + Korean **title** side-by-side
   - Swipe meta is **white** card + white-border thumb (not dark chrome)
 - Hero motion contract: description = `LineReveal`; English word + Korean title = `CharReveal`; image Ken Burns via `--hero-zoom` over 10s; `swipe_gage` = rAF `scaleX(progress)` with **no CSS width transition**; prev/next/thumb click = instant `jumpTo`.
-- Slide 02 visual **must** be the jewel (`public/assets/hero-02.jpg`).
+- Slide 02 visual **must** be the jewel (`public/assets/hero-02.png`).
+- Hero 01/02/04 assets are **RGBA PNG** (2× from Figma `hero-01` / `hero-02` / `hero-04` on `AI-hero-change`). Keep alpha — do not re-bake to JPEG.
 - Hero visual framing (teal rebuild — do not regress):
   - `statue`: `object-position: center top` + Ken Burns origin near head/scales — never `center bottom` (clips raised arm)
-  - `jewel`: subject viewport-centered via `object-position: center 62%` (jewel sits low in source asset)
+  - `jewel`: centered `object-fit: contain` on near-square 2× PNG
   - `birds`: `scaleX(-1)` (large lamp on **right**), bottom-anchored, keep pigeons; reduced-motion must keep the flip
+- `hero__title` shadow: Figma DROP_SHADOW → CSS `filter: drop-shadow(...)` on `.hero__title` (not `text-shadow`). Inherited `text-shadow` on CharReveal glyphs gets clipped into hard frames.
+- Slide 04 `Communicate` uses `.hero__copy-scale.is-compact` (`--hero-copy-scale-compact`) so the long word never overflows the viewport.
 - Hero responsive source: Figma `AI-hero-change` → `HOME_DESKTOP2` / `HOME_TABLET2` / `HOME_MOBILE2`
   - `hero_copy`: desktop artboard type (24 / 240 / 72, gap 40, maincopy row). Tablet keeps that structure via `--hero-copy-scale` (`zoom`; **literal** media steps — `zoom` rejects `calc()`). Mobile stacks maincopy (12 / 60 / 18).
   - `hero_swipe` + `swipe_gage`: always `right: 0; bottom: 0` at every breakpoint; scale with `--hero-swipe-scale`. Never full-bleed / never stack thumb above meta on mobile.
