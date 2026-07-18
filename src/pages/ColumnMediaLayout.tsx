@@ -13,7 +13,8 @@ import './ColumnMedia.css'
 /**
  * Shell for 컬럼·미디어 list + detail.
  * Visual (sub-04-03) + local tabs stay mounted; only the Outlet content swaps.
- * Scroll-to-tabs only on detail entry / prev·next (not menu or tab clicks).
+ * Scroll-to-tabs: local tab clicks + detail entry / prev·next.
+ * GNB/menu entry keeps the sub-visual at top.
  *
  * LocalTabs is a direct child of `.column-media` (not wrapped with the hero)
  * so `position: sticky` can pin under the GNB through the main content.

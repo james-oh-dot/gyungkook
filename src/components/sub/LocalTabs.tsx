@@ -147,6 +147,8 @@ export function LocalTabs({ tabs, activeTab }: LocalTabsProps) {
               {index > 0 ? <span className="local-tabs__sep" aria-hidden="true" /> : null}
               <NavLink
                 to={tabListPath(tab.id)}
+                // Keep sticky tab position when switching 컬럼/간행물/미디어
+                state={{ scrollToLocalTabs: true }}
                 className={() =>
                   `local-tabs__link${tab.id === activeTab ? ' is-selected' : ''}`
                 }
