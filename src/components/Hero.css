@@ -1069,6 +1069,12 @@
     transform: none;
   }
 
+  /* Slide 02 jewel — nudge ~10% down from centered mobile position */
+  .hero__bg-slide--jewel .hero__visual img {
+    transform: translateY(10vh) scale(calc(1 + var(--hero-zoom) * 0.08));
+    transform-origin: 50% 50%;
+  }
+
   /*
     Slide 04 birds — 180% mobile scale (trial). Keep flip + bottom anchor;
     overflow clips the wider scene.
