@@ -934,8 +934,8 @@
   }
 
   .hero__desc {
-    /* 18px @390 (1.5× prior 12) → 14px @768 */
-    font-size: clamp(14px, calc(18px + (14 - 18) * var(--hero-fluid-t)), 18px);
+    /* 16px max @390 → 14px @768 (never exceed 16px on mobile) */
+    font-size: clamp(14px, calc(16px + (14 - 16) * var(--hero-fluid-t)), 16px);
     flex: 0 0 auto;
     max-width: 100%;
   }
