@@ -518,8 +518,22 @@
   height: 100%;
   object-fit: cover;
   transform: scale(1);
+  transform-origin: center center;
   transition: transform 1.05s var(--hero-ease);
-  will-change: transform;
+  /*
+    Do not leave will-change:transform on permanently — Chrome can keep a
+    composited layer with a stale bitmap when only `src` changes.
+  */
+  animation: hero-thumb-swap 0.28s var(--hero-ease);
+}
+
+@keyframes hero-thumb-swap {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 /* ONLY thumbnail image effect on hover — never the full hero background */
@@ -718,6 +732,7 @@
   .char-reveal__item,
   .line-reveal__item {
     transition: none !important;
+    animation: none !important;
     filter: none !important;
   }
 

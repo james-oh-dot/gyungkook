@@ -13,6 +13,7 @@ export function HeroClassic() {
   const startRef = useRef(performance.now())
   const pausedRef = useRef(false)
   const pauseElapsedRef = useRef(0)
+  const progressRef = useRef(0)
   const lastJumpAtRef = useRef(0)
 
   const slide = classicHeroSlides[index]
@@ -28,6 +29,7 @@ export function HeroClassic() {
     const resolved = ((next % total) + total) % total
     indexRef.current = resolved
     setIndex(resolved)
+    progressRef.current = 0
     setProgress(0)
     setAnimKey((k) => k + 1)
     startRef.current = now
@@ -59,7 +61,9 @@ export function HeroClassic() {
           // Advance exactly one slide; jumpTo debounce blocks double fire
           jumpTo(indexRef.current + 1)
         } else {
-          setProgress(Math.min(1, elapsed / HERO_DURATION_MS))
+          const p = Math.min(1, elapsed / HERO_DURATION_MS)
+          progressRef.current = p
+          setProgress(p)
         }
       }
 
@@ -150,7 +154,7 @@ export function HeroClassic() {
           className="hero__swipe-preview"
           onMouseEnter={() => {
             pausedRef.current = true
-            pauseElapsedRef.current = progress * HERO_DURATION_MS
+            pauseElapsedRef.current = progressRef.current * HERO_DURATION_MS
           }}
           onMouseLeave={() => {
             startRef.current = performance.now() - pauseElapsedRef.current
@@ -163,7 +167,13 @@ export function HeroClassic() {
           aria-label={`다음 화면 ${nextSlide.index} ${slide.nextLabel}로 이동`}
         >
           <div className="hero__swipe-thumb">
-            <img src={nextSlide.image} alt="" decoding="async" />
+            <img
+              key={nextSlide.id}
+              src={nextSlide.image}
+              alt=""
+              decoding="sync"
+              draggable={false}
+            />
           </div>
           <div className="hero__swipe-meta">
             <span>{nextSlide.index}</span>
