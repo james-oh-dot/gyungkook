@@ -8,6 +8,8 @@
 ### Shared chrome (GNB + Footer)
 - Every page mounts chrome via `src/layouts/SiteLayout.tsx` (`Gnb` + `<Outlet />` or children + `Footer`). Do not re-import GNB/Footer in page apps.
 - GNB: `src/components/Gnb.tsx` + `src/data/nav.ts`. Footer: `src/components/Footer.tsx`.
+- Footer logo is **grey** (`public/assets/footer/logo-mark-grey.png` + `logo-wordmark-grey.svg`), lockup ≈ Figma `115.2×32` (mark 31 / wordmark height 22). Do not reuse GNB navy/white logo assets in the footer.
+- Footer SNS icons are white glyphs; Facebook must be the tall `f` path (`sns-facebook.svg` viewBox 15×27) — not a blue brand circle (CSS `brightness(0) invert(1)` would flatten it).
 - Nav `href` rules: `#section` = home anchor; `/path` = SPA route. Always resolve with `resolveNavHref()` from `src/utils/path.ts` (GitHub Pages `base`).
 - Desktop (>1024): hover top item → Fullmenu; spring **sharp-rect** indicator on `.gnb__nav-list`; submenu hover swaps left `sub-visual` (`visual` on each sub item).
 - Compact (≤1024): hamburger opens **left drawer** (accordion + scrim + Esc + focus trap). Do not use mega-menu hover on touch widths.

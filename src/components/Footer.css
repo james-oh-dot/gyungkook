@@ -17,24 +17,32 @@
   align-items: center;
 }
 
+/* Figma footer logo lockup 115.2×32 — mark ~31, wordmark ~75×22 */
 .site-footer__logo {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
+  height: 32px;
+  min-width: 115px;
   text-decoration: none;
   color: inherit;
 }
 
 .site-footer__logo-mark {
-  width: 32px;
-  height: 32px;
+  width: 31px;
+  height: 31px;
+  flex: 0 0 auto;
   object-fit: contain;
+  display: block;
 }
 
 .site-footer__logo-word {
-  height: 32px;
+  height: 22px;
   width: auto;
+  max-width: 76px;
+  flex: 0 0 auto;
   display: block;
+  object-fit: contain;
 }
 
 .site-footer__rule {
@@ -166,7 +174,20 @@ a.site-footer__meta-value:hover {
   width: 22px;
   height: 22px;
   object-fit: contain;
+  /* Monochrome white glyphs on #111 circles */
   filter: brightness(0) invert(1);
+}
+
+/* Figma Facebook leaf ≈ 15×27 inside 48 hit area (taller “f”) */
+.site-footer__sns-link--facebook img {
+  width: 15px;
+  height: 27px;
+}
+
+/* Figma Instagram leaf 32×32 inside 48 hit area */
+.site-footer__sns-link--instagram img {
+  width: 32px;
+  height: 32px;
 }
 
 .site-footer__copy {
@@ -207,5 +228,33 @@ a.site-footer__meta-value:hover {
   .site-footer__sns-link img {
     width: 26px;
     height: 26px;
+  }
+
+  .site-footer__sns-link--facebook img {
+    width: 18px;
+    height: 32px;
+  }
+
+  .site-footer__sns-link--instagram img {
+    width: 37px;
+    height: 37px;
+  }
+}
+
+/* Tablet: keep desktop logo lockup; SNS stays 48 until mobile */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .site-footer__logo {
+    height: 32px;
+    min-width: 115px;
+  }
+
+  .site-footer__logo-mark {
+    width: 31px;
+    height: 31px;
+  }
+
+  .site-footer__logo-word {
+    height: 22px;
+    max-width: 76px;
   }
 }
