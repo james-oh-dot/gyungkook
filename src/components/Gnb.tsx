@@ -18,10 +18,11 @@ import './Gnb.css'
 
 type Indicator = { x: number; y: number; w: number; h: number }
 
-/** Desktop fullmenu: column left/width relative to fullmenu content box. */
+/** Desktop fullmenu: offsets from fullmenu-inner padding edge. */
 type ColumnLayout = {
   lefts: number[]
   widths: number[]
+  visualLeft: number
   visualWidth: number
 }
 
@@ -131,7 +132,9 @@ export function Gnb() {
     return () => window.removeEventListener('resize', onResize)
   }, [activeTop, isCompact, measureIndicator])
 
-  /* Align fullmenu columns to each top-nav item's left edge. */
+  /* Align fullmenu columns to each top-nav item's left edge.
+   * Absolute children are positioned from the padding edge of
+   * `.gnb__fullmenu-inner`, so offsets are measured from that origin. */
   const syncColumnLayout = useCallback(() => {
     const inner = fullmenuInnerRef.current
     if (!inner || isCompact || !menuOpen) return
@@ -140,26 +143,30 @@ export function Gnb() {
     const styles = getComputedStyle(inner)
     const padLeft = parseFloat(styles.paddingLeft) || 0
     const padRight = parseFloat(styles.paddingRight) || 0
-    const contentLeft = innerRect.left + padLeft
-    const contentWidth = Math.max(0, inner.clientWidth - padLeft - padRight)
+    /* Padding-edge origin matches CSS absolute `left: 0`. */
+    const originLeft = innerRect.left
+    const contentRight = Math.max(0, inner.clientWidth - padRight)
 
     const lefts = NAV_ITEMS.map((_, index) => {
       const el = itemRefs.current[index]
       if (!el) return 0
-      return Math.max(0, Math.round(el.getBoundingClientRect().left - contentLeft))
+      return Math.max(0, Math.round(el.getBoundingClientRect().left - originLeft))
     })
 
     if (!lefts.length || lefts.every((v) => v === 0)) return
 
+    const first = lefts[0] ?? 0
     const widths = lefts.map((left, index) => {
       if (index < lefts.length - 1) return Math.max(0, lefts[index + 1] - left)
-      return Math.max(0, contentWidth - left)
+      return Math.max(0, contentRight - left)
     })
 
     setColumnLayout({
       lefts,
       widths,
-      visualWidth: lefts[0] ?? 0,
+      visualLeft: padLeft,
+      /* Visual sits in the padded content area, ending at the first column. */
+      visualWidth: Math.max(0, first - padLeft),
     })
   }, [isCompact, menuOpen])
 
@@ -385,7 +392,10 @@ export function Gnb() {
               aria-hidden="true"
               style={
                 columnLayout
-                  ? { width: columnLayout.visualWidth }
+                  ? {
+                      left: columnLayout.visualLeft,
+                      width: columnLayout.visualWidth,
+                    }
                   : undefined
               }
             >

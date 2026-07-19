@@ -304,9 +304,8 @@
   position: absolute;
   top: 16px;
   bottom: 16px;
-  left: 0;
+  /* `left` / `width` set inline — cover ends at the first column. */
   min-height: 0;
-  /* Width set inline from first nav item left — cover shrinks as needed. */
   max-width: 100%;
 }
 
@@ -344,7 +343,8 @@
   display: block;
   position: absolute;
   top: 16px;
-  right: 0;
+  /* `right` keeps the white panel inset by the same padding as the bar. */
+  right: 39px;
   bottom: 16px;
   /* `left` set inline to first nav item — white panel starts under first column. */
   gap: 0;
@@ -721,6 +721,10 @@
 
   .gnb__fullmenu-inner.is-nav-aligned {
     grid-template-columns: none;
+  }
+
+  .gnb__fullmenu-inner.is-nav-aligned .gnb__columns {
+    right: 24px;
   }
 }
 
