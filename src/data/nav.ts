@@ -1,10 +1,10 @@
 import { ABOUT_INTRO_PAGE } from './aboutIntro'
 import { CASE_STUDIES_PAGE } from './caseStudies'
 import { COLUMN_MEDIA_PAGE } from './columnMedia'
+import { PLACEHOLDER_VISUAL_SRC } from './placeholderPages'
 import { PRESS_COVERAGE_PAGE } from './pressCoverage'
 import { RENEWAL_PAGE } from './renewal'
 import { SOCIAL_CONTRIBUTION_PAGE } from './socialContribution'
-import { asset } from '../utils/asset'
 
 export type NavSubItem = {
   id: string
@@ -26,8 +26,8 @@ export type NavItem = {
   children: NavSubItem[]
 }
 
-/** Shared placeholder until per-page sub-visuals are wired. */
-export const GNB_SUB_VISUAL_PLACEHOLDER = asset('assets/gnb-sub-visual.png')
+/** Shared placeholder until per-page sub-visuals are wired (sub-01-01). */
+export const GNB_SUB_VISUAL_PLACEHOLDER = PLACEHOLDER_VISUAL_SRC
 
 /** Figma sub-01-01 — 법무법인경국 > 법인소개 */
 export const GNB_SUB_VISUAL_ABOUT_INTRO = ABOUT_INTRO_PAGE.visual
@@ -99,17 +99,42 @@ export const NAV_ITEMS: NavItem[] = [
         href: '/about/intro',
         visual: GNB_SUB_VISUAL_ABOUT_INTRO,
       },
-      { id: 'about-greeting', label: '대표인사말', href: '#about', visual: GNB_SUB_VISUAL_PLACEHOLDER },
-      { id: 'about-lawyers', label: '변호사자문단', href: '#professionals', visual: GNB_SUB_VISUAL_PLACEHOLDER },
-      { id: 'about-gallery', label: '경국인갤러리', href: '#professionals', visual: GNB_SUB_VISUAL_PLACEHOLDER },
-      { id: 'about-history', label: '연혁수상인증', href: '#awards', visual: GNB_SUB_VISUAL_PLACEHOLDER },
-      { id: 'about-location', label: '오시는길', href: '#office', visual: GNB_SUB_VISUAL_PLACEHOLDER },
+      {
+        id: 'about-greeting',
+        label: '대표인사말',
+        href: '/about/greeting',
+        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+      },
+      {
+        id: 'about-lawyers',
+        label: '변호사자문단',
+        href: '/about/lawyers',
+        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+      },
+      {
+        id: 'about-gallery',
+        label: '경국인갤러리',
+        href: '/about/gallery',
+        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+      },
+      {
+        id: 'about-history',
+        label: '연혁수상인증',
+        href: '/about/history',
+        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+      },
+      {
+        id: 'about-location',
+        label: '오시는길',
+        href: '/about/location',
+        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+      },
     ],
   },
   {
     id: 'redev',
     label: '재개발 · 보상업무',
-    href: '#practice',
+    href: '/practice/renewal',
     children: [
       {
         id: 'redev-renewal',
@@ -117,22 +142,37 @@ export const NAV_ITEMS: NavItem[] = [
         href: '/practice/renewal',
         visual: GNB_SUB_VISUAL_RENEWAL,
       },
-      { id: 'redev-public', label: '공익사업', href: '#practice', visual: GNB_SUB_VISUAL_PLACEHOLDER },
+      {
+        id: 'redev-public',
+        label: '공익사업',
+        href: '/practice/public',
+        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+      },
     ],
   },
   {
     id: 'other',
     label: '기타업무',
-    href: '#practice',
+    href: '/other/misc',
     children: [
-      { id: 'other-misc', label: '기타업무', href: '#practice', visual: GNB_SUB_VISUAL_PLACEHOLDER },
-      { id: 'other-realestate', label: '부동산', href: '#practice', visual: GNB_SUB_VISUAL_PLACEHOLDER },
+      {
+        id: 'other-misc',
+        label: '기타업무',
+        href: '/other/misc',
+        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+      },
+      {
+        id: 'other-realestate',
+        label: '부동산',
+        href: '/other/realestate',
+        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+      },
     ],
   },
   {
     id: 'press',
     label: '활동 · 보도',
-    href: '#press',
+    href: '/press/cases',
     children: [
       {
         id: 'press-cases',
@@ -163,12 +203,32 @@ export const NAV_ITEMS: NavItem[] = [
   {
     id: 'news',
     label: '소식 · 공지',
-    href: '#notice',
+    href: '/news/notice',
     children: [
-      { id: 'news-notice', label: '소식공지', href: '#notice', visual: GNB_SUB_VISUAL_PLACEHOLDER },
-      { id: 'news-cases', label: '판례뉴스', href: '#notice', visual: GNB_SUB_VISUAL_PLACEHOLDER },
-      { id: 'news-careers', label: '인재영입', href: '#notice', visual: GNB_SUB_VISUAL_PLACEHOLDER },
-      { id: 'news-consult', label: '상담신청', href: '#office', visual: GNB_SUB_VISUAL_PLACEHOLDER },
+      {
+        id: 'news-notice',
+        label: '소식공지',
+        href: '/news/notice',
+        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+      },
+      {
+        id: 'news-cases',
+        label: '판례뉴스',
+        href: '/news/cases',
+        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+      },
+      {
+        id: 'news-careers',
+        label: '인재영입',
+        href: '/news/careers',
+        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+      },
+      {
+        id: 'news-consult',
+        label: '상담신청',
+        href: '/news/consult',
+        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+      },
     ],
   },
 ]
