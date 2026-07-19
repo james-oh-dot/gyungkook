@@ -12,6 +12,7 @@ import { CaseStudiesPage } from './pages/CaseStudiesPage'
 import { ColumnMediaLayout } from './pages/ColumnMediaLayout'
 import { ColumnMediaListPage } from './pages/ColumnMediaListPage'
 import { HomePage } from './pages/HomePage'
+import { PlaceholderPage } from './pages/PlaceholderPage'
 import { PostDetailPage } from './pages/PostDetailPage'
 import { PressCoverageDetailPage } from './pages/PressCoverageDetailPage'
 import { PressCoverageLayout } from './pages/PressCoverageLayout'
@@ -37,7 +38,7 @@ function ScrollToTop() {
 /**
  * Main SPA routes (index.html).
  *
- * Subpages:
+ * Implemented:
  * - /press/cases                          → 업무사례 (sub-04-01)
  * - /press/coverage/:tab                  → TV방송 | 보도자료 list (sub-04-02)
  * - /press/coverage/:tab/:postId          → shared post detail
@@ -47,6 +48,12 @@ function ScrollToTop() {
  * - /press/social/:postId                 → shared post detail
  * - /about/intro                          → 법인소개 (sub-01-01)
  * - /practice/renewal                     → 정비사업 (sub-02-01)
+ *
+ * Placeholders (sub-01-01 visual + “곧 업데이트예정”):
+ * - /about/greeting|lawyers|gallery|history|location
+ * - /practice/public
+ * - /other/misc|realestate
+ * - /news/notice|cases|careers|consult
  *
  * GitHub Pages deep links require dist/404.html → index.html (see deploy workflow).
  */
@@ -60,8 +67,48 @@ function App() {
       <Routes>
         <Route element={<SiteLayout />}>
           <Route index element={<HomePage />} />
+
+          {/* 법무법인경국 */}
           <Route path="about/intro" element={<AboutIntroPage />} />
+          <Route
+            path="about/greeting"
+            element={<PlaceholderPage pageId="about-greeting" />}
+          />
+          <Route
+            path="about/lawyers"
+            element={<PlaceholderPage pageId="about-lawyers" />}
+          />
+          <Route
+            path="about/gallery"
+            element={<PlaceholderPage pageId="about-gallery" />}
+          />
+          <Route
+            path="about/history"
+            element={<PlaceholderPage pageId="about-history" />}
+          />
+          <Route
+            path="about/location"
+            element={<PlaceholderPage pageId="about-location" />}
+          />
+
+          {/* 재개발 · 보상업무 */}
           <Route path="practice/renewal" element={<RenewalPage />} />
+          <Route
+            path="practice/public"
+            element={<PlaceholderPage pageId="redev-public" />}
+          />
+
+          {/* 기타업무 */}
+          <Route
+            path="other/misc"
+            element={<PlaceholderPage pageId="other-misc" />}
+          />
+          <Route
+            path="other/realestate"
+            element={<PlaceholderPage pageId="other-realestate" />}
+          />
+
+          {/* 활동 · 보도 */}
           <Route path="press/cases" element={<CaseStudiesPage />} />
           <Route
             path="press/coverage"
@@ -83,6 +130,25 @@ function App() {
             <Route index element={<SocialContributionListPage />} />
             <Route path=":postId" element={<SocialContributionDetailPage />} />
           </Route>
+
+          {/* 소식 · 공지 */}
+          <Route
+            path="news/notice"
+            element={<PlaceholderPage pageId="news-notice" />}
+          />
+          <Route
+            path="news/cases"
+            element={<PlaceholderPage pageId="news-cases" />}
+          />
+          <Route
+            path="news/careers"
+            element={<PlaceholderPage pageId="news-careers" />}
+          />
+          <Route
+            path="news/consult"
+            element={<PlaceholderPage pageId="news-consult" />}
+          />
+
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
