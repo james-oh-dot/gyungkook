@@ -23,7 +23,7 @@ export type HeroSlide = {
   nextImage: string
   /**
    * Per-slide visual layout modifier (framing lives in Hero.css):
-   * - statue: object-position top — head/arms/scales in frame; legs may crop
+   * - statue: FULL bitmap visible — contain only; never crop hands/sides
    * - jewel: viewport-centered subject (object-position ~62% Y)
    * - birds: scaleX(-1) + bottom-anchored; large lamp on right; pigeons visible
    */

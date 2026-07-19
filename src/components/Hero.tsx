@@ -116,6 +116,8 @@ export function Hero() {
                   alt=""
                   priority={i === 0}
                   decoding="async"
+                  /* Framing (contain vs cover) lives in Hero.css per visual —
+                     never force cover here or statue hands / sides get clipped. */
                   style={
                     i === index
                       ? ({ '--hero-zoom': progress } as CSSProperties)

@@ -89,8 +89,13 @@
 - Hero motion contract: description = `LineReveal`; English word + Korean title = `CharReveal`; image Ken Burns via `--hero-zoom` over 10s; `swipe_gage` = rAF `scaleX(progress)` with **no CSS width transition**; prev/next/thumb click = instant `jumpTo`.
 - Slide 02 visual **must** be the jewel (`public/assets/hero-02.png`).
 - Hero 01/02/04 assets are **RGBA PNG** (2× from Figma `hero-01` / `hero-02` / `hero-04` on `AI-hero-change`). Keep alpha — do not re-bake to JPEG.
+- **HARD RULE — Hero images must NEVER crop the source bitmap** (user command; blocking):
+  - Especially slide 01 **statue**: hands, scales, head, and left/right edges must always stay visible.
+  - Forbidden: `object-fit: cover` on statue; Ken Burns `scale() > 1` inside `overflow: hidden`; width `> 100vw` / wider than the stage; fixed height that fights native aspect (forces side crop); `ProgressiveImage` inline `objectFit: cover` overriding CSS `contain`.
+  - Required: size by **width + native aspect** (`aspect-ratio: 2117 / 3511`), `object-fit: contain`, `object-position: center top`, Ken Burns **≤ 1.0**, width capped with `min(..., 100%)`.
+  - Do **not** reintroduce “legs may crop” / `107.2vw` / `height: min(145vh, …)` + cover for statue.
 - Hero visual framing (teal rebuild — do not regress):
-  - `statue`: `object-position: center top` + Ken Burns origin near head/scales — never `center bottom` (clips raised arm)
+  - `statue`: full figure via `contain` (see HARD RULE above); Ken Burns origin top-center; never `center bottom`
   - `jewel`: centered `object-fit: contain` on near-square 2× PNG
   - `birds`: `scaleX(-1)` (large lamp on **right**), bottom-anchored, keep pigeons; reduced-motion must keep the flip
 - `hero__title` shadow: Figma DROP_SHADOW → CSS `filter: drop-shadow(...)` on `.hero__title` (not `text-shadow`). Inherited `text-shadow` on CharReveal glyphs gets clipped into hard frames.
@@ -101,7 +106,7 @@
   - `hero_copy`: desktop artboard type (24 / 240 / 72, gap 40, maincopy **row**) + `--hero-copy-scale` (`zoom`; **literal** media steps — `zoom` rejects `calc()`).
   - ≤768 (`HOME_TABLET2`): stacked maincopy, native **14 / 120 / 36**, pad-x 50; `hero__content` absolute at **top ≈ 49.7%** (Figma 497/1000) — not flex-end.
   - ≤767 (`HOME_MOBILE2`): stacked **12 / 60 / 18**, pad-x 24; copy **top ≈ 49.22%** (443/900).
-  - Statue (slide 01) ≤1024: pin via `.hero__visual-media` absolute **top** from Figma (`15.7%` = 157/1000 tablet, `24.28%` = 218.5/900 mobile), width **611** / **107.2vw**, native aspect — no `translateY` guessing, never `object-fit: fill`. Brightness `1.28` / contrast `0.97`.
+  - Statue (slide 01) ≤1024: pin via `.hero__visual-media` absolute **top** (~14.1% tablet / ~24.7% mobile), width **`min(611px, 100%)`** tablet / **`min(100vw, 100%)`** mobile — never wider than the viewport. Native aspect + `contain` only. Brightness `1.28` / contrast `0.97`.
   - `hero_swipe` **desktop (>1024)**: flush `right: 0; bottom: 0` + gage/arrows; preview ~80% via layout vars (`--hero-thumb-w` / `--hero-swipe-meta-*`), not `transform`/`zoom` on meta text.
   - `hero_swipe` **tablet/mobile (≤1024)**: Figma inset **card** (24px BR) — white card, square thumb (138 / 100), 3-line meta (`02 Rebuild` / `nextSwipeTitle` / `01 / 05`), **hide gage**. Do not flush-right or scale the desktop anatomy down.
   - Each slide has `nextSwipeTitle` in `slides.ts` for the card subtitle line.
