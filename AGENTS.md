@@ -20,7 +20,7 @@
 - **업무사례** (활동·보도 1st / Figma `sub-04-01`):
   - `/press/cases` → `CaseStudiesPage` (4/2/1 col grid)
   - Hover: hovered card highlight + siblings dim (see `CaseStudies.css`)
-  - GNB `press-cases` → `/press/cases`, visual `public/assets/sub/sub-04-01.jpg`
+  - GNB `press-cases` → `/press/cases`, visual `public/assets/sub/sub-04-01.webp` (+ `.preview.webp`)
   - Mock data: `src/data/caseStudies.ts`
 - **언론보도** (활동·보도 2nd / Figma `sub-04-02`):
   - List: `/press/coverage/:tab` where `tab` = `tv` | `release` (TV방송 / 보도자료)
@@ -28,45 +28,54 @@
   - Shell: `PressCoverageLayout` = `SubVisual` + `LocalTabs` + Outlet
   - List UI: 4/2/1 **card grid** (`PressGridCard`) — not the horizontal list used by 컬럼미디어
   - Mock data: `src/data/pressCoverage.ts`
-  - GNB item `press-media` → `/press/coverage/tv`, visual `public/assets/sub/sub-04-02.jpg`
+  - GNB item `press-media` → `/press/coverage/tv`, visual `public/assets/sub/sub-04-02.webp` (+ `.preview.webp`)
 - **컬럼·미디어** (활동·보도 3rd / Figma `sub-04-03`):
   - List: `/press/column-media/:tab` where `tab` = `column` | `publication` | `media`
   - Detail (shared board layout): `/press/column-media/:tab/:postId` → `PostDetail`
   - Shell: `ColumnMediaLayout` = `SubVisual` + `LocalTabs` + Outlet
   - Mock data + CMS notes: `src/data/columnMedia.ts`
-  - GNB item `press-column` → `/press/column-media/column`, visual `public/assets/sub/sub-04-03.jpg`
+  - GNB item `press-column` → `/press/column-media/column`, visual `public/assets/sub/sub-04-03.webp` (+ `.preview.webp`)
 - **사회공헌** (활동·보도 4th / Figma `sub-04-04`):
   - List: `/press/social` → `SocialContributionListPage` (intro + **4→2→1** card grid; copy above thumb)
   - Detail (shared board layout): `/press/social/:postId` → `PostDetail`
   - Shell: `SocialContributionLayout` = `SubVisual` (`showChip={false}`) + content anchor + Outlet — **no LocalTabs**
   - Mock data: `src/data/socialContribution.ts`
-  - GNB item `press-social` → `/press/social`, visual `public/assets/sub/sub-04-04.jpg`
+  - GNB item `press-social` → `/press/social`, visual `public/assets/sub/sub-04-04.webp` (+ `.preview.webp`)
 - **법인소개** (법무법인경국 1st / Figma `sub-01-01`):
   - Single page: `/about/intro` → `AboutIntroPage` (소개 / 이념 / 강점 / 협력사 scroll sections)
   - Local tabs use **scroll mode** (`onTabSelect`) — same sticky + scroll-spy pattern as 정비사업
   - Hero: `SubVisual` with `showChip={false}` (Figma `hero_type2`)
-  - Mock data: `src/data/aboutIntro.ts`; GNB `about-intro` → `/about/intro`, visual `public/assets/sub/sub-01-01.jpg`
-  - Section assets under `public/assets/about/`
+  - Mock data: `src/data/aboutIntro.ts`; GNB `about-intro` → `/about/intro`, visual `public/assets/sub/sub-01-01.webp` (+ `.preview.webp`)
+  - Section assets under `public/assets/about/` (large photos also use progressive pairs)
 - **정비사업** (재개발·보상업무 1st / Figma `sub-02-01`):
   - Single page: `/practice/renewal` → `RenewalPage` (all 9 sections on one scroll)
   - Local tabs use **scroll mode** (`onTabSelect`) — click scrolls to section under sticky tabs; **not** route tabs
   - Hero: `SubVisual` with `showChip={false}` (Figma `hero_type2`)
-  - Mock data: `src/data/renewal.ts`; GNB `redev-renewal` → `/practice/renewal`, visual `public/assets/sub/sub-02-01.jpg`
+  - Mock data: `src/data/renewal.ts`; GNB `redev-renewal` → `/practice/renewal`, visual `public/assets/sub/sub-02-01.webp` (+ `.preview.webp`)
 - Local tabs: route mode (`toTab`) for 컬럼미디어 / 언론보도; scroll mode (`onTabSelect`) for 법인소개 / 정비사업. Hover underline works in both.
 - Shared board types: `src/data/board.ts` (`BoardPost` / `BoardTabDef`) — used by list cards + `PostDetail`.
 - Local tabs under a sub-visual are `position: sticky; top: var(--gnb-bar-h)` (must be a sibling of the main content, not wrapped with the hero only — see `ColumnMediaLayout` / `RenewalPage`).
 - Scroll: GNB/menu entry → top (sub-visual visible). Board local tab / list→detail / prev·next → sticky under GNB (`state.scrollToLocalTabs` + `useScrollToLocalTabs`). 법인소개 / 정비사업 tab click → scroll to section (offset = GNB + local tabs).
 - GitHub Pages deep links: deploy copies `dist/index.html` → `dist/404.html`.
 
+### Progressive images (blur-up)
+- **Goal:** on route entry the image frame is filled immediately (tiny blurred preview); full-quality WebP sharpens in within ~1–2s. Final quality is not sacrificed.
+- **Why:** Figma photo exports are multi‑MB; a single `<img>` blocks LCP and looks empty until download finishes.
+- **How:** Apple/Medium-style 2-layer load — `{stem}.preview.webp` (~64px) + `{stem}.webp` (q=90). Component: `ProgressiveImage`; helper: `progressiveAsset()`; regenerate: `python3 scripts/generate-progressive-images.py`.
+- **Full doc:** `docs/progressive-images.md` (purpose, rationale, pipeline, do/don’t).
+- `SubVisual` requires `image` + `imagePreview` (`priority` preload for LCP).
+
 ### Commands
 - Install: `npm install`
 - Dev: `npm run dev` (http://localhost:5173)
 - Lint: `npm run lint` (oxlint)
 - Build: `npm run build`
+- Progressive assets: `python3 scripts/generate-progressive-images.py` (needs Pillow)
 - Live: https://james-oh-dot.github.io/gyungkook/ (GitHub Pages, deploys on `main` via `.github/workflows/deploy-pages.yml`)
 
 ### Non-obvious notes
 - Styling is plain CSS (no Tailwind). Design tokens live in `src/styles/global.css`.
+- Sub-page heroes use WebP progressive pairs — do not point `SubVisual` at raw multi‑MB JPG/PNG.
 - Hero source of truth (default `/`): Figma canvas `AI-hero-change` (`22:10492`) → frames `hero_1`…`hero_5` (teal).
 - **Alternate hero for client review:** dark previous hero lives at `classic.html` → `HeroClassic` + `public/assets/classic/*`. Top `VersionSwitch` toggles A Teal / B Dark. Vite MPA inputs: `index.html` + `classic.html`.
 - Hero carousel timing is `HERO_DURATION_MS = 10000` in `src/data/slides.ts`.

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { ProgressiveImage } from '../components/ProgressiveImage'
 import { LocalTabs } from '../components/sub/LocalTabs'
 import { SubVisual } from '../components/sub/SubVisual'
 import {
@@ -112,6 +113,7 @@ export function AboutIntroPage() {
           parentLabel={ABOUT_INTRO_PAGE.parentLabel}
           title={ABOUT_INTRO_PAGE.title}
           image={ABOUT_INTRO_PAGE.visual}
+          imagePreview={ABOUT_INTRO_PAGE.visualPreview}
           visualKey="sub-01-01"
           showChip={false}
         />
@@ -287,10 +289,12 @@ export function AboutIntroPage() {
                     <p key={p.slice(0, 32)}>{p}</p>
                   ))}
                 </div>
-                <img
+                <ProgressiveImage
                   className="about-intro-dark__seal"
                   src={ABOUT_INTRO_STRENGTH.dark.seal}
+                  preview={ABOUT_INTRO_STRENGTH.dark.sealPreview}
                   alt=""
+                  objectFit="cover"
                 />
               </div>
               <ul className="about-intro-dark__list">
@@ -321,14 +325,20 @@ export function AboutIntroPage() {
                     </div>
                   </div>
                   <div className="about-intro-step__visual">
-                    <img
-                      className={
+                    <ProgressiveImage
+                      className="progressive-image--fill"
+                      imgClassName={
                         step.imageFlipY
                           ? 'about-intro-step__img about-intro-step__img--flip'
                           : 'about-intro-step__img'
                       }
                       src={step.image}
+                      preview={step.imagePreview}
                       alt=""
+                      objectFit="cover"
+                      objectPosition={
+                        step.imageFlipY ? 'center 55%' : 'center 30%'
+                      }
                     />
                   </div>
                 </article>
@@ -339,10 +349,12 @@ export function AboutIntroPage() {
               className="about-intro-city-quote"
               data-name="Quote Block"
             >
-              <img
-                className="about-intro-city-quote__bg"
+              <ProgressiveImage
+                className="progressive-image--fill about-intro-city-quote__bg"
                 src={ABOUT_INTRO_STRENGTH.cityQuote.image}
+                preview={ABOUT_INTRO_STRENGTH.cityQuote.imagePreview}
                 alt=""
+                objectFit="cover"
               />
               <div className="about-intro-city-quote__scrim" aria-hidden="true" />
               <div className="about-intro-city-quote__inner">

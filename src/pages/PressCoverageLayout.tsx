@@ -33,6 +33,7 @@ export function PressCoverageLayout() {
           parentLabel={PRESS_COVERAGE_PAGE.parentLabel}
           title={PRESS_COVERAGE_PAGE.title}
           image={PRESS_COVERAGE_PAGE.visual}
+          imagePreview={PRESS_COVERAGE_PAGE.visualPreview}
           visualKey="sub-04-02"
         />
       </div>

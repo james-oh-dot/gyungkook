@@ -1,0 +1,121 @@
+# Progressive Images (Blur-up)
+
+## 목적
+
+서브페이지 진입 시 **이미지가 비어 있거나 늦게 뜨는 체감**을 없앤다.
+
+사용자는 화면 진입과 동시에 이미지 자리를 채운 화면을 봐야 하고,  
+처음엔 해상도가 낮아도 되며, **1~2초 안에 원본 수준의 선명한 이미지로 자연스럽게 전환**되어야 한다.  
+최종 화질은 타협하지 않는다.
+
+## 왜 필요한가
+
+Figma에서보낸 원본 사진은 종종 **수 MB~7MB** (예: `sub-01-01.jpg` 6.9MB, `quote-city.png` 5.7MB).  
+이를 `<img src>`에 그대로 쓰면:
+
+1. 네트워크 완료 전까지 히어로가 비어 보이거나 늦게 페인트된다
+2. LCP(Largest Contentful Paint)가 나빠진다
+3. 모바일/저속망에서 체감 지연이 커진다
+
+최종 화질만 올리면 “선명하지만 늦게”가 되고,  
+용량만 깎으면 “빠르지만 화질이 떨어진다”.  
+둘 다 피하기 위해 **2단계 로드**를 쓴다.
+
+## 방법 (Apple / Medium 계열 Blur-up)
+
+글로벌 마케팅·미디어 사이트(Apple 제품 페이지, Medium 등)에서 쓰는 패턴과 동일한 축:
+
+```
+화면 진입
+  ├─ 즉시: tiny preview WebP (~64px, 1KB 전후) 배치 + CSS blur
+  │         → 레이아웃이 바로 채워짐 (빈 화면 없음)
+  └─ 동시에: high-quality WebP (q≈90, 표시 해상도) fetch
+       └─ onload 후 ~400ms opacity crossfade → sharp
+```
+
+| 레이어 | 파일 | 스펙 | 역할 |
+|--------|------|------|------|
+| Preview | `{stem}.preview.webp` | 가로 ~64px, q≈45 | 즉시 페인트 |
+| Full | `{stem}.webp` | max 2560w(히어로), **q=90** | 최종 선명도 |
+
+핵심: **즉시성을 preview가 담당**하고, **퀄리티는 full이 담당**한다.  
+full을 과도하게 압축하지 않는다.
+
+## 코드 구조
+
+| 파일 | 역할 |
+|------|------|
+| `src/components/ProgressiveImage.tsx` | blur-up UI (preview + full, preload, crossfade) |
+| `src/components/ProgressiveImage.css` | blur / scale / opacity transition |
+| `src/utils/progressiveImage.ts` | `progressiveAsset(stem)` → `{ src, preview }` |
+| `src/components/sub/SubVisual.tsx` | 서브 히어로에 `priority` blur-up 적용 |
+| `scripts/generate-progressive-images.py` | preview/full WebP 재생성 |
+
+### `ProgressiveImage` 동작
+
+1. **Preview** — `loading="eager"`, 즉시 표시, `filter: blur(16px)` + `scale(1.08)` (가장자리 투명 밴드 방지)
+2. **Full** — 진입과 동시에 요청  
+   - `priority` (LCP/히어로): `fetchPriority="high"` + `<link rel="preload" as="image">`  
+   - 그 외: `loading="lazy"` (preview는 여전히 즉시)
+3. Full `onLoad` → `.is-ready` → full opacity 1로 crossfade
+4. 캐시 hit면 다음 프레임에 바로 ready (거의 즉시 sharp)
+5. `prefers-reduced-motion: reduce` → 전환/블러 최소화
+
+### 데이터 연결
+
+페이지 메타는 `progressiveAsset`으로 쌍을 만든다:
+
+```ts
+const VISUAL = progressiveAsset('assets/sub/sub-01-01')
+// visual: …/sub-01-01.webp
+// visualPreview: …/sub-01-01.preview.webp
+```
+
+`SubVisual`은 `image` + `imagePreview`를 모두 받는다.  
+GNB fullmenu 스왑은 최적화된 **full WebP** (`PAGE.visual`)를 사용한다.
+
+## 적용 범위 (현재)
+
+- 모든 서브비주얼: `sub-01-01`, `sub-02-01`, `sub-04-01` … `sub-04-04`
+- 법인소개 대형 사진: `quote-city`, `strength-01..03`, `dark-seal`
+
+원본 JPG/PNG는 보관해도 되지만, **런타임은 WebP 쌍을 사용**한다.
+
+## 에셋 재생성
+
+새 원본을 넣거나 Figma에서 다시 받은 뒤:
+
+```bash
+python3 scripts/generate-progressive-images.py
+```
+
+`TARGETS` 목록에 경로를 추가한 다음 스크립트를 실행한다.
+
+## 품질 / 용량 가이드
+
+| 항목 | 권장 |
+|------|------|
+| Full WebP quality | **90** (최상급 유지) |
+| Full max width | 히어로 2560 / 섹션 사진 1600 내외 |
+| Preview width | 64px |
+| Preview 목표 용량 | **1–4KB** |
+| Full 히어로 목표 | 대략 **200–900KB** (장면 복잡도 따름) |
+
+예시 (도입 시 측정):
+
+- `sub-01-01.jpg` 6.9MB → full **842KB** + preview **0.4KB**
+- `quote-city.png` 5.7MB → full **281KB** + preview **0.3KB**
+
+## 하지 않는 것
+
+- 최종 이미지를 과도 압축해 “처음부터 선명하지만 화질 나쁜” 타협
+- BlurHash만으로 끝내기 (색 블록만 보이고 사진이 안 보임)
+- Full을 너무 lazy로 미뤄 preview만 오래 방치하기 (히어로는 진입 즉시 full도 요청)
+- Progressive JPEG에만 의존하기 (브라우저/디코더 체감 편차)
+
+## 향후 확장
+
+- 홈 히어로 슬라이드에도 동일 패턴 적용
+- GNB fullmenu 패널에 preview→full blur-up (현재는 최적화된 full WebP만 스왑)
+- AVIF 추가 시 `<picture>`로 full만 교체 (preview는 WebP 유지 가능)
+- 메뉴 hover 시 해당 서브비주얼 full preload (클릭 전 warm cache)

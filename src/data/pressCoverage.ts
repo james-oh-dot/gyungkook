@@ -14,6 +14,9 @@
 import type { BoardPost, BoardTabDef } from './board'
 import { adjacentInList } from './board'
 import { asset } from '../utils/asset'
+import { progressiveAsset } from '../utils/progressiveImage'
+
+const PRESS_COVERAGE_VISUAL = progressiveAsset('assets/sub/sub-04-02')
 
 export type PressCoverageTab = 'tv' | 'release'
 
@@ -25,8 +28,9 @@ export const PRESS_COVERAGE_TABS: BoardTabDef[] = [
 export const PRESS_COVERAGE_PAGE = {
   parentLabel: '활동 · 보도',
   title: '언론보도',
-  /** Figma layer name sub-04-02 */
-  visual: asset('assets/sub/sub-04-02.jpg'),
+  /** Figma layer name sub-04-02 — progressive WebP pair */
+  visual: PRESS_COVERAGE_VISUAL.src,
+  visualPreview: PRESS_COVERAGE_VISUAL.preview,
   basePath: '/press/coverage',
 } as const
 

@@ -14,6 +14,7 @@ export function CaseStudiesPage() {
           parentLabel={CASE_STUDIES_PAGE.parentLabel}
           title={CASE_STUDIES_PAGE.title}
           image={CASE_STUDIES_PAGE.visual}
+          imagePreview={CASE_STUDIES_PAGE.visualPreview}
           visualKey="sub-04-01"
         />
       </div>

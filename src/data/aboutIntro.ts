@@ -1,10 +1,14 @@
 import { asset } from '../utils/asset'
+import { progressiveAsset } from '../utils/progressiveImage'
 
 /** Figma SUB_법무법인경국_법인소개 — sub-01-01 */
+const ABOUT_INTRO_VISUAL = progressiveAsset('assets/sub/sub-01-01')
+
 export const ABOUT_INTRO_PAGE = {
   parentLabel: '법무법인경국',
   title: '법인 소개',
-  visual: asset('assets/sub/sub-01-01.jpg'),
+  visual: ABOUT_INTRO_VISUAL.src,
+  visualPreview: ABOUT_INTRO_VISUAL.preview,
   basePath: '/about/intro',
 } as const
 
@@ -61,6 +65,12 @@ export const ABOUT_INTRO_PHILOSOPHY = {
   quoteMark: asset('assets/about/quote-teal.svg'),
 } as const
 
+const STRENGTH_IMG_01 = progressiveAsset('assets/about/strength-01')
+const STRENGTH_IMG_02 = progressiveAsset('assets/about/strength-02')
+const STRENGTH_IMG_03 = progressiveAsset('assets/about/strength-03')
+const QUOTE_CITY = progressiveAsset('assets/about/quote-city')
+const DARK_SEAL = progressiveAsset('assets/about/dark-seal')
+
 export const ABOUT_INTRO_STRENGTH = {
   enLabel: 'STRENGTH',
   title: '법무법인 경국의 강점',
@@ -100,7 +110,8 @@ export const ABOUT_INTRO_STRENGTH = {
       '경국은 가치의 정확한 분석을 바탕으로 분쟁을 예방하고 해결하며,',
       '고객 가치의 Level UP을 목표로 합니다.',
     ],
-    seal: asset('assets/about/dark-seal.png'),
+    seal: DARK_SEAL.src,
+    sealPreview: DARK_SEAL.preview,
     items: [
       '구성원 50% 이상 감정평가사 자격 보유 및 법원감정인 출신',
       '회계사·법무사·전문위원 등 분야별 전문인력 풀과 협력',
@@ -136,7 +147,8 @@ export const ABOUT_INTRO_STRENGTH = {
           ],
         },
       ],
-      image: asset('assets/about/strength-01.png'),
+      image: STRENGTH_IMG_01.src,
+      imagePreview: STRENGTH_IMG_01.preview,
       imageFlipY: false,
     },
     {
@@ -165,7 +177,8 @@ export const ABOUT_INTRO_STRENGTH = {
           ],
         },
       ],
-      image: asset('assets/about/strength-02.png'),
+      image: STRENGTH_IMG_02.src,
+      imagePreview: STRENGTH_IMG_02.preview,
       imageFlipY: false,
     },
     {
@@ -192,12 +205,14 @@ export const ABOUT_INTRO_STRENGTH = {
           ],
         },
       ],
-      image: asset('assets/about/strength-03.png'),
+      image: STRENGTH_IMG_03.src,
+      imagePreview: STRENGTH_IMG_03.preview,
       imageFlipY: true,
     },
   ],
   cityQuote: {
-    image: asset('assets/about/quote-city.png'),
+    image: QUOTE_CITY.src,
+    imagePreview: QUOTE_CITY.preview,
     mark: asset('assets/about/quote-white.svg'),
     lines: ['고객의 하루 한 시간도 소중하게.', '사건 처리의 속도가 다른 로펌.'],
     sub: [

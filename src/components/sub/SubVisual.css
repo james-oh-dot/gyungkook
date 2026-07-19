@@ -17,7 +17,12 @@
   pointer-events: none;
 }
 
-.sub-visual__img {
+.sub-visual__progressive {
+  z-index: 0;
+}
+
+/* Crop framing from Figma SUB_LAYOUT — both progressive layers */
+.sub-visual__progressive .sub-visual__img {
   position: absolute;
   left: 0;
   top: -12.65%;

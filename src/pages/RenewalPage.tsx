@@ -279,6 +279,7 @@ export function RenewalPage() {
           parentLabel={RENEWAL_PAGE.parentLabel}
           title={RENEWAL_PAGE.title}
           image={RENEWAL_PAGE.visual}
+          imagePreview={RENEWAL_PAGE.visualPreview}
           visualKey="sub-02-01"
           showChip={false}
         />
