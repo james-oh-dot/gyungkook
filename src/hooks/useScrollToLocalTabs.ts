@@ -14,11 +14,15 @@ const BOARD_SECTIONS = new Set(['column-media', 'coverage'])
 /**
  * True for board detail routes:
  * `/press/column-media/:tab/:postId` | `/press/coverage/:tab/:postId`
+ * `/press/social/:postId` (no tab segment)
  */
 export function isBoardDetailPath(pathname: string): boolean {
   const parts = pathname.replace(/\/+$/, '').split('/').filter(Boolean)
+  if (parts[0] !== 'press') return false
+  // ['press', 'social', postId]
+  if (parts[1] === 'social') return parts.length >= 3
   // ['press', section, tab, postId]
-  if (parts[0] !== 'press' || !BOARD_SECTIONS.has(parts[1] ?? '')) return false
+  if (!BOARD_SECTIONS.has(parts[1] ?? '')) return false
   return parts.length >= 4
 }
 

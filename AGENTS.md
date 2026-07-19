@@ -35,6 +35,12 @@
   - Shell: `ColumnMediaLayout` = `SubVisual` + `LocalTabs` + Outlet
   - Mock data + CMS notes: `src/data/columnMedia.ts`
   - GNB item `press-column` → `/press/column-media/column`, visual `public/assets/sub/sub-04-03.jpg`
+- **사회공헌** (활동·보도 4th / Figma `sub-04-04`):
+  - List: `/press/social` → `SocialContributionListPage` (intro + **4→2→1** card grid; copy above thumb)
+  - Detail (shared board layout): `/press/social/:postId` → `PostDetail`
+  - Shell: `SocialContributionLayout` = `SubVisual` (`showChip={false}`) + content anchor + Outlet — **no LocalTabs**
+  - Mock data: `src/data/socialContribution.ts`
+  - GNB item `press-social` → `/press/social`, visual `public/assets/sub/sub-04-04.jpg`
 - **정비사업** (재개발·보상업무 1st / Figma `sub-02-01`):
   - Single page: `/practice/renewal` → `RenewalPage` (all 9 sections on one scroll)
   - Local tabs use **scroll mode** (`onTabSelect`) — click scrolls to section under sticky tabs; **not** route tabs

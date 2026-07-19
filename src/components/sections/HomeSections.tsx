@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
+import { Link } from 'react-router-dom'
 import { Reveal } from '../Reveal'
 import { asset } from '../../utils/asset'
 import { useScrollGage } from '../../hooks/useScrollGage'
@@ -14,14 +15,29 @@ import {
 function TextBtn({
   label,
   icon = asset('assets/icon-btn.svg'),
+  to,
 }: {
   label: string
   icon?: string
+  /** SPA path (no base) — e.g. `/press/social` */
+  to?: string
 }) {
-  return (
-    <button type="button" className="text-btn">
+  const content = (
+    <>
       <span>{label}</span>
       <img src={icon} alt="" />
+    </>
+  )
+  if (to) {
+    return (
+      <Link className="text-btn" to={to}>
+        {content}
+      </Link>
+    )
+  }
+  return (
+    <button type="button" className="text-btn">
+      {content}
     </button>
   )
 }
@@ -522,7 +538,11 @@ export function SocialSection() {
             <br />
             걸음이 무거운 분들과 동행하는 것에 있습니다.
           </p>
-          <TextBtn label="전체보기" icon={asset('assets/icon-btn-social.svg')} />
+          <TextBtn
+            label="전체보기"
+            icon={asset('assets/icon-btn-social.svg')}
+            to="/press/social"
+          />
         </Reveal>
       </div>
     </section>
