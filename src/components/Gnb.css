@@ -286,11 +286,27 @@
   padding: 16px 39px 16px 39px;
 }
 
+/* Columns snap to top-nav item left edges (measured in JS). */
+.gnb__fullmenu-inner.is-nav-aligned {
+  display: block;
+  position: relative;
+  gap: 0;
+}
+
 .gnb__visual {
   position: relative;
   overflow: hidden;
   min-height: 290px;
   background: #e8e8ef;
+}
+
+.gnb__fullmenu-inner.is-nav-aligned .gnb__visual {
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  /* `left` / `width` set inline — cover ends at the first column. */
+  min-height: 0;
+  max-width: 100%;
 }
 
 .gnb__visual-img {
@@ -323,8 +339,28 @@
   min-height: 302px;
 }
 
+.gnb__fullmenu-inner.is-nav-aligned .gnb__columns {
+  display: block;
+  position: absolute;
+  top: 16px;
+  /* `right` keeps the white panel inset by the same padding as the bar. */
+  right: 39px;
+  bottom: 16px;
+  /* `left` set inline to first nav item — white panel starts under first column. */
+  gap: 0;
+  padding: 12px 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .gnb__column {
   min-width: 0;
+}
+
+.gnb__fullmenu-inner.is-nav-aligned .gnb__column {
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
 }
 
 .gnb__sublist {
@@ -682,6 +718,14 @@
     grid-template-columns: minmax(240px, 42vw) minmax(0, 1fr);
     padding-inline: 24px;
   }
+
+  .gnb__fullmenu-inner.is-nav-aligned {
+    grid-template-columns: none;
+  }
+
+  .gnb__fullmenu-inner.is-nav-aligned .gnb__columns {
+    right: 24px;
+  }
 }
 
 @media (max-width: 1200px) {
@@ -690,6 +734,12 @@
   }
 
   .gnb__nav-link {
+    padding-inline: 12px;
+    font-size: 15px;
+  }
+
+  /* Keep sublink text flush with top-nav text when nav padding tightens. */
+  .gnb__sublink {
     padding-inline: 12px;
     font-size: 15px;
   }

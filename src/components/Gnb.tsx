@@ -18,6 +18,14 @@ import './Gnb.css'
 
 type Indicator = { x: number; y: number; w: number; h: number }
 
+/** Desktop fullmenu: offsets from fullmenu-inner padding edge. */
+type ColumnLayout = {
+  lefts: number[]
+  widths: number[]
+  visualLeft: number
+  visualWidth: number
+}
+
 const MQ_COMPACT = '(max-width: 1024px)'
 
 function useMediaQuery(query: string) {
@@ -41,6 +49,7 @@ export function Gnb() {
   const rootRef = useRef<HTMLElement>(null)
   const navListRef = useRef<HTMLUListElement>(null)
   const itemRefs = useRef<(HTMLLIElement | null)[]>([])
+  const fullmenuInnerRef = useRef<HTMLDivElement>(null)
   const drawerRef = useRef<HTMLDivElement>(null)
   const menuBtnRef = useRef<HTMLButtonElement>(null)
   const closeBtnRef = useRef<HTMLButtonElement>(null)
@@ -54,6 +63,7 @@ export function Gnb() {
   const [visualKey, setVisualKey] = useState(0)
   const [indicator, setIndicator] = useState<Indicator | null>(null)
   const [indicatorReady, setIndicatorReady] = useState(false)
+  const [columnLayout, setColumnLayout] = useState<ColumnLayout | null>(null)
   const [drawerExpanded, setDrawerExpanded] = useState<string | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
 
@@ -121,6 +131,64 @@ export function Gnb() {
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [activeTop, isCompact, measureIndicator])
+
+  /* Align fullmenu columns to each top-nav item's left edge.
+   * Absolute children are positioned from the padding edge of
+   * `.gnb__fullmenu-inner`, so offsets are measured from that origin. */
+  const syncColumnLayout = useCallback(() => {
+    const inner = fullmenuInnerRef.current
+    if (!inner || isCompact || !menuOpen) return
+
+    const innerRect = inner.getBoundingClientRect()
+    const styles = getComputedStyle(inner)
+    const padLeft = parseFloat(styles.paddingLeft) || 0
+    const padRight = parseFloat(styles.paddingRight) || 0
+    /* Padding-edge origin matches CSS absolute `left: 0`. */
+    const originLeft = innerRect.left
+    const contentRight = Math.max(0, inner.clientWidth - padRight)
+
+    const lefts = NAV_ITEMS.map((_, index) => {
+      const el = itemRefs.current[index]
+      if (!el) return 0
+      return Math.max(0, Math.round(el.getBoundingClientRect().left - originLeft))
+    })
+
+    if (!lefts.length || lefts.every((v) => v === 0)) return
+
+    const first = lefts[0] ?? 0
+    const widths = lefts.map((left, index) => {
+      if (index < lefts.length - 1) return Math.max(0, lefts[index + 1] - left)
+      return Math.max(0, contentRight - left)
+    })
+
+    setColumnLayout({
+      lefts,
+      widths,
+      visualLeft: padLeft,
+      /* Visual sits in the padded content area, ending at the first column. */
+      visualWidth: Math.max(0, first - padLeft),
+    })
+  }, [isCompact, menuOpen])
+
+  useLayoutEffect(() => {
+    if (!menuOpen || isCompact) {
+      setColumnLayout(null)
+      return
+    }
+
+    syncColumnLayout()
+    const raf = requestAnimationFrame(syncColumnLayout)
+    let cancelled = false
+    void document.fonts?.ready.then(() => {
+      if (!cancelled) syncColumnLayout()
+    })
+    window.addEventListener('resize', syncColumnLayout)
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', syncColumnLayout)
+    }
+  }, [menuOpen, isCompact, syncColumnLayout])
 
   const openDesktopMenu = (index: number) => {
     if (isCompact) return
@@ -315,8 +383,22 @@ export function Gnb() {
             closeDesktopMenu()
           }}
         >
-          <div className="gnb__fullmenu-inner">
-            <div className="gnb__visual" aria-hidden="true">
+          <div
+            ref={fullmenuInnerRef}
+            className={`gnb__fullmenu-inner${columnLayout ? ' is-nav-aligned' : ''}`}
+          >
+            <div
+              className="gnb__visual"
+              aria-hidden="true"
+              style={
+                columnLayout
+                  ? {
+                      left: columnLayout.visualLeft,
+                      width: columnLayout.visualWidth,
+                    }
+                  : undefined
+              }
+            >
               <img
                 key={visualKey}
                 className="gnb__visual-img"
@@ -324,33 +406,51 @@ export function Gnb() {
                 alt=""
               />
             </div>
-            <div className="gnb__columns" role="navigation" aria-label="전체 메뉴">
-              {NAV_ITEMS.map((item, index) => (
-                <div
-                  key={item.id}
-                  className={`gnb__column${activeTop === index ? ' is-active' : ''}`}
-                  onMouseEnter={() => openDesktopMenu(index)}
-                >
-                  <ul className="gnb__sublist" role="list">
-                    {item.children.map((sub) => (
-                      <li key={sub.id}>
-                        <a
-                          className={`gnb__sublink${activeSubId === sub.id ? ' is-active' : ''}`}
-                          href={resolveNavHref(sub.href)}
-                          onMouseEnter={() => swapVisual(sub.visual, sub.id)}
-                          onFocus={() => {
-                            openDesktopMenu(index)
-                            swapVisual(sub.visual, sub.id)
-                          }}
-                          onClick={() => closeDesktopMenu()}
-                        >
-                          {sub.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
+            <div
+              className="gnb__columns"
+              role="navigation"
+              aria-label="전체 메뉴"
+              style={
+                columnLayout
+                  ? { left: columnLayout.lefts[0] ?? 0 }
+                  : undefined
+              }
+            >
+              {NAV_ITEMS.map((item, index) => {
+                const alignedStyle: CSSProperties | undefined = columnLayout
+                  ? {
+                      left: (columnLayout.lefts[index] ?? 0) - (columnLayout.lefts[0] ?? 0),
+                      width: columnLayout.widths[index],
+                    }
+                  : undefined
+                return (
+                  <div
+                    key={item.id}
+                    className={`gnb__column${activeTop === index ? ' is-active' : ''}`}
+                    style={alignedStyle}
+                    onMouseEnter={() => openDesktopMenu(index)}
+                  >
+                    <ul className="gnb__sublist" role="list">
+                      {item.children.map((sub) => (
+                        <li key={sub.id}>
+                          <a
+                            className={`gnb__sublink${activeSubId === sub.id ? ' is-active' : ''}`}
+                            href={resolveNavHref(sub.href)}
+                            onMouseEnter={() => swapVisual(sub.visual, sub.id)}
+                            onFocus={() => {
+                              openDesktopMenu(index)
+                              swapVisual(sub.visual, sub.id)
+                            }}
+                            onClick={() => closeDesktopMenu()}
+                          >
+                            {sub.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
