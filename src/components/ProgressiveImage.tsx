@@ -74,8 +74,11 @@ function whenPaintable(
  * - Preview paints on first frame (eager, tiny).
  * - Full fetch starts immediately in parallel (never lazy — lazy left src empty
  *   and kept some layers stuck on preview forever).
- * - Reveal after load+decode; cache hits use layout-effect sync check so
- *   we never miss a skipped `onLoad`.
+ * - Reveal after load; cache hits use layout-effect sync check so we never miss
+ *   a skipped `onLoad`.
+ * - CSS stacks preview+full with `position:absolute; inset:0` inside the box.
+ *   NEVER rely on in-flow stacking — overflow:hidden parents clip the full
+ *   layer below the preview and leave a blank hole after preview fades out.
  */
 export function ProgressiveImage({
   src,

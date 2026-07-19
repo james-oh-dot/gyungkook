@@ -62,10 +62,13 @@
 - **Goal:** on route entry the image frame is filled immediately (tiny blurred preview); full-quality WebP sharpens in within ~1–2s. Final quality is not sacrificed.
 - **Why:** Figma photo exports are multi‑MB; a single `<img>` blocks LCP and looks empty until download finishes.
 - **How:** Apple/Medium-style 2-layer load — `{stem}.preview.webp` (~64px) + `{stem}.webp` (q=90). Component: `ProgressiveImage`; helper: `progressiveAsset()`; regenerate: `python3 scripts/generate-progressive-images.py`.
-- **Full doc:** `docs/progressive-images.md` (purpose, rationale, pipeline, do/don’t).
+- **HARD RULE (layout — do not regress):** preview + full layers MUST be `position: absolute; inset: 0` stacked in the same box (`ProgressiveImage.css`). Never leave them as in-flow block siblings. Parents are usually `overflow: hidden` with fixed height; an in-flow full layer is clipped *below* the preview, and after preview fades out the frame looks empty forever (even when `data-ready=true` / full opacity 1).
+- **HARD RULE (loading):** full layer is always `loading="eager"` (never native `lazy` — that left `currentSrc=""` and stuck on preview). Cache hits must reveal via layout-effect `complete` check, not only `onLoad`.
+- **Full doc:** `docs/progressive-images.md` (purpose, rationale, pipeline, do/don’t, incident log).
 - Applied on: **all home photos** (`Hero` slides + swipe thumbs + `HomeSections` cards/BGs/map), all `SubVisual` heroes, 법인소개 large photos. SVG icons stay plain `<img>`.
 - `SubVisual` requires `image` + `imagePreview` (`priority` preload for LCP).
 - Hero: Ken Burns / slide framing stay on `.progressive-image` wrapper; do not put transforms only on the inner `<img>` again.
+- Wrapper sizing: parent (or `--fill`) must give the `.progressive-image` box a non-zero size — absolute layers do not contribute intrinsic height.
 
 ### Commands
 - Install: `npm install`
