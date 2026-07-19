@@ -247,7 +247,7 @@
   object-fit: cover;
   transform: scale(1);
   transition: transform 1.05s var(--hero-ease);
-  will-change: transform;
+  /* Avoid permanent will-change — can pin a stale thumb bitmap on src swap */
 }
 
 /* ONLY thumbnail image effect on hover — never the full hero background */

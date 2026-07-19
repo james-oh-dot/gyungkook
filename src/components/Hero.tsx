@@ -14,20 +14,30 @@ export function Hero() {
   const startRef = useRef(performance.now())
   const pausedRef = useRef(false)
   const pauseElapsedRef = useRef(0)
+  const progressRef = useRef(0)
   const lastJumpAtRef = useRef(0)
 
   const slide = heroSlides[index]
   const nextSlide = heroSlides[(index + 1) % heroSlides.length]
+  /** 300×170 crop preview of `nextSlide` (stored on the current slide). */
+  const thumbSrc = slide.nextImage
 
   const jumpTo = useCallback((next: number) => {
     const now = performance.now()
+    const total = heroSlides.length
+    const resolved = ((next % total) + total) % total
+
+    /*
+      Debounce only blocks stacked double-advances (rAF + click) that would
+      skip a slide. indexRef is updated synchronously so a second call in the
+      same window targets index+2 — that is what we must drop.
+    */
     if (now - lastJumpAtRef.current < 180) return
     lastJumpAtRef.current = now
 
-    const total = heroSlides.length
-    const resolved = ((next % total) + total) % total
     indexRef.current = resolved
     setIndex(resolved)
+    progressRef.current = 0
     setProgress(0)
     setAnimKey((k) => k + 1)
     startRef.current = now
@@ -62,7 +72,9 @@ export function Hero() {
         if (elapsed >= HERO_DURATION_MS) {
           jumpTo(indexRef.current + 1)
         } else {
-          setProgress(Math.min(1, elapsed / HERO_DURATION_MS))
+          const p = Math.min(1, elapsed / HERO_DURATION_MS)
+          progressRef.current = p
+          setProgress(p)
         }
       }
 
@@ -172,7 +184,8 @@ export function Hero() {
             className="hero__swipe-preview"
             onMouseEnter={() => {
               pausedRef.current = true
-              pauseElapsedRef.current = progress * HERO_DURATION_MS
+              /* Use ref — render-closure `progress` can be a frame behind. */
+              pauseElapsedRef.current = progressRef.current * HERO_DURATION_MS
             }}
             onMouseLeave={() => {
               startRef.current = performance.now() - pauseElapsedRef.current
@@ -185,7 +198,18 @@ export function Hero() {
             aria-label={`다음 화면 ${nextSlide.index} ${nextSlide.word}로 이동`}
           >
             <div className="hero__swipe-thumb">
-              <img src={slide.nextImage} alt="" decoding="async" />
+              {/*
+                Remount on every slide change. Reusing one <img> and only
+                swapping `src` (esp. with decoding=async + will-change:transform)
+                intermittently left the previous bitmap painted.
+              */}
+              <img
+                key={nextSlide.id}
+                src={thumbSrc}
+                alt=""
+                decoding="sync"
+                draggable={false}
+              />
             </div>
             <div className="hero__swipe-meta">
               {/* Desktop: index + nextLabel row. Card (≤1024): 3-line stack. */}
