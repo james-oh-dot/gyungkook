@@ -23,18 +23,32 @@
   gap: 10px;
   text-decoration: none;
   color: inherit;
+  /* Lockup must not flex-shrink or stretch with the footer width */
+  flex: 0 0 auto;
+  max-width: 100%;
 }
 
 .site-footer__logo-mark {
   width: 32px;
   height: 32px;
+  flex: 0 0 auto;
   object-fit: contain;
 }
 
 .site-footer__logo-word {
-  height: 32px;
+  /*
+    Wordmark SVG must keep its native aspect (≈75.17×22.16).
+    Figma export used preserveAspectRatio=none + width/height 100%,
+    which made desktop resize stretch the glyph horizontally.
+  */
+  height: 22px;
   width: auto;
+  aspect-ratio: 75.1678 / 22.1642;
+  flex: 0 0 auto;
   display: block;
+  object-fit: contain;
+  /* Global `img { max-width:100% }` must not rewrite width from the footer row */
+  max-width: none;
 }
 
 .site-footer__rule {

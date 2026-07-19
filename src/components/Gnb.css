@@ -89,7 +89,10 @@
 .gnb__logo-word {
   height: 22px;
   width: auto;
-  max-width: 76px;
+  aspect-ratio: 75.1678 / 22.1642;
+  max-width: none;
+  flex: 0 0 auto;
+  object-fit: contain;
   transition: opacity var(--gnb-duration) var(--gnb-ease);
 }
 
