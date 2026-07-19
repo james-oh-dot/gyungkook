@@ -278,35 +278,34 @@
 }
 
 .gnb__fullmenu-inner {
-  display: grid;
-  grid-template-columns: minmax(280px, 876px) minmax(0, 1fr);
-  gap: 24px;
+  --gnb-fullmenu-frame: 24px;
+  position: relative;
+  display: block;
   align-items: stretch;
   min-height: 322px;
-  padding: 16px 39px 16px 39px;
+  /*
+    24px frame around the sub-visual — parent fill shows as an image border.
+    Columns stay measured/aligned to top-nav (JS); visual is full-bleed inside.
+  */
+  padding: var(--gnb-fullmenu-frame);
+  background: #f7f7fb;
+  box-sizing: border-box;
 }
 
 /* Columns snap to top-nav item left edges (measured in JS). */
 .gnb__fullmenu-inner.is-nav-aligned {
   display: block;
-  position: relative;
   gap: 0;
 }
 
 .gnb__visual {
-  position: relative;
-  overflow: hidden;
-  min-height: 290px;
-  background: #e8e8ef;
-}
-
-.gnb__fullmenu-inner.is-nav-aligned .gnb__visual {
   position: absolute;
-  top: 16px;
-  bottom: 16px;
-  /* `left` / `width` set inline — cover ends at the first column. */
+  inset: var(--gnb-fullmenu-frame);
+  z-index: 0;
+  overflow: hidden;
   min-height: 0;
-  max-width: 100%;
+  background: #e8e8ef;
+  pointer-events: none;
 }
 
 .gnb__visual-img {
@@ -330,22 +329,24 @@
 }
 
 .gnb__columns {
+  position: relative;
+  z-index: 1;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 8px 12px;
   align-content: start;
   padding: 12px 8px 12px 0;
   background: #fff;
-  min-height: 302px;
+  min-height: 274px;
 }
 
 .gnb__fullmenu-inner.is-nav-aligned .gnb__columns {
   display: block;
   position: absolute;
-  top: 16px;
-  /* `right` keeps the white panel inset by the same padding as the bar. */
-  right: 39px;
-  bottom: 16px;
+  /* Inset with the same 24px frame so the photo borders the panel. */
+  top: var(--gnb-fullmenu-frame);
+  right: var(--gnb-fullmenu-frame);
+  bottom: var(--gnb-fullmenu-frame);
   /* `left` set inline to first nav item — white panel starts under first column. */
   gap: 0;
   padding: 12px 0;
@@ -712,19 +713,6 @@
 @media (max-width: 1440px) {
   .gnb__nav-list {
     gap: 20px;
-  }
-
-  .gnb__fullmenu-inner {
-    grid-template-columns: minmax(240px, 42vw) minmax(0, 1fr);
-    padding-inline: 24px;
-  }
-
-  .gnb__fullmenu-inner.is-nav-aligned {
-    grid-template-columns: none;
-  }
-
-  .gnb__fullmenu-inner.is-nav-aligned .gnb__columns {
-    right: 24px;
   }
 }
 

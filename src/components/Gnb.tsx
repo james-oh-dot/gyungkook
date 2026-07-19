@@ -18,12 +18,10 @@ import './Gnb.css'
 
 type Indicator = { x: number; y: number; w: number; h: number }
 
-/** Desktop fullmenu: offsets from fullmenu-inner padding edge. */
+/** Desktop fullmenu: column offsets from fullmenu-inner padding edge. */
 type ColumnLayout = {
   lefts: number[]
   widths: number[]
-  visualLeft: number
-  visualWidth: number
 }
 
 const MQ_COMPACT = '(max-width: 1024px)'
@@ -134,14 +132,14 @@ export function Gnb() {
 
   /* Align fullmenu columns to each top-nav item's left edge.
    * Absolute children are positioned from the padding edge of
-   * `.gnb__fullmenu-inner`, so offsets are measured from that origin. */
+   * `.gnb__fullmenu-inner`, so offsets are measured from that origin.
+   * Sub-visual is a full-bleed framed background (see Gnb.css) — not sized here. */
   const syncColumnLayout = useCallback(() => {
     const inner = fullmenuInnerRef.current
     if (!inner || isCompact || !menuOpen) return
 
     const innerRect = inner.getBoundingClientRect()
     const styles = getComputedStyle(inner)
-    const padLeft = parseFloat(styles.paddingLeft) || 0
     const padRight = parseFloat(styles.paddingRight) || 0
     /* Padding-edge origin matches CSS absolute `left: 0`. */
     const originLeft = innerRect.left
@@ -155,19 +153,12 @@ export function Gnb() {
 
     if (!lefts.length || lefts.every((v) => v === 0)) return
 
-    const first = lefts[0] ?? 0
     const widths = lefts.map((left, index) => {
       if (index < lefts.length - 1) return Math.max(0, lefts[index + 1] - left)
       return Math.max(0, contentRight - left)
     })
 
-    setColumnLayout({
-      lefts,
-      widths,
-      visualLeft: padLeft,
-      /* Visual sits in the padded content area, ending at the first column. */
-      visualWidth: Math.max(0, first - padLeft),
-    })
+    setColumnLayout({ lefts, widths })
   }, [isCompact, menuOpen])
 
   useLayoutEffect(() => {
@@ -387,18 +378,8 @@ export function Gnb() {
             ref={fullmenuInnerRef}
             className={`gnb__fullmenu-inner${columnLayout ? ' is-nav-aligned' : ''}`}
           >
-            <div
-              className="gnb__visual"
-              aria-hidden="true"
-              style={
-                columnLayout
-                  ? {
-                      left: columnLayout.visualLeft,
-                      width: columnLayout.visualWidth,
-                    }
-                  : undefined
-              }
-            >
+            {/* Full-bleed sub-visual inside the 24px frame (see Gnb.css). */}
+            <div className="gnb__visual" aria-hidden="true">
               <img
                 key={visualKey}
                 className="gnb__visual-img"
