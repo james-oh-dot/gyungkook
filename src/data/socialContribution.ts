@@ -15,6 +15,9 @@
 import type { BoardPost, BoardTabDef } from './board'
 import { adjacentInList } from './board'
 import { asset } from '../utils/asset'
+import { progressiveAsset } from '../utils/progressiveImage'
+
+const SOCIAL_CONTRIBUTION_VISUAL = progressiveAsset('assets/sub/sub-04-04')
 
 /** Single board key (kept for BoardPost / PostDetail compatibility). */
 export type SocialContributionTab = 'social'
@@ -31,8 +34,9 @@ export const SOCIAL_CONTRIBUTION_PAGE = {
     '법무법인 경국은 승소, 성공, 완전회복, 가치극대화를 위하여 고객을 대신하여 첨예하게 대립하고 투쟁하지만 경국이 설립된 기초에는 사람에 대한 따뜻한 관심, 약자에 대한 배려, 사회공동체의 공존과 영속에 근본적인 중점을 두고 있습니다.',
     '극단적이고 양극화 된 사회가 아닌 함께 걸어가는 공동체가 될 수 있도록 지속적인 사회공헌에 힘쓰겠습니다.',
   ],
-  /** Figma layer name sub-04-04 */
-  visual: asset('assets/sub/sub-04-04.jpg'),
+  /** Figma layer name sub-04-04 — progressive WebP pair */
+  visual: SOCIAL_CONTRIBUTION_VISUAL.src,
+  visualPreview: SOCIAL_CONTRIBUTION_VISUAL.preview,
   basePath: '/press/social',
 } as const
 

@@ -19,6 +19,9 @@
  */
 
 import { asset } from '../utils/asset'
+import { progressiveAsset } from '../utils/progressiveImage'
+
+const COLUMN_MEDIA_VISUAL = progressiveAsset('assets/sub/sub-04-03')
 
 /** Local tab keys — also used as URL segments. */
 export type ColumnMediaTab = 'column' | 'publication' | 'media'
@@ -44,7 +47,8 @@ export const COLUMN_MEDIA_PAGE = {
   parentLabel: '활동 · 보도',
   title: '컬럼 · 미디어',
   /** Figma layer name sub-04-03 — also used as GNB fullmenu visual for press-column */
-  visual: asset('assets/sub/sub-04-03.jpg'),
+  visual: COLUMN_MEDIA_VISUAL.src,
+  visualPreview: COLUMN_MEDIA_VISUAL.preview,
   /** Route prefix (React Router, no base) */
   basePath: '/press/column-media',
 } as const

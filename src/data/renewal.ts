@@ -13,13 +13,16 @@
  * - Track record: `initialVisible` / `total` drive “실적 더보기” paging (+15).
  */
 
-import { asset } from '../utils/asset'
+import { progressiveAsset } from '../utils/progressiveImage'
+
+const RENEWAL_VISUAL = progressiveAsset('assets/sub/sub-02-01')
 
 export const RENEWAL_PAGE = {
   parentLabel: '재개발 · 보상업무',
   title: '정비사업',
-  /** Figma layer sub-02-01 */
-  visual: asset('assets/sub/sub-02-01.jpg'),
+  /** Figma layer sub-02-01 — progressive WebP pair */
+  visual: RENEWAL_VISUAL.src,
+  visualPreview: RENEWAL_VISUAL.preview,
   basePath: '/practice/renewal',
 } as const
 

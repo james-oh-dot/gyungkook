@@ -37,6 +37,7 @@ export function ColumnMediaLayout() {
           parentLabel={COLUMN_MEDIA_PAGE.parentLabel}
           title={COLUMN_MEDIA_PAGE.title}
           image={COLUMN_MEDIA_PAGE.visual}
+          imagePreview={COLUMN_MEDIA_PAGE.visualPreview}
           visualKey="sub-04-03"
         />
       </div>

@@ -1,3 +1,4 @@
+import { ProgressiveImage } from '../ProgressiveImage'
 import './SubVisual.css'
 
 type SubVisualProps = {
@@ -5,8 +6,13 @@ type SubVisualProps = {
   parentLabel: string
   /** Page title — e.g. 컬럼 · 미디어 */
   title: string
-  /** Background image URL (already `asset()`-prefixed) */
+  /** High-quality background image URL (already `asset()`-prefixed) */
   image: string
+  /**
+   * Tiny blur-up preview URL. Required for progressive LCP paint —
+   * generate via `scripts/generate-progressive-images.py`.
+   */
+  imagePreview: string
   /** Figma layer name for future agents (e.g. sub-04-03) */
   visualKey?: string
   /**
@@ -18,12 +24,13 @@ type SubVisualProps = {
 
 /**
  * Shared sub-page hero (SUB_LAYOUT visual).
- * Same chrome for list + detail under a menu family.
+ * Uses progressive blur-up so the frame fills on entry, then sharpens.
  */
 export function SubVisual({
   parentLabel,
   title,
   image,
+  imagePreview,
   visualKey,
   showChip = true,
 }: SubVisualProps) {
@@ -34,7 +41,14 @@ export function SubVisual({
       aria-label={`${parentLabel} ${title}`}
     >
       <div className="sub-visual__media" aria-hidden="true">
-        <img className="sub-visual__img" src={image} alt="" />
+        <ProgressiveImage
+          className="progressive-image--fill sub-visual__progressive"
+          imgClassName="sub-visual__img"
+          src={image}
+          preview={imagePreview}
+          alt=""
+          priority
+        />
         <div className="sub-visual__scrim" />
       </div>
       <div className="sub-visual__copy">

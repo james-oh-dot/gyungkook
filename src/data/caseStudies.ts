@@ -13,13 +13,16 @@
  *   for 업무사례 is designed (can reuse `PostDetail` if content matches).
  */
 
-import { asset } from '../utils/asset'
+import { progressiveAsset } from '../utils/progressiveImage'
+
+const CASE_STUDIES_VISUAL = progressiveAsset('assets/sub/sub-04-01')
 
 export const CASE_STUDIES_PAGE = {
   parentLabel: '활동 · 보도',
   title: '업무사례',
   /** Figma layer sub-04-01 — also GNB fullmenu visual for press-cases */
-  visual: asset('assets/sub/sub-04-01.jpg'),
+  visual: CASE_STUDIES_VISUAL.src,
+  visualPreview: CASE_STUDIES_VISUAL.preview,
   basePath: '/press/cases',
 } as const
 

@@ -434,6 +434,11 @@
 .about-intro-dark__seal {
   width: 195px;
   height: 195px;
+  flex: 0 0 auto;
+}
+
+.about-intro-dark__seal .progressive-image__preview,
+.about-intro-dark__seal .progressive-image__full {
   object-fit: cover;
 }
 
@@ -535,16 +540,24 @@
   background: #eef3f1;
 }
 
-.about-intro-step__img {
+.about-intro-step__visual .about-intro-step__img {
+  left: 0;
+  top: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center 30%;
 }
 
-.about-intro-step__img--flip {
+.about-intro-step__visual .about-intro-step__img--flip {
   transform: scaleY(-1) rotate(180deg);
   object-position: center 55%;
+}
+
+/* Progressive preview already uses blur+scale — keep fringe covered when flipped */
+.about-intro-step__visual
+  .progressive-image__preview.about-intro-step__img--flip {
+  transform: scaleY(-1) rotate(180deg) scale(1.08);
 }
 
 /* —— City quote —— */
@@ -564,9 +577,7 @@
 .about-intro-city-quote__bg {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  z-index: 0;
 }
 
 .about-intro-city-quote__scrim {
