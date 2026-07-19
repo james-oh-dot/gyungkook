@@ -288,10 +288,10 @@
   /* +40px vs prior 322 to keep column height while revealing more visual */
   min-height: 362px;
   /*
-    24px frame around the sub-visual — parent fill shows as an image border.
-    Columns stay measured/aligned to top-nav (JS); visual is full-bleed inside.
+    No top padding — white submenu sits flush under the top bar.
+    L/R/B keep the 24px framed sub-visual border.
   */
-  padding: var(--gnb-fullmenu-frame);
+  padding: 0 var(--gnb-fullmenu-frame) var(--gnb-fullmenu-frame);
   background: #f7f7fb;
   box-sizing: border-box;
 }
@@ -304,7 +304,10 @@
 
 .gnb__visual {
   position: absolute;
-  inset: var(--gnb-fullmenu-frame);
+  top: 0;
+  right: var(--gnb-fullmenu-frame);
+  bottom: var(--gnb-fullmenu-frame);
+  left: var(--gnb-fullmenu-frame);
   z-index: 0;
   overflow: hidden;
   min-height: 0;
@@ -347,12 +350,12 @@
 .gnb__fullmenu-inner.is-nav-aligned .gnb__columns {
   display: block;
   position: absolute;
-  /* Top inset matches the 24px frame; bottom adds +40px image reveal. */
-  top: var(--gnb-fullmenu-frame);
+  /* Flush under the top bar; bottom keeps +40px image reveal. */
+  top: 0;
   bottom: calc(var(--gnb-fullmenu-frame) + var(--gnb-fullmenu-bottom-extra));
-  /* `left` / `right` set inline — right ends at last top-nav text edge. */
+  /* `left` / `right` set inline — right ends at last top-nav indicator. */
   gap: 0;
-  padding: 12px 0;
+  padding: 0 0 12px;
   min-height: 0;
   overflow: hidden;
 }
@@ -363,7 +366,7 @@
 
 .gnb__fullmenu-inner.is-nav-aligned .gnb__column {
   position: absolute;
-  top: 12px;
+  top: 0;
   bottom: 12px;
 }
 

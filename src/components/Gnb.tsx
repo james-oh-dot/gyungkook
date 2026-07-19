@@ -22,7 +22,7 @@ type Indicator = { x: number; y: number; w: number; h: number }
 type ColumnLayout = {
   lefts: number[]
   widths: number[]
-  /** CSS `right` so the panel ends at the last top-nav text edge. */
+  /** CSS `right` so the panel ends at the last top-nav indicator edge. */
   panelRight: number
 }
 
@@ -133,9 +133,10 @@ export function Gnb() {
   }, [activeTop, isCompact, measureIndicator])
 
   /* Align fullmenu columns to each top-nav item's left edge.
-   * Panel right edge matches the last top-nav label’s text end so the
-   * framed sub-visual stays visible on the right. Absolute children are
-   * positioned from the padding edge of `.gnb__fullmenu-inner`. */
+   * Panel right edge matches the last top-nav item’s indicator box
+   * (li right) so the framed sub-visual still shows beyond it.
+   * Absolute children are positioned from the padding edge of
+   * `.gnb__fullmenu-inner`. */
   const syncColumnLayout = useCallback(() => {
     const inner = fullmenuInnerRef.current
     if (!inner || isCompact || !menuOpen) return
@@ -153,16 +154,13 @@ export function Gnb() {
     if (!lefts.length || lefts.every((v) => v === 0)) return
 
     const lastEl = itemRefs.current[NAV_ITEMS.length - 1]
-    const lastLink = lastEl?.querySelector<HTMLElement>('.gnb__nav-link')
     const styles = getComputedStyle(inner)
     const padRight = parseFloat(styles.paddingRight) || 0
-    /* Fallback: content box right if the last nav link is missing. */
+    /* Fallback: content box right if the last nav item is missing. */
     let panelEnd = innerRect.left + inner.clientWidth - padRight
-    if (lastLink) {
-      const linkRect = lastLink.getBoundingClientRect()
-      const linkPadR = parseFloat(getComputedStyle(lastLink).paddingRight) || 0
-      /* Right edge of the visible label glyphs (not the padded hit box). */
-      panelEnd = linkRect.right - linkPadR
+    if (lastEl) {
+      /* Same right edge as `.gnb__indicator` when that item is active. */
+      panelEnd = lastEl.getBoundingClientRect().right
     }
 
     const panelRight = Math.max(0, Math.round(innerRect.right - panelEnd))
