@@ -115,7 +115,6 @@ export function Hero() {
                   preview={item.imagePreview}
                   alt=""
                   priority={i === 0}
-                  loading="eager"
                   decoding="async"
                   style={
                     i === index

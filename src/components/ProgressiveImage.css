@@ -1,4 +1,4 @@
-/* Progressive blur-up — preview fills instantly, full crossfades in */
+/* Progressive blur-up — preview fills instantly, full crossfades in after decode */
 
 .progressive-image {
   position: relative;
@@ -36,33 +36,40 @@
   /* Scale past edges so blur doesn't show transparent fringes */
   transform: scale(1.08);
   transform-origin: center;
-  /* Keep preview under full once ready (for crossfade) */
   z-index: 0;
+  /* Drop preview from a11y tree after reveal; keep under full during fade */
+  transition: opacity 0.15s ease 0.2s;
 }
 
 .progressive-image__full {
   z-index: 1;
   opacity: 0;
-  transition: opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity;
+  /* Snappy reveal — decode already completed before .is-ready */
+  transition: opacity 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .progressive-image.is-ready .progressive-image__full {
   opacity: 1;
 }
 
-/* After fade, drop will-change to free GPU memory */
-.progressive-image.is-ready .progressive-image__full {
-  will-change: auto;
+/* After full is opaque, retire preview so blur can't “stick” visually */
+.progressive-image.is-ready .progressive-image__preview {
+  opacity: 0;
+  pointer-events: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .progressive-image__full {
+  .progressive-image__full,
+  .progressive-image__preview {
     transition: none;
   }
 
   .progressive-image__preview {
     filter: none;
     transform: none;
+  }
+
+  .progressive-image.is-ready .progressive-image__preview {
+    opacity: 0;
   }
 }

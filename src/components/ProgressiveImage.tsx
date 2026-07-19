@@ -1,9 +1,11 @@
 import {
-  useEffect,
+  useCallback,
+  useLayoutEffect,
   useRef,
   useState,
   type CSSProperties,
   type ImgHTMLAttributes,
+  type SyntheticEvent,
 } from 'react'
 import './ProgressiveImage.css'
 
@@ -20,19 +22,60 @@ export type ProgressiveImageProps = {
   imgClassName?: string
   imgStyle?: CSSProperties
   /**
-   * LCP / above-the-fold: eager + fetchpriority=high + preload link.
-   * Below-the-fold: lazy full image (preview still paints immediately).
+   * LCP / above-the-fold: fetchpriority=high + durable preload.
+   * Full layer still starts immediately (blur-up requires parallel fetch).
    */
   priority?: boolean
   objectFit?: CSSProperties['objectFit']
   objectPosition?: CSSProperties['objectPosition']
-} & Pick<ImgHTMLAttributes<HTMLImageElement>, 'sizes' | 'decoding' | 'loading'>
+} & Pick<ImgHTMLAttributes<HTMLImageElement>, 'sizes' | 'decoding'>
+
+/** Survive React Strict Mode remounts — never remove these from <head>. */
+const preloaded = new Set<string>()
+
+function preloadFull(url: string, high: boolean) {
+  if (!url || preloaded.has(url)) return
+  preloaded.add(url)
+  const link = document.createElement('link')
+  link.rel = 'preload'
+  link.as = 'image'
+  link.href = url
+  if (high) link.setAttribute('fetchpriority', 'high')
+  document.head.appendChild(link)
+}
+
+function isBitmapReady(img: HTMLImageElement | null): boolean {
+  return !!img && img.complete && img.naturalWidth > 0
+}
 
 /**
- * Apple / Medium-style blur-up image.
- * 1) Preview paints immediately (layout filled)
- * 2) Full image fetches in parallel
- * 3) Crossfade to sharp when ready (cached → near-instant)
+ * Reveal as soon as the bitmap is available.
+ * - `complete && naturalWidth > 0` is enough to paint (don't block on decode()).
+ * - Still kick `decode()` in the background to warm the decoder without delaying UI.
+ * Never leave the UI stuck on preview because `onLoad` was missed (cache hit).
+ */
+function whenPaintable(
+  img: HTMLImageElement,
+  onReady: () => void,
+  isActive: () => boolean,
+) {
+  if (!isBitmapReady(img)) return
+  if (!isActive()) return
+  onReady()
+  if (typeof img.decode === 'function') {
+    img.decode().catch(() => {})
+  }
+}
+
+/**
+ * Apple / Medium-style blur-up.
+ *
+ * Contract:
+ * - Preview paints on first frame (eager, tiny).
+ * - Full fetch starts immediately in parallel (never lazy — lazy left src empty
+ *   and kept some layers stuck on preview forever).
+ * - Reveal after load+decode; cache hits use layout-effect sync check so
+ *   we never miss a skipped `onLoad`.
  */
 export function ProgressiveImage({
   src,
@@ -46,36 +89,57 @@ export function ProgressiveImage({
   objectFit = 'cover',
   objectPosition = 'center',
   sizes,
-  decoding,
-  loading,
+  decoding = 'async',
 }: ProgressiveImageProps) {
   const [ready, setReady] = useState(false)
   const fullRef = useRef<HTMLImageElement>(null)
+  const srcRef = useRef(src)
+  srcRef.current = src
 
-  // Reset when the target image changes (route / menu swap)
-  useEffect(() => {
-    setReady(false)
-    const el = fullRef.current
-    if (el?.complete && el.naturalWidth > 0) {
-      // Already cached — reveal on next frame for a clean paint
-      const id = requestAnimationFrame(() => setReady(true))
-      return () => cancelAnimationFrame(id)
-    }
-  }, [src])
+  const reveal = useCallback(() => {
+    setReady(true)
+  }, [])
 
-  // LCP preload — start full download as early as possible
-  useEffect(() => {
-    if (!priority || !src) return
-    const link = document.createElement('link')
-    link.rel = 'preload'
-    link.as = 'image'
-    link.href = src
-    link.setAttribute('fetchpriority', 'high')
-    document.head.appendChild(link)
-    return () => {
-      link.remove()
-    }
+  // Durable preload for LCP / active heroes (no Strict Mode teardown cancel).
+  useLayoutEffect(() => {
+    if (priority) preloadFull(src, true)
   }, [src, priority])
+
+  // Sync cache-hit path — must run in layout effect so we don't flash preview
+  // when the full bitmap is already in memory (onLoad often does not re-fire).
+  useLayoutEffect(() => {
+    setReady(false)
+    const img = fullRef.current
+    if (!img) return
+
+    let active = true
+    const isActive = () => active && srcRef.current === src
+
+    whenPaintable(img, reveal, isActive)
+
+    // If the browser hasn't committed currentSrc yet (rare), retry once after paint.
+    let raf = 0
+    if (!isBitmapReady(img)) {
+      raf = requestAnimationFrame(() => {
+        whenPaintable(img, reveal, isActive)
+      })
+    }
+
+    return () => {
+      active = false
+      if (raf) cancelAnimationFrame(raf)
+    }
+  }, [src, reveal])
+
+  const onFullLoad = (e: SyntheticEvent<HTMLImageElement>) => {
+    whenPaintable(e.currentTarget, reveal, () => srcRef.current === src)
+  }
+
+  const onFullError = () => {
+    // Keep preview visible; mark ready so we don't spin forever waiting.
+    // (Preview remains the painted layer if full failed.)
+    setReady(false)
+  }
 
   const layerStyle: CSSProperties = {
     objectFit,
@@ -83,36 +147,42 @@ export function ProgressiveImage({
     ...imgStyle,
   }
 
+  const imgClass = imgClassName ? ` ${imgClassName}` : ''
+
   return (
     <div
       className={`progressive-image${ready ? ' is-ready' : ''}${className ? ` ${className}` : ''}`}
       data-progressive="blur-up"
+      data-ready={ready ? 'true' : 'false'}
       style={style}
     >
       <img
-        className={`progressive-image__preview${imgClassName ? ` ${imgClassName}` : ''}`}
+        className={`progressive-image__preview${imgClass}`}
         src={preview}
         alt=""
         aria-hidden="true"
         draggable={false}
         style={layerStyle}
-        // Preview must win the first paint — never lazy
         loading="eager"
         decoding="async"
-        fetchPriority={priority ? 'high' : 'auto'}
+        fetchPriority={priority ? 'high' : 'low'}
       />
       <img
+        key={src}
         ref={fullRef}
-        className={`progressive-image__full${imgClassName ? ` ${imgClassName}` : ''}`}
+        className={`progressive-image__full${imgClass}`}
         src={src}
         alt={alt}
         draggable={false}
         style={layerStyle}
         sizes={sizes}
-        loading={loading ?? (priority ? 'eager' : 'lazy')}
-        decoding={decoding ?? 'async'}
+        // Blur-up requires parallel fetch. Native lazy left currentSrc empty
+        // for below-fold nodes and caused permanent preview lock.
+        loading="eager"
+        decoding={decoding}
         fetchPriority={priority ? 'high' : 'auto'}
-        onLoad={() => setReady(true)}
+        onLoad={onFullLoad}
+        onError={onFullError}
       />
     </div>
   )

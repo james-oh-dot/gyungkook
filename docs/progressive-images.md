@@ -53,13 +53,24 @@ full을 과도하게 압축하지 않는다.
 
 ### `ProgressiveImage` 동작
 
-1. **Preview** — `loading="eager"`, 즉시 표시, `filter: blur(16px)` + `scale(1.08)` (가장자리 투명 밴드 방지)
-2. **Full** — 진입과 동시에 요청  
-   - `priority` (LCP/히어로): `fetchPriority="high"` + `<link rel="preload" as="image">`  
-   - 그 외: `loading="lazy"` (preview는 여전히 즉시)
-3. Full `onLoad` → `.is-ready` → full opacity 1로 crossfade
-4. 캐시 hit면 다음 프레임에 바로 ready (거의 즉시 sharp)
+1. **Preview** — `loading="eager"`, 즉시 표시, `filter: blur(16px)` + `scale(1.08)`
+2. **Full** — **항상 `loading="eager"`** 로 preview와 병렬 fetch  
+   - ⚠ 예전 `lazy`는 below-fold에서 `currentSrc`가 비어 preview에 영구 고정되는 버그가 있었음
+3. **Ready 판정 (캐시/레이스 안전)**  
+   - `useLayoutEffect`에서 `img.complete && naturalWidth > 0` 동기 체크  
+   - `onLoad` + `img.decode()` 후 reveal (페인트 가능한 뒤에만 crossfade)  
+   - full `<img key={src}>` 로 src 변경 시 load 이벤트 재발생 보장  
+   - priority preload는 모듈 레벨 Set으로 Strict Mode remount에도 취소되지 않음
+4. Crossfade **0.2s** → ready 후 preview opacity 0 (블러가 남는 착시 방지)
 5. `prefers-reduced-motion: reduce` → 전환/블러 최소화
+
+### 장애 분석 (2026-07 수정)
+
+| 증상 | 원인 | 조치 |
+|------|------|------|
+| preview에 영원히 고정 | `loading="lazy"` → full `currentSrc=""`, onLoad 미발생 | full은 항상 eager |
+| 캐시 hit 시 전환 안 됨 | 브라우저가 onLoad를 생략하는데 effect가 ready를 false로만 둠 | layout-effect + complete 체크 + decode |
+| 전환이 수 초 | full 862KB~931KB + 0.4s fade + LCP와 대역 경쟁 | 표시폭(1920/1600) 재인코딩, fade 0.2s, priority preload 고정 |
 
 ### 데이터 연결
 
