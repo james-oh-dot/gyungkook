@@ -63,7 +63,7 @@
 - **Why:** Figma photo exports are multi‑MB; a single `<img>` blocks LCP and looks empty until download finishes.
 - **How:** Apple/Medium-style 2-layer load — `{stem}.preview.webp` (~64px) + `{stem}.webp` (q=90). Component: `ProgressiveImage`; helper: `progressiveAsset()`; regenerate: `python3 scripts/generate-progressive-images.py`.
 - **Full doc:** `docs/progressive-images.md` (purpose, rationale, pipeline, do/don’t).
-- Applied on: **home `Hero`** (`hero-01`…`05`), all `SubVisual` heroes, 법인소개 large photos.
+- Applied on: **all home photos** (`Hero` slides + swipe thumbs + `HomeSections` cards/BGs/map), all `SubVisual` heroes, 법인소개 large photos. SVG icons stay plain `<img>`.
 - `SubVisual` requires `image` + `imagePreview` (`priority` preload for LCP).
 - Hero: Ken Burns / slide framing stay on `.progressive-image` wrapper; do not put transforms only on the inner `<img>` again.
 

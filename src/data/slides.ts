@@ -1,5 +1,4 @@
 import { progressiveAsset } from '../utils/progressiveImage'
-import { asset } from '../utils/asset'
 
 export type HeroSlide = {
   id: number
@@ -20,7 +19,10 @@ export type HeroSlide = {
   image: string
   /** Tiny blur-up preview WebP — paints immediately on entry */
   imagePreview: string
+  /** Swipe thumb: progressive full (300×170 crop of next slide) */
   nextImage: string
+  /** Swipe thumb blur-up preview */
+  nextImagePreview: string
   /**
    * Per-slide visual layout modifier (framing lives in Hero.css):
    * - statue: FULL bitmap visible — contain only; never crop hands/sides
@@ -41,6 +43,11 @@ const HERO_02 = progressiveAsset('assets/hero-02')
 const HERO_03 = progressiveAsset('assets/hero-03')
 const HERO_04 = progressiveAsset('assets/hero-04')
 const HERO_05 = progressiveAsset('assets/hero-05')
+const HERO_01_NEXT = progressiveAsset('assets/hero-01-next')
+const HERO_02_NEXT = progressiveAsset('assets/hero-02-next')
+const HERO_03_NEXT = progressiveAsset('assets/hero-03-next')
+const HERO_04_NEXT = progressiveAsset('assets/hero-04-next')
+const HERO_05_NEXT = progressiveAsset('assets/hero-05-next')
 
 export const heroSlides: HeroSlide[] = [
   {
@@ -56,7 +63,8 @@ export const heroSlides: HeroSlide[] = [
     nextSwipeTitle: '가치를 다시 세우는 관점',
     image: HERO_01.src,
     imagePreview: HERO_01.preview,
-    nextImage: asset('assets/hero-01-next.jpg'),
+    nextImage: HERO_01_NEXT.src,
+    nextImagePreview: HERO_01_NEXT.preview,
     visual: 'statue',
     wordSize: 'lg',
   },
@@ -74,7 +82,8 @@ export const heroSlides: HeroSlide[] = [
     nextSwipeTitle: '합리적인 보상과 배상',
     image: HERO_02.src,
     imagePreview: HERO_02.preview,
-    nextImage: asset('assets/hero-02-next.jpg'),
+    nextImage: HERO_02_NEXT.src,
+    nextImagePreview: HERO_02_NEXT.preview,
     visual: 'jewel',
     fadeEdges: true,
     wordSize: 'lg',
@@ -92,7 +101,8 @@ export const heroSlides: HeroSlide[] = [
     nextSwipeTitle: '사람을 연결하는 교감',
     image: HERO_03.src,
     imagePreview: HERO_03.preview,
-    nextImage: asset('assets/hero-03-next.jpg'),
+    nextImage: HERO_03_NEXT.src,
+    nextImagePreview: HERO_03_NEXT.preview,
     visual: 'cubes',
     wordSize: 'lg',
   },
@@ -109,7 +119,8 @@ export const heroSlides: HeroSlide[] = [
     nextSwipeTitle: '더 빠르고 가까운 접근',
     image: HERO_04.src,
     imagePreview: HERO_04.preview,
-    nextImage: asset('assets/hero-04-next.jpg'),
+    nextImage: HERO_04_NEXT.src,
+    nextImagePreview: HERO_04_NEXT.preview,
     visual: 'birds',
     /** Long English word — use compact copy scale so it never overflows */
     wordSize: 'md',
@@ -127,7 +138,8 @@ export const heroSlides: HeroSlide[] = [
     nextSwipeTitle: '오래된 가치를 지키다',
     image: HERO_05.src,
     imagePreview: HERO_05.preview,
-    nextImage: asset('assets/hero-05-next.jpg'),
+    nextImage: HERO_05_NEXT.src,
+    nextImagePreview: HERO_05_NEXT.preview,
     visual: 'campus',
     wordSize: 'lg',
   },
