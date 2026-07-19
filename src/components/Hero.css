@@ -150,11 +150,9 @@
 
 .hero__bg-slide--statue .hero__visual img {
   /*
-    2x PNG 2117×4096 — head/arms/scales in frame.
-    Height must stay tall enough that the PNG’s bottom cut edge remains
-    BELOW the section after the desktop GNB clearance nudge.
-    Desktop-only: nudge down ~GNB bar height (was translateY(-20%) which
-    tucked hand/scales under the menu). Tablet/mobile framing unchanged.
+    Cropped PNG 2117×3511 (top transparent pad removed).
+    Desktop: object-position center top; translateY pins content top to
+    the GNB bar bottom (~100px). Tablet/mobile use absolute media tops.
   */
   width: min(47.4vw, 910px);
   height: min(145vh, 2200px);
@@ -162,8 +160,8 @@
   /* NEVER center bottom — that clips the raised scales + head */
   object-position: center top;
   margin-top: 0;
-  /* Clear GNB (~100px) + Ken Burns headroom; zoom from near head */
-  transform: translateY(140px) scale(calc(1 + var(--hero-zoom) * 0.08));
+  /* Pin statue tip to desktop GNB bottom; Ken Burns from near head */
+  transform: translateY(100px) scale(calc(1 + var(--hero-zoom) * 0.08));
   transform-origin: 42% 14%;
   /*
     Figma hero_1 statue reads brighter / higher-key than the raw PNG.
@@ -673,7 +671,7 @@
 
   /* Keep statue raised offset even when Ken Burns is disabled */
   .hero__bg-slide--statue .hero__visual img {
-    transform: translateY(140px);
+    transform: translateY(100px);
     /* Preserve Figma exposure lift (reduced-motion zeroes filters above) */
     filter: brightness(1.28) contrast(0.97) !important;
   }
@@ -706,10 +704,10 @@
   }
 
   /*
-    Statue (slide 01) — Figma HOME_TABLET2 image 42:
-    artboard 768×1000; node 611×1023 at x=78.5, absolute top = 814 + (-657) = 157
-    Midpoint between prior raise (top ≈ -213) and Figma (157) → top -2.8%.
-    Width 611, centered. Native aspect (no squash).
+    Statue (slide 01) — after cropping 585px top pad from the PNG,
+    shift media down so the visible tip matches the prior frame:
+    old top -2.8% + (611 × 585 / 2117) / 1000 ≈ 14.1%.
+    Width 611, centered. Native cropped aspect (no squash).
   */
   .hero__bg-slide--statue .hero__visual {
     place-items: unset;
@@ -720,7 +718,7 @@
     display: block;
     position: absolute;
     left: 50%;
-    top: -2.8%; /* mid: raised ↔ Figma */
+    top: 14.1%; /* was -2.8% before crop */
     width: min(79.557vw, 611px);
     transform: translateX(-50%);
   }
@@ -729,7 +727,7 @@
     width: 100%;
     height: auto;
     max-height: none;
-    aspect-ratio: 2117 / 4096;
+    aspect-ratio: 2117 / 3511;
     object-fit: contain;
     object-position: center top;
     transform: none;
@@ -1000,16 +998,16 @@
     padding-right: 24px;
   }
 
-  /* Tablet statue — mid between prior raise and Figma top */
+  /* Tablet statue — crop-compensated top (see ≤1024 note) */
   .hero__bg-slide--statue .hero__visual-media {
-    top: -2.8%;
+    top: 14.1%;
     width: 611px;
   }
 
   .hero__bg-slide--statue .hero__visual img {
     width: 100%;
     height: auto;
-    aspect-ratio: 2117 / 4096;
+    aspect-ratio: 2117 / 3511;
     object-fit: contain;
     object-position: center top;
     transform: none;
@@ -1051,13 +1049,12 @@
   }
 
   /*
-    Mobile statue — Figma HOME_MOBILE2 image 42:
-    artboard 390×900; node 418.1×700 at x≈-14.3, absolute top = 752 + (-533.5) = 218.5
-    Midpoint between prior raise (top ≈ -5) and Figma (218.5) → top 11.9%.
+    Mobile statue — after top crop, shift media down to keep the prior tip:
+    old top 11.9% + (107.2vw × 585 / 2117) / 900 ≈ 24.7% at 390×900.
     Width 107.2vw (418.1/390), centered.
   */
   .hero__bg-slide--statue .hero__visual-media {
-    top: 11.9%; /* mid: raised ↔ Figma */
+    top: 24.7%; /* was 11.9% before crop */
     width: 107.2vw;
   }
 
@@ -1066,7 +1063,7 @@
     height: auto;
     max-width: none;
     max-height: none;
-    aspect-ratio: 2117 / 4096;
+    aspect-ratio: 2117 / 3511;
     object-fit: contain;
     object-position: center top;
     transform: none;
@@ -1086,12 +1083,12 @@
   }
 
   .hero__bg-slide--statue .hero__visual-media {
-    top: -2.8%;
+    top: 14.1%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) and (max-width: 767px) {
   .hero__bg-slide--statue .hero__visual-media {
-    top: 11.9%;
+    top: 24.7%;
   }
 }
