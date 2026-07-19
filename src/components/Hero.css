@@ -151,8 +151,10 @@
 .hero__bg-slide--statue .hero__visual img {
   /*
     2x PNG 2117×4096 — head/arms/scales in frame.
-    Height must stay tall enough that after translateY(-20%) the PNG’s
-    bottom cut edge remains BELOW the section (0.8 × 145vh ≈ 116vh).
+    Height must stay tall enough that the PNG’s bottom cut edge remains
+    BELOW the section after the desktop GNB clearance nudge.
+    Desktop-only: nudge down ~GNB bar height (was translateY(-20%) which
+    tucked hand/scales under the menu). Tablet/mobile framing unchanged.
   */
   width: min(47.4vw, 910px);
   height: min(145vh, 2200px);
@@ -160,8 +162,8 @@
   /* NEVER center bottom — that clips the raised scales + head */
   object-position: center top;
   margin-top: 0;
-  /* Raise statue ~20%; Ken Burns zoom grows from near the head */
-  transform: translateY(-20%) scale(calc(1 + var(--hero-zoom) * 0.08));
+  /* Clear GNB (~100px) + Ken Burns headroom; zoom from near head */
+  transform: translateY(140px) scale(calc(1 + var(--hero-zoom) * 0.08));
   transform-origin: 42% 14%;
   /*
     Figma hero_1 statue reads brighter / higher-key than the raw PNG.
@@ -335,12 +337,20 @@
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
-  gap: 16px;
+  /*
+    Target ≥40px visual separation after `.hero__copy-scale` zoom.
+    Gap is inside the zoomed box, so divide by the active copy scale.
+  */
+  gap: calc(40px / var(--hero-copy-scale));
   max-width: none;
   overflow: visible;
   /* Keep large serif tops (V, etc.) inside the filtered CharReveal boxes */
   padding-top: 0.08em;
   margin-top: -0.08em;
+}
+
+.hero__copy-scale.is-compact .hero__maincopy {
+  gap: calc(40px / var(--hero-copy-scale-compact));
 }
 
 .hero__word {
@@ -378,7 +388,11 @@
 }
 
 .hero__title-line {
-  margin: -0.14em -0.12em -0.1em -0.06em;
+  /*
+    Vertical negative margins keep CharReveal crop room without eating
+    the maincopy gap. Avoid horizontal pull so word↔title stay ≥40px.
+  */
+  margin: -0.14em 0 -0.1em;
   /*
     CharReveal mask needs overflow:hidden — pad TOP as well as bottom
     so Hangul / ExtraBold serif tops are not sliced.
@@ -659,7 +673,7 @@
 
   /* Keep statue raised offset even when Ken Burns is disabled */
   .hero__bg-slide--statue .hero__visual img {
-    transform: translateY(-20%);
+    transform: translateY(140px);
     /* Preserve Figma exposure lift (reduced-motion zeroes filters above) */
     filter: brightness(1.28) contrast(0.97) !important;
   }
@@ -836,7 +850,11 @@
   }
 }
 
-/* Tablet band (HOME_TABLET2 768): native stacked copy + 138px card thumb */
+/*
+  Tablet → mobile copy: fluid type so entering the mobile band does not
+  jump (was 120/36/14 → 60/18/12). Settled mobile (390) is 1.5× prior
+  mobile (90/27/18). Linear between 390 and 768.
+*/
 @media (max-width: 768px) {
   .hero {
     --hero-pad-x: 50px;
@@ -846,6 +864,8 @@
     --hero-swipe-reserve: 186px;
     --hero-thumb-w: 138px;
     --hero-thumb-h: 138px;
+    /* Shared fluid ramp: 390 (mobile settle) → 768 (tablet) */
+    --hero-fluid-t: calc((100vw - 390px) / 378);
   }
 
   /*
@@ -864,6 +884,10 @@
     left: var(--hero-pad-x);
     top: 49.7%; /* 497 / 1000 */
     z-index: 3;
+    /* Stay within the padded stage while type fluid-scales */
+    right: var(--hero-pad-x);
+    width: auto;
+    max-width: none;
   }
 
   .hero__copy-scale {
@@ -874,39 +898,62 @@
 
   .hero__copy-scale.is-compact {
     zoom: var(--hero-copy-scale-compact);
-    max-width: none;
+    max-width: 100%;
   }
 
   .hero__copy {
     gap: 20px;
-    max-width: min(354px, 100%);
+    max-width: min(
+      100%,
+      clamp(266px, calc(266px + (354 - 266) * var(--hero-fluid-t)), 354px)
+    );
     width: auto;
   }
 
   .hero__desc {
-    font-size: 14px;
-    max-width: min(354px, 100%);
+    /* 18px @390 (1.5× prior 12) → 14px @768 */
+    font-size: clamp(14px, calc(18px + (14 - 18) * var(--hero-fluid-t)), 18px);
+    max-width: 100%;
   }
 
   .hero__maincopy {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
+    /* Stacked: zoom is 1 — plain 40px between word and title */
+    gap: 40px;
+    max-width: 100%;
+  }
+
+  .hero__copy-scale.is-compact .hero__maincopy {
+    gap: 40px;
   }
 
   .hero__word {
-    font-size: 120px;
+    /* 90px @390 (1.5× prior 60) → 120px @768 */
+    font-size: clamp(90px, calc(90px + (120 - 90) * var(--hero-fluid-t)), 120px);
     white-space: nowrap;
   }
 
-  /* Same size as other slides — compact scale already released above */
+  /*
+    Slide 04 “Communicate” — fluid so the long word never overflows the
+    stage. Cap by available content width (~7.2ch of serif caps).
+  */
   .hero__word.is-md {
-    font-size: 120px;
+    font-size: clamp(
+      48px,
+      min(
+        calc(90px + (120 - 90) * var(--hero-fluid-t)),
+        calc((100vw - 2 * var(--hero-pad-x)) / 7.2)
+      ),
+      120px
+    );
+    max-width: 100%;
     white-space: nowrap;
   }
 
   .hero__title {
-    font-size: 36px;
+    /* 27px @390 (1.5× prior 18) → 36px @768 */
+    font-size: clamp(27px, calc(27px + (36 - 27) * var(--hero-fluid-t)), 36px);
     filter: drop-shadow(0 5px 10px rgba(35, 48, 59, 0.4));
   }
 
@@ -931,8 +978,8 @@
 }
 
 /*
-  Mobile (HOME_MOBILE2 390): 12/60/18 type + 100px card thumb, 24px pad-x.
-  Statue: Figma image 418.1×700, centered, bottom ≈ -18.5.
+  Mobile (HOME_MOBILE2 390): fluid type continues from ≤768 (no hard jump).
+  Card thumb / pad / statue framing only.
 */
 @media (max-width: 767px) {
   .hero {
@@ -949,31 +996,7 @@
     top: 49.22%; /* 443 / 900 */
   }
 
-  .hero__copy {
-    gap: 20px;
-    max-width: min(177px, 100%);
-    width: auto;
-  }
-
-  .hero__desc {
-    font-size: 12px;
-    max-width: min(177px, 100%);
-  }
-
-  .hero__maincopy {
-    gap: 4px;
-  }
-
-  .hero__word {
-    font-size: 60px;
-  }
-
-  .hero__word.is-md {
-    font-size: 60px;
-  }
-
   .hero__title {
-    font-size: 18px;
     filter: drop-shadow(0 2.5px 5px rgba(35, 48, 59, 0.4));
   }
 
