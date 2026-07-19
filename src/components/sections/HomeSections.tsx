@@ -490,12 +490,8 @@ export function AwardsSection() {
     <section
       ref={sectionRef}
       className={`section section--dark awards-section${visible ? ' is-previewing' : ''}`}
-      id="awards" aria-labelledby="awards-title"
-      onMouseMove={(e) => {
-        if (!visible) return
-        movePreview(e.clientX, e.clientY)
-      }}
-      onMouseLeave={() => setVisible(false)}
+      id="awards"
+      aria-labelledby="awards-title"
     >
       <div className="awards">
         <Reveal>
@@ -509,7 +505,19 @@ export function AwardsSection() {
           </p>
           <TextBtn label="전체보기" icon={asset('assets/icon-btn-award.svg')} />
         </Reveal>
-        <Reveal delay={120} className="awards__list">
+        {/*
+          Hover preview only while the pointer is inside the awards list.
+          Leaving the list (copy column, section chrome, etc.) fades it out.
+        */}
+        <Reveal
+          delay={120}
+          className="awards__list"
+          onMouseMove={(e) => {
+            if (!visible) return
+            movePreview(e.clientX, e.clientY)
+          }}
+          onMouseLeave={() => setVisible(false)}
+        >
           {awards.map((item, index) => (
             <div
               key={item.title}

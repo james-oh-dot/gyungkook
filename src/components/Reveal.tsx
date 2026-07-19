@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react'
+import type { CSSProperties, HTMLAttributes, ReactNode } from 'react'
 
 type RevealProps = {
   children: ReactNode
@@ -6,7 +6,7 @@ type RevealProps = {
   delay?: number
   as?: keyof HTMLElementTagNameMap
   style?: CSSProperties
-}
+} & Omit<HTMLAttributes<HTMLElement>, 'children' | 'className' | 'style'>
 
 export function Reveal({
   children,
@@ -14,6 +14,7 @@ export function Reveal({
   delay = 0,
   as = 'div',
   style,
+  ...rest
 }: RevealProps) {
   const Tag = as as 'div'
   return (
@@ -22,6 +23,7 @@ export function Reveal({
       data-reveal
       data-reveal-delay={delay}
       style={style}
+      {...rest}
     >
       {children}
     </Tag>
