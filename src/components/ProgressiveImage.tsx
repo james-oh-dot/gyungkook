@@ -86,8 +86,8 @@ export function ProgressiveImage({
   imgClassName = '',
   imgStyle,
   priority = false,
-  objectFit = 'cover',
-  objectPosition = 'center',
+  objectFit,
+  objectPosition,
   sizes,
   decoding = 'async',
 }: ProgressiveImageProps) {
@@ -141,9 +141,12 @@ export function ProgressiveImage({
     setReady(false)
   }
 
+  /* Only set object-* inline when callers pass them — otherwise CSS wins.
+     (Defaulting to cover here previously overrode Hero statue `contain`
+     and cropped hands / L-R edges.) */
   const layerStyle: CSSProperties = {
-    objectFit,
-    objectPosition,
+    ...(objectFit ? { objectFit } : {}),
+    ...(objectPosition ? { objectPosition } : {}),
     ...imgStyle,
   }
 

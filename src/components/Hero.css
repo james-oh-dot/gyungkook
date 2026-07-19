@@ -160,35 +160,45 @@
 }
 
 /* Per-slide visual framing (Figma AI-hero-change / 1920×1400)
-   statue: looking-up — keep head/arms/scales; legs may crop
+   HARD RULE — hero visuals must NEVER crop the source bitmap
+   (no object-fit:cover that clips; no scale()>1 inside overflow:hidden).
+   statue: full figure + hands/scales always visible (contain only)
    jewel: subject must sit at true viewport center (asset focal ~62% Y)
-   birds: flipX so large lamp is RIGHT; bottom-anchor cut base; keep pigeons
+   birds: flipX so large lamp is RIGHT; bottom-anchored; keep pigeons
 */
 .hero__bg-slide--statue .hero__visual {
   place-items: start center;
   padding-top: 0;
-  /* Clip any asset edge outside the hero stage — never show a hard cut line */
-  overflow: hidden;
+  /* Allow full statue to paint; stage teal shows in letterbox if needed */
+  overflow: visible;
 }
 
 .hero__bg-slide--statue .hero__visual .progressive-image {
   /*
-    Cropped PNG 2117×3511 (top transparent pad removed).
-    Desktop: translateY pins content top to the GNB bar bottom (~100px).
+    PNG 2117×3511 — size by WIDTH + native aspect only.
+    Never set a conflicting height (that forced cover → side crop / cut hands).
+    translateY pins tip near GNB; Ken Burns stays ≤ 1 so nothing is clipped.
   */
   width: min(47.4vw, 910px);
-  height: min(145vh, 2200px);
+  height: auto;
+  max-height: none;
+  aspect-ratio: 2117 / 3511;
   margin-top: 0;
-  /* Pin statue tip to desktop GNB bottom; Ken Burns from near head */
-  transform: translateY(100px) scale(calc(1 + var(--hero-zoom) * 0.08));
-  transform-origin: 42% 14%;
+  overflow: visible;
+  /* Safe Ken Burns: 0.97 → 1.00 (never scale above 1) */
+  transform: translateY(100px) scale(calc(0.97 + var(--hero-zoom) * 0.03));
+  transform-origin: 50% 0%;
 }
 
 .hero__bg-slide--statue .hero__visual .progressive-image__preview,
 .hero__bg-slide--statue .hero__visual .progressive-image__full {
-  object-fit: cover;
-  /* NEVER center bottom — that clips the raised scales + head */
+  object-fit: contain;
   object-position: center top;
+}
+
+/* Preview fringe scale would clip hands — keep 1:1 on statue */
+.hero__bg-slide--statue .hero__visual .progressive-image__preview {
+  transform: none;
 }
 
 .hero__bg-slide--statue .hero__visual .progressive-image__full {
@@ -715,7 +725,7 @@
     transform: none;
   }
 
-  /* Keep statue raised offset even when Ken Burns is disabled */
+  /* Keep statue raised offset; never scale (crop risk) */
   .hero__bg-slide--statue .hero__visual .progressive-image {
     transform: translateY(100px);
   }
@@ -757,39 +767,46 @@
   }
 
   /*
-    Statue (slide 01) — after cropping 585px top pad from the PNG,
-    shift media down so the visible tip matches the prior frame:
-    old top -2.8% + (611 × 585 / 2117) / 1000 ≈ 14.1%.
-    Width 611, centered. Native cropped aspect (no squash).
+    Statue (slide 01) tablet — full bitmap visible (HARD RULE: never crop).
+    Width capped to viewport so left/right are never clipped.
+    Top ≈ 14.1% from Figma tip alignment after PNG top-pad removal.
   */
   .hero__bg-slide--statue .hero__visual {
     place-items: unset;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .hero__bg-slide--statue .hero__visual-media {
     display: block;
     position: absolute;
     left: 50%;
-    top: 14.1%; /* was -2.8% before crop */
-    width: min(79.557vw, 611px);
+    top: 14.1%;
+    /* Never wider than the stage — 107%/overflow was cropping L/R */
+    width: min(79.557vw, 611px, 100%);
+    max-width: 100%;
     transform: translateX(-50%);
   }
 
   .hero__bg-slide--statue .hero__visual .progressive-image {
     width: 100%;
     height: auto;
+    max-width: 100%;
     max-height: none;
     aspect-ratio: 2117 / 3511;
     transform: none;
     transform-origin: center top;
     margin: 0;
+    overflow: visible;
   }
 
   .hero__bg-slide--statue .hero__visual .progressive-image__preview,
   .hero__bg-slide--statue .hero__visual .progressive-image__full {
     object-fit: contain;
     object-position: center top;
+  }
+
+  .hero__bg-slide--statue .hero__visual .progressive-image__preview {
+    transform: none;
   }
 
   .hero__bg-slide--cubes .hero__visual .progressive-image {
@@ -1059,10 +1076,11 @@
     padding-right: 24px;
   }
 
-  /* Tablet statue — crop-compensated top (see ≤1024 note) */
+  /* Tablet statue — never exceed viewport width (HARD RULE: no L/R crop) */
   .hero__bg-slide--statue .hero__visual-media {
     top: 14.1%;
-    width: 611px;
+    width: min(611px, 100%);
+    max-width: 100%;
   }
 
   .hero__bg-slide--statue .hero__visual .progressive-image {
@@ -1114,28 +1132,34 @@
   }
 
   /*
-    Mobile statue — after top crop, shift media down to keep the prior tip:
-    old top 11.9% + (107.2vw × 585 / 2117) / 900 ≈ 24.7% at 390×900.
-    Width 107.2vw (418.1/390), centered.
+    Mobile statue — HARD RULE: never crop.
+    Was 107.2vw (wider than viewport → L/R clip). Cap at 100vw.
+    Tip alignment ≈ 24.7% from prior Figma compensation.
   */
   .hero__bg-slide--statue .hero__visual-media {
-    top: 24.7%; /* was 11.9% before crop */
-    width: 107.2vw;
+    top: 24.7%;
+    width: min(100vw, 100%);
+    max-width: 100%;
   }
 
   .hero__bg-slide--statue .hero__visual .progressive-image {
     width: 100%;
     height: auto;
-    max-width: none;
+    max-width: 100%;
     max-height: none;
     aspect-ratio: 2117 / 3511;
     transform: none;
+    overflow: visible;
   }
 
   .hero__bg-slide--statue .hero__visual .progressive-image__preview,
   .hero__bg-slide--statue .hero__visual .progressive-image__full {
     object-fit: contain;
     object-position: center top;
+  }
+
+  .hero__bg-slide--statue .hero__visual .progressive-image__preview {
+    transform: none;
   }
 
   /* Slide 02 jewel — nudge ~10% down from centered mobile position */
