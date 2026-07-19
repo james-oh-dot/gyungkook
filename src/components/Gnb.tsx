@@ -18,12 +18,12 @@ import './Gnb.css'
 
 type Indicator = { x: number; y: number; w: number; h: number }
 
-/** Desktop fullmenu: offsets from fullmenu-inner padding edge. */
+/** Desktop fullmenu: column offsets from fullmenu-inner padding edge. */
 type ColumnLayout = {
   lefts: number[]
   widths: number[]
-  visualLeft: number
-  visualWidth: number
+  /** CSS `right` so the panel ends at the last top-nav text edge. */
+  panelRight: number
 }
 
 const MQ_COMPACT = '(max-width: 1024px)'
@@ -133,19 +133,16 @@ export function Gnb() {
   }, [activeTop, isCompact, measureIndicator])
 
   /* Align fullmenu columns to each top-nav item's left edge.
-   * Absolute children are positioned from the padding edge of
-   * `.gnb__fullmenu-inner`, so offsets are measured from that origin. */
+   * Panel right edge matches the last top-nav label’s text end so the
+   * framed sub-visual stays visible on the right. Absolute children are
+   * positioned from the padding edge of `.gnb__fullmenu-inner`. */
   const syncColumnLayout = useCallback(() => {
     const inner = fullmenuInnerRef.current
     if (!inner || isCompact || !menuOpen) return
 
     const innerRect = inner.getBoundingClientRect()
-    const styles = getComputedStyle(inner)
-    const padLeft = parseFloat(styles.paddingLeft) || 0
-    const padRight = parseFloat(styles.paddingRight) || 0
-    /* Padding-edge origin matches CSS absolute `left: 0`. */
+    /* Padding-edge origin matches CSS absolute `left: 0` / `right: 0`. */
     const originLeft = innerRect.left
-    const contentRight = Math.max(0, inner.clientWidth - padRight)
 
     const lefts = NAV_ITEMS.map((_, index) => {
       const el = itemRefs.current[index]
@@ -155,19 +152,28 @@ export function Gnb() {
 
     if (!lefts.length || lefts.every((v) => v === 0)) return
 
-    const first = lefts[0] ?? 0
+    const lastEl = itemRefs.current[NAV_ITEMS.length - 1]
+    const lastLink = lastEl?.querySelector<HTMLElement>('.gnb__nav-link')
+    const styles = getComputedStyle(inner)
+    const padRight = parseFloat(styles.paddingRight) || 0
+    /* Fallback: content box right if the last nav link is missing. */
+    let panelEnd = innerRect.left + inner.clientWidth - padRight
+    if (lastLink) {
+      const linkRect = lastLink.getBoundingClientRect()
+      const linkPadR = parseFloat(getComputedStyle(lastLink).paddingRight) || 0
+      /* Right edge of the visible label glyphs (not the padded hit box). */
+      panelEnd = linkRect.right - linkPadR
+    }
+
+    const panelRight = Math.max(0, Math.round(innerRect.right - panelEnd))
+    const panelEndFromOrigin = Math.max(0, Math.round(panelEnd - originLeft))
+
     const widths = lefts.map((left, index) => {
       if (index < lefts.length - 1) return Math.max(0, lefts[index + 1] - left)
-      return Math.max(0, contentRight - left)
+      return Math.max(0, panelEndFromOrigin - left)
     })
 
-    setColumnLayout({
-      lefts,
-      widths,
-      visualLeft: padLeft,
-      /* Visual sits in the padded content area, ending at the first column. */
-      visualWidth: Math.max(0, first - padLeft),
-    })
+    setColumnLayout({ lefts, widths, panelRight })
   }, [isCompact, menuOpen])
 
   useLayoutEffect(() => {
@@ -387,18 +393,8 @@ export function Gnb() {
             ref={fullmenuInnerRef}
             className={`gnb__fullmenu-inner${columnLayout ? ' is-nav-aligned' : ''}`}
           >
-            <div
-              className="gnb__visual"
-              aria-hidden="true"
-              style={
-                columnLayout
-                  ? {
-                      left: columnLayout.visualLeft,
-                      width: columnLayout.visualWidth,
-                    }
-                  : undefined
-              }
-            >
+            {/* Full-bleed sub-visual inside the 24px frame (see Gnb.css). */}
+            <div className="gnb__visual" aria-hidden="true">
               <img
                 key={visualKey}
                 className="gnb__visual-img"
@@ -412,7 +408,10 @@ export function Gnb() {
               aria-label="전체 메뉴"
               style={
                 columnLayout
-                  ? { left: columnLayout.lefts[0] ?? 0 }
+                  ? {
+                      left: columnLayout.lefts[0] ?? 0,
+                      right: columnLayout.panelRight,
+                    }
                   : undefined
               }
             >
