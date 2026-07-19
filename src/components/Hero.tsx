@@ -19,8 +19,9 @@ export function Hero() {
 
   const slide = heroSlides[index]
   const nextSlide = heroSlides[(index + 1) % heroSlides.length]
-  /** 300×170 crop preview of `nextSlide` (stored on the current slide). */
+  /** Progressive pair for the upcoming slide's 300×170 swipe thumb. */
   const thumbSrc = slide.nextImage
+  const thumbPreview = slide.nextImagePreview
 
   const jumpTo = useCallback((next: number) => {
     const now = performance.now()
@@ -57,6 +58,8 @@ export function Hero() {
       full.src = item.image
       const thumb = new Image()
       thumb.src = item.nextImage
+      const thumbPrev = new Image()
+      thumbPrev.src = item.nextImagePreview
     })
   }, [])
 
@@ -199,16 +202,15 @@ export function Hero() {
           >
             <div className="hero__swipe-thumb">
               {/*
-                Remount on every slide change. Reusing one <img> and only
-                swapping `src` (esp. with decoding=async + will-change:transform)
-                intermittently left the previous bitmap painted.
+                Remount on every slide change so the thumb never sticks on a
+                stale composited bitmap (src-only swap + transform hover).
               */}
-              <img
+              <ProgressiveImage
                 key={nextSlide.id}
+                className="hero__swipe-thumb-progressive"
                 src={thumbSrc}
+                preview={thumbPreview}
                 alt=""
-                decoding="sync"
-                draggable={false}
               />
             </div>
             <div className="hero__swipe-meta">

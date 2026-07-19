@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
+import { ProgressiveImage } from '../ProgressiveImage'
 import { Reveal } from '../Reveal'
 import { asset } from '../../utils/asset'
 import { useScrollGage } from '../../hooks/useScrollGage'
 import {
+  HOME_ABOUT_IMAGE,
+  HOME_OFFICE_MAP,
+  HOME_PROFESSIONALS_BG,
+  HOME_SOCIAL_BG,
   achievements,
   awards,
   notices,
@@ -64,7 +69,12 @@ export function NoticeSection() {
         {notices.map((item, index) => (
           <Reveal key={item.title} delay={index * 120} className="notice-card media-card">
             <div className="notice-card__media media-card">
-              <img className="media-card__img" src={item.image} alt="" />
+              <ProgressiveImage
+                className="media-card__img"
+                src={item.image.src}
+                preview={item.image.preview}
+                alt=""
+              />
             </div>
             <img className="notice-card__icon" src={asset('assets/icon-link.svg')} alt="" />
             <div className="notice-card__overlay">
@@ -103,7 +113,12 @@ export function AboutSection() {
           </div>
         </Reveal>
         <Reveal delay={160} className="about__media media-card">
-          <img className="media-card__img" src={asset('assets/about.jpg')} alt="법인 소개 이미지" />
+          <ProgressiveImage
+            className="media-card__img"
+            src={HOME_ABOUT_IMAGE.src}
+            preview={HOME_ABOUT_IMAGE.preview}
+            alt="법인 소개 이미지"
+          />
         </Reveal>
       </div>
       <Reveal delay={220} className="about__appeal">
@@ -152,7 +167,12 @@ export function PracticeSection() {
               tabIndex={0}
             >
               <div className="practice-card__media">
-                <img className="media-card__img" src={item.image} alt="" />
+                <ProgressiveImage
+                  className="media-card__img"
+                  src={item.image.src}
+                  preview={item.image.preview}
+                  alt=""
+                />
                 {item.featured ? <div className="practice-card__shade" /> : null}
               </div>
               <div className="practice-card__top">
@@ -191,7 +211,12 @@ export function AchievementsSection() {
             className={`achieve-row is-${item.align}`}
           >
             <div className="achieve-row__media media-card">
-              <img className="media-card__img" src={item.image} alt="" />
+              <ProgressiveImage
+                className="media-card__img"
+                src={item.image.src}
+                preview={item.image.preview}
+                alt=""
+              />
             </div>
             <div className="achieve-row__card">
               <div>
@@ -245,7 +270,12 @@ export function ProfessionalsSection() {
       id="professionals" aria-labelledby="pro-title"
     >
       <div className="professionals__bg">
-        <img src={asset('assets/professionals-bg.jpg')} alt="" />
+        <ProgressiveImage
+          className="progressive-image--fill"
+          src={HOME_PROFESSIONALS_BG.src}
+          preview={HOME_PROFESSIONALS_BG.preview}
+          alt=""
+        />
       </div>
       <div className="professionals__inner">
         <div className="section-head">
@@ -286,10 +316,12 @@ export function ProfessionalsSection() {
                 tabIndex={0}
               >
                 <div className="pro-card__media">
-                  <img
-                    src={person.image}
+                  <ProgressiveImage
+                    className="progressive-image--fill"
+                    src={person.image.src}
+                    preview={person.image.preview}
                     alt={person.name}
-                    style={{ objectPosition: person.imagePosition }}
+                    objectPosition={person.imagePosition}
                   />
                 </div>
                 <div className="pro-card__veil" aria-hidden="true" />
@@ -369,7 +401,12 @@ export function PressSection() {
           {items.map((item) => (
             <article key={`${item.title}-${item.desc}`} className="press-card">
               <div className="press-card__media media-card">
-                <img className="media-card__img" src={item.image} alt="" />
+                <ProgressiveImage
+                  className="media-card__img"
+                  src={item.image.src}
+                  preview={item.image.preview}
+                  alt=""
+                />
               </div>
               <div className="press-card__body">
                 <div className="press-card__title">
@@ -502,11 +539,12 @@ export function AwardsSection() {
         className={`awards__preview media-card${visible ? ' is-visible' : ''}`}
         aria-hidden={!visible}
       >
-        <img
-          className="media-card__img"
-          src={activeAward.image}
-          alt=""
+        <ProgressiveImage
           key={activeAward.title}
+          className="media-card__img"
+          src={activeAward.image.src}
+          preview={activeAward.image.preview}
+          alt=""
         />
       </div>
     </section>
@@ -517,7 +555,12 @@ export function SocialSection() {
   return (
     <section id="social" className="section social" aria-labelledby="social-title">
       <div className="social__bg">
-        <img src={asset('assets/social-bg.jpg')} alt="" />
+        <ProgressiveImage
+          className="progressive-image--fill"
+          src={HOME_SOCIAL_BG.src}
+          preview={HOME_SOCIAL_BG.preview}
+          alt=""
+        />
       </div>
       <div className="social__row">
         <Reveal>
@@ -607,7 +650,12 @@ export function OfficeSection() {
 
         <Reveal delay={140} className="office__panel">
           <div className="office__map media-card">
-            <img className="media-card__img" src={asset('assets/office-map.jpg')} alt="오피스 위치" />
+            <ProgressiveImage
+              className="media-card__img"
+              src={HOME_OFFICE_MAP.src}
+              preview={HOME_OFFICE_MAP.preview}
+              alt="오피스 위치"
+            />
           </div>
           <div className="office__panel-body">
             <div className="office__info-row">

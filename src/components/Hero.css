@@ -513,17 +513,27 @@
   box-sizing: border-box;
 }
 
-.hero__swipe-thumb img {
+.hero__swipe-thumb-progressive {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+}
+
+.hero__swipe-thumb-progressive.progressive-image,
+.hero__swipe-thumb .progressive-image {
+  width: 100%;
+  height: 100%;
+}
+
+.hero__swipe-thumb .progressive-image__preview,
+.hero__swipe-thumb .progressive-image__full {
+  /* Hover Ken-scale is on the progressive wrapper */
+  transform: none;
+}
+
+.hero__swipe-thumb .progressive-image {
   transform: scale(1);
   transform-origin: center center;
   transition: transform 1.05s var(--hero-ease);
-  /*
-    Do not leave will-change:transform on permanently — Chrome can keep a
-    composited layer with a stale bitmap when only `src` changes.
-  */
   animation: hero-thumb-swap 0.28s var(--hero-ease);
 }
 
@@ -537,8 +547,8 @@
 }
 
 /* ONLY thumbnail image effect on hover — never the full hero background */
-.hero__swipe-preview:hover .hero__swipe-thumb img,
-.hero__swipe-preview:focus-visible .hero__swipe-thumb img {
+.hero__swipe-preview:hover .hero__swipe-thumb .progressive-image,
+.hero__swipe-preview:focus-visible .hero__swipe-thumb .progressive-image {
   transform: scale(1.06);
 }
 
@@ -727,6 +737,7 @@
   .hero__swipe-preview,
   .hero__swipe-thumb,
   .hero__swipe-thumb img,
+  .hero__swipe-thumb .progressive-image,
   .hero__swipe-meta,
   .hero__gage-btns button,
   .char-reveal__item,

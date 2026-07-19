@@ -541,6 +541,7 @@ p {
   inset: 0;
 }
 
+.professionals__bg .progressive-image,
 .professionals__bg img {
   width: 100%;
   height: 100%;
@@ -603,11 +604,15 @@ p {
   inset: 0;
 }
 
+.pro-card__media .progressive-image,
 .pro-card__media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: center top;
+}
+
+.pro-card__media .progressive-image {
   transform: none;
   filter: blur(0);
   transition:
@@ -711,6 +716,7 @@ p {
   background: rgba(14, 24, 24, 0.8);
 }
 
+.pro-card.is-active .pro-card__media .progressive-image,
 .pro-card.is-active .pro-card__media img {
   filter: blur(0);
 }
@@ -725,6 +731,7 @@ p {
   transform: translate3d(0, 0, 0);
 }
 
+.professionals.is-hovering .pro-card.is-dimmed .pro-card__media .progressive-image,
 .professionals.is-hovering .pro-card.is-dimmed .pro-card__media img {
   filter: blur(6px);
   opacity: 0.85;
@@ -908,7 +915,8 @@ p {
   opacity: 1;
 }
 
-.awards__preview img {
+.awards__preview img,
+.awards__preview .progressive-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -928,6 +936,7 @@ p {
 
 @media (prefers-reduced-motion: reduce) {
   .pro-card__media img,
+  .pro-card__media .progressive-image,
   .pro-card__veil,
   .pro-card__default,
   .pro-card__hover,
@@ -937,7 +946,8 @@ p {
   .press-gage,
   .awards__item,
   .awards__preview,
-  .awards__preview img {
+  .awards__preview img,
+  .awards__preview .progressive-image {
     transition: none !important;
     animation: none !important;
   }
@@ -958,6 +968,7 @@ p {
   background: #052e2b;
 }
 
+.social__bg .progressive-image,
 .social__bg img {
   width: 100%;
   height: 100%;
