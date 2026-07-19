@@ -1,5 +1,6 @@
 import {
   useCallback,
+  useContext,
   useEffect,
   useId,
   useLayoutEffect,
@@ -10,7 +11,12 @@ import {
   type KeyboardEvent,
   type MouseEvent,
 } from 'react'
-import { GNB_SUB_VISUAL_PLACEHOLDER, NAV_ITEMS } from '../data/nav'
+import { UNSAFE_LocationContext } from 'react-router-dom'
+import {
+  findActiveDrawerNav,
+  GNB_SUB_VISUAL_PLACEHOLDER,
+  NAV_ITEMS,
+} from '../data/nav'
 import { asset } from '../utils/asset'
 import { resolveNavHref } from '../utils/path'
 import { SearchOverlay } from './SearchOverlay'
@@ -27,6 +33,15 @@ type ColumnLayout = {
 }
 
 const MQ_COMPACT = '(max-width: 1024px)'
+
+/**
+ * Router pathname when under BrowserRouter; otherwise `/` (classic.html).
+ * Avoids calling `useLocation()` outside a Router (hooks throw).
+ */
+function useDrawerPathname(): string {
+  const ctx = useContext(UNSAFE_LocationContext)
+  return ctx?.location.pathname ?? '/'
+}
 
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(() =>
@@ -45,6 +60,8 @@ function useMediaQuery(query: string) {
 }
 
 export function Gnb() {
+  const pathname = useDrawerPathname()
+  const activeDrawerNav = findActiveDrawerNav(pathname)
   const isCompact = useMediaQuery(MQ_COMPACT)
   const rootRef = useRef<HTMLElement>(null)
   const navListRef = useRef<HTMLUListElement>(null)
@@ -240,7 +257,8 @@ export function Gnb() {
 
   const openDrawer = () => {
     setMenuOpen(true)
-    setDrawerExpanded(NAV_ITEMS[0]?.id ?? null)
+    /* Home: all collapsed. Subpage: expand the section that owns this route. */
+    setDrawerExpanded(activeDrawerNav?.parentId ?? null)
   }
 
   const closeDrawer = () => {
@@ -518,17 +536,21 @@ export function Gnb() {
                         hidden={!expanded}
                       >
                         <ul role="list">
-                          {item.children.map((sub) => (
-                            <li key={sub.id}>
-                              <a
-                                className="gnb__drawer-sublink"
-                                href={resolveNavHref(sub.href)}
-                                onClick={closeDrawer}
-                              >
-                                {sub.label}
-                              </a>
-                            </li>
-                          ))}
+                          {item.children.map((sub) => {
+                            const selected = activeDrawerNav?.subId === sub.id
+                            return (
+                              <li key={sub.id}>
+                                <a
+                                  className={`gnb__drawer-sublink${selected ? ' is-selected' : ''}`}
+                                  href={resolveNavHref(sub.href)}
+                                  aria-current={selected ? 'page' : undefined}
+                                  onClick={closeDrawer}
+                                >
+                                  {sub.label}
+                                </a>
+                              </li>
+                            )
+                          })}
                         </ul>
                       </div>
                     </li>

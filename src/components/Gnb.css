@@ -656,9 +656,14 @@
 
 .gnb__drawer-sublink:active,
 .gnb__drawer-sublink:hover,
-.gnb__drawer-sublink:focus-visible {
+.gnb__drawer-sublink:focus-visible,
+.gnb__drawer-sublink.is-selected {
   color: #111;
   background: #f7f7fb;
+}
+
+.gnb__drawer-sublink.is-selected {
+  font-weight: 600;
 }
 
 .gnb__drawer-foot {
