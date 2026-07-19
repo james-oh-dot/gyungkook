@@ -2,6 +2,7 @@ import { CASE_STUDIES_PAGE } from './caseStudies'
 import { COLUMN_MEDIA_PAGE } from './columnMedia'
 import { PRESS_COVERAGE_PAGE } from './pressCoverage'
 import { RENEWAL_PAGE } from './renewal'
+import { SOCIAL_CONTRIBUTION_PAGE } from './socialContribution'
 import { asset } from '../utils/asset'
 
 export type NavSubItem = {
@@ -38,6 +39,9 @@ export const GNB_SUB_VISUAL_PRESS_MEDIA = PRESS_COVERAGE_PAGE.visual
 
 /** Figma sub-04-03 — 활동·보도 > 컬럼미디어 */
 export const GNB_SUB_VISUAL_PRESS_COLUMN = COLUMN_MEDIA_PAGE.visual
+
+/** Figma sub-04-04 — 활동·보도 > 사회공헌 */
+export const GNB_SUB_VISUAL_PRESS_SOCIAL = SOCIAL_CONTRIBUTION_PAGE.visual
 
 export const NAV_ITEMS: NavItem[] = [
   {
@@ -99,7 +103,12 @@ export const NAV_ITEMS: NavItem[] = [
         href: '/press/column-media/column',
         visual: GNB_SUB_VISUAL_PRESS_COLUMN,
       },
-      { id: 'press-social', label: '사회공헌', href: '#social', visual: GNB_SUB_VISUAL_PLACEHOLDER },
+      {
+        id: 'press-social',
+        label: '사회공헌',
+        href: '/press/social',
+        visual: GNB_SUB_VISUAL_PRESS_SOCIAL,
+      },
     ],
   },
   {
