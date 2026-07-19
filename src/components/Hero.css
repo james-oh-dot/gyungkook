@@ -1076,7 +1076,7 @@
   }
 
   /*
-    Slide 04 birds — 180% mobile scale (trial). Keep flip + bottom anchor;
+    Slide 04 birds — 180% mobile scale. Keep flip + bottom anchor;
     overflow clips the wider scene.
   */
   .hero__bg-slide--birds .hero__visual {
