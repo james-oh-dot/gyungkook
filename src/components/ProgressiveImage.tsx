@@ -14,6 +14,8 @@ export type ProgressiveImageProps = {
   preview: string
   alt?: string
   className?: string
+  /** Applied to the outer progressive box (e.g. hero `--hero-zoom`) */
+  style?: CSSProperties
   /** Applied to both preview + full `<img>` layers */
   imgClassName?: string
   imgStyle?: CSSProperties
@@ -24,7 +26,7 @@ export type ProgressiveImageProps = {
   priority?: boolean
   objectFit?: CSSProperties['objectFit']
   objectPosition?: CSSProperties['objectPosition']
-} & Pick<ImgHTMLAttributes<HTMLImageElement>, 'sizes' | 'decoding'>
+} & Pick<ImgHTMLAttributes<HTMLImageElement>, 'sizes' | 'decoding' | 'loading'>
 
 /**
  * Apple / Medium-style blur-up image.
@@ -37,6 +39,7 @@ export function ProgressiveImage({
   preview,
   alt = '',
   className = '',
+  style,
   imgClassName = '',
   imgStyle,
   priority = false,
@@ -44,6 +47,7 @@ export function ProgressiveImage({
   objectPosition = 'center',
   sizes,
   decoding,
+  loading,
 }: ProgressiveImageProps) {
   const [ready, setReady] = useState(false)
   const fullRef = useRef<HTMLImageElement>(null)
@@ -83,6 +87,7 @@ export function ProgressiveImage({
     <div
       className={`progressive-image${ready ? ' is-ready' : ''}${className ? ` ${className}` : ''}`}
       data-progressive="blur-up"
+      style={style}
     >
       <img
         className={`progressive-image__preview${imgClassName ? ` ${imgClassName}` : ''}`}
@@ -104,8 +109,8 @@ export function ProgressiveImage({
         draggable={false}
         style={layerStyle}
         sizes={sizes}
-        loading={priority ? 'eager' : 'lazy'}
-        decoding={decoding ?? (priority ? 'async' : 'async')}
+        loading={loading ?? (priority ? 'eager' : 'lazy')}
+        decoding={decoding ?? 'async'}
         fetchPriority={priority ? 'high' : 'auto'}
         onLoad={() => setReady(true)}
       />

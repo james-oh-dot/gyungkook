@@ -1,3 +1,4 @@
+import { progressiveAsset } from '../utils/progressiveImage'
 import { asset } from '../utils/asset'
 
 export type HeroSlide = {
@@ -15,7 +16,10 @@ export type HeroSlide = {
    * Describes the next slide — Figma HOME_TABLET2 / HOME_MOBILE2 Hero Swipe.
    */
   nextSwipeTitle: string
+  /** High-quality WebP (progressive full layer) */
   image: string
+  /** Tiny blur-up preview WebP — paints immediately on entry */
+  imagePreview: string
   nextImage: string
   /**
    * Per-slide visual layout modifier (framing lives in Hero.css):
@@ -32,6 +36,12 @@ export type HeroSlide = {
 /** Auto-advance + swipe_gage fill duration. Button jumps must reset immediately. */
 export const HERO_DURATION_MS = 10000
 
+const HERO_01 = progressiveAsset('assets/hero-01')
+const HERO_02 = progressiveAsset('assets/hero-02')
+const HERO_03 = progressiveAsset('assets/hero-03')
+const HERO_04 = progressiveAsset('assets/hero-04')
+const HERO_05 = progressiveAsset('assets/hero-05')
+
 export const heroSlides: HeroSlide[] = [
   {
     id: 1,
@@ -44,7 +54,8 @@ export const heroSlides: HeroSlide[] = [
     ],
     nextLabel: 'REBUILD',
     nextSwipeTitle: '가치를 다시 세우는 관점',
-    image: asset('assets/hero-01.png'),
+    image: HERO_01.src,
+    imagePreview: HERO_01.preview,
     nextImage: asset('assets/hero-01-next.jpg'),
     visual: 'statue',
     wordSize: 'lg',
@@ -61,7 +72,8 @@ export const heroSlides: HeroSlide[] = [
     ],
     nextLabel: 'FAIR',
     nextSwipeTitle: '합리적인 보상과 배상',
-    image: asset('assets/hero-02.png'),
+    image: HERO_02.src,
+    imagePreview: HERO_02.preview,
     nextImage: asset('assets/hero-02-next.jpg'),
     visual: 'jewel',
     fadeEdges: true,
@@ -78,7 +90,8 @@ export const heroSlides: HeroSlide[] = [
     ],
     nextLabel: 'COMMUNICATE',
     nextSwipeTitle: '사람을 연결하는 교감',
-    image: asset('assets/hero-03.jpg'),
+    image: HERO_03.src,
+    imagePreview: HERO_03.preview,
     nextImage: asset('assets/hero-03-next.jpg'),
     visual: 'cubes',
     wordSize: 'lg',
@@ -94,7 +107,8 @@ export const heroSlides: HeroSlide[] = [
     ],
     nextLabel: 'SPEED',
     nextSwipeTitle: '더 빠르고 가까운 접근',
-    image: asset('assets/hero-04.png'),
+    image: HERO_04.src,
+    imagePreview: HERO_04.preview,
     nextImage: asset('assets/hero-04-next.jpg'),
     visual: 'birds',
     /** Long English word — use compact copy scale so it never overflows */
@@ -111,7 +125,8 @@ export const heroSlides: HeroSlide[] = [
     ],
     nextLabel: 'VALUE',
     nextSwipeTitle: '오래된 가치를 지키다',
-    image: asset('assets/hero-05.jpg'),
+    image: HERO_05.src,
+    imagePreview: HERO_05.preview,
     nextImage: asset('assets/hero-05-next.jpg'),
     visual: 'campus',
     wordSize: 'lg',

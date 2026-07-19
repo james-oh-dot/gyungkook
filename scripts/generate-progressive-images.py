@@ -23,12 +23,20 @@ ROOT = Path(__file__).resolve().parents[1] / "public" / "assets"
 
 # (relative path under public/assets, max full width)
 TARGETS: list[tuple[str, int]] = [
+    # Home hero slides
+    ("hero-01.png", 2117),
+    ("hero-02.png", 1374),
+    ("hero-03.jpg", 2432),
+    ("hero-04.png", 2560),
+    ("hero-05.jpg", 1024),
+    # Sub visuals
     ("sub/sub-01-01.jpg", 2560),
     ("sub/sub-02-01.jpg", 2560),
     ("sub/sub-04-01.jpg", 2560),
     ("sub/sub-04-02.jpg", 2560),
     ("sub/sub-04-03.jpg", 2560),
     ("sub/sub-04-04.jpg", 2560),
+    # About intro large photos
     ("about/quote-city.png", 2560),
     ("about/strength-01.png", 1600),
     ("about/strength-02.png", 1600),

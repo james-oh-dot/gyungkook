@@ -119,12 +119,18 @@
   display: contents;
 }
 
-.hero__visual img {
+/*
+  Progressive blur-up box — Ken Burns / framing live on this wrapper.
+  Preview + full imgs fill the box (see layers below).
+*/
+.hero__visual .progressive-image {
+  position: relative;
   display: block;
   width: auto;
   height: auto;
   max-width: none;
-  object-fit: contain;
+  overflow: hidden;
+  isolation: isolate;
   --hero-zoom: 0;
   transform: scale(calc(1 + var(--hero-zoom) * 0.08));
   transform-origin: center center;
@@ -132,7 +138,24 @@
   transition: none;
 }
 
-.hero__bg-slide:not(.is-active) .hero__visual img {
+.hero__visual .progressive-image__preview,
+.hero__visual .progressive-image__full {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  margin: 0;
+  /* Ken Burns is on the wrapper — don't fight preview fringe scale */
+}
+
+.hero__visual .progressive-image__preview {
+  /* Keep blur-up fringe cover; slide filters may extend this */
+  transform: scale(1.08);
+  transform-origin: center center;
+}
+
+.hero__bg-slide:not(.is-active) .hero__visual .progressive-image {
   --hero-zoom: 0;
 }
 
@@ -148,40 +171,51 @@
   overflow: hidden;
 }
 
-.hero__bg-slide--statue .hero__visual img {
+.hero__bg-slide--statue .hero__visual .progressive-image {
   /*
     Cropped PNG 2117×3511 (top transparent pad removed).
-    Desktop: object-position center top; translateY pins content top to
-    the GNB bar bottom (~100px). Tablet/mobile use absolute media tops.
+    Desktop: translateY pins content top to the GNB bar bottom (~100px).
   */
   width: min(47.4vw, 910px);
   height: min(145vh, 2200px);
-  object-fit: cover;
-  /* NEVER center bottom — that clips the raised scales + head */
-  object-position: center top;
   margin-top: 0;
   /* Pin statue tip to desktop GNB bottom; Ken Burns from near head */
   transform: translateY(100px) scale(calc(1 + var(--hero-zoom) * 0.08));
   transform-origin: 42% 14%;
-  /*
-    Figma hero_1 statue reads brighter / higher-key than the raw PNG.
-    Exposure lift only — do not alter aspect (never object-fit: fill).
-  */
+}
+
+.hero__bg-slide--statue .hero__visual .progressive-image__preview,
+.hero__bg-slide--statue .hero__visual .progressive-image__full {
+  object-fit: cover;
+  /* NEVER center bottom — that clips the raised scales + head */
+  object-position: center top;
+}
+
+.hero__bg-slide--statue .hero__visual .progressive-image__full {
+  /* Figma hero_1 exposure lift — full layer only */
   filter: brightness(1.28) contrast(0.97);
+}
+
+.hero__bg-slide--statue .hero__visual .progressive-image__preview {
+  filter: blur(16px) brightness(1.28) contrast(0.97);
 }
 
 .hero__bg-slide--jewel .hero__visual {
   place-items: center;
 }
 
-.hero__bg-slide--jewel .hero__visual img {
+.hero__bg-slide--jewel .hero__visual .progressive-image {
   /* 2x PNG 1066×1054 (near-square) — subject centered in asset */
   width: min(52vw, 980px);
   height: min(72vh, 980px);
-  object-fit: contain;
-  object-position: center center;
   margin: 0;
   transform-origin: 50% 50%;
+}
+
+.hero__bg-slide--jewel .hero__visual .progressive-image__preview,
+.hero__bg-slide--jewel .hero__visual .progressive-image__full {
+  object-fit: contain;
+  object-position: center center;
 }
 
 .hero__bg-slide--jewel.has-fade .hero__visual::after {
@@ -206,11 +240,15 @@
   will-change: transform;
 }
 
-.hero__bg-slide--cubes .hero__visual img {
+.hero__bg-slide--cubes .hero__visual .progressive-image {
   width: min(51vw, 982px);
   height: min(67vh, 941px);
-  object-fit: contain;
   margin-top: 6vh;
+}
+
+.hero__bg-slide--cubes .hero__visual .progressive-image__preview,
+.hero__bg-slide--cubes .hero__visual .progressive-image__full {
+  object-fit: contain;
 }
 
 .hero__bg-slide--birds .hero__visual {
@@ -231,26 +269,34 @@
   will-change: transform;
 }
 
-.hero__bg-slide--birds .hero__visual img {
+.hero__bg-slide--birds .hero__visual .progressive-image {
   /* 2x PNG 4096×2907 — full-bleed width, both pigeons stay in frame */
   display: block;
   width: 100%;
   height: auto;
   max-width: 100%;
   aspect-ratio: 4096 / 2907;
-  object-fit: cover;
-  object-position: center bottom;
   margin: 0;
   /* Mild Ken Burns; origin in source space near large lamp (visual RIGHT after flip) */
   transform: scale(calc(1 + var(--hero-zoom) * 0.05));
   transform-origin: 30% 62%;
 }
 
-.hero__bg-slide--campus .hero__visual img {
+.hero__bg-slide--birds .hero__visual .progressive-image__preview,
+.hero__bg-slide--birds .hero__visual .progressive-image__full {
+  object-fit: cover;
+  object-position: center bottom;
+}
+
+.hero__bg-slide--campus .hero__visual .progressive-image {
   width: min(49.4vw, 948px);
   height: min(49.4vw, 948px);
-  object-fit: cover;
   margin-top: 2vh;
+}
+
+.hero__bg-slide--campus .hero__visual .progressive-image__preview,
+.hero__bg-slide--campus .hero__visual .progressive-image__full {
+  object-fit: cover;
 }
 
 .hero__shell {
@@ -652,7 +698,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero__bg-slide,
-  .hero__visual img,
+  .hero__visual .progressive-image,
   .hero__swipe,
   .hero__swipe-preview,
   .hero__swipe-thumb,
@@ -665,15 +711,22 @@
     filter: none !important;
   }
 
-  .hero__visual img {
+  .hero__visual .progressive-image {
     transform: none;
   }
 
   /* Keep statue raised offset even when Ken Burns is disabled */
-  .hero__bg-slide--statue .hero__visual img {
+  .hero__bg-slide--statue .hero__visual .progressive-image {
     transform: translateY(100px);
+  }
+
+  .hero__bg-slide--statue .hero__visual .progressive-image__full {
     /* Preserve Figma exposure lift (reduced-motion zeroes filters above) */
     filter: brightness(1.28) contrast(0.97) !important;
+  }
+
+  .hero__bg-slide--statue .hero__visual .progressive-image__preview {
+    filter: blur(16px) brightness(1.28) contrast(0.97) !important;
   }
 
   /* Keep birds / cubes mirror on the wrapper even when Ken Burns is disabled */
@@ -723,19 +776,23 @@
     transform: translateX(-50%);
   }
 
-  .hero__bg-slide--statue .hero__visual img {
+  .hero__bg-slide--statue .hero__visual .progressive-image {
     width: 100%;
     height: auto;
     max-height: none;
     aspect-ratio: 2117 / 3511;
-    object-fit: contain;
-    object-position: center top;
     transform: none;
     transform-origin: center top;
     margin: 0;
   }
 
-  .hero__bg-slide--cubes .hero__visual img {
+  .hero__bg-slide--statue .hero__visual .progressive-image__preview,
+  .hero__bg-slide--statue .hero__visual .progressive-image__full {
+    object-fit: contain;
+    object-position: center top;
+  }
+
+  .hero__bg-slide--cubes .hero__visual .progressive-image {
     width: min(72vw, 640px);
   }
 
@@ -748,21 +805,25 @@
     place-items: center;
   }
 
-  .hero__bg-slide--campus .hero__visual img {
+  .hero__bg-slide--campus .hero__visual .progressive-image {
     width: min(78vw, 640px);
     height: min(78vw, 640px);
     max-height: none;
-    object-fit: contain;
-    object-position: center center;
     margin-top: 0;
   }
 
-  .hero__bg-slide--jewel .hero__visual img {
+  .hero__bg-slide--campus .hero__visual .progressive-image__preview,
+  .hero__bg-slide--campus .hero__visual .progressive-image__full {
+    object-fit: contain;
+    object-position: center center;
+  }
+
+  .hero__bg-slide--jewel .hero__visual .progressive-image {
     width: min(64vw, 560px);
     height: min(58vh, 720px);
   }
 
-  .hero__bg-slide--birds .hero__visual img {
+  .hero__bg-slide--birds .hero__visual .progressive-image {
     width: 100%;
     height: auto;
     margin: 0;
@@ -1004,13 +1065,17 @@
     width: 611px;
   }
 
-  .hero__bg-slide--statue .hero__visual img {
+  .hero__bg-slide--statue .hero__visual .progressive-image {
     width: 100%;
     height: auto;
     aspect-ratio: 2117 / 3511;
+    transform: none;
+  }
+
+  .hero__bg-slide--statue .hero__visual .progressive-image__preview,
+  .hero__bg-slide--statue .hero__visual .progressive-image__full {
     object-fit: contain;
     object-position: center top;
-    transform: none;
   }
 }
 
@@ -1058,19 +1123,23 @@
     width: 107.2vw;
   }
 
-  .hero__bg-slide--statue .hero__visual img {
+  .hero__bg-slide--statue .hero__visual .progressive-image {
     width: 100%;
     height: auto;
     max-width: none;
     max-height: none;
     aspect-ratio: 2117 / 3511;
-    object-fit: contain;
-    object-position: center top;
     transform: none;
   }
 
+  .hero__bg-slide--statue .hero__visual .progressive-image__preview,
+  .hero__bg-slide--statue .hero__visual .progressive-image__full {
+    object-fit: contain;
+    object-position: center top;
+  }
+
   /* Slide 02 jewel — nudge ~10% down from centered mobile position */
-  .hero__bg-slide--jewel .hero__visual img {
+  .hero__bg-slide--jewel .hero__visual .progressive-image {
     transform: translateY(10vh) scale(calc(1 + var(--hero-zoom) * 0.08));
     transform-origin: 50% 50%;
   }
@@ -1091,7 +1160,7 @@
     transform-origin: center bottom;
   }
 
-  .hero__bg-slide--birds .hero__visual img {
+  .hero__bg-slide--birds .hero__visual .progressive-image {
     width: 100%;
     max-width: none;
   }
@@ -1105,7 +1174,7 @@
 
 /* Keep statue tops when motion is reduced (tablet/mobile) */
 @media (prefers-reduced-motion: reduce) and (max-width: 1024px) {
-  .hero__bg-slide--statue .hero__visual img {
+  .hero__bg-slide--statue .hero__visual .progressive-image {
     transform: none;
   }
 
