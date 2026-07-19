@@ -47,6 +47,46 @@ export const GNB_SUB_VISUAL_PRESS_COLUMN = COLUMN_MEDIA_PAGE.visual
 /** Figma sub-04-04 — 활동·보도 > 사회공헌 */
 export const GNB_SUB_VISUAL_PRESS_SOCIAL = SOCIAL_CONTRIBUTION_PAGE.visual
 
+/**
+ * Match the current SPA pathname to a drawer parent + sub item.
+ * Home (`/`) → null (all accordion sections stay collapsed).
+ * Subpages → longest matching SPA child href (incl. local-tab siblings
+ * like `/press/coverage/tv` ↔ `/press/coverage/newspaper`).
+ */
+export function findActiveDrawerNav(
+  pathname: string,
+): { parentId: string; subId: string } | null {
+  const path = pathname.replace(/\/+$/, '') || '/'
+  if (path === '/') return null
+
+  let best: { parentId: string; subId: string; score: number } | null = null
+
+  for (const item of NAV_ITEMS) {
+    for (const sub of item.children) {
+      if (!sub.href.startsWith('/')) continue
+      const score = navHrefMatchScore(path, sub.href)
+      if (score <= 0) continue
+      if (!best || score > best.score) {
+        best = { parentId: item.id, subId: sub.id, score }
+      }
+    }
+  }
+
+  return best ? { parentId: best.parentId, subId: best.subId } : null
+}
+
+function navHrefMatchScore(pathname: string, href: string): number {
+  const target = href.replace(/\/+$/, '') || '/'
+  if (pathname === target) return 10_000 + target.length
+  if (pathname.startsWith(`${target}/`)) return 5_000 + target.length
+  /* Local tabs under the same section prefix (drop last segment). */
+  const parent = target.replace(/\/[^/]+$/, '')
+  if (parent.length > 1 && (pathname === parent || pathname.startsWith(`${parent}/`))) {
+    return parent.length
+  }
+  return 0
+}
+
 export const NAV_ITEMS: NavItem[] = [
   {
     id: 'about',
