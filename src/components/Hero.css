@@ -673,7 +673,7 @@
 
   /* Keep statue raised offset even when Ken Burns is disabled */
   .hero__bg-slide--statue .hero__visual img {
-    transform: translateY(128px);
+    transform: translateY(140px);
     /* Preserve Figma exposure lift (reduced-motion zeroes filters above) */
     filter: brightness(1.28) contrast(0.97) !important;
   }
