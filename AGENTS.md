@@ -41,15 +41,21 @@
   - Shell: `SocialContributionLayout` = `SubVisual` (`showChip={false}`) + content anchor + Outlet — **no LocalTabs**
   - Mock data: `src/data/socialContribution.ts`
   - GNB item `press-social` → `/press/social`, visual `public/assets/sub/sub-04-04.jpg`
+- **법인소개** (법무법인경국 1st / Figma `sub-01-01`):
+  - Single page: `/about/intro` → `AboutIntroPage` (소개 / 이념 / 강점 / 협력사 scroll sections)
+  - Local tabs use **scroll mode** (`onTabSelect`) — same sticky + scroll-spy pattern as 정비사업
+  - Hero: `SubVisual` with `showChip={false}` (Figma `hero_type2`)
+  - Mock data: `src/data/aboutIntro.ts`; GNB `about-intro` → `/about/intro`, visual `public/assets/sub/sub-01-01.jpg`
+  - Section assets under `public/assets/about/`
 - **정비사업** (재개발·보상업무 1st / Figma `sub-02-01`):
   - Single page: `/practice/renewal` → `RenewalPage` (all 9 sections on one scroll)
   - Local tabs use **scroll mode** (`onTabSelect`) — click scrolls to section under sticky tabs; **not** route tabs
   - Hero: `SubVisual` with `showChip={false}` (Figma `hero_type2`)
   - Mock data: `src/data/renewal.ts`; GNB `redev-renewal` → `/practice/renewal`, visual `public/assets/sub/sub-02-01.jpg`
-- Local tabs: route mode (`toTab`) for 컬럼미디어 / 언론보도; scroll mode (`onTabSelect`) for 정비사업. Hover underline works in both.
+- Local tabs: route mode (`toTab`) for 컬럼미디어 / 언론보도; scroll mode (`onTabSelect`) for 법인소개 / 정비사업. Hover underline works in both.
 - Shared board types: `src/data/board.ts` (`BoardPost` / `BoardTabDef`) — used by list cards + `PostDetail`.
 - Local tabs under a sub-visual are `position: sticky; top: var(--gnb-bar-h)` (must be a sibling of the main content, not wrapped with the hero only — see `ColumnMediaLayout` / `RenewalPage`).
-- Scroll: GNB/menu entry → top (sub-visual visible). Board local tab / list→detail / prev·next → sticky under GNB (`state.scrollToLocalTabs` + `useScrollToLocalTabs`). 정비사업 tab click → scroll to section (offset = GNB + local tabs).
+- Scroll: GNB/menu entry → top (sub-visual visible). Board local tab / list→detail / prev·next → sticky under GNB (`state.scrollToLocalTabs` + `useScrollToLocalTabs`). 법인소개 / 정비사업 tab click → scroll to section (offset = GNB + local tabs).
 - GitHub Pages deep links: deploy copies `dist/index.html` → `dist/404.html`.
 
 ### Commands

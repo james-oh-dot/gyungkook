@@ -1,3 +1,4 @@
+import { ABOUT_INTRO_PAGE } from './aboutIntro'
 import { CASE_STUDIES_PAGE } from './caseStudies'
 import { COLUMN_MEDIA_PAGE } from './columnMedia'
 import { PRESS_COVERAGE_PAGE } from './pressCoverage'
@@ -28,6 +29,9 @@ export type NavItem = {
 /** Shared placeholder until per-page sub-visuals are wired. */
 export const GNB_SUB_VISUAL_PLACEHOLDER = asset('assets/gnb-sub-visual.png')
 
+/** Figma sub-01-01 — 법무법인경국 > 법인소개 */
+export const GNB_SUB_VISUAL_ABOUT_INTRO = ABOUT_INTRO_PAGE.visual
+
 /** Figma sub-02-01 — 재개발·보상업무 > 정비사업 */
 export const GNB_SUB_VISUAL_RENEWAL = RENEWAL_PAGE.visual
 
@@ -47,9 +51,14 @@ export const NAV_ITEMS: NavItem[] = [
   {
     id: 'about',
     label: '법무법인경국',
-    href: '#about',
+    href: '/about/intro',
     children: [
-      { id: 'about-intro', label: '법인소개', href: '#about', visual: GNB_SUB_VISUAL_PLACEHOLDER },
+      {
+        id: 'about-intro',
+        label: '법인소개',
+        href: '/about/intro',
+        visual: GNB_SUB_VISUAL_ABOUT_INTRO,
+      },
       { id: 'about-greeting', label: '대표인사말', href: '#about', visual: GNB_SUB_VISUAL_PLACEHOLDER },
       { id: 'about-lawyers', label: '변호사자문단', href: '#professionals', visual: GNB_SUB_VISUAL_PLACEHOLDER },
       { id: 'about-gallery', label: '경국인갤러리', href: '#professionals', visual: GNB_SUB_VISUAL_PLACEHOLDER },

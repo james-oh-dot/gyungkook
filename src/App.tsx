@@ -16,6 +16,7 @@ import { PostDetailPage } from './pages/PostDetailPage'
 import { PressCoverageDetailPage } from './pages/PressCoverageDetailPage'
 import { PressCoverageLayout } from './pages/PressCoverageLayout'
 import { PressCoverageListPage } from './pages/PressCoverageListPage'
+import { AboutIntroPage } from './pages/AboutIntroPage'
 import { RenewalPage } from './pages/RenewalPage'
 import { SocialContributionDetailPage } from './pages/SocialContributionDetailPage'
 import { SocialContributionLayout } from './pages/SocialContributionLayout'
@@ -44,6 +45,7 @@ function ScrollToTop() {
  * - /press/column-media/:tab/:postId      → shared post detail
  * - /press/social                         → 사회공헌 list (sub-04-04)
  * - /press/social/:postId                 → shared post detail
+ * - /about/intro                          → 법인소개 (sub-01-01)
  * - /practice/renewal                     → 정비사업 (sub-02-01)
  *
  * GitHub Pages deep links require dist/404.html → index.html (see deploy workflow).
@@ -58,6 +60,7 @@ function App() {
       <Routes>
         <Route element={<SiteLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="about/intro" element={<AboutIntroPage />} />
           <Route path="practice/renewal" element={<RenewalPage />} />
           <Route path="press/cases" element={<CaseStudiesPage />} />
           <Route
