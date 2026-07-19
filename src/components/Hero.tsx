@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { CharReveal } from './CharReveal'
 import { LineReveal } from './LineReveal'
+import { ProgressiveImage } from './ProgressiveImage'
 import { HERO_DURATION_MS, heroSlides } from '../data/slides'
 import { asset } from '../utils/asset'
 import './Hero.css'
@@ -38,9 +39,12 @@ export function Hero() {
   const prev = useCallback(() => jumpTo(indexRef.current - 1), [jumpTo])
 
   useEffect(() => {
+    // Warm preview + full for every slide so swipe jumps stay sharp.
     heroSlides.forEach((item) => {
-      const img = new Image()
-      img.src = item.image
+      const preview = new Image()
+      preview.src = item.imagePreview
+      const full = new Image()
+      full.src = item.image
       const thumb = new Image()
       thumb.src = item.nextImage
     })
@@ -104,11 +108,13 @@ export function Hero() {
             }${item.fadeEdges ? ' has-fade' : ''}`}
           >
             <div className="hero__visual">
-              {/* birds: flip wrapper keeps scaleX(-1) at center; Ken Burns stays on img */}
+              {/* birds: flip wrapper keeps scaleX(-1) at center; Ken Burns on progressive box */}
               <div className="hero__visual-media">
-                <img
+                <ProgressiveImage
                   src={item.image}
+                  preview={item.imagePreview}
                   alt=""
+                  priority={i === 0}
                   decoding="async"
                   style={
                     i === index
