@@ -152,9 +152,9 @@
   /*
     2x PNG 2117×4096 — head/arms/scales in frame.
     Height must stay tall enough that the PNG’s bottom cut edge remains
-    BELOW the section after the desktop GNB clearance nudge.
-    Desktop-only: nudge down ~GNB bar height (was translateY(-20%) which
-    tucked hand/scales under the menu). Tablet/mobile framing unchanged.
+    BELOW the section after the desktop top pin.
+    Desktop-only: pin asset top to the GNB bar bottom (~100px).
+    Tablet/mobile use absolute media framing — do not change those.
   */
   width: min(47.4vw, 910px);
   height: min(145vh, 2200px);
@@ -162,8 +162,8 @@
   /* NEVER center bottom — that clips the raised scales + head */
   object-position: center top;
   margin-top: 0;
-  /* Clear GNB (~100px) + Ken Burns headroom; zoom from near head */
-  transform: translateY(140px) scale(calc(1 + var(--hero-zoom) * 0.08));
+  /* Align statue top with desktop GNB bottom; Ken Burns from near head */
+  transform: translateY(100px) scale(calc(1 + var(--hero-zoom) * 0.08));
   transform-origin: 42% 14%;
   /*
     Figma hero_1 statue reads brighter / higher-key than the raw PNG.
@@ -671,9 +671,9 @@
     transform: none;
   }
 
-  /* Keep statue raised offset even when Ken Burns is disabled */
+  /* Keep statue top pinned to GNB bottom when Ken Burns is disabled */
   .hero__bg-slide--statue .hero__visual img {
-    transform: translateY(140px);
+    transform: translateY(100px);
     /* Preserve Figma exposure lift (reduced-motion zeroes filters above) */
     filter: brightness(1.28) contrast(0.97) !important;
   }
