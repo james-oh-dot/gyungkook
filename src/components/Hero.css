@@ -866,12 +866,22 @@
     --hero-thumb-h: 138px;
     /* Shared fluid ramp: 390 (mobile settle) → 768 (tablet) */
     --hero-fluid-t: calc((100vw - 390px) / 378);
+    /*
+      Compact GNB: 100px on tablet (768–1024), 82px below 768 — see Gnb.css.
+      Copy block starts 40px under the bar.
+    */
+    --hero-gnb-offset: 100px;
+    --hero-copy-top: calc(var(--hero-gnb-offset) + 40px);
+    /*
+      Swipe card at bottom:24px; outer height ≈ thumb + 8px preview border.
+      Title last line ends 40px above the card.
+    */
+    --hero-swipe-bottom: 24px;
+    --hero-title-bottom: calc(
+      var(--hero-swipe-bottom) + var(--hero-thumb-h) + 8px + 40px
+    );
   }
 
-  /*
-    Figma hero_copy is absolute at top:497 / 1000 (not flex-end).
-    Pin content so type sits mid-frame like the artboard.
-  */
   .hero__shell {
     justify-content: flex-start;
     padding-top: 0;
@@ -879,20 +889,31 @@
     padding-right: 0;
   }
 
+  /*
+    Stretch the content stage: desc + word pin under the GNB,
+    title pins to the bottom (above swipe) via flex.
+  */
   .hero__content {
     position: absolute;
     left: var(--hero-pad-x);
-    top: 49.7%; /* 497 / 1000 */
-    z-index: 3;
-    /* Stay within the padded stage while type fluid-scales */
     right: var(--hero-pad-x);
+    top: var(--hero-copy-top);
+    bottom: var(--hero-title-bottom);
+    z-index: 3;
     width: auto;
     max-width: none;
+    display: flex;
+    flex-direction: column;
   }
 
   .hero__copy-scale {
     zoom: 1;
     transform: none;
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    width: 100%;
     max-width: 100%;
   }
 
@@ -902,34 +923,41 @@
   }
 
   .hero__copy {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
     gap: 20px;
-    max-width: min(
-      100%,
-      clamp(266px, calc(266px + (354 - 266) * var(--hero-fluid-t)), 354px)
-    );
-    width: auto;
+    /* Use the full padded stage — no narrow artboard clamp */
+    max-width: none;
+    width: 100%;
+    min-height: 0;
   }
 
   .hero__desc {
     /* 18px @390 (1.5× prior 12) → 14px @768 */
     font-size: clamp(14px, calc(18px + (14 - 18) * var(--hero-fluid-t)), 18px);
+    flex: 0 0 auto;
     max-width: 100%;
   }
 
   .hero__maincopy {
+    flex: 1 1 auto;
     flex-direction: column;
-    align-items: flex-start;
-    /* Stacked: zoom is 1 — plain 40px between word and title */
-    gap: 40px;
-    max-width: 100%;
+    align-items: stretch;
+    /* Word stays under desc; title is pushed to the stage bottom */
+    gap: 0;
+    min-height: 0;
+    width: 100%;
+    max-width: none;
   }
 
   .hero__copy-scale.is-compact .hero__maincopy {
-    gap: 40px;
+    gap: 0;
   }
 
   .hero__word {
     /* 90px @390 (1.5× prior 60) → 120px @768 */
+    flex: 0 0 auto;
     font-size: clamp(90px, calc(90px + (120 - 90) * var(--hero-fluid-t)), 120px);
     white-space: nowrap;
   }
@@ -952,9 +980,20 @@
   }
 
   .hero__title {
+    /* Sit at the bottom of the content stage (= 40px above swipe) */
+    margin-top: auto;
+    width: 100%;
+    max-width: none;
     /* 27px @390 (1.5× prior 18) → 36px @768 */
     font-size: clamp(27px, calc(27px + (36 - 27) * var(--hero-fluid-t)), 36px);
     filter: drop-shadow(0 5px 10px rgba(35, 48, 59, 0.4));
+  }
+
+  .hero__title-line {
+    /* Full stage width — avoid orphan glyphs from a narrow measure */
+    width: 100%;
+    max-width: none;
+    white-space: normal;
   }
 
   .hero__swipe-preview {
@@ -990,10 +1029,8 @@
     --hero-swipe-reserve: 148px;
     --hero-thumb-w: 100px;
     --hero-thumb-h: 100px;
-  }
-
-  .hero__content {
-    top: 49.22%; /* 443 / 900 */
+    /* Mobile compact GNB bar */
+    --hero-gnb-offset: 82px;
   }
 
   .hero__title {
