@@ -1,5 +1,110 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-20 — 구조 리팩터 4종 (board 통합 / strict / reveal 훅 / a11y)
+
+> Branch: `claude/o-boinida-98drdm`
+> Audience: Codex / Cursor / future agents. **UI 픽셀·모션 변경 없음** — 순수 구조 개선.
+> 검증: `npm run build` ✅ / `npm run lint` ✅ / Playwright 스모크 27개 전부 PASS (아래).
+
+### 1. 게시판(board) 모듈 통합 — `BoardModule`
+
+**문제 (근거):** 언론보도·컬럼미디어·사회공헌 세 게시판이 접두사만 다른
+병렬 API를 3벌 유지하고 있었다:
+
+| columnMedia | pressCoverage | socialContribution |
+|---|---|---|
+| `findPost` | `findPressPost` | `findSocialPost` |
+| `adjacentPosts` | `adjacentPressPosts` | `adjacentSocialPosts` |
+| `tabListPath` | `pressTabListPath` | `socialListPath` |
+| `postDetailPath` | `pressPostDetailPath` | `socialPostDetailPath` |
+
+상세 페이지 3개(`PostDetailPage` / `PressCoverageDetailPage` /
+`SocialContributionDetailPage`)는 데이터 함수 이름만 다른 **동일 로직**
+(param 검증 → find → adjacent → `PostDetail`)이었고, 탭형 레이아웃 2개
+(`ColumnMediaLayout` ≈ `PressCoverageLayout`)도 클래스명만 다른 판박이였다.
+CMS 연동 시 세 곳을 동시에 고쳐야 하는 구조.
+
+**해결:**
+- `src/data/board.ts` — `BoardPageMeta` / `BoardModule` 타입 +
+  `createBoardModule()` 팩토리 추가. `isTab`/`postsByTab`/`findPost`/
+  `adjacent`/`listPath`/`detailPath`를 한 계약으로 생성.
+  `hasTabSegment: false` → 사회공헌처럼 탭 세그먼트 없는 단일 보드
+  (`basePath/:postId`).
+- 각 데이터 파일은 `*_BOARD` 모듈 export (`COLUMN_MEDIA_BOARD` /
+  `PRESS_COVERAGE_BOARD` / `SOCIAL_CONTRIBUTION_BOARD`). 구 래퍼 함수 전부 삭제.
+- `src/pages/BoardDetailPage.tsx` (신규) — 제네릭 상세 라우트.
+  상세 페이지 3개 파일 **삭제**, `App.tsx`에서
+  `<BoardDetailPage board={…_BOARD} />`로 주입.
+- `src/pages/BoardTabsLayout.tsx` (신규) — 제네릭 탭형 셸
+  (SubVisual + LocalTabs + Outlet). `ColumnMediaLayout` /
+  `PressCoverageLayout`은 CSS import + Figma naming만 소유한 얇은 래퍼로 축소.
+  CSS import는 정적이라 제네릭에서 조건부 불가 → 래퍼가 담당 (의도적).
+- `PRESS_COVERAGE_POSTS`는 `Record<tab, posts[]>` → **flat 배열**로 변경
+  (모듈이 `tab` 필드로 필터). CMS 응답을 flat list로 받는 형태와도 정합.
+
+**유지된 것 (회귀 없음 확인):**
+- URL 스킴 전부 동일 (`/press/coverage/:tab/:postId` 등) — SEO/딥링크 불변.
+- `PostDetail` / `PostListCard` / `PressGridCard` / `SocialGridCard` /
+  `LocalTabs` / `SubVisual` 컴포넌트 무변경.
+- 잘못된 tab/postId → 리스트로 redirect 동작 동일.
+- 사회공헌 레이아웃(anchor + showChip=false + intro)은 구조가 달라
+  `BoardTabsLayout`을 쓰지 **않는다** — 그대로 둠.
+
+**새 게시판 추가 절차 (이제):** 데이터 파일에서 `createBoardModule()` →
+`App.tsx` 라우트에 `BoardTabsLayout`(탭형이면) + `BoardDetailPage` 주입 → 끝.
+
+### 2. TypeScript `strict: true`
+
+- `tsconfig.app.json` + `tsconfig.node.json`에 `"strict": true` 추가.
+- **결과: 기존 코드 오류 0** — 이미 strict-호환으로 작성돼 있었고,
+  안전망만 공짜로 확보. 앞으로 null 부주의가 컴파일 타임에 잡힌다.
+- 이 과정에서 제네릭 페이지들은 non-null 단언(`!`) 대신 명시적 가드
+  (`if (!tabDef) return …`)를 사용하도록 작성함.
+
+### 3. `useDoubleRafReveal` 훅 — CharReveal/LineReveal 공통화
+
+**문제:** 두 컴포넌트가 "double rAF 후 `is-active`" 타이밍 로직을 글자
+그대로 중복. 이 로직은 AGENTS.md의 **blocking QA 계약**(“Char/line reveals
+must actually animate”)이라, 한쪽만 수정되다 깨지는 사고 위험이 있었다.
+
+**해결:** `src/hooks/useDoubleRafReveal.ts`로 추출. 계약 두 가지를 훅
+주석에 박제:
+1. 마운트 프레임에 `is-active`를 붙이면 CSS transition 스킵 → double rAF 필수.
+2. deps는 원시 `contentKey`만 (hero rAF `setProgress` 리렌더가 배열
+   identity를 매 프레임 갈아끼우면 리빌이 opacity 0에 갇힘 —
+   2026-07-17 회귀 사례).
+
+`CharReveal`의 공백 → NBSP(`' '`) 치환 동작 그대로 유지.
+
+### 4. Hero gage 접근성 모순 해소
+
+`.hero__gage-bar`가 `aria-hidden="true"` + `role="progressbar"` +
+`aria-value*`를 동시에 갖고 있었다. hidden 노드는 role을 노출하지 않으므로
+progressbar 선언이 무의미했고, 매 프레임 % 갱신은 노출됐다면 오히려 소음.
+슬라이드 위치는 버튼 aria-label이 전달하므로 **장식으로 정리**
+(role/aria-value* 제거, `aria-hidden` 유지). 시각 동작 무변경.
+
+### 검증 (Playwright, vite preview :4173)
+
+- **보드 스모크 15개 PASS**: 세 게시판 각각 리스트 렌더 → 상세 진입 →
+  다음/이전 내비 → 목록으로 복귀 + 잘못된 tab/postId redirect 3종.
+- **Hero QA 12개 PASS** (AGENTS.md blocking bar): char/line 리빌
+  `is-active` + opacity 1, 게이지 scaleX 진행/클릭 시 즉시 리셋,
+  next/prev 즉시 전환, 리빌 재시작, 활성 슬라이드 정확히 1개,
+  썸 호버 시 `.is-preview` 고스트 없음 / 배경 피크 없음.
+- 콘솔 JS 에러 없음 (외부 폰트 CDN 차단은 CI 샌드박스 환경 문제로 무관).
+
+### 파일 요약
+
+| 변경 | 파일 |
+|---|---|
+| 신규 | `src/pages/BoardDetailPage.tsx`, `src/pages/BoardTabsLayout.tsx`, `src/hooks/useDoubleRafReveal.ts` |
+| 삭제 | `src/pages/PostDetailPage.tsx`, `src/pages/PressCoverageDetailPage.tsx`, `src/pages/SocialContributionDetailPage.tsx` |
+| 재작성 | `src/data/board.ts`(+팩토리), 레이아웃/리스트 페이지 5개, `CharReveal`/`LineReveal` |
+| 수정 | `App.tsx`(라우트 주입), 데이터 3파일(모듈 export), `Hero.tsx`(gage a11y), tsconfig 2개(strict) |
+
+---
+
 > Audience: Codex / Claude Code / future Cursor agents continuing this repo.
 > Branch: `cursor/hero-motion-icons-129f`
 > Date: 2026-07-17

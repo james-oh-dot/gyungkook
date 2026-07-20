@@ -53,7 +53,11 @@
   - Hero: `SubVisual` with `showChip={false}` (Figma `hero_type2`)
   - Mock data: `src/data/renewal.ts`; GNB `redev-renewal` → `/practice/renewal`, visual `public/assets/sub/sub-02-01.webp` (+ `.preview.webp`)
 - Local tabs: route mode (`toTab`) for 컬럼미디어 / 언론보도; scroll mode (`onTabSelect`) for 법인소개 / 정비사업. Hover underline works in both.
-- Shared board types: `src/data/board.ts` (`BoardPost` / `BoardTabDef`) — used by list cards + `PostDetail`.
+- **Board abstraction (2026-07 refactor — use this for any new board):**
+  - `src/data/board.ts`: `BoardPost` / `BoardTabDef` types + **`createBoardModule()`** factory → each board data file exports one `BoardModule` (`COLUMN_MEDIA_BOARD` / `PRESS_COVERAGE_BOARD` / `SOCIAL_CONTRIBUTION_BOARD`) exposing `isTab` / `postsByTab` / `findPost` / `adjacent` / `listPath` / `detailPath`. Do **not** reintroduce per-file prefixed wrappers (`findPressPost`-style) — that duplication was removed on purpose.
+  - Detail route = generic `src/pages/BoardDetailPage.tsx` (`<BoardDetailPage board={…_BOARD} />` in `App.tsx`). Tabbed shells = generic `src/pages/BoardTabsLayout.tsx`; `ColumnMediaLayout` / `PressCoverageLayout` are thin wrappers owning only the page CSS import + Figma `data-name`. 사회공헌 keeps its own layout (no tabs, anchor, `showChip={false}`).
+  - Single boards (no tab URL segment) use `hasTabSegment: false` (사회공헌). URL shapes are unchanged — keep them stable for SEO.
+  - CMS 연동 시: swap each module's `posts` source only; page layer needs no change.
 - Local tabs under a sub-visual are `position: sticky; top: var(--gnb-bar-h)` (must be a sibling of the main content, not wrapped with the hero only — see `ColumnMediaLayout` / `RenewalPage`).
 - Scroll: GNB/menu entry → top (sub-visual visible). Board local tab / list→detail / prev·next → sticky under GNB (`state.scrollToLocalTabs` + `useScrollToLocalTabs`). 법인소개 / 정비사업 tab click → scroll to section (offset = GNB + local tabs).
 - GitHub Pages deep links: deploy copies `dist/index.html` → `dist/404.html`.
@@ -80,6 +84,8 @@
 
 ### Non-obvious notes
 - Styling is plain CSS (no Tailwind). Design tokens live in `src/styles/global.css`.
+- TypeScript is **`strict: true`** (both tsconfigs, 2026-07). Keep it on; prefer explicit guards over non-null `!` in new code.
+- Reveal timing lives in **`src/hooks/useDoubleRafReveal.ts`** — `CharReveal` / `LineReveal` both consume it. Never inline rAF reveal logic back into the components, and never pass non-primitive deps (see hook comments; hero rAF re-renders every frame).
 - Sub-page heroes use WebP progressive pairs — do not point `SubVisual` at raw multi‑MB JPG/PNG.
 - Hero source of truth (default `/`): Figma canvas `AI-hero-change` (`22:10492`) → frames `hero_1`…`hero_5` (teal).
 - **Alternate hero for client review:** dark previous hero lives at `classic.html` → `HeroClassic` + `public/assets/classic/*`. Top `VersionSwitch` toggles A Teal / B Dark. Vite MPA inputs: `index.html` + `classic.html`.
@@ -144,7 +150,8 @@ These failures are treated as **blocking bugs**. Never ship a hero change withou
 
 5. **Char/line reveals must actually animate**  
    `CharReveal` / `LineReveal` need double-rAF before `is-active` (mounting with `is-active` already on skips CSS transitions).  
-   **Never** put unstable array/object identities in reveal `useEffect` deps — hero `setProgress` re-renders every frame. Use a string content key (`lines.join('\\n')`) for `LineReveal`.
+   **Never** put unstable array/object identities in reveal `useEffect` deps — hero `setProgress` re-renders every frame. Use a string content key (`lines.join('\\n')`) for `LineReveal`.  
+   This contract is now centralized in `src/hooks/useDoubleRafReveal.ts` — change it there only, and re-run the hero QA checks after.
 
 ### Section / footer horizontal padding (Figma)
 - Global tokens in `src/styles/global.css`: `--page-pad` (section inset) and `--footer-pad` (footer inset).
