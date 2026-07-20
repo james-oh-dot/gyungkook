@@ -359,14 +359,21 @@ export function RenewalPage() {
                           <th scope="row" className="renewal-table__label">
                             {row.label}
                           </th>
-                          <td className="renewal-table__cell">
+                          {/* data-col drives the mobile card labels (≤767 reflow) */}
+                          <td
+                            className="renewal-table__cell"
+                            data-col={RENEWAL_OVERVIEW.compare.columns[0]}
+                          >
                             {row.redevelopment.split('\n').map((line) => (
                               <span key={line} className="renewal-table__line">
                                 {line}
                               </span>
                             ))}
                           </td>
-                          <td className="renewal-table__cell">
+                          <td
+                            className="renewal-table__cell"
+                            data-col={RENEWAL_OVERVIEW.compare.columns[1]}
+                          >
                             {row.reconstruction.split('\n').map((line) => (
                               <span key={line} className="renewal-table__line">
                                 {line}
