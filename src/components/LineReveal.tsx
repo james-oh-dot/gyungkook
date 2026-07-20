@@ -1,4 +1,5 @@
-import { useEffect, useState, type CSSProperties } from 'react'
+import type { CSSProperties } from 'react'
+import { useDoubleRafReveal } from '../hooks/useDoubleRafReveal'
 
 type LineRevealProps = {
   lines: string[]
@@ -8,7 +9,11 @@ type LineRevealProps = {
   active?: boolean
 }
 
-/** Line-by-line parallax entrance (not character-by-character). */
+/**
+ * Line-by-line parallax entrance (not character-by-character).
+ * Timing contract lives in `useDoubleRafReveal` — the primitive `contentKey`
+ * (joined lines) is what keeps hero rAF re-renders from resetting the reveal.
+ */
 export function LineReveal({
   lines,
   className = '',
@@ -16,26 +21,8 @@ export function LineReveal({
   step = 140,
   active = true,
 }: LineRevealProps) {
-  const [revealed, setRevealed] = useState(false)
   // Primitive key: parent may pass a new array each render (hero rAF setProgress)
-  const contentKey = lines.join('\n')
-
-  useEffect(() => {
-    setRevealed(false)
-    if (!active) return
-
-    let raf2 = 0
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => setRevealed(true))
-    })
-
-    return () => {
-      cancelAnimationFrame(raf1)
-      cancelAnimationFrame(raf2)
-    }
-  }, [contentKey, active])
-
-  const show = active && revealed
+  const show = useDoubleRafReveal(lines.join('\n'), active)
 
   return (
     <div className={`line-reveal ${className}`.trim()} aria-label={lines.join(' ')}>

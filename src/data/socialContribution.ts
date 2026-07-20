@@ -13,7 +13,7 @@
  */
 
 import type { BoardPost, BoardTabDef } from './board'
-import { adjacentInList } from './board'
+import { createBoardModule } from './board'
 import { asset } from '../utils/asset'
 import { progressiveAsset } from '../utils/progressiveImage'
 
@@ -70,22 +70,15 @@ function buildPosts(): BoardPost[] {
 
 export const SOCIAL_CONTRIBUTION_POSTS: BoardPost[] = buildPosts()
 
-export function socialPosts(): BoardPost[] {
-  return SOCIAL_CONTRIBUTION_POSTS
-}
-
-export function findSocialPost(postId: string): BoardPost | undefined {
-  return SOCIAL_CONTRIBUTION_POSTS.find((item) => item.id === postId)
-}
-
-export function adjacentSocialPosts(postId: string) {
-  return adjacentInList(SOCIAL_CONTRIBUTION_POSTS, postId)
-}
-
-export function socialListPath(): string {
-  return SOCIAL_CONTRIBUTION_PAGE.basePath
-}
-
-export function socialPostDetailPath(_tab: string, postId: string): string {
-  return `${SOCIAL_CONTRIBUTION_PAGE.basePath}/${postId}`
-}
+/**
+ * Uniform data-access surface — replaces the old per-file wrappers
+ * (socialPosts / findSocialPost / adjacentSocialPosts / …Path).
+ * `hasTabSegment: false` → URLs are `basePath(/:postId)` with no tab segment;
+ * the single `social` tab stays implicit (PostDetail chip compatibility).
+ */
+export const SOCIAL_CONTRIBUTION_BOARD = createBoardModule({
+  page: SOCIAL_CONTRIBUTION_PAGE,
+  tabs: SOCIAL_CONTRIBUTION_TABS,
+  posts: SOCIAL_CONTRIBUTION_POSTS,
+  hasTabSegment: false,
+})

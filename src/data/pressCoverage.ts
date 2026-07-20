@@ -12,7 +12,7 @@
  */
 
 import type { BoardPost, BoardTabDef } from './board'
-import { adjacentInList } from './board'
+import { createBoardModule } from './board'
 import { asset } from '../utils/asset'
 import { progressiveAsset } from '../utils/progressiveImage'
 
@@ -93,31 +93,18 @@ function buildReleasePosts(): BoardPost[] {
   }))
 }
 
-export const PRESS_COVERAGE_POSTS: Record<PressCoverageTab, BoardPost[]> = {
-  tv: buildTvPosts(),
-  release: buildReleasePosts(),
-}
+export const PRESS_COVERAGE_POSTS: BoardPost[] = [
+  ...buildTvPosts(),
+  ...buildReleasePosts(),
+]
 
-export function isPressCoverageTab(value: string | undefined): value is PressCoverageTab {
-  return value === 'tv' || value === 'release'
-}
-
-export function pressPostsByTab(tab: PressCoverageTab): BoardPost[] {
-  return PRESS_COVERAGE_POSTS[tab]
-}
-
-export function findPressPost(tab: PressCoverageTab, postId: string): BoardPost | undefined {
-  return PRESS_COVERAGE_POSTS[tab].find((item) => item.id === postId)
-}
-
-export function adjacentPressPosts(tab: PressCoverageTab, postId: string) {
-  return adjacentInList(PRESS_COVERAGE_POSTS[tab], postId)
-}
-
-export function pressTabListPath(tab: PressCoverageTab): string {
-  return `${PRESS_COVERAGE_PAGE.basePath}/${tab}`
-}
-
-export function pressPostDetailPath(tab: string, postId: string): string {
-  return `${PRESS_COVERAGE_PAGE.basePath}/${tab}/${postId}`
-}
+/**
+ * Uniform data-access surface — replaces the old per-file wrappers
+ * (isPressCoverageTab / pressPostsByTab / findPressPost / …Path).
+ * See `createBoardModule` in `board.ts` for the shared contract + CMS notes.
+ */
+export const PRESS_COVERAGE_BOARD = createBoardModule({
+  page: PRESS_COVERAGE_PAGE,
+  tabs: PRESS_COVERAGE_TABS,
+  posts: PRESS_COVERAGE_POSTS,
+})
