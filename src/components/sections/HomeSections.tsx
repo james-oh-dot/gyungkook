@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
-import { Link } from 'react-router-dom'
 import { ProgressiveImage } from '../ProgressiveImage'
 import { Reveal } from '../Reveal'
 import { asset } from '../../utils/asset'
 import { useScrollGage } from '../../hooks/useScrollGage'
+import { resolveNavHref } from '../../utils/path'
 import {
   HOME_ABOUT_IMAGE,
   HOME_OFFICE_MAP,
@@ -34,10 +34,12 @@ function TextBtn({
     </>
   )
   if (to) {
+    // Plain <a> + resolveNavHref: works on both SPA (index) and classic.html MPA
+    // (no BrowserRouter — react-router <Link> crashes the whole classic tree).
     return (
-      <Link className="text-btn" to={to}>
+      <a className="text-btn" href={resolveNavHref(to)}>
         {content}
-      </Link>
+      </a>
     )
   }
   return (
