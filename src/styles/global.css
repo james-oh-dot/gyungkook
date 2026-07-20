@@ -219,12 +219,14 @@ p {
 .notice-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
+  /* Figma HOME: 3-up cards with a 10px gutter */
+  gap: 10px;
 }
 
 .notice-card {
   position: relative;
-  min-height: clamp(420px, 36.5vw, 700px);
+  /* Figma card 500×700 → 5:7 portrait (desktop + mobile overlay variants) */
+  aspect-ratio: 5 / 7;
   color: #fff;
   cursor: pointer;
 }
@@ -1161,12 +1163,9 @@ p {
 }
 
 @media (max-width: 1024px) {
+  /* Tablet + mobile: Figma stacks 소식·공지 cards into a single column */
   .notice-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .notice-card {
-    min-height: 420px;
+    grid-template-columns: 1fr;
   }
 
   .press-track {
@@ -1237,9 +1236,94 @@ p {
   }
 }
 
+/*
+  Tablet only (Figma HOME_TABLET_768 · Home Section / 소식 · 공지 / auto):
+  cards become a horizontal list row — 250×250 image on the left, text on a
+  light (#F7F7FB) panel to the right with dark type + dark arrow. This is a
+  DIFFERENT component from the desktop/mobile overlay card, so it is bounded
+  to 768–1024 and mobile (≤767) falls back to the base overlay card.
+*/
+@media (min-width: 768px) and (max-width: 1024px) {
+  .notice-grid {
+    gap: 16px;
+  }
+
+  .notice-card {
+    aspect-ratio: auto;
+    display: grid;
+    grid-template-columns: 250px minmax(0, 1fr);
+    background: #f7f7fb;
+    color: var(--color-ink);
+  }
+
+  /* Image: square left column (was absolute inset:0 overlay) */
+  .notice-card__media {
+    position: relative;
+    inset: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  /* Text: right panel, light bg, dark type, vertically centered */
+  .notice-card__overlay {
+    position: relative;
+    inset: auto;
+    background: none;
+    justify-content: center;
+    gap: 12px;
+    padding: 24px;
+  }
+
+  .notice-card__title {
+    color: var(--color-ink);
+    font-size: 24px;
+  }
+
+  .notice-card__desc {
+    color: var(--color-body);
+  }
+
+  .notice-card__date {
+    color: var(--color-muted);
+  }
+
+  /* Dark arrow (source svg is white → knock to black) at Figma inset 20px */
+  .notice-card__icon {
+    top: 20px;
+    right: 20px;
+    filter: brightness(0);
+  }
+
+  /* Figma tablet keeps the section 전체보기 button on the header row (right).
+     Overrides the shared ≤1024 `.section-head { column }` for 소식·공지 only. */
+  #notice .section-head {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+}
+
 @media (max-width: 767px) {
+  /* Mobile (Figma HOME_MOBILE_390): overlay portrait cards, 8px gutter */
   .notice-grid {
     grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .notice-card__overlay {
+    gap: 8px;
+    padding: 20px;
+  }
+
+  .notice-card__title {
+    font-size: 24px;
+  }
+
+  .notice-card__desc {
+    font-size: 14px;
+  }
+
+  .notice-card__icon {
+    top: 16px;
+    right: 16px;
   }
 
   .press-track {

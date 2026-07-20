@@ -1,5 +1,59 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-20 — 소식·공지(Notice) 섹션 반응형 Figma 정합
+
+> Branch: `claude/o-boinida-98drdm` (PR #70 머지 후 최신 main에서 재시작)
+> 파일: `src/styles/global.css` 만 변경 (JSX/데이터 무변경).
+> Figma: `AI_dev` — HOME(`1:7226`) / HOME_TABLET_768(`1:7720`) / HOME_MOBILE_390(`1:8221`)의
+> `Home Section / 소식·공지`.
+
+### 배경
+Figma 3개 프레임과 현재 구현을 대조한 결과, **태블릿 카드 레이아웃이 완전히 달랐고**
+간격·비율·헤더 버튼 위치에도 차이가 있었다. (분석 근거: get_metadata 수치 + 스크린샷)
+
+### Figma 스펙 (확정)
+| 구간 | 컬럼 | 카드 | 간격 | 좌우마진 |
+|---|---|---|---|---|
+| 데스크톱(1920) | 3열 | 세로 오버레이 500×700 (이미지풀+하단 흰 텍스트) | **10px** | 200 |
+| 태블릿(768) | **1열** | **가로형 672×250: 좌 250² 이미지 + 우 밝은(#F7F7FB) 패널 · 어두운 글자 · 어두운 화살표** | **16px** | 48 |
+| 모바일(390) | 1열 | 세로 오버레이 342×478.8 (=5:7) | **8px** | 24 |
+
+- 태블릿 텍스트 토큰: Title 24 / Body 16 / Date 14 (Pretendard), 글자 `#111`, 패널 `#F7F7FB`.
+- 헤더 `전체보기` 버튼: 데스크톱·**태블릿=제목 오른쪽(같은 행)**, 모바일=제목 아래.
+- 아이콘(`icon-link.svg`)은 흰색 소스 → 오버레이(데/모)는 흰색 유지, 태블릿은 `filter: brightness(0)`로 어둡게.
+
+### 구현 (CSS만)
+- **base(데스크톱)**: `.notice-grid` gap 20→**10**; `.notice-card` `min-height` clamp → **`aspect-ratio: 5/7`**.
+- **`@media (max-width:1024px)`**: 그리드 2열→**1열** (min-height 규칙 삭제).
+- **신규 `@media (min-width:768px) and (max-width:1024px)`** (태블릿 전용 가로카드):
+  카드 `display:grid; grid-template-columns:250px minmax(0,1fr)`, 배경 `#f7f7fb`, 글자 ink;
+  미디어 `position:relative; aspect-ratio:1/1`; 오버레이 `position:relative; background:none; justify-content:center`;
+  제목 24 / 본문 body색 / 날짜 muted; 아이콘 `top/right:20; filter:brightness(0)`;
+  `#notice .section-head { flex-direction:row; align-items:flex-end }` (공용 ≤1024 column 규칙 위 오버라이드).
+- **`@media (max-width:767px)`**: gap **8**, 오버레이 gap 8·padding 20, 제목 24, 본문 14, 아이콘 top/right 16.
+  (카드는 base 오버레이 그대로 상속 — 태블릿 가로카드는 768–1024로 **경계 한정**해 모바일이 되돌릴 필요 없게 설계.)
+
+### 왜 이 경계 구조인가
+가로카드를 `min-width:768 and max-width:1024`로 **범위 한정**하면, 모바일(≤767)은 base 오버레이
+카드를 그대로 물려받아 "태블릿 override를 다시 되돌리는" 취약한 역보정이 사라진다.
+경계도 Figma 프레임과 정확히 일치(768=가로카드, 767=오버레이).
+
+### 검증 (Playwright, vite preview)
+| 구간 | 측정 | Figma |
+|---|---|---|
+| 1440 | 3열·gap 10·카드 373×523(=5:7)·헤더 row | ✅ |
+| 768 | 1열·gap 16·카드 672×250·bg #f7f7fb·이미지 250²·헤더 row | ✅ |
+| 390 | 1열·gap 8·카드 342×479(=5:7)·오버레이·헤더 column | ✅ |
+- 스크린샷 육안 확인: 태블릿 가로카드(밝은 패널·어두운 화살표), 데스크톱/모바일 흰 오버레이 일치.
+- build/lint 클린.
+
+### 참고 (미변경)
+- 데스크톱 카드 모서리: Figma `rounded-rectangle`이나 스크린샷상 각진 형태 + 브랜드=sharp rect라 **각진 유지**.
+- 헤더 설명문("법무법인경국의 가치는 다양한 수상, 위촉, 인증…")은 수상 섹션 카피처럼 보이나
+  이번 작업 범위(레이아웃)가 아니라 **원문 유지**. 카피 교체는 별도 확인 후 진행 권장.
+
+---
+
 ## 2026-07-20 — 게시판 상세 이전/다음 스크롤 버그 수정 (스티키 기준점)
 
 > Branch: `claude/o-boinida-98drdm` (merged PR #69 이후 최신 main에서 재시작)
