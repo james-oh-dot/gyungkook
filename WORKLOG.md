@@ -1,5 +1,40 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-20 — 정비사업 "재개발 vs 재건축" 비교표 모바일 대응
+
+> Branch: `claude/o-boinida-98drdm` (PR #72 머지 후 최신 main에서 재시작)
+> 파일: `src/pages/Renewal.css`, `src/pages/RenewalPage.tsx` (data-col 부여).
+
+### 증상
+overview 섹션 "재개발 vs 재건축" 3열 표가 모바일에서 화면을 벗어남(재건축 열 잘림).
+
+### 근본 원인 (Playwright 측정으로 확정)
+`.renewal-table`는 `min-width: 640px`, `.renewal-table-wrap`은 `overflow-x: auto`.
+하지만 wrap은 `.renewal-split__body`(flex column)의 **flex 아이템**이고 `min-width`
+기본값이 `auto`(= 콘텐츠 min-content = 640)라, 뷰포트 390에서도 wrap이 342로 줄지
+못하고 **640으로 부풀어** overflow-x:auto가 무력화됨. `body{overflow-x:hidden}`이
+넘친 부분(재건축 열)을 잘라버림.
+- 측정: viewport 390 → wrapClientW/tableW = **640**(잘림), 수정 후 = **342**(정확히 맞음).
+
+### 해결 (설계: 데스크톱 표 유지 + 모바일 카드 리플로우)
+1. **안전망**: `.renewal-table-wrap { min-width: 0 }` — flex 아이템이 줄어들 수 있게 해
+   혹시 넘쳐도 wrap 내부에서만 스크롤(페이지·잘림 없음).
+2. **모바일(≤767) 카드 리플로우**: 같은 시맨틱 `<table>`을 순수 CSS로 변형 —
+   `table→block`, `thead`는 시각 숨김(스크린리더 유지), 각 `tr`을 카드로,
+   `구분 label`을 카드 헤더, 두 `td`(재개발/재건축)를 라벨 블록으로 세로 스택.
+   `td`에 `data-col`(재개발/재건축)을 부여하고 `::before content: attr(data-col)`로
+   티얼 아이브로우 표시. **가로 스크롤 0, 마크업·접근성·데스크톱 표 그대로.**
+
+### 검증 (Playwright, vite preview)
+| 폭 | 결과 |
+|---|---|
+| 1440 / 768 | `display:table`, thead 보임 → 원래 3열 표 유지(무회귀) |
+| 390 | `display:block` 카드, thead 숨김, `재개발` 아이브로우 표시 |
+| 전 구간 | 페이지 가로 넘침 없음 |
+- build(strict tsc)·lint 클린.
+
+---
+
 ## 2026-07-20 — 신규 페이지: 재개발·보상업무 > 공익사업 (sub-02-02)
 
 > Branch: `claude/o-boinida-98drdm` (PR #71 머지 후 최신 main에서 재시작)
