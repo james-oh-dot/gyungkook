@@ -1,5 +1,40 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-20 — 공익사업 "절차 · 유의할 점" 흐름 재설계 (Figma 플로우차트 복원)
+
+> Branch: `claude/o-boinida-98drdm` (PR #74에서 개선)
+> 파일: `src/data/publicProject.ts`, `src/pages/PublicProjectPage.tsx`, `PublicProject.css`.
+
+### 요구
+1. **데스크톱 = 원래 Figma 플로우차트 그대로** (스텝1~3행 → 협의 결정 → 스텝4 → Y분기 → 5·6 병렬).
+2. **모든 UI 직각**(라운드 0) — 이전 원형 번호배지(`border-radius:50%`)가 규칙 위반이었음.
+3. **태블릿/모바일 = 카드 UI 최대 활용해 흐름 설계.**
+
+### 발견 (중요)
+이전 데이터가 Figma 대비 **크게 축약**돼 있었음 (스텝1이 실제 4개 불릿인데 1개만, 소제목·
+※주석 누락). Figma 스크린샷(80:2096 / 80:2097)에서 **두 흐름 전체 콘텐츠를 정확히 복원**.
+- 스텝 모델 변경: `{no,label,notes[],caution}` → `{no,title,subtitle?,bullets[],note?}`.
+- ProcedureFlow 구조: `steps(1-3)` + `outcomes(성립/불성립)` + `lead(4)` + `forkNote?`(재개발
+  병행절차) + `parallel(5,6)`.
+
+### 구현
+- **StepCard**(공통): 사각 번호배지 + 제목(+inline subtitle) + 불릿 + ※ 회색 note 박스. 전부 직각.
+- **데스크톱 플로우차트**(`.pp-flow__chart`): `--top` 3열, `--decision` 2열(성립 teal·✓ / 불성립
+  red·↓, 사각 아이콘), `--parallel` 2열. 우각 커넥터 —
+  `.pp-flow__link`(수직), `--branch`(불성립 75%에서 하강), `.pp-flow__fork`(┌─┐ 브래킷 → 5·6).
+  `forkNote`는 스텝4와 분기 사이 사각 박스.
+- **태블릿/모바일**(≤1024): 같은 카드가 1열로 스택, 커넥터는 중앙 수직선으로 전환,
+  Y분기 브래킷은 직선으로 붕괴, 상단 스텝(1→2→3)엔 gap 커넥터 추가. **마크업 1벌, 레이아웃만 스왑.**
+
+### 검증 (Playwright, vite preview)
+- 1440: Figma 플로우차트 충실 복원(양 흐름). 768/390: 카드 스택 + 커넥터.
+- **border-radius 감사: 절차 섹션 내 0개(전부 직각)**. 스텝 12개, 전 구간 가로 넘침 0.
+- build(strict)·lint 클린.
+
+> (앞선 세로 타임라인 시안은 이 플로우차트 복원으로 대체됨.)
+
+---
+
 ## 2026-07-20 — 정비사업 "재개발 vs 재건축" 비교표 모바일 대응
 
 > Branch: `claude/o-boinida-98drdm` (PR #72 머지 후 최신 main에서 재시작)

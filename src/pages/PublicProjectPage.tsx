@@ -171,54 +171,104 @@ function ResultsBlock({
   )
 }
 
-function FlowStepView({ step }: { step: FlowStep }) {
+/** One procedure step card (square, sharp-rect). Shared by all rows. */
+function StepCard({ step }: { step: FlowStep }) {
   return (
-    <li className="pp-flow-step">
-      <span className="pp-flow-step__no" aria-hidden="true">
-        {step.no}
-      </span>
-      <div className="pp-flow-step__body">
-        <p className="pp-flow-step__label">{step.label}</p>
-        {step.notes.map((n) => (
-          <p key={n} className="pp-flow-step__note">
-            {n}
-          </p>
-        ))}
-        {step.caution ? (
-          <p className="pp-flow-step__caution">
-            <span aria-hidden="true">※</span> {step.caution}
-          </p>
-        ) : null}
+    <div className="pp-step">
+      <div className="pp-step__head">
+        <span className="pp-step__no" aria-hidden="true">
+          {step.no}
+        </span>
+        <h4 className="pp-step__title">
+          {step.title}
+          {step.subtitle ? (
+            <span className="pp-step__sub">{step.subtitle}</span>
+          ) : null}
+        </h4>
       </div>
-    </li>
+      {step.bullets.length ? (
+        <ul className="pp-step__list">
+          {step.bullets.map((b) => (
+            <li key={b}>{b}</li>
+          ))}
+        </ul>
+      ) : null}
+      {step.note ? (
+        <p className="pp-step__note">
+          <span aria-hidden="true">※</span> {step.note}
+        </p>
+      ) : null}
+    </div>
   )
 }
 
+/**
+ * 손실보상절차 flowchart (Figma). Desktop: steps 1–3 row → 협의 결정 → step 4 →
+ * Y-fork → steps 5·6. Tablet/mobile: same cards stacked with vertical connectors
+ * (see PublicProject.css — a single markup, layout swaps by breakpoint).
+ */
 function FlowView({ flow }: { flow: ProcedureFlow }) {
   return (
     <div className="pp-flow">
       <h3 className="pp-flow__heading">{flow.heading}</h3>
-      <ol className="pp-flow__steps" aria-label={`${flow.heading} 기본 절차`}>
-        {flow.steps.map((s) => (
-          <FlowStepView key={s.no} step={s} />
-        ))}
-      </ol>
-      <div className="pp-flow__outcomes">
-        {flow.outcomes.map((o) => (
-          <div key={o.label} className={`pp-outcome pp-outcome--${o.kind}`}>
-            <p className="pp-outcome__label">{o.label}</p>
-            <p className="pp-outcome__note">{o.note}</p>
+
+      <div className="pp-flow__chart">
+        <ol
+          className="pp-flow__row pp-flow__row--top"
+          aria-label={`${flow.heading} 기본 절차`}
+        >
+          {flow.steps.map((s) => (
+            <li key={s.no} className="pp-flow__cell">
+              <StepCard step={s} />
+            </li>
+          ))}
+        </ol>
+
+        <div className="pp-flow__link" aria-hidden="true" />
+
+        <div className="pp-flow__decision" aria-label="협의 결과">
+          {flow.outcomes.map((o) => (
+            <div key={o.label} className={`pp-outcome pp-outcome--${o.kind}`}>
+              <span className="pp-outcome__icon" aria-hidden="true">
+                {o.kind === 'success' ? '✓' : '↓'}
+              </span>
+              <div className="pp-outcome__body">
+                <p className="pp-outcome__label">{o.label}</p>
+                <p className="pp-outcome__note">{o.note}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="pp-flow__link pp-flow__link--branch" aria-hidden="true" />
+
+        <div className="pp-flow__lead">
+          <StepCard step={flow.lead} />
+        </div>
+
+        {flow.forkNote ? (
+          <div className="pp-flow__fork-note" aria-label="병행 진행 절차">
+            <ul className="pp-step__list">
+              {flow.forkNote.map((n) => (
+                <li key={n}>{n}</li>
+              ))}
+            </ul>
           </div>
-        ))}
+        ) : null}
+
+        <div className="pp-flow__fork" aria-hidden="true" />
+
+        <ol
+          className="pp-flow__row pp-flow__row--parallel"
+          aria-label={`${flow.heading} 후속 절차`}
+        >
+          {flow.parallel.map((s) => (
+            <li key={s.no} className="pp-flow__cell">
+              <StepCard step={s} />
+            </li>
+          ))}
+        </ol>
       </div>
-      <ol
-        className="pp-flow__steps pp-flow__steps--followup"
-        aria-label={`${flow.heading} 후속 절차`}
-      >
-        {flow.followup.map((s) => (
-          <FlowStepView key={s.no} step={s} />
-        ))}
-      </ol>
     </div>
   )
 }

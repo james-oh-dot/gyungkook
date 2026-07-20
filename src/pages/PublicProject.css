@@ -141,10 +141,16 @@
 }
 
 /* ============================ Procedure flow ============================ */
+/*
+  Figma 손실보상절차 flowchart. Desktop (>1024): steps 1–3 row → 협의 결정
+  (성립 | 불성립) → step 4 → Y-fork → steps 5·6 (parallel), joined by right-angle
+  connectors. Tablet/mobile (≤1024): the SAME cards stack into one column with
+  centred vertical connectors. All UI is sharp-rect (no border-radius).
+*/
 .pp-flows {
   display: flex;
   flex-direction: column;
-  gap: 64px;
+  gap: 72px;
   width: 100%;
 }
 
@@ -154,126 +160,297 @@
   gap: 20px;
 }
 
+/* Heading: teal square marker + title */
 .pp-flow__heading {
   margin: 0;
-  padding-left: 14px;
-  border-left: 4px solid var(--color-teal);
+  display: flex;
+  align-items: center;
+  gap: 10px;
   color: var(--color-ink);
-  font-size: clamp(20px, 2vw, 24px);
-  font-weight: 600;
-  line-height: 1.4;
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 700;
+  line-height: 1.3;
   letter-spacing: -0.025em;
 }
-
-.pp-flow__steps {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+.pp-flow__heading::before {
+  content: '';
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  background: var(--color-teal);
 }
 
-.pp-flow-step {
+.pp-flow__chart {
   display: flex;
+  flex-direction: column;
+}
+
+/* —— Step card (shared by every row + breakpoint) —— */
+.pp-step {
+  display: flex;
+  flex-direction: column;
   gap: 12px;
+  height: 100%;
   background: #fff;
   border: 1px solid #e5e5ec;
   padding: 20px;
 }
 
-.pp-flow-step__no {
+.pp-step__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.pp-step__no {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 24px;
+  height: 24px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   background: var(--color-teal);
   color: #fff;
-  font-size: 14px;
-  font-weight: 600;
-  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
 }
 
-.pp-flow-step__body {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-
-.pp-flow-step__label {
+.pp-step__title {
   margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  flex-wrap: wrap;
   color: var(--color-ink);
   font-size: 18px;
-  font-weight: 600;
-  line-height: 1.4;
+  font-weight: 700;
+  line-height: 1.35;
   letter-spacing: -0.025em;
 }
 
-.pp-flow-step__note {
+.pp-step__sub {
+  color: #767676;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+}
+
+.pp-step__list {
   margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   color: #505050;
   font-size: 15px;
   line-height: 1.45;
   letter-spacing: -0.025em;
 }
+.pp-step__list li {
+  list-style: disc;
+}
 
-.pp-flow-step__caution {
-  margin: 4px 0 0;
-  color: #e35141;
+.pp-step__note {
+  margin: auto 0 0;
+  background: #f7f7fb;
+  padding: 10px 12px;
+  color: #767676;
   font-size: 13px;
   line-height: 1.45;
   letter-spacing: -0.025em;
 }
-.pp-flow-step__caution span {
+.pp-step__note span {
+  margin-right: 2px;
   font-weight: 700;
 }
 
-.pp-flow__outcomes {
+/* —— Rows —— */
+.pp-flow__row {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 16px;
+}
+.pp-flow__row--top {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.pp-flow__row--parallel {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.pp-flow__cell {
+  position: relative;
+  display: flex;
+}
+
+/* —— Decision (성립 | 불성립) —— */
+.pp-flow__decision {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
 }
 
 .pp-outcome {
+  display: flex;
+  align-items: center;
+  gap: 16px;
   padding: 20px 24px;
   border: 1px solid transparent;
 }
+.pp-outcome__icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+}
+.pp-outcome__body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
 .pp-outcome__label {
-  margin: 0 0 4px;
+  margin: 0;
   font-size: 18px;
-  font-weight: 600;
-  line-height: 1.4;
+  font-weight: 700;
+  line-height: 1.3;
   letter-spacing: -0.025em;
 }
 .pp-outcome__note {
   margin: 0;
-  font-size: 15px;
-  line-height: 1.45;
+  font-size: 14px;
+  line-height: 1.4;
   letter-spacing: -0.025em;
 }
 .pp-outcome--success {
   background: #e0f7fa;
   border-color: #a7e2e7;
 }
+.pp-outcome--success .pp-outcome__icon {
+  background: var(--color-teal);
+}
 .pp-outcome--success .pp-outcome__label {
-  color: var(--color-teal-deep, #086b66);
+  color: #086b66;
 }
 .pp-outcome--success .pp-outcome__note {
-  color: #29303b;
+  color: #505050;
 }
 .pp-outcome--fail {
   background: #ffebee;
   border-color: #ef9a9a;
 }
+.pp-outcome--fail .pp-outcome__icon {
+  background: #e53935;
+}
 .pp-outcome--fail .pp-outcome__label {
   color: #e53935;
 }
 .pp-outcome--fail .pp-outcome__note {
-  color: #29303b;
+  color: #505050;
 }
+
+/* —— Fork side-note (재개발) —— */
+.pp-flow__fork-note {
+  align-self: flex-start;
+  max-width: min(520px, 100%);
+  background: #f7f7fb;
+  border: 1px solid #e5e5ec;
+  padding: 14px 18px;
+}
+
+/* —— Connectors (right-angle grey lines) —— */
+.pp-flow__link {
+  position: relative;
+  height: 26px;
+}
+.pp-flow__link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: #c9ccd4;
+  transform: translateX(-50%);
+}
+.pp-flow__link--branch::before {
+  left: 75%; /* drops from the 불성립 (right) box on desktop */
+}
+
+.pp-flow__fork {
+  position: relative;
+  height: 40px;
+}
+.pp-flow__fork::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 20px;
+  width: 2px;
+  background: #c9ccd4;
+  transform: translateX(-50%);
+}
+/* ┌──┐ bracket → two legs down to the 5 / 6 columns */
+.pp-flow__fork::after {
+  content: '';
+  position: absolute;
+  top: 20px;
+  bottom: 0;
+  left: 25%;
+  right: 25%;
+  border-top: 2px solid #c9ccd4;
+  border-left: 2px solid #c9ccd4;
+  border-right: 2px solid #c9ccd4;
+}
+
+/* ============ Tablet + mobile: stack cards into a single column ============ */
+@media (max-width: 1024px) {
+  .pp-flow__row--top,
+  .pp-flow__row--parallel,
+  .pp-flow__decision {
+    grid-template-columns: 1fr;
+  }
+
+  /* Sequential top steps get a short connector in the grid gap. */
+  .pp-flow__row--top .pp-flow__cell:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -16px;
+    height: 16px;
+    width: 2px;
+    background: #c9ccd4;
+    transform: translateX(-50%);
+  }
+
+  .pp-flow__link--branch::before {
+    left: 50%;
+  }
+
+  /* Y-fork collapses to a straight vertical line when 5·6 stack. */
+  .pp-flow__fork {
+    height: 26px;
+  }
+  .pp-flow__fork::before {
+    height: 100%;
+  }
+  .pp-flow__fork::after {
+    content: none;
+  }
+
+  .pp-flow__fork-note {
+    max-width: 100%;
+  }
+}
+
 
 /* ============================ Rights cards ============================ */
 .pp-rights {
@@ -350,13 +527,10 @@
   .pp-two-col {
     gap: 40px;
   }
-  .pp-flow__steps {
-    grid-template-columns: 1fr;
-  }
-  .pp-flow__outcomes {
-    grid-template-columns: 1fr;
-  }
   .pp-flows {
-    gap: 48px;
+    gap: 56px;
+  }
+  .pp-step {
+    padding: 18px;
   }
 }

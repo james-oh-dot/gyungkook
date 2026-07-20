@@ -197,20 +197,32 @@ export const PUBLIC_COMPENSATION = {
 /* —— 4. 절차 · 유의할 점 (procedure) —— */
 export type FlowStep = {
   no: string
-  label: string
-  notes: string[]
-  caution?: string
+  title: string
+  /** Inline subtitle next to the title (e.g. 지방/중앙토지수용위원회) */
+  subtitle?: string
+  bullets: string[]
+  /** ※ caution note shown in a tinted box under the bullets */
+  note?: string
 }
 export type FlowOutcome = {
   kind: 'success' | 'fail'
   label: string
   note: string
 }
+/**
+ * Figma 손실보상절차 flowchart:
+ *   steps 1–3 (row) → 협의 결정(성립 | 불성립) → lead(4) → Y-fork → parallel(5,6)
+ */
 export type ProcedureFlow = {
   heading: string
   steps: FlowStep[]
   outcomes: FlowOutcome[]
-  followup: FlowStep[]
+  /** Step 4 — single full-width card after the 불성립 branch */
+  lead: FlowStep
+  /** Side annotation on the Y-fork ([재개발]만) */
+  forkNote?: string[]
+  /** Steps 5 & 6 — parallel branch after the Y-fork */
+  parallel: FlowStep[]
 }
 export type RightsGroup = {
   label: string
@@ -237,70 +249,118 @@ export const PUBLIC_PROCEDURE = {
     {
       heading: '손실보상절차 [공익사업]',
       steps: [
-        { no: '1', label: '보상준비', notes: ['사업인정고지 확인'] },
-        { no: '2', label: '보상계획공고', notes: ['사업인정고지 확인'] },
+        {
+          no: '1',
+          title: '보상준비',
+          bullets: [
+            '주민대책위원회 구성 및 참여',
+            '보상대상 기초조사',
+            '토지/물건조서 작성',
+            '사업인정고지 확인',
+          ],
+        },
+        {
+          no: '2',
+          title: '보상계획공고',
+          bullets: [
+            '토지/물건조서 확인 및 이의신청',
+            '보상협의회 설치 및 운영',
+            '감정평가사 주민추천',
+            '사업인정고지 확인',
+          ],
+        },
         {
           no: '3',
-          label: '협의요청',
-          notes: ['불복'],
-          caution: '보상금 수령시 불복절차 불가능',
+          title: '협의요청',
+          bullets: ['협의감정평가금액 확인', '협의 및 불복 결정'],
+          note: '보상금 수령시 불복절차 불가능',
         },
       ],
       outcomes: OUTCOMES,
-      followup: [
-        {
-          no: '4',
-          label: '수용재결',
-          notes: ['지방/중앙토지수용위원회', '잔여지 매수(수용) 청구'],
-          caution: '후 보상금 전액 수령',
-        },
+      lead: {
+        no: '4',
+        title: '수용재결',
+        subtitle: '지방/중앙토지수용위원회',
+        bullets: [
+          '의견서 제출 및 감정평가',
+          '소유권 이전/보상금 지급 및 공탁',
+          '잔여지 매수(수용) 청구',
+        ],
+        note: "'이의유보' 후 보상금 전액 수령",
+      },
+      parallel: [
         {
           no: '5',
-          label: '이의재결',
-          notes: ['중앙토지수용위원회', '잔여지 매수(수용) 청구'],
-          caution: '후 보상금 전액 수령',
+          title: '이의재결',
+          subtitle: '중앙토지수용위원회',
+          bullets: [
+            '의견서 제출 및 감정평가',
+            '소유권 이전/보상금 지급 및 공탁',
+            '잔여지 매수(수용) 청구',
+          ],
+          note: "'이의유보' 후 보상금 전액 수령",
         },
         {
           no: '6',
-          label: '행정소송',
-          notes: ['손실보상금 소송진행', '추가 보상금 지급 및 사건종결'],
+          title: '행정소송',
+          bullets: ['손실보상금 소송진행', '추가 보상금 지급 및 사건종결'],
         },
       ],
     },
     {
       heading: '손실보상절차 [재개발]',
       steps: [
-        { no: '1', label: '보상준비', notes: ['조속재결 청구'] },
-        { no: '2', label: '보상계획공고', notes: [] },
+        {
+          no: '1',
+          title: '보상준비',
+          bullets: [
+            '주민대책위원회 구성 및 참여',
+            '보상대상 기초조사',
+            '토지/물건조서 작성',
+            '조속재결 청구',
+          ],
+        },
+        {
+          no: '2',
+          title: '보상계획공고',
+          bullets: [
+            '토지/물건조서 확인 및 이의신청',
+            '보상협의회 설치 및 운영',
+            '감정평가사 주민추천',
+          ],
+        },
         {
           no: '3',
-          label: '협의요청',
-          notes: ['불복'],
-          caution: '보상금 수령시 불복절차 불가능',
+          title: '협의요청',
+          bullets: ['협의감정평가금액 확인', '협의 및 불복 결정'],
+          note: '보상금 수령시 불복절차 불가능',
         },
       ],
       outcomes: OUTCOMES,
-      followup: [
-        {
-          no: '4',
-          label: '수용재결',
-          notes: [
-            '지방토지수용위원회',
-            '잔여지 매수(수용) 청구, 지연가산금 청구',
-            '이주대책 소송제기',
-          ],
-          caution: '후 보상금 전액 수령',
-        },
+      lead: {
+        no: '4',
+        title: '수용재결',
+        subtitle: '지방토지수용위원회',
+        bullets: [
+          '의견서 제출 및 감정평가',
+          '소유권 이전/보상금 지급 및 공탁',
+          '잔여지 매수(수용) 청구, 지연가산금 청구',
+        ],
+        note: "'이의유보' 후 보상금 전액 수령",
+      },
+      forkNote: ['명도소송(부동산인도) 대응', '이주대책 소송제기'],
+      parallel: [
         {
           no: '5',
-          label: '이의재결',
-          notes: ['중앙토지수용위원회', '추가 보상금 지급 및 공탁'],
-          caution: '후 보상금 전액 수령',
+          title: '이의재결',
+          subtitle: '중앙토지수용위원회',
+          bullets: ['의견서 제출 및 감정평가', '추가 보상금 지급 및 공탁'],
+          note: "'이의유보' 후 보상금 전액 수령",
         },
         {
           no: '6',
-          label: '행정소송',
-          notes: ['손실보상금 소송진행', '추가 보상금 지급 및 사건종결'],
+          title: '행정소송',
+          bullets: ['손실보상금 소송진행', '추가 보상금 지급 및 사건종결'],
         },
       ],
     },
