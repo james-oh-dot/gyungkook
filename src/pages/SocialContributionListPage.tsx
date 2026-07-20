@@ -1,15 +1,17 @@
 import { SocialGridCard } from '../components/sub/SocialGridCard'
 import {
+  SOCIAL_CONTRIBUTION_BOARD,
   SOCIAL_CONTRIBUTION_PAGE,
-  socialPostDetailPath,
-  socialPosts,
 } from '../data/socialContribution'
 
 /**
  * 사회공헌 list — intro + 4/2/1 card grid (Figma SUB_활동보도_사회공헌_*).
+ * Data: `SOCIAL_CONTRIBUTION_BOARD` (single board — defaultTab is implicit)
  */
 export function SocialContributionListPage() {
-  const posts = socialPosts()
+  const posts = SOCIAL_CONTRIBUTION_BOARD.postsByTab(
+    SOCIAL_CONTRIBUTION_BOARD.defaultTab,
+  )
 
   return (
     <div className="social-contribution__contents" data-name="Contents">
@@ -35,7 +37,10 @@ export function SocialContributionListPage() {
         <ul className="social-contribution__grid" data-name="list_wrap">
           {posts.map((post) => (
             <li key={post.id}>
-              <SocialGridCard post={post} detailPath={socialPostDetailPath} />
+              <SocialGridCard
+              post={post}
+              detailPath={SOCIAL_CONTRIBUTION_BOARD.detailPath}
+            />
             </li>
           ))}
         </ul>

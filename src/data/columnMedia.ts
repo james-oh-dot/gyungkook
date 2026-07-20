@@ -18,6 +18,7 @@
  *   (or CMS “adjacent posts” if available).
  */
 
+import { createBoardModule } from './board'
 import { asset } from '../utils/asset'
 import { progressiveAsset } from '../utils/progressiveImage'
 
@@ -246,37 +247,13 @@ export const COLUMN_MEDIA_POSTS: ColumnMediaPost[] = [
   },
 ]
 
-export function isColumnMediaTab(value: string | undefined): value is ColumnMediaTab {
-  return value === 'column' || value === 'publication' || value === 'media'
-}
-
-export function postsByTab(tab: ColumnMediaTab): ColumnMediaPost[] {
-  return COLUMN_MEDIA_POSTS.filter((p) => p.tab === tab)
-}
-
-export function findPost(tab: ColumnMediaTab, postId: string): ColumnMediaPost | undefined {
-  return COLUMN_MEDIA_POSTS.find((p) => p.tab === tab && p.id === postId)
-}
-
-/** Adjacent posts within the same tab (list order). For CMS, prefer API adjacent. */
-export function adjacentPosts(
-  tab: ColumnMediaTab,
-  postId: string,
-): { prev?: ColumnMediaPost; next?: ColumnMediaPost } {
-  const list = postsByTab(tab)
-  const index = list.findIndex((p) => p.id === postId)
-  if (index < 0) return {}
-  return {
-    // Figma labels: 다음 = newer/previous in list (index-1), 이전 = older (index+1)
-    next: index > 0 ? list[index - 1] : undefined,
-    prev: index < list.length - 1 ? list[index + 1] : undefined,
-  }
-}
-
-export function tabListPath(tab: ColumnMediaTab): string {
-  return `${COLUMN_MEDIA_PAGE.basePath}/${tab}`
-}
-
-export function postDetailPath(tab: string, postId: string): string {
-  return `${COLUMN_MEDIA_PAGE.basePath}/${tab}/${postId}`
-}
+/**
+ * Uniform data-access surface — replaces the old per-file wrappers
+ * (isColumnMediaTab / postsByTab / findPost / adjacentPosts / *Path).
+ * See `createBoardModule` in `board.ts` for the shared contract + CMS notes.
+ */
+export const COLUMN_MEDIA_BOARD = createBoardModule({
+  page: COLUMN_MEDIA_PAGE,
+  tabs: COLUMN_MEDIA_TABS,
+  posts: COLUMN_MEDIA_POSTS,
+})

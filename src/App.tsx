@@ -6,20 +6,21 @@ import {
   Routes,
   useLocation,
 } from 'react-router-dom'
+import { COLUMN_MEDIA_BOARD } from './data/columnMedia'
+import { PRESS_COVERAGE_BOARD } from './data/pressCoverage'
+import { SOCIAL_CONTRIBUTION_BOARD } from './data/socialContribution'
 import { shouldScrollToLocalTabs } from './hooks/useScrollToLocalTabs'
 import { SiteLayout } from './layouts/SiteLayout'
+import { BoardDetailPage } from './pages/BoardDetailPage'
 import { CaseStudiesPage } from './pages/CaseStudiesPage'
 import { ColumnMediaLayout } from './pages/ColumnMediaLayout'
 import { ColumnMediaListPage } from './pages/ColumnMediaListPage'
 import { HomePage } from './pages/HomePage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
-import { PostDetailPage } from './pages/PostDetailPage'
-import { PressCoverageDetailPage } from './pages/PressCoverageDetailPage'
 import { PressCoverageLayout } from './pages/PressCoverageLayout'
 import { PressCoverageListPage } from './pages/PressCoverageListPage'
 import { AboutIntroPage } from './pages/AboutIntroPage'
 import { RenewalPage } from './pages/RenewalPage'
-import { SocialContributionDetailPage } from './pages/SocialContributionDetailPage'
 import { SocialContributionLayout } from './pages/SocialContributionLayout'
 import { SocialContributionListPage } from './pages/SocialContributionListPage'
 import './styles/global.css'
@@ -116,7 +117,10 @@ function App() {
           />
           <Route path="press/coverage/:tab" element={<PressCoverageLayout />}>
             <Route index element={<PressCoverageListPage />} />
-            <Route path=":postId" element={<PressCoverageDetailPage />} />
+            <Route
+              path=":postId"
+              element={<BoardDetailPage board={PRESS_COVERAGE_BOARD} />}
+            />
           </Route>
           <Route
             path="press/column-media"
@@ -124,11 +128,17 @@ function App() {
           />
           <Route path="press/column-media/:tab" element={<ColumnMediaLayout />}>
             <Route index element={<ColumnMediaListPage />} />
-            <Route path=":postId" element={<PostDetailPage />} />
+            <Route
+              path=":postId"
+              element={<BoardDetailPage board={COLUMN_MEDIA_BOARD} />}
+            />
           </Route>
           <Route path="press/social" element={<SocialContributionLayout />}>
             <Route index element={<SocialContributionListPage />} />
-            <Route path=":postId" element={<SocialContributionDetailPage />} />
+            <Route
+              path=":postId"
+              element={<BoardDetailPage board={SOCIAL_CONTRIBUTION_BOARD} />}
+            />
           </Route>
 
           {/* 소식 · 공지 */}
