@@ -229,14 +229,13 @@ export function Hero() {
           <div className="hero__gage" data-name="swipe_gage">
             <div className="hero__gage-track">
               <span className="hero__gage-no">01</span>
-              <div
-                className="hero__gage-bar"
-                aria-hidden="true"
-                role="progressbar"
-                aria-valuemin={0}
-                aria-valuemax={100}
-                aria-valuenow={Math.round(progress * 100)}
-              >
+              {/*
+                Decorative auto-advance gage. `role="progressbar"` +
+                aria-value* were contradictory under `aria-hidden` (hidden
+                nodes expose no role), and announcing % every frame would be
+                noise anyway — slide position is conveyed by button labels.
+              */}
+              <div className="hero__gage-bar" aria-hidden="true">
                 <div
                   className="hero__gage-fill"
                   style={{ transform: `scaleX(${progress})` }}

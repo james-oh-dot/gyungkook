@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useDoubleRafReveal } from '../hooks/useDoubleRafReveal'
 
 type CharRevealProps = {
   text: string
@@ -8,6 +8,10 @@ type CharRevealProps = {
   active?: boolean
 }
 
+/**
+ * Character-by-character reveal (hero maincopy).
+ * Timing contract lives in `useDoubleRafReveal` — do not inline rAF logic here.
+ */
 export function CharReveal({
   text,
   className = '',
@@ -15,25 +19,9 @@ export function CharReveal({
   step = 28,
   active = true,
 }: CharRevealProps) {
-  const [revealed, setRevealed] = useState(false)
-
-  useEffect(() => {
-    setRevealed(false)
-    if (!active) return
-
-    let raf2 = 0
-    const raf1 = requestAnimationFrame(() => {
-      raf2 = requestAnimationFrame(() => setRevealed(true))
-    })
-
-    return () => {
-      cancelAnimationFrame(raf1)
-      cancelAnimationFrame(raf2)
-    }
-  }, [text, active])
+  const show = useDoubleRafReveal(text, active)
 
   const chars = Array.from(text)
-  const show = active && revealed
 
   return (
     <span className={`char-reveal ${className}`.trim()} aria-label={text}>
