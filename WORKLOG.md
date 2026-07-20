@@ -1,5 +1,47 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-20 — 게시판 상세 이전/다음 스크롤 버그 수정 (스티키 기준점)
+
+> Branch: `claude/o-boinida-98drdm` (merged PR #69 이후 최신 main에서 재시작)
+> 파일: `src/hooks/useScrollToLocalTabs.ts` 만 변경.
+
+### 증상 (사용자 리포트)
+게시판 상세에서 **이전/다음 게시글 클릭 시 화면 스크롤 위치가 그대로** 유지됨.
+기대: 새 게시글의 **본문 상단이 sticky 로컬탭 바로 아래**에 오도록 점프.
+
+### 근본 원인 (Playwright로 재현·확정)
+`useScrollToLocalTabs`가 `document.getElementById(LOCAL_TABS_ANCHOR_ID)`로
+얻은 요소에 `el.scrollIntoView()`를 호출했는데, 그 요소는 로컬탭 `<nav>`이고
+**`position: sticky; top: var(--gnb-bar-h)`**. 스크롤이 내려간 상태에선 이
+nav가 이미 `top:100px`에 **stuck** 되어 있어, 브라우저는 "이미 뷰포트
+시작에 보임"으로 판단 → `scrollIntoView`가 **완전 no-op**.
+
+진단 수치 (수정 전, 1440px):
+```
+클릭 전:  scrollY=1358  tabsTop=100(stuck)  bodyTop=-397
+클릭 후:  scrollY=1358  tabsTop=100          bodyTop=-397   ← 안 움직임
+수동 el.scrollIntoView(sticky nav): 700 → 700 (no-op 재현)
+비-sticky sentinel 기준 window.scrollTo: 700 → 628 (정상)
+```
+> 참고: 이 버그는 prev/next 뿐 아니라 **list→detail / 목록으로 / 탭클릭**
+> 모든 board 스크롤에 있었음 (전부 같은 sticky nav를 대상으로 했기 때문).
+> prev/next에서 가장 눈에 띄었을 뿐.
+
+### 해결
+sticky 요소가 아니라 **비-sticky 기준점**을 측정해 `window.scrollTo`로 계산:
+- 탭형 보드 → `.local-tabs__sentinel` (nav 바로 앞 1px 마커, non-sticky)
+- 사회공헌(탭 없음) → `#subpage-local-tabs` 앵커 div (non-sticky)
+- `targetY = window.scrollY + anchor.rect.top − gnbH`, `Math.max(0, …)` 클램프,
+  `behavior: 'smooth'`. 새 라우트 콘텐츠 레이아웃을 위해 double rAF 유지.
+
+### 검증 (Playwright, vite preview)
+- 데스크톱 1440 + 모바일 390(gnbH 82) 모두 PASS.
+- 언론보도/컬럼미디어/사회공헌 각각: list→detail & prev/next에서 탭이
+  GNB 밑(±3px)에 고정되고 본문 상단이 뷰포트 상단 근처에 노출.
+- 회귀 확인: **list 페이지 GNB 진입 시 scrollY=0** (sub-visual 유지) — 정상.
+
+---
+
 ## 2026-07-20 — 구조 리팩터 4종 (board 통합 / strict / reveal 훅 / a11y)
 
 > Branch: `claude/o-boinida-98drdm`
