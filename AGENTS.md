@@ -60,6 +60,7 @@
   - CMS 연동 시: swap each module's `posts` source only; page layer needs no change.
 - Local tabs under a sub-visual are `position: sticky; top: var(--gnb-bar-h)` (must be a sibling of the main content, not wrapped with the hero only — see `ColumnMediaLayout` / `RenewalPage`).
 - Scroll: GNB/menu entry → top (sub-visual visible). Board local tab / list→detail / prev·next → sticky under GNB (`state.scrollToLocalTabs` + `useScrollToLocalTabs`). 법인소개 / 정비사업 tab click → scroll to section (offset = GNB + local tabs).
+- **HARD RULE — never `scrollIntoView()` the sticky local-tabs `<nav>`** (`#subpage-local-tabs` is `position: sticky; top: var(--gnb-bar-h)`). Once stuck it reads as already-at-top and `scrollIntoView` is a silent **no-op** — that broke list→detail / prev·next scroll (2026-07). `useScrollToLocalTabs` must measure a **non-sticky** anchor (`.local-tabs__sentinel`, or 사회공헌's `#subpage-local-tabs` anchor div) and drive `window.scrollTo(natural top − gnbH)`. Verify prev/next on a board detail after any change here.
 - GitHub Pages deep links: deploy copies `dist/index.html` → `dist/404.html`.
 
 ### Progressive images (blur-up)
