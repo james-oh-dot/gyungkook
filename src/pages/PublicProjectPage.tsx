@@ -203,22 +203,34 @@ function FlowView({ flow }: { flow: ProcedureFlow }) {
           <FlowStepView key={s.no} step={s} />
         ))}
       </ol>
-      <div className="pp-flow__outcomes">
-        {flow.outcomes.map((o) => (
-          <div key={o.label} className={`pp-outcome pp-outcome--${o.kind}`}>
-            <p className="pp-outcome__label">{o.label}</p>
-            <p className="pp-outcome__note">{o.note}</p>
-          </div>
-        ))}
+
+      {/* Decision branch — makes the 성립/불성립 fork explicit on every width */}
+      <div className="pp-flow__branch">
+        <p className="pp-flow__branch-label">협의 결과에 따라</p>
+        <div className="pp-flow__outcomes">
+          {flow.outcomes.map((o) => (
+            <div key={o.label} className={`pp-outcome pp-outcome--${o.kind}`}>
+              <p className="pp-outcome__label">{o.label}</p>
+              <p className="pp-outcome__note">{o.note}</p>
+              <span className="pp-outcome__tag">
+                {o.kind === 'success' ? '절차 종결' : '아래 후속 절차 진행'}
+              </span>
+            </div>
+          ))}
+        </div>
       </div>
-      <ol
-        className="pp-flow__steps pp-flow__steps--followup"
-        aria-label={`${flow.heading} 후속 절차`}
-      >
-        {flow.followup.map((s) => (
-          <FlowStepView key={s.no} step={s} />
-        ))}
-      </ol>
+
+      <div className="pp-flow__followup">
+        <p className="pp-flow__followup-label">협의 불성립 시 진행</p>
+        <ol
+          className="pp-flow__steps pp-flow__steps--followup"
+          aria-label={`${flow.heading} 후속 절차`}
+        >
+          {flow.followup.map((s) => (
+            <FlowStepView key={s.no} step={s} />
+          ))}
+        </ol>
+      </div>
     </div>
   )
 }

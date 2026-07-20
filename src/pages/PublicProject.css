@@ -151,7 +151,7 @@
 .pp-flow {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 .pp-flow__heading {
@@ -165,25 +165,44 @@
   letter-spacing: -0.025em;
 }
 
+/*
+  Vertical connected timeline (all breakpoints — the Figma source is a vertical
+  flowchart). A spine links consecutive number badges so the sequence + branch
+  read clearly on mobile without a horizontal scroll or a lost-order card stack.
+*/
 .pp-flow__steps {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
+  display: flex;
+  flex-direction: column;
 }
 
 .pp-flow-step {
-  display: flex;
-  gap: 12px;
-  background: #fff;
-  border: 1px solid #e5e5ec;
-  padding: 20px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 16px;
+  padding-bottom: 22px;
+}
+.pp-flow-step:last-child {
+  padding-bottom: 0;
+}
+
+/* Spine: from this badge's centre down to the next badge (top of next row). */
+.pp-flow-step:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 14px;
+  bottom: 0;
+  width: 2px;
+  background: #cfe9eb;
 }
 
 .pp-flow-step__no {
-  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
   width: 28px;
   height: 28px;
   display: inline-flex;
@@ -201,12 +220,13 @@
   flex-direction: column;
   gap: 4px;
   min-width: 0;
+  padding-top: 2px;
 }
 
 .pp-flow-step__label {
   margin: 0;
   color: var(--color-ink);
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
   line-height: 1.4;
   letter-spacing: -0.025em;
@@ -231,18 +251,46 @@
   font-weight: 700;
 }
 
+/* —— Decision branch —— */
+.pp-flow__branch,
+.pp-flow__followup {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pp-flow__branch-label,
+.pp-flow__followup-label {
+  margin: 0;
+  padding-left: 44px;
+  color: var(--color-teal);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+/* down-caret cue so the branch reads as "flows into" */
+.pp-flow__branch-label::before,
+.pp-flow__followup-label::before {
+  content: '↓ ';
+}
+
 .pp-flow__outcomes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+  margin-left: 44px;
 }
 
 .pp-outcome {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
   padding: 20px 24px;
   border: 1px solid transparent;
 }
 .pp-outcome__label {
-  margin: 0 0 4px;
+  margin: 0;
   font-size: 18px;
   font-weight: 600;
   line-height: 1.4;
@@ -254,6 +302,14 @@
   line-height: 1.45;
   letter-spacing: -0.025em;
 }
+.pp-outcome__tag {
+  margin-top: 4px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: #fff;
+}
 .pp-outcome--success {
   background: #e0f7fa;
   border-color: #a7e2e7;
@@ -264,6 +320,9 @@
 .pp-outcome--success .pp-outcome__note {
   color: #29303b;
 }
+.pp-outcome--success .pp-outcome__tag {
+  background: var(--color-teal);
+}
 .pp-outcome--fail {
   background: #ffebee;
   border-color: #ef9a9a;
@@ -273,6 +332,17 @@
 }
 .pp-outcome--fail .pp-outcome__note {
   color: #29303b;
+}
+.pp-outcome--fail .pp-outcome__tag {
+  background: #e53935;
+}
+
+/* Follow-up steps are the 불성립 branch — indent to align under the outcomes. */
+.pp-flow__followup .pp-flow__steps {
+  padding-left: 44px;
+}
+.pp-flow__followup .pp-flow-step:not(:last-child)::before {
+  left: 57px;
 }
 
 /* ============================ Rights cards ============================ */
@@ -350,13 +420,23 @@
   .pp-two-col {
     gap: 40px;
   }
-  .pp-flow__steps {
-    grid-template-columns: 1fr;
-  }
-  .pp-flow__outcomes {
-    grid-template-columns: 1fr;
-  }
   .pp-flows {
     gap: 48px;
+  }
+  /* Mobile: outcomes stack; drop the branch indent so text keeps full width
+     (the 협의 결과 / 불성립 시 labels + tags still carry the fork logic). */
+  .pp-flow__outcomes {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+  }
+  .pp-flow__branch-label,
+  .pp-flow__followup-label {
+    padding-left: 0;
+  }
+  .pp-flow__followup .pp-flow__steps {
+    padding-left: 0;
+  }
+  .pp-flow__followup .pp-flow-step:not(:last-child)::before {
+    left: 13px;
   }
 }
