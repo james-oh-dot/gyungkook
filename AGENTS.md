@@ -56,6 +56,7 @@
   - Single page: `/practice/public` → `PublicProjectPage` (5 sections on one scroll) — same **scroll-mode** tabs as 정비사업 (`data-public-section` + IntersectionObserver scroll-spy).
   - Tabs: 공익사업 / 공익사업실적 / 보상업무 / 절차·유의할 점 / 보상업무실적.
   - Reuses `renewal-*` visual classes (imports `Renewal.css`); net-new components in `PublicProject.css` (`.pp-strengths`, `.pp-flow`, `.pp-rights`).
+  - **손실보상절차 flow** (`.pp-flow`): a Figma flowchart. Desktop (>1024) = steps 1–3 row → 협의 결정(성립/불성립) → step 4 → Y-fork → steps 5·6, joined by right-angle connectors (`.pp-flow__link` / `.pp-flow__fork`). Tablet/mobile (≤1024) = the SAME `StepCard`s stack into one column with centred vertical connectors (single markup, layout swaps by breakpoint). **All UI is sharp-rect — no `border-radius` anywhere** (square number badges + decision icons). Do not round these.
   - Data: `src/data/publicProject.ts`; GNB `redev-public` → `/practice/public`, visual `sub-02-02` (`nav.ts` `GNB_SUB_VISUAL_PUBLIC`).
   - **enLabel eyebrows** were re-translated from legal glossary (Figma had copy-paste leftovers) — see WORKLOG 2026-07-20.
   - **⚠️ `sub-02-02` hero is a TEMPORARY copy of `sub-02-01`** (figma.com blocked by egress; could not fetch the real export). Replace the jpg and regenerate the WebP pair when the asset is available.
