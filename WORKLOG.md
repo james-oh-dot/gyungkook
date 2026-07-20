@@ -1,5 +1,60 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-20 — 신규 페이지: 재개발·보상업무 > 공익사업 (sub-02-02)
+
+> Branch: `claude/o-boinida-98drdm` (PR #71 머지 후 최신 main에서 재시작)
+> Figma: `SUB_재개발보상업무_공익사업` (node 80:1908) — 정비사업(renewal)과 동일한
+> **원스크롤 + 스크롤모드 로컬탭** 패턴.
+
+### 구현
+- **데이터** `src/data/publicProject.ts`: 5개 탭/섹션 콘텐츠(Figma design_context에서 정확 추출).
+- **페이지** `src/pages/PublicProjectPage.tsx`: renewal의 스크롤-스파이 로직 복제
+  (`data-public-section` + IntersectionObserver, 탭 클릭 → `scrollTo`(GNB+로컬탭+8px offset)).
+  renewal의 시각 클래스(`renewal-section/split/bullet-title/list/quotes/results`)를
+  `Renewal.css` import로 재사용.
+- **CSS** `src/pages/PublicProject.css`: 신규 컴포넌트만 —
+  `.pp-two-col`(주요업무/대상사업 2단), `.pp-strengths`(변호사 겸 감정평가사 강점: 라이트박스
+  + 시안 요약바 + 2×2 카드), `.pp-flow`(손실보상절차: 번호 스텝 + 협의 성립/불성립 색상 박스
+  + 후속 스텝), `.pp-rights`(토지/지장물/영업손실 권리 카드).
+- **라우트** `App.tsx`: `/practice/public` → `PublicProjectPage` (기존 Placeholder 제거).
+- **네비** `nav.ts`: `redev-public.visual` = `PUBLIC_PROJECT_PAGE.visual`(sub-02-02) —
+  GNB 풀메뉴/드로어 서브비주얼 스왑에 반영.
+
+### 로컬탭 (Section / Bread 순서)
+공익사업 / 공익사업실적 / 보상업무 / 절차 · 유의할 점 / 보상업무실적
+(마지막 프레임 이름은 `TAB_정비사업실적` copy-paste 잔재 → 실제 라벨은 **보상업무실적**.)
+
+### 영문 보조문구(enLabel) 교정 — 사용자 요청
+Figma의 영문 eyebrow가 대부분 copy-paste 잔재라 법률용어 기준으로 재번역:
+| 섹션 | Figma(잘못) | 적용(교정) |
+|---|---|---|
+| 공익사업 | Urban Refurbishment Project | **Public Works Project** |
+| 공익사업(시행자대리)실적 | STRENGTH | **Public Works Track Record** |
+| 보상업무 | Urban Refurbishment Project | **Loss Compensation** |
+| 절차·유의할 점 | Preliminary Injunction for Eviction | **Procedure & Key Points** |
+| 공익사업(보상업무)실적 | STRENGTH | **Compensation Track Record** |
+> 근거: 「공익사업을 위한 토지 등의 취득 및 보상에 관한 법률」 공식 영문 = *Act on
+> Acquisition of and Compensation for Land for **Public Works** Projects*.
+
+### ⚠️ 미해결 / 후속 (중요)
+- **sub-02-02 히어로 이미지 = 임시 플레이스홀더**: 실제 Figma export를 받지 못함
+  (figma.com이 이 세션 egress 정책으로 **403 차단**, base64는 파일 저장 불가).
+  `public/assets/sub/sub-02-02.{jpg,webp,preview.webp}`는 현재 **sub-02-01 복사본**.
+  → 실제 이미지 확보 시 jpg 교체 후 `python3 scripts/generate-progressive-images.py`
+  (TARGETS에 `sub/sub-02-02.jpg` 추가) 재생성 필요.
+- **절차 흐름도 단순화**: Figma는 분기 화살표가 있는 플로우차트지만, 반응형/유지보수를
+  위해 **번호 스텝 리스트 + 성립(teal)/불성립(red) 결과 박스**로 충실히 대체(모든 법률
+  문구 보존). 정확한 SVG 커넥터는 후속 과제.
+- 보상업무 섹션의 "법무법인 경국 대표 이미지" 배너(1280×500)는 이미지 확보 불가로 **생략**.
+
+### 검증 (Playwright, vite preview)
+- 1440 / 768 / 390 모두: 탭 5개·섹션 5개·강점 4카드·절차 12스텝·권리 3카드·실적 30(15+15),
+  JS 에러 0.
+- **탭 클릭 → 섹션 스크롤**: 보상업무 클릭 시 섹션 top이 GNB+로컬탭+8px에 정확히 안착
+  (오차 <1px). build(strict tsc)·lint 클린.
+
+---
+
 ## 2026-07-20 — 소식·공지(Notice) 섹션 반응형 Figma 정합
 
 > Branch: `claude/o-boinida-98drdm` (PR #70 머지 후 최신 main에서 재시작)
