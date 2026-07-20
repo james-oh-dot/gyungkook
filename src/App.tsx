@@ -17,6 +17,7 @@ import { ColumnMediaLayout } from './pages/ColumnMediaLayout'
 import { ColumnMediaListPage } from './pages/ColumnMediaListPage'
 import { HomePage } from './pages/HomePage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
+import { PublicProjectPage } from './pages/PublicProjectPage'
 import { PressCoverageLayout } from './pages/PressCoverageLayout'
 import { PressCoverageListPage } from './pages/PressCoverageListPage'
 import { AboutIntroPage } from './pages/AboutIntroPage'
@@ -49,10 +50,10 @@ function ScrollToTop() {
  * - /press/social/:postId                 → shared post detail
  * - /about/intro                          → 법인소개 (sub-01-01)
  * - /practice/renewal                     → 정비사업 (sub-02-01)
+ * - /practice/public                      → 공익사업 (sub-02-02)
  *
  * Placeholders (sub-01-01 visual + “곧 업데이트예정”):
  * - /about/greeting|lawyers|gallery|history|location
- * - /practice/public
  * - /other/misc|realestate
  * - /news/notice|cases|careers|consult
  *
@@ -94,10 +95,7 @@ function App() {
 
           {/* 재개발 · 보상업무 */}
           <Route path="practice/renewal" element={<RenewalPage />} />
-          <Route
-            path="practice/public"
-            element={<PlaceholderPage pageId="redev-public" />}
-          />
+          <Route path="practice/public" element={<PublicProjectPage />} />
 
           {/* 기타업무 */}
           <Route

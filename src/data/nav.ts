@@ -3,6 +3,7 @@ import { CASE_STUDIES_PAGE } from './caseStudies'
 import { COLUMN_MEDIA_PAGE } from './columnMedia'
 import { PLACEHOLDER_VISUAL_SRC } from './placeholderPages'
 import { PRESS_COVERAGE_PAGE } from './pressCoverage'
+import { PUBLIC_PROJECT_PAGE } from './publicProject'
 import { RENEWAL_PAGE } from './renewal'
 import { SOCIAL_CONTRIBUTION_PAGE } from './socialContribution'
 
@@ -34,6 +35,9 @@ export const GNB_SUB_VISUAL_ABOUT_INTRO = ABOUT_INTRO_PAGE.visual
 
 /** Figma sub-02-01 — 재개발·보상업무 > 정비사업 */
 export const GNB_SUB_VISUAL_RENEWAL = RENEWAL_PAGE.visual
+
+/** Figma sub-02-02 — 재개발·보상업무 > 공익사업 */
+export const GNB_SUB_VISUAL_PUBLIC = PUBLIC_PROJECT_PAGE.visual
 
 /** Figma sub-04-01 — 활동·보도 > 업무사례 */
 export const GNB_SUB_VISUAL_PRESS_CASES = CASE_STUDIES_PAGE.visual
@@ -146,7 +150,7 @@ export const NAV_ITEMS: NavItem[] = [
         id: 'redev-public',
         label: '공익사업',
         href: '/practice/public',
-        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+        visual: GNB_SUB_VISUAL_PUBLIC,
       },
     ],
   },

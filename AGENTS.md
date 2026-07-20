@@ -52,6 +52,13 @@
   - Local tabs use **scroll mode** (`onTabSelect`) — click scrolls to section under sticky tabs; **not** route tabs
   - Hero: `SubVisual` with `showChip={false}` (Figma `hero_type2`)
   - Mock data: `src/data/renewal.ts`; GNB `redev-renewal` → `/practice/renewal`, visual `public/assets/sub/sub-02-01.webp` (+ `.preview.webp`)
+- **공익사업** (재개발·보상업무 2nd / Figma `sub-02-02`):
+  - Single page: `/practice/public` → `PublicProjectPage` (5 sections on one scroll) — same **scroll-mode** tabs as 정비사업 (`data-public-section` + IntersectionObserver scroll-spy).
+  - Tabs: 공익사업 / 공익사업실적 / 보상업무 / 절차·유의할 점 / 보상업무실적.
+  - Reuses `renewal-*` visual classes (imports `Renewal.css`); net-new components in `PublicProject.css` (`.pp-strengths`, `.pp-flow`, `.pp-rights`).
+  - Data: `src/data/publicProject.ts`; GNB `redev-public` → `/practice/public`, visual `sub-02-02` (`nav.ts` `GNB_SUB_VISUAL_PUBLIC`).
+  - **enLabel eyebrows** were re-translated from legal glossary (Figma had copy-paste leftovers) — see WORKLOG 2026-07-20.
+  - **⚠️ `sub-02-02` hero is a TEMPORARY copy of `sub-02-01`** (figma.com blocked by egress; could not fetch the real export). Replace the jpg and regenerate the WebP pair when the asset is available.
 - Local tabs: route mode (`toTab`) for 컬럼미디어 / 언론보도; scroll mode (`onTabSelect`) for 법인소개 / 정비사업. Hover underline works in both.
 - **Board abstraction (2026-07 refactor — use this for any new board):**
   - `src/data/board.ts`: `BoardPost` / `BoardTabDef` types + **`createBoardModule()`** factory → each board data file exports one `BoardModule` (`COLUMN_MEDIA_BOARD` / `PRESS_COVERAGE_BOARD` / `SOCIAL_CONTRIBUTION_BOARD`) exposing `isTab` / `postsByTab` / `findPost` / `adjacent` / `listPath` / `detailPath`. Do **not** reintroduce per-file prefixed wrappers (`findPressPost`-style) — that duplication was removed on purpose.
