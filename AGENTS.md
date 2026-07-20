@@ -181,7 +181,7 @@ Exact **768 vs 767**: at 768px use tablet gutters (48/40); at ≤767 use mobile 
 
 #### Grid defaults (subpage boards + home)
 - **Subpage card boards** (업무사례, 언론보도, similar): **4 → 2 (≤1024) → 1 (≤767)**; content `max-width: 1280px` + `var(--page-pad)`.
-- **Home notice**: 3 → 2 (≤1024) → 1 (≤767).
+- **Home notice (소식·공지)**: **3-up overlay cards (>1024) → 1-col horizontal list card (768–1024) → 1-col overlay card (≤767)**. Gaps per Figma: **10 / 16 / 8**. Card ratio **5:7** (desktop + mobile overlay). The tablet card is a *different component* (250² image left + `#F7F7FB` text panel right, dark type, dark arrow via `filter: brightness(0)`), so it is bounded to `@media (min-width:768px) and (max-width:1024px)` — never let it leak to mobile. Tablet keeps the `전체보기` button on the header row (`#notice .section-head { flex-direction: row }` overrides the shared ≤1024 column rule); mobile stacks it below. Do not reintroduce the old `3 → 2 → 1` overlay-only collapse.
 - **Home practice / professionals / about-style splits**: collapse to **1 column at ≤1024**.
 - **Subpage main vertical pad** (shared boards): `140/160` → `80/120` (≤768) → `56/96` (≤767).
 
