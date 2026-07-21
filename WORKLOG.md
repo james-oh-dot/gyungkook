@@ -1,5 +1,64 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-21 — 공대호 변호사 인증서·위촉·수상 이미지 11개 Figma 직접 추출
+
+> Branch: `claude/o-boinida-98drdm` (PR #79 머지 후 최신 main에서 재시작)
+
+### 배경 (중요한 발견)
+사용자가 "인증서수상 이미지는 10개가 넘는데 어떻게 하지?"라고 묻자, 처음엔 채팅 첨부를
+제안했다. 이어서 사용자가 "네트워크 정책에서 figma.com 허용" 방법을 자세히 알려달라고
+요청 — 답변 도중 **Figma MCP 도구(`get_screenshot`, `get_metadata`, `get_design_context`)는
+이미 이 세션에서 계속 정상 동작해왔다는 사실을 재확인**했다. 즉, egress 차단은 세션의
+`curl`(sandboxed shell)에만 적용되고, **MCP 서버와의 통신은 별도 경로**라 막히지 않는다.
+
+`download_assets`가 반환하는 자산은 `https://www.figma.com/api/mcp/asset/...` **단기 URL**이라
+결국 `curl`로 받아와야 해서 여전히 403 — 하지만 `get_screenshot`을
+`enableBase64Response:true`로 호출하면 **PNG가 MCP 응답에 base64로 직접 포함**되어 온다.
+이를 실제로 검증(노드 89:3357 스크린샷 성공 → 진짜 "전문분야 등록증서" 이미지 확인)한 뒤,
+**네트워크 정책 변경 없이 이 세션에서 바로 공대호 변호사의 인증서/위촉/수상 이미지 13개를
+직접 추출**하기로 방향 전환.
+
+### 구현
+1. **구조 확인**: `get_metadata`(node 73:6934)로 이미지 노드 후보를 찾은 뒤, `get_design_context`
+   를 `block_9`(89:3348, 전문 인증서) / `block_10`(89:3365, 위촉·임명) / `block_11`(89:3402, 수상)
+   각각에 호출해 **실제 캡션 텍스트 + 이미지 참조**를 정확히 확인. 결과: 기존 데이터(인증서 2 +
+   위촉 8 + 수상 3 = 13)의 라벨은 전부 정확했음(회귀 없음).
+2. **중요 발견**: 위촉 8개 중 마지막 2개(`서울시사회복지협의회봉사단`, `대한법률봉사회회장`)는
+   Figma 소스 자체가 **다른 항목과 동일한 이미지 참조**(`imgImage4`/`imgImage5` 재사용)를 쓰고
+   있어 — 디자이너가 아직 실제 스캔본을 올리지 않은 자리표시자임. 이 2개는 잘못된 이미지를
+   붙이지 않고 캡션 있는 줄무늬 플레이스홀더로 유지.
+3. 나머지 **11개**(인증서 2 + 위촉 6 + 수상 3)를 `get_screenshot(fileKey, nodeId,
+   enableBase64Response:true, maxDimension:900)`으로 순서대로 호출 — Figma 노드의 실제 크기가
+   184×260이라 900 요청에도 원본 그대로(업스케일 없음) 반환.
+4. base64 추출: 세션 자신의 트랜스크립트 JSONL에서 `tool_use`(nodeId 기록) ↔ `tool_result`
+   (base64 이미지)를 `tool_use_id`로 매칭하는 Python 스크립트로 13개 PNG를 디스크에 저장
+   (중복 호출 1개 자동 스킵).
+5. `public/assets/lawyers/gongdaeho-{cert-redevelopment,cert-admin,apt-lh,
+   apt-seoul-human-rights,apt-medical-volunteer,apt-youth-legal,apt-nk-human-rights,
+   apt-village-lawyer,award-human-rights,award-police,award-brand-index}.png`(11개) 저장 →
+   `scripts/generate-progressive-images.py`의 `TARGETS`에 추가(각 400w, 원본이 이미 작아
+   업스케일 없음) → 재생성.
+6. `src/data/lawyers.ts`: `cert(stem)` 헬퍼로 `progressiveAsset().src`를 `CertItem.image`에
+   연결. 위촉 마지막 2개는 `image` 필드 생략(플레이스홀더 유지, 의도적).
+
+### 검증
+- Playwright: 1440 데스크톱 — 인증서 2개, 위촉 6개(실사진) + 2개(플레이스홀더), 수상 3개
+  모두 올바른 라벨과 이미지로 렌더. 390 모바일도 확인.
+- `npm run build`(strict) / `npm run lint` 클린.
+
+### ⚠️ 남은 것
+- 위촉 2개(서울시사회복지협의회봉사단, 대한법률봉사회회장) — Figma 소스 자체에 실제 이미지
+  없음. 사용자가 실제 스캔본을 제공하면 반영.
+- 박효영·공성준·신지호 3명 프로필 콘텐츠·사진 — 여전히 미제공.
+
+### 재사용 가능한 우회 기법 (다음 작업자 참고)
+figma.com이 이 세션 egress로 차단돼도, **Figma MCP 도구 자체는 차단되지 않는다** —
+`download_assets`(단기 URL 반환, curl 필요 → 여전히 막힘) 대신 **`get_screenshot` +
+`enableBase64Response:true`**를 쓰면 이미지가 MCP 응답에 직접 포함되어 우회 가능. 자세한
+내용은 `AGENTS.md`의 "Egress workaround" 항목 참고.
+
+---
+
 ## 2026-07-21 — 실제 이미지 3장 반영 (sub-01-03 히어로 / sub-02-02 히어로 / 공대호 변호사 사진)
 
 > Branch: `claude/o-boinida-98drdm` (PR #77 · #78 머지 후 최신 main에서 재시작)

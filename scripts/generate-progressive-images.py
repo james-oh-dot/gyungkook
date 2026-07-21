@@ -68,6 +68,18 @@ TARGETS: list[tuple[str, int]] = [
     ("sub/sub-04-04.jpg", 1920),
     # Lawyer portraits
     ("lawyers/gongdaeho.png", 900),
+    # 공대호 인증서 / 위촉장 / 수상 (Figma node screenshots, native 184x260)
+    ("lawyers/gongdaeho-cert-redevelopment.png", 400),
+    ("lawyers/gongdaeho-cert-admin.png", 400),
+    ("lawyers/gongdaeho-apt-lh.png", 400),
+    ("lawyers/gongdaeho-apt-seoul-human-rights.png", 400),
+    ("lawyers/gongdaeho-apt-medical-volunteer.png", 400),
+    ("lawyers/gongdaeho-apt-youth-legal.png", 400),
+    ("lawyers/gongdaeho-apt-nk-human-rights.png", 400),
+    ("lawyers/gongdaeho-apt-village-lawyer.png", 400),
+    ("lawyers/gongdaeho-award-human-rights.png", 400),
+    ("lawyers/gongdaeho-award-police.png", 400),
+    ("lawyers/gongdaeho-award-brand-index.png", 400),
     # About intro large photos
     ("about/quote-city.png", 1920),
     ("about/strength-01.png", 1600),
