@@ -59,6 +59,9 @@
 }
 
 .lawyer-hero__info {
+  position: relative;
+  /* Below portrait so the overflowing divider paints behind the head */
+  z-index: 1;
   padding-bottom: 64px;
   align-self: center;
   overflow: visible;
@@ -97,15 +100,20 @@
 
 /* Figma Line 6 — from text-left through the gap and behind the portrait.
    Info is wider than Figma's 623px text block, so use calc(info + gap + photo)
-   rather than a fixed 1004px cap that stopped short of the photo. Portrait
-   paints after the divider in DOM so the line reads as behind the profile. */
+   rather than a fixed 1004px cap that stopped short of the photo.
+   Portrait must stack ABOVE this line (see .lawyer-hero__photo z-index) so
+   the stroke never cuts through the head; it only shows in transparent PNG
+   margins around the silhouette. */
 .lawyer-hero__divider {
   display: block;
+  position: relative;
+  z-index: 0;
   width: calc(100% + 40px + 340px);
   max-width: none;
   height: 1px;
   margin: 22px 0 0;
   background: rgba(255, 255, 255, 0.32);
+  pointer-events: none;
 }
 
 .lawyer-hero__intro {
@@ -123,7 +131,8 @@
 
 .lawyer-hero__photo {
   position: relative;
-  z-index: 1;
+  /* Above info/divider — opaque head pixels hide the line */
+  z-index: 2;
   align-self: end;
   height: 86%;
   min-height: 420px;
@@ -349,7 +358,8 @@
   }
   .lawyer-hero__info {
     position: relative;
-    z-index: 2;
+    /* Must stay below portrait — divider lives in info and must not cut the head */
+    z-index: 1;
     max-width: 624px;
     /* keep copy clear of the bottom-right portrait */
     padding-bottom: 220px;
@@ -370,7 +380,7 @@
     position: absolute;
     right: 0;
     bottom: 0;
-    z-index: 1;
+    z-index: 2;
     /* Figma tablet portrait ≈ 451×581 */
     width: min(451px, 58.7%);
     height: 581px;
