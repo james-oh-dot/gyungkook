@@ -14,10 +14,8 @@
  * Injunction for Eviction"). Replaced here with proper legal-glossary English
  * per section title (see each enLabel).
  *
- * ⚠️ Visual asset: sub-02-02 hero — the real Figma export could not be fetched
- * (figma.com blocked by this session's egress policy). `sub-02-02.*` under
- * public/assets/sub is a TEMPORARY copy of sub-02-01; replace with the real
- * export (run scripts/generate-progressive-images.py after dropping the jpg).
+ * sub-02-02 hero: real photo provided directly by the user (figma.com exports
+ * remain egress-blocked; the design's own export was never retrievable).
  */
 
 import { progressiveAsset } from '../utils/progressiveImage'
@@ -27,7 +25,7 @@ const PUBLIC_VISUAL = progressiveAsset('assets/sub/sub-02-02')
 export const PUBLIC_PROJECT_PAGE = {
   parentLabel: '재개발 · 보상업무',
   title: '공익사업',
-  /** Figma layer sub-02-02 — progressive WebP pair (placeholder = sub-02-01) */
+  /** Figma layer sub-02-02 — progressive WebP pair */
   visual: PUBLIC_VISUAL.src,
   visualPreview: PUBLIC_VISUAL.preview,
   basePath: '/practice/public',
