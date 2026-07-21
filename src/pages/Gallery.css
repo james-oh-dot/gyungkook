@@ -13,7 +13,10 @@
 
 .gallery__main {
   width: 100%;
-  max-width: 1280px;
+  /* content stays 1280 on wide screens — page-pad is the outer gutter, so the
+     box grows to 1280 + 2×pad (do NOT use plain max-width:1280 here, that would
+     subtract the padding and cap content at 880) */
+  max-width: calc(1280px + 2 * var(--page-pad));
   margin: 0 auto;
   padding: clamp(64px, 8vw, 120px) var(--page-pad) clamp(96px, 12vw, 160px);
   display: flex;

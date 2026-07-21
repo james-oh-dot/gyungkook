@@ -14,7 +14,9 @@
 /* ============================ Main / content ============================ */
 .greeting__main {
   width: 100%;
-  max-width: 1280px;
+  /* keep 1280 content on wide screens — box = 1280 + 2×page-pad (plain
+     max-width:1280 + page-pad would cap content at 880) */
+  max-width: calc(1280px + 2 * var(--page-pad));
   margin: 0 auto;
   padding: clamp(56px, 8vw, 140px) var(--page-pad) clamp(96px, 12vw, 140px);
   display: flex;
