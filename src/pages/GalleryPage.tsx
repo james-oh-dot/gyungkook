@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { ProgressiveImage } from '../components/ProgressiveImage'
 import { LocalTabs } from '../components/sub/LocalTabs'
 import { SubVisual } from '../components/sub/SubVisual'
 import {
@@ -122,14 +121,35 @@ export function GalleryPage() {
           className="gallery-people"
           aria-label="경국인"
         >
-          <div className="gallery-pyramid">
-            <ProgressiveImage
-              className="gallery-pyramid__img"
-              src={GALLERY_PYRAMID.image}
-              preview={GALLERY_PYRAMID.imagePreview}
-              alt={GALLERY_PYRAMID.alt}
-              objectFit="contain"
+          <div
+            className="gallery-pyramid"
+            role="img"
+            aria-label={GALLERY_PYRAMID.alt}
+          >
+            <div
+              className="gallery-pyramid__ring"
+              style={{ backgroundImage: `url(${GALLERY_PYRAMID.ring})` }}
+              aria-hidden="true"
             />
+            <div className="gallery-pyramid__disc" aria-hidden="true" />
+            <ul className="gallery-pyramid__stack">
+              {GALLERY_PYRAMID.tiers.map((tier) => (
+                <li
+                  key={tier.id}
+                  className={`gallery-pyramid__tier gallery-pyramid__tier--${tier.id}`}
+                  style={{ width: `${tier.widthPct}%` }}
+                  tabIndex={0}
+                >
+                  <img
+                    className="gallery-pyramid__shape"
+                    src={tier.shape}
+                    alt=""
+                    draggable={false}
+                  />
+                  <span className="gallery-pyramid__label">{tier.label}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <blockquote className="gallery-quote">

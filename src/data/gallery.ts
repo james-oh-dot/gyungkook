@@ -5,20 +5,20 @@
  *
  * Figma frame: `SUB_법무법인경국_경국인갤러리` (94:3369). One-scroll page with
  * two scroll-mode local tabs (경국인 / 갤러리) mirroring 법인소개(aboutIntro):
- *   - 경국인: brand pyramid (고객 / 경국인 / 경국) + serif quote + 경국인의 약속 (10)
+ *   - 경국인: layered brand pyramid (outer ring rotate / white disc pulse /
+ *     3 hoverable tiers) + serif quote + 경국인의 약속 (10)
  *   - 갤러리: masonry photo grid (placeholder tiles until real 경국인 photos arrive)
  *
- * Assets extracted directly from Figma via `get_screenshot` (egress-blocked
- * download URLs bypassed; MCP inlines the PNG):
- *   - `sub-01-04` hero (node 94:3371): baked "경국인 · 갤러리" title painted out
- *     (cv2 inpaint) so `SubVisual` overlays its own live/responsive title.
- *   - `gallery/pyramid` (node 94:3384): brand diagram (labels baked in).
+ * Assets:
+ *   - `sub-01-04` hero (node 94:3371): baked title painted out for live SubVisual
+ *   - Pyramid layers (node 94:3384): `gallery/pyramid-ring.svg` + tier SVGs;
+ *     labels are live HTML (not baked) so hover scale includes the text.
  */
 
+import { asset } from '../utils/asset'
 import { progressiveAsset } from '../utils/progressiveImage'
 
 const GALLERY_VISUAL = progressiveAsset('assets/sub/sub-01-04')
-const PYRAMID = progressiveAsset('assets/gallery/pyramid')
 
 export type GalleryTabId = 'people' | 'gallery'
 
@@ -38,11 +38,38 @@ export const GALLERY_PAGE = {
   basePath: '/about/gallery',
 } as const
 
-/** Brand pyramid diagram (고객 / 경국인 / 경국 baked into the image). */
+export type GalleryPyramidTier = {
+  id: 'top' | 'mid' | 'bot'
+  label: string
+  shape: string
+  /** Intrinsic SVG aspect used for layout width % of the 564 diagram */
+  widthPct: number
+}
+
+/** Layered brand pyramid (Figma 94:3384) — ring / disc / 3 tiers. */
 export const GALLERY_PYRAMID = {
-  image: PYRAMID.src,
-  imagePreview: PYRAMID.preview,
   alt: '경국 · 경국인 · 고객 3단 브랜드 피라미드',
+  ring: asset('assets/gallery/pyramid-ring.svg'),
+  tiers: [
+    {
+      id: 'top',
+      label: '고객',
+      shape: asset('assets/gallery/pyramid-tier-top.svg'),
+      widthPct: 27.3, // ~154/564
+    },
+    {
+      id: 'mid',
+      label: '경국인',
+      shape: asset('assets/gallery/pyramid-tier-mid.svg'),
+      widthPct: 56.0, // ~316/564
+    },
+    {
+      id: 'bot',
+      label: '경국',
+      shape: asset('assets/gallery/pyramid-tier-bot.svg'),
+      widthPct: 85.1, // ~480/564
+    },
+  ] satisfies GalleryPyramidTier[],
 } as const
 
 /** Serif quote under the pyramid (NanumMyeongjo in Figma). */
