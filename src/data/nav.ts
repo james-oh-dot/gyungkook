@@ -4,7 +4,10 @@ import { COLUMN_MEDIA_PAGE } from './columnMedia'
 import { GALLERY_PAGE } from './gallery'
 import { GREETING_PAGE } from './greeting'
 import { LAWYERS_PAGE } from './lawyers'
-import { PLACEHOLDER_VISUAL_SRC } from './placeholderPages'
+import {
+  PLACEHOLDER_PAGES,
+  PLACEHOLDER_VISUAL_SRC,
+} from './placeholderPages'
 import { PRESS_COVERAGE_PAGE } from './pressCoverage'
 import { PUBLIC_PROJECT_PAGE } from './publicProject'
 import { RENEWAL_PAGE } from './renewal'
@@ -44,6 +47,14 @@ export const GNB_SUB_VISUAL_ABOUT_LAWYERS = LAWYERS_PAGE.visual
 
 /** Figma sub-01-04 — 법무법인경국 > 경국인갤러리 */
 export const GNB_SUB_VISUAL_ABOUT_GALLERY = GALLERY_PAGE.visual
+
+/** Figma sub-01-05 — 법무법인경국 > 연혁수상인증 */
+export const GNB_SUB_VISUAL_ABOUT_HISTORY =
+  PLACEHOLDER_PAGES['about-history'].visual ?? PLACEHOLDER_VISUAL_SRC
+
+/** Figma sub-01-06 — 법무법인경국 > 오시는길 */
+export const GNB_SUB_VISUAL_ABOUT_LOCATION =
+  PLACEHOLDER_PAGES['about-location'].visual ?? PLACEHOLDER_VISUAL_SRC
 
 /** Figma sub-02-01 — 재개발·보상업무 > 정비사업 */
 export const GNB_SUB_VISUAL_RENEWAL = RENEWAL_PAGE.visual
@@ -137,13 +148,13 @@ export const NAV_ITEMS: NavItem[] = [
         id: 'about-history',
         label: '연혁수상인증',
         href: '/about/history',
-        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+        visual: GNB_SUB_VISUAL_ABOUT_HISTORY,
       },
       {
         id: 'about-location',
         label: '오시는길',
         href: '/about/location',
-        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+        visual: GNB_SUB_VISUAL_ABOUT_LOCATION,
       },
     ],
   },

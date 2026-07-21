@@ -62,6 +62,8 @@ TARGETS: list[tuple[str, int]] = [
     ("sub/sub-01-02.jpg", 1920),
     ("sub/sub-01-03.jpg", 1920),
     ("sub/sub-01-04.jpg", 1920),
+    ("sub/sub-01-05.jpg", 1920),
+    ("sub/sub-01-06.jpg", 1920),
     ("sub/sub-02-01.jpg", 1920),
     ("sub/sub-02-02.jpg", 1920),
     ("sub/sub-04-01.jpg", 1920),
