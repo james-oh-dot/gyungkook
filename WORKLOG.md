@@ -1,5 +1,53 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-21 — 신규 페이지: 법무법인경국 > 대표 인사말 (sub-01-02)
+
+> Branch: `claude/o-boinida-98drdm` (PR #80 머지 후 최신 main에서 재시작)
+> Figma: `SUB_법무법인경국_대표인사말` (92:2898) + _TABLET(92:2986) / _MOBILE(92:3067).
+
+### 요구
+- 메뉴 법무법인경국 > 대표인사말 (sub-01-02) 신규 페이지, 반응형 3벌.
+- 서브비주얼 = sub-01-02, GNB 메뉴 스왑에 반영. 메뉴 연결.
+
+### 구조 (Figma)
+로컬탭 없는 **정적 단일 페이지**: hero_type2(칩 없음, 타이틀 "대표 인사말") → CEO 사진
+(aspect 1710/919) → 2단 인사말(좌 헤딩 / 우 본문 2블록 + 서명). 태블릿은 2단 유지,
+모바일(≤767)만 1단 스택. 헤딩 eyebrow "ABOUT 경국"은 Figma 민트 `#58bdc2`.
+
+### 이미지 3개 — Figma 직접 추출 + 히어로 인페인트 (핵심)
+figma.com egress 차단은 여전하지만 **Figma MCP `get_screenshot(enableBase64Response)`
+는 우회 가능**(PR #80에서 확립). 이를 이용해 3개 이미지를 직접 확보:
+1. **sub-01-02 히어로** (node 92:2910): Figma 원본은 "대표 인사말" 타이틀이 이미지에
+   **베이크되어** 있었음. 그대로 쓰면 (a) SubVisual이 라이브 타이틀을 다시 올려 **이중
+   텍스트**, (b) GNB 메뉴 썸네일에도 텍스트가 박혀 다른 메뉴와 불일치. 클린 원본(raw)은
+   `download_assets`로만 나오는데 그 URL은 `curl` 차단(403). → **cv2 인페인트로 타이틀
+   제거**: 중앙 우드 밴드에서 흰 픽셀(min 채널 高 + 저채도) 마스크 → `INPAINT_NS` + `TELEA`
+   2패스 → 우드 텍스처로 자연 복원. 결과 클린 이미지를 sub-01-02로 사용, SubVisual이
+   라이브·반응형 타이틀을 올림(다른 서브페이지와 동일 패턴). scrim 아래라 잔흔 비가시.
+2. **CEO 사진** (node 92:2916): 1280×688, 그대로 `greeting/ceo.jpg`.
+3. **서명** (node 92:2925): 184×72, 흰 배경을 알파로 키잉해 투명 PNG(`greeting/signature.png`).
+- `scripts/generate-progressive-images.py` TARGETS에 3개 추가 후 재생성.
+- cv2/numpy는 세션에 없어 `pip install opencv-python-headless numpy`로 설치(로컬 전처리용,
+  런타임 의존성 아님).
+
+### 구현
+- 데이터 `src/data/greeting.ts`: `GREETING_PAGE`(visual/portrait/signature + eyebrow +
+  heading 3줄 + `blocks` 본문 2블록, `''`=연 구분). 텍스트는 Figma 원문 그대로.
+- 페이지 `src/pages/GreetingPage.tsx` + `Greeting.css`: SubVisual(showChip=false) →
+  `.greeting__photo`(ProgressiveImage) → `.greeting__about`(grid 1fr 1fr, gap 33) →
+  모바일 1단. 서명은 투명 PNG를 plain `<img>`.
+- 라우트 `App.tsx`: `/about/greeting` PlaceholderPage → `GreetingPage` 교체.
+- 네비 `nav.ts`: `about-greeting` visual = sub-01-02 (`GNB_SUB_VISUAL_ABOUT_GREETING`).
+
+### 검증 (Playwright, vite preview)
+- 1440/768/390 풀페이지: Figma 3프레임과 일치. **가로 넘침 0**, JS 에러 0(외부 폰트 CDN
+  차단 2건은 샌드박스 환경 이슈, 무관).
+- 히어로: 인페인트로 베이크 타이틀 제거 + 라이브 타이틀 오버레이 → 이중 텍스트 없음.
+- GNB 메뉴 호버(대표인사말) → sub-01-02 클린 히어로로 스왑 확인.
+- build(strict)·lint 클린.
+
+---
+
 ## 2026-07-21 — 공대호 변호사 인증서·위촉·수상 이미지 11개 Figma 직접 추출
 
 > Branch: `claude/o-boinida-98drdm` (PR #79 머지 후 최신 main에서 재시작)
