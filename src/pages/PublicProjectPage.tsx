@@ -16,8 +16,9 @@ import {
   PUBLIC_RECORD_1,
   PUBLIC_RECORD_2,
   PUBLIC_TABS,
-  type FlowStep,
-  type ProcedureFlow,
+  type ProcedureBullet,
+  type ProcedureColumn,
+  type ProcedureStep,
   type PublicTabId,
   type ResultSection,
   type RightsCard,
@@ -171,14 +172,11 @@ function ResultsBlock({
   )
 }
 
-/** One procedure step card (square, sharp-rect). Shared by all rows. */
-function StepCard({ step }: { step: FlowStep }) {
+/** One procedure step card (sharp-rect). Figma Procedure/Step. */
+function StepCard({ step }: { step: ProcedureStep }) {
   return (
     <div className="pp-step">
       <div className="pp-step__head">
-        <span className="pp-step__no" aria-hidden="true">
-          {step.no}
-        </span>
         <h4 className="pp-step__title">
           {step.title}
           {step.subtitle ? (
@@ -187,88 +185,67 @@ function StepCard({ step }: { step: FlowStep }) {
         </h4>
       </div>
       {step.bullets.length ? (
-        <ul className="pp-step__list">
-          {step.bullets.map((b) => (
-            <li key={b}>{b}</li>
+        <ul className="pp-list">
+          {step.bullets.map((b, i) => (
+            <li key={bulletKey(b, i)}>
+              <BulletText value={b} />
+            </li>
           ))}
         </ul>
       ) : null}
       {step.note ? (
         <p className="pp-step__note">
-          <span aria-hidden="true">※</span> {step.note}
+          <span aria-hidden="true">※</span> <BulletText value={step.note} />
         </p>
       ) : null}
     </div>
   )
 }
 
-/**
- * 손실보상절차 flowchart (Figma). Desktop: steps 1–3 row → 협의 결정 → step 4 →
- * Y-fork → steps 5·6. Tablet/mobile: same cards stacked with vertical connectors
- * (see PublicProject.css — a single markup, layout swaps by breakpoint).
- */
-function FlowView({ flow }: { flow: ProcedureFlow }) {
+function bulletKey(b: ProcedureBullet, i: number): string {
+  if (typeof b === 'string') return b
+  return `${b.before ?? ''}${b.emphasis}${b.after ?? ''}-${i}`
+}
+
+function BulletText({ value }: { value: ProcedureBullet }) {
+  if (typeof value === 'string') return <>{value}</>
   return (
-    <div className="pp-flow">
-      <h3 className="pp-flow__heading">{flow.heading}</h3>
+    <>
+      {value.before}
+      <span className="pp-em">{value.emphasis}</span>
+      {value.after}
+    </>
+  )
+}
 
-      <div className="pp-flow__chart">
-        <ol
-          className="pp-flow__row pp-flow__row--top"
-          aria-label={`${flow.heading} 기본 절차`}
-        >
-          {flow.steps.map((s) => (
-            <li key={s.no} className="pp-flow__cell">
-              <StepCard step={s} />
-            </li>
-          ))}
-        </ol>
-
-        <div className="pp-flow__link" aria-hidden="true" />
-
-        <div className="pp-flow__decision" aria-label="협의 결과">
-          {flow.outcomes.map((o) => (
-            <div key={o.label} className={`pp-outcome pp-outcome--${o.kind}`}>
-              <span className="pp-outcome__icon" aria-hidden="true">
-                {o.kind === 'success' ? '✓' : '↓'}
-              </span>
-              <div className="pp-outcome__body">
-                <p className="pp-outcome__label">{o.label}</p>
-                <p className="pp-outcome__note">{o.note}</p>
+/**
+ * Figma 손실보상절차 (92:1746): two vertical columns of step cards.
+ * Desktop + tablet = side-by-side; mobile (≤767) = stacked full-width.
+ */
+function ProcedureColumns({ columns }: { columns: ProcedureColumn[] }) {
+  return (
+    <div className="pp-procedures" data-name="손실보상절차">
+      {columns.map((col) => (
+        <div key={col.heading} className="pp-procedure">
+          <BulletTitle>{col.heading}</BulletTitle>
+          <div className="pp-procedure__steps">
+            {col.steps.map((step) => (
+              <div key={step.title} className="pp-procedure__block">
+                <StepCard step={step} />
+                {step.sideNote?.length ? (
+                  <div className="pp-procedure__side" aria-label="병행 진행 절차">
+                    <ul className="pp-list pp-list--sm">
+                      {step.sideNote.map((n) => (
+                        <li key={n}>{n}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
               </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="pp-flow__link pp-flow__link--branch" aria-hidden="true" />
-
-        <div className="pp-flow__lead">
-          <StepCard step={flow.lead} />
-        </div>
-
-        {flow.forkNote ? (
-          <div className="pp-flow__fork-note" aria-label="병행 진행 절차">
-            <ul className="pp-step__list">
-              {flow.forkNote.map((n) => (
-                <li key={n}>{n}</li>
-              ))}
-            </ul>
+            ))}
           </div>
-        ) : null}
-
-        <div className="pp-flow__fork" aria-hidden="true" />
-
-        <ol
-          className="pp-flow__row pp-flow__row--parallel"
-          aria-label={`${flow.heading} 후속 절차`}
-        >
-          {flow.parallel.map((s) => (
-            <li key={s.no} className="pp-flow__cell">
-              <StepCard step={s} />
-            </li>
-          ))}
-        </ol>
-      </div>
+        </div>
+      ))}
     </div>
   )
 }
@@ -276,39 +253,43 @@ function FlowView({ flow }: { flow: ProcedureFlow }) {
 function RightsCardView({ card }: { card: RightsCard }) {
   return (
     <article className="pp-right-card">
-      <header className="pp-right-card__head">
+      <header className="pp-right-card__banner">
         <h4 className="pp-right-card__title">{card.title}</h4>
-        {card.subtitle ? (
-          <span className="pp-right-card__subtitle">{card.subtitle}</span>
-        ) : null}
       </header>
+      {card.subtitle ? (
+        <p className="pp-right-card__subtitle">{card.subtitle}</p>
+      ) : null}
       {card.items ? (
-        <ul className="renewal-list pp-right-card__list">
+        <ul className="pp-list">
           {card.items.map((i) => (
             <li key={i}>{i}</li>
           ))}
         </ul>
       ) : null}
       {card.caution ? (
-        <p className="pp-flow-step__caution">
+        <p className="pp-step__note">
           <span aria-hidden="true">※</span> {card.caution}
         </p>
       ) : null}
-      {card.groups?.map((g) => (
-        <div key={g.label} className="pp-right-group">
-          <p className="pp-right-group__label">{g.label}</p>
-          <ul className="renewal-list pp-right-card__list">
-            {g.items.map((i) => (
-              <li key={i}>{i}</li>
-            ))}
-          </ul>
-          {g.caution ? (
-            <p className="pp-flow-step__caution">
-              <span aria-hidden="true">※</span> {g.caution}
-            </p>
-          ) : null}
+      {card.groups ? (
+        <div className="pp-right-card__groups">
+          {card.groups.map((g) => (
+            <div key={g.label} className="pp-right-group">
+              <p className="pp-right-group__label">{g.label}</p>
+              <ul className="pp-list">
+                {g.items.map((i) => (
+                  <li key={i}>{i}</li>
+                ))}
+              </ul>
+              {g.caution ? (
+                <p className="pp-step__note">
+                  <span aria-hidden="true">※</span> {g.caution}
+                </p>
+              ) : null}
+            </div>
+          ))}
         </div>
-      ))}
+      ) : null}
     </article>
   )
 }
@@ -518,22 +499,20 @@ export function PublicProjectPage() {
                 title={PUBLIC_PROCEDURE.title}
               />
               <div className="renewal-split__body">
-                <div className="pp-flows">
-                  {PUBLIC_PROCEDURE.flows.map((f) => (
-                    <FlowView key={f.heading} flow={f} />
-                  ))}
-                </div>
+                <ProcedureColumns columns={PUBLIC_PROCEDURE.flows} />
               </div>
             </div>
 
             <div className="renewal-split">
               <div className="renewal-section__head renewal-section__head--spacer" aria-hidden="true" />
               <div className="renewal-split__body">
-                <BulletTitle>{PUBLIC_PROCEDURE.rights.heading}</BulletTitle>
-                <div className="pp-rights">
-                  {PUBLIC_PROCEDURE.rights.cards.map((c) => (
-                    <RightsCardView key={c.title} card={c} />
-                  ))}
+                <div className="pp-rights-wrap" data-name="반드시확인해야할권리">
+                  <BulletTitle>{PUBLIC_PROCEDURE.rights.heading}</BulletTitle>
+                  <div className="pp-rights">
+                    {PUBLIC_PROCEDURE.rights.cards.map((c) => (
+                      <RightsCardView key={c.title} card={c} />
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
