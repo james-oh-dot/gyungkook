@@ -1,5 +1,48 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-20 — 신규 페이지: 법무법인경국 > 변호사자문단 (sub-01-03)
+
+> Branch: `claude/o-boinida-98drdm` (PR #74 머지 후 최신 main에서 재시작)
+> Figma: `SUB_법무법인경국_변호사자문단_공대호` (89:2963) + _TABLET(89:3220) / _MOBILE(89:3467).
+
+### 특이점 (요구)
+- **스티키 로컬탭 = 라우트 모드** — 각 탭이 변호사 1명의 프로필 페이지
+  (`/about/lawyers/:lawyerId`). 탭: 공대호변호사 / 박효영변호사 / 공성준변호사 / 신지호변호사.
+- 서브비주얼 = sub-01-03, GNB 메뉴 스왑에 반영. 메뉴 연결.
+
+### 구현
+- **데이터** `src/data/lawyers.ts`: `Lawyer` 타입 + `LAWYERS`(공대호 = Figma 전체 프로필,
+  나머지 3명 = 플레이스홀더). 히어로(이름/직함/연락처/소개/사진), 프로필 11블록
+  (주요업무분야·전문분야·학력·경력활동 2단·저서·강의·실적2·인증서/위촉/수상 이미지 그리드).
+- **페이지** `src/pages/LawyerProfilePage.tsx`: 다크 히어로 cover(sub-01-03 bg + scrim +
+  이름/연락처/소개 + 사진) → 라우트 로컬탭 → prev/next 변호사 이동 버튼 → 라벨-값 블록
+  (교차 배경 `:nth-child`) → 인증서 그리드. `LawyerProfile.css`.
+- **LocalTabs 확장**: 라우트 모드에 `routeState?` prop 추가. 변호사 탭은 `routeState={null}`
+  → 링크에 `scrollToLocalTabs` state 미부여 → 탭 전환/진입 시 `ScrollToTop`이 top으로
+  스크롤(새 변호사 히어로 노출). 기본값은 기존 `{ scrollToLocalTabs: true }` 유지(무회귀).
+- **라우트** `App.tsx`: `/about/lawyers` → `Navigate to gongdaeho`,
+  `/about/lawyers/:lawyerId` → `LawyerProfilePage` (기존 Placeholder 제거).
+- **네비** `nav.ts`: `about-lawyers` 비주얼 = sub-01-03 (`GNB_SUB_VISUAL_ABOUT_LAWYERS`).
+
+### 반응형
+- 데스크톱: 히어로 info(좌) + 사진(우 340), 블록 라벨(300) + 값 2단.
+- ≤1024: 블록 라벨이 값 위로 스택, 사진 260.
+- ≤768: 히어로 1열 + **사진 숨김**(텍스트 cover), 경력 1단, 실적 버튼 아래로, 인증서 3→2열.
+
+### 검증 (Playwright, vite preview)
+- 1440/768/390: 11블록·23칩·13인증서·4탭 렌더, **가로 넘침 0**, JS 에러 0.
+- **탭 라우팅 PASS**: 박효영변호사 클릭 → URL `/about/lawyers/parkhyoyoung`, scrollY=0,
+  새 히어로(박효영) 표시.
+- build(strict)·lint 클린.
+
+### ⚠️ 후속 (egress 차단으로 플레이스홀더)
+- **sub-01-03 히어로** = sub-01-01 임시 복사본. **변호사 사진** = 기존 profile 이미지 임시.
+  **인증서/위촉/수상 이미지** = 캡션 있는 줄무늬 플레이스홀더 프레임.
+  figma.com이 이 세션 egress 정책으로 403 차단 → 실제 export 확보 시 교체 필요.
+- 박효영/공성준/신지호 3명은 **프로필 콘텐츠 미제공** → "프로필 준비 중" 플레이스홀더.
+
+---
+
 ## 2026-07-20 — 공익사업 "절차 · 유의할 점" 흐름 재설계 (Figma 플로우차트 복원)
 
 > Branch: `claude/o-boinida-98drdm` (PR #74에서 개선)
