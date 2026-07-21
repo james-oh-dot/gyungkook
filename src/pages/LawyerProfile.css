@@ -59,24 +59,22 @@
   align-self: center;
 }
 
-.lawyer-hero__eyebrow {
-  margin: 0 0 14px;
-  color: rgba(255, 255, 255, 0.65);
-  font-size: 14px;
-  font-weight: 500;
-  letter-spacing: -0.025em;
+.lawyer-hero__name-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .lawyer-hero__name {
   margin: 0;
-  font-size: clamp(36px, 4vw, 56px);
+  font-size: clamp(36px, 4vw, 48px);
   font-weight: 600;
   line-height: 1.1;
   letter-spacing: -0.03em;
 }
 
 .lawyer-hero__title {
-  margin: 8px 0 0;
+  margin: 0;
   color: rgba(255, 255, 255, 0.85);
   font-size: 18px;
   letter-spacing: -0.025em;
@@ -85,18 +83,28 @@
 .lawyer-hero__contact {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 32px;
+  gap: 12px 44px;
   margin: 26px 0 0;
-  padding-bottom: 22px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.28);
   color: rgba(255, 255, 255, 0.92);
   font-size: 16px;
   letter-spacing: -0.025em;
 }
 
+/* Figma Line 6 — 1004px wide from the text-left, reaching the portrait centre.
+   Info column ≈ 900px at 1280 inner, so ~111.5% overflows past it toward the
+   photo (clipped by the hero's overflow:hidden; degrades on narrow widths). */
+.lawyer-hero__divider {
+  display: block;
+  width: 130%;
+  max-width: 1004px;
+  height: 1px;
+  margin: 22px 0 0;
+  background: rgba(255, 255, 255, 0.32);
+}
+
 .lawyer-hero__intro {
   list-style: none;
-  margin: 22px 0 0;
+  margin: 20px 0 0;
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -139,27 +147,25 @@
   padding: 24px clamp(24px, 3vw, 40px);
 }
 
-.lawyer-nav-btn {
+/* Figma Button_Default — mint #58BDC2 square, 56×56, 24px white icon, sharp */
+.lawyer-action {
   width: 56px;
   height: 56px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #fff;
-  border: 1px solid #e5e5ec;
-  transition: border-color 0.2s var(--ease-premium, ease), background 0.2s;
+  padding: 0;
+  background: #58bdc2;
+  border: 0;
+  cursor: pointer;
+  transition: background 0.2s var(--ease-premium, ease);
 }
-.lawyer-nav-btn:hover {
-  border-color: #111;
+.lawyer-action:hover {
+  background: #45aab0;
 }
-.lawyer-nav-btn img {
-  width: 20px;
-  height: 20px;
-  /* icon-arrow.svg ships white → knock to dark for the light button */
-  filter: brightness(0);
-}
-.lawyer-nav-btn img.is-flip {
-  transform: scaleX(-1);
+.lawyer-action img {
+  width: 24px;
+  height: 24px;
 }
 
 /* ============================ Profile blocks ============================ */
@@ -343,6 +349,10 @@
   /* Hero portrait hidden on phones — text cover reads cleaner */
   .lawyer-hero__photo {
     display: none;
+  }
+  /* No portrait to reach → divider spans the text column */
+  .lawyer-hero__divider {
+    width: 100%;
   }
 
   .lawyer-cols {

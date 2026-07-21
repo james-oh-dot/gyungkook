@@ -1,5 +1,43 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-21 — 변호사자문단 히어로 divider + 상단 버튼 2개 Figma 정밀 일치
+
+> Branch: `claude/o-boinida-98drdm` (PR #82 머지 후 최신 main에서 재시작)
+> Figma: `SUB_법무법인경국_변호사자문단_공대호` (89:2963) 정밀 재확인.
+
+### 요구
+서브비주얼 텍스트 배치·divider 확장 범위를 Figma와 눈으로 대조해 일치시키고, 콘텐츠 최상단
+버튼 2개(위치·컬러·아이콘)를 정확히 구현.
+
+### Figma 대조로 발견한 차이
+1. **히어로 eyebrow 불필요**: Figma 히어로는 `공대호 / 변호사 / 연락처 / divider / intro`
+   구성 — 이름 위 "법무법인 경국 변호사자문단" eyebrow가 **없음**. 기존 구현엔 있었음 → 제거.
+2. **divider 길이**: Figma `Line 6`(89:2975)는 **width 1004px**, 텍스트 좌측(content-x 0)에서
+   시작해 **초상 중앙(content-x≈1019)까지** 이어짐. 기존 구현은 `.lawyer-hero__contact`의
+   `border-bottom`이라 연락처 행 폭까지만 → 너무 짧았음.
+3. **상단 버튼**: Figma `btn`(89:2993)은 **공유하기 + PDF 다운받기** 2개(민트 `#58bdc2`,
+   56×56, 아이콘 24 흰색, gap 10, 직각). 기존 구현은 **이전/다음 화살표**(Figma에 없음 —
+   변호사 전환은 로컬탭이 담당)였음.
+
+### 구현
+- 히어로: eyebrow 제거, 이름+직함을 `.lawyer-hero__name-row`로 타이트하게, 연락처
+  `border-bottom` 제거 후 **전용 `.lawyer-hero__divider`** 추가(`width:130%; max-width:1004px`
+  of info column → 초상 중앙 도달; 모바일은 초상 숨김이라 `width:100%`).
+- 버튼: `.lawyer-toolbar` 내용을 화살표 Link → **`.lawyer-action` 버튼 2개**로 교체. 민트
+  `#58bdc2` 직각, hover `#45aab0`. 공유하기 = `navigator.share`(없으면 클립보드 복사),
+  PDF 다운받기 = `window.print()`.
+- 신규 아이콘 `public/assets/icon-share.svg`(3노드+2링크), `icon-download.svg`(상단 pill +
+  하향 화살표 + U 트레이). Figma 글리프를 흰색 인라인 SVG로 재현.
+- `adjacentLawyers`/`Link` import 제거(미사용).
+
+### 검증 (Playwright, vite preview)
+- 1440/900/390: 히어로가 Figma와 일치(eyebrow 없음, divider가 초상 중앙까지, 버튼 2개 민트).
+  가로 넘침 0, JS 에러 0.
+- 플레이스홀더 변호사(박효영, 연락처 없음)도 divider 정상 렌더.
+- build(strict)·lint 클린.
+
+---
+
 ## 2026-07-21 — 공유 아이콘 `icon-bullet.svg` 교체 (사용자 SVG 직접 제공)
 
 > Branch: `claude/o-boinida-98drdm` (PR #81 머지 후 최신 main에서 재시작)
