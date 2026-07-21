@@ -1,5 +1,26 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-21 — 공유 아이콘 `icon-bullet.svg` 교체 (사용자 SVG 직접 제공)
+
+> Branch: `claude/o-boinida-98drdm` (PR #81 머지 후 최신 main에서 재시작)
+
+사용자가 변호사자문단 페이지의 블록 라벨 아이콘(`lawyer-block__icon`)이 마음에 안 든다며
+새 SVG를 채팅에 **텍스트로 직접 붙여넣음**(이미지 첨부가 아니라 SVG는 XML 텍스트라 코드
+그대로 붙여넣는 방식을 안내 → 사용자가 채택). 처음엔 lawyer 페이지만 바꿀지 물었으나,
+"icon-bullet.svg 로 지정된 곳은 모두 이걸로 교체해줘"로 명확화.
+
+`public/assets/icon-bullet.svg`는 `LawyerProfilePage`(`.lawyer-block__icon`),
+`RenewalPage`/`PublicProjectPage`(`.renewal-bullet-title__icon`, `.pp-list`) **3곳에서
+공유**하는 단일 파일 — 기존 "teal 사각형 + 검정 ▶" 에서 사용자가 제공한 "teal 대각선
+깃발/페넌트" 모양으로 교체. 파일 하나만 바꾸면 3개 페이지 모두 자동 반영되는 구조라
+별도 참조 변경 없음.
+
+### 검증
+Playwright로 세 페이지(변호사자문단 `.lawyer-block__icon`, 정비사업/공익사업
+`.renewal-bullet-title__icon`) 모두 새 아이콘으로 정상 렌더 확인. build(strict)·lint 클린.
+
+---
+
 ## 2026-07-21 — 신규 페이지: 법무법인경국 > 대표 인사말 (sub-01-02)
 
 > Branch: `claude/o-boinida-98drdm` (PR #80 머지 후 최신 main에서 재시작)
