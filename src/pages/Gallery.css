@@ -59,7 +59,8 @@
   inset: 8%;
   border-radius: 50%;
   background: #fff;
-  animation: gallery-pyramid-pulse 2.4s ease-in-out infinite;
+  /* slower pulse; min 30% ↔ max 120% of laid-out size */
+  animation: gallery-pyramid-pulse 4.8s ease-in-out infinite;
   transform-origin: center center;
 }
 .gallery-pyramid__stack {
@@ -67,13 +68,15 @@
   z-index: 3;
   inset: 0;
   margin: 0;
-  padding: 14% 0 10%;
+  /* tip of top triangle sits on the outer ring's top edge */
+  padding: 0;
   list-style: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: clamp(6px, 1.2vw, 8px);
+  justify-content: flex-start;
+  /* Figma stack gap-[8px] — even between all three tiers */
+  gap: 8px;
 }
 .gallery-pyramid__tier {
   position: relative;
@@ -81,6 +84,7 @@
   align-items: center;
   justify-content: center;
   margin: 0;
+  flex-shrink: 0;
   cursor: pointer;
   transform: scale(1);
   transform-origin: center center;
@@ -102,10 +106,8 @@
   height: auto;
   pointer-events: none;
   user-select: none;
-}
-.gallery-pyramid__tier--mid .gallery-pyramid__shape,
-.gallery-pyramid__tier--bot .gallery-pyramid__shape {
-  filter: drop-shadow(0 10px 18px rgba(35, 48, 59, 0.35));
+  /* uniform CSS shadow on all tiers — not baked into SVG viewBox padding */
+  filter: drop-shadow(0 8px 14px rgba(35, 48, 59, 0.28));
 }
 .gallery-pyramid__label {
   position: absolute;
@@ -122,7 +124,8 @@
   user-select: none;
 }
 .gallery-pyramid__tier--top .gallery-pyramid__label {
-  top: 52%;
+  /* triangle centroid sits lower than mid/bot trap labels */
+  top: 58%;
   color: #fff;
 }
 .gallery-pyramid__tier--mid .gallery-pyramid__label,
@@ -141,10 +144,10 @@
 @keyframes gallery-pyramid-pulse {
   0%,
   100% {
-    transform: scale(0.5);
+    transform: scale(0.3);
   }
   50% {
-    transform: scale(1);
+    transform: scale(1.2);
   }
 }
 

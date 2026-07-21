@@ -55,7 +55,7 @@ export const GALLERY_PYRAMID = {
       id: 'top',
       label: '고객',
       shape: asset('assets/gallery/pyramid-tier-top.svg'),
-      widthPct: 27.3, // ~154/564
+      widthPct: 27.3, // 154/564 — Figma 94:3386 clean triangle (no shadow pad)
     },
     {
       id: 'mid',
