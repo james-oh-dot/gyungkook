@@ -21,13 +21,9 @@
   z-index: 0;
 }
 
-/* Crop framing from Figma SUB_LAYOUT — both progressive layers */
+/* Fill the media box — ProgressiveImage absolute stack (inset:0).
+   Do not apply Figma % crop offsets (top/height) — they shift the photo up. */
 .sub-visual__progressive .sub-visual__img {
-  position: absolute;
-  left: 0;
-  top: -12.65%;
-  width: 100%;
-  height: 163.88%;
   object-fit: cover;
   object-position: center;
 }
