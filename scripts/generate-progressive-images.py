@@ -59,6 +59,7 @@ TARGETS: list[tuple[str, int]] = [
     ("office-map.jpg", 1091),
     # Sub visuals
     ("sub/sub-01-01.jpg", 1920),
+    ("sub/sub-01-02.jpg", 1920),
     ("sub/sub-01-03.jpg", 1920),
     ("sub/sub-02-01.jpg", 1920),
     ("sub/sub-02-02.jpg", 1920),
@@ -80,6 +81,9 @@ TARGETS: list[tuple[str, int]] = [
     ("lawyers/gongdaeho-award-human-rights.png", 400),
     ("lawyers/gongdaeho-award-police.png", 400),
     ("lawyers/gongdaeho-award-brand-index.png", 400),
+    # 대표인사말 (greeting)
+    ("greeting/ceo.jpg", 1280),
+    ("greeting/signature.png", 368),
     # About intro large photos
     ("about/quote-city.png", 1920),
     ("about/strength-01.png", 1600),

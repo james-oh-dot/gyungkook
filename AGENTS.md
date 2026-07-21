@@ -47,6 +47,10 @@
   - Hero: `SubVisual` with `showChip={false}` (Figma `hero_type2`)
   - Mock data: `src/data/aboutIntro.ts`; GNB `about-intro` → `/about/intro`, visual `public/assets/sub/sub-01-01.webp` (+ `.preview.webp`)
   - Section assets under `public/assets/about/` (large photos also use progressive pairs)
+- **대표 인사말** (법무법인경국 2nd / Figma `sub-01-02`):
+  - Static single page (no local tabs): `/about/greeting` → `GreetingPage`. Hero (`SubVisual`, `showChip={false}`) → CEO photo → two-column greeting (heading left / body + signature right). Tablet keeps 2 columns; **mobile (≤767) stacks to one**. Sharp-rect; eyebrow "ABOUT 경국" is Figma mint `#58bdc2` (not global `--color-teal`).
+  - Data: `src/data/greeting.ts` (heading + two `blocks` of body lines, `''` = stanza gap). GNB `about-greeting` → `/about/greeting`, visual `sub-01-02` (`nav.ts` `GNB_SUB_VISUAL_ABOUT_GREETING`). Replaced the old PlaceholderPage route.
+  - **Assets (2026-07-21, Figma direct extract):** `sub-01-02` hero (node 92:2910) had a baked "대표 인사말" title — painted out with **cv2 inpaint** (`INPAINT_NS`+`TELEA`, mask = white pixels in the central wood band) so `SubVisual` overlays its own live/responsive title like every other subpage (no double-text, and the GNB thumbnail stays clean). CEO photo = node 92:2916; signature = node 92:2925 (white keyed to alpha). All via `get_screenshot(enableBase64Response)` — see the Egress workaround note below.
 - **변호사자문단** (법무법인경국 3rd / Figma `sub-01-03`):
   - `/about/lawyers` → `Navigate` to first lawyer; `/about/lawyers/:lawyerId` → `LawyerProfilePage`.
   - Local tabs = **route mode**, one tab per lawyer (공대호 / 박효영 / 공성준 / 신지호). Pass `LocalTabs routeState={null}` so a tab switch scrolls to top (reveals the new lawyer's hero) instead of sticking under GNB — the route-mode default `{ scrollToLocalTabs: true }` is unchanged for boards.
