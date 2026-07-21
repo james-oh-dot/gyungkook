@@ -1,8 +1,9 @@
 /*
  * 경국인 · 갤러리 (sub-01-04).
- * hero (SubVisual, no chip) → 경국인 tab (pyramid + serif quote + 경국인의 약속)
- * → 갤러리 tab (masonry photo grid). Scroll-mode local tabs. Sharp-rect;
- * brand mint = #58bdc2. Gallery tiles are placeholders until real photos arrive.
+ * hero (SubVisual, no chip) → 경국인 tab (layered pyramid + serif quote +
+ * 경국인의 약속) → 갤러리 tab (masonry photo grid). Scroll-mode local tabs.
+ * Sharp-rect; brand mint = #58bdc2. Gallery tiles are placeholders until real
+ * photos arrive. Pyramid = ring rotate + disc pulse + tier hover scale 1.1.
  */
 
 .gallery {
@@ -31,15 +32,133 @@
   gap: clamp(80px, 10vw, 140px);
 }
 
-/* —— pyramid diagram —— */
+/* —— layered brand pyramid (ring rotate / disc pulse / tier hover) —— */
 .gallery-pyramid {
+  --gallery-pyramid-mint: #58bdc2;
+  position: relative;
   align-self: center;
   width: min(564px, 90%);
-  aspect-ratio: 564 / 580;
+  aspect-ratio: 1;
+  isolation: isolate;
 }
-.gallery-pyramid__img {
+.gallery-pyramid__ring,
+.gallery-pyramid__disc {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.gallery-pyramid__ring {
+  z-index: 1;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  animation: gallery-pyramid-spin 18s linear infinite;
+}
+.gallery-pyramid__disc {
+  z-index: 2;
+  inset: 6.5%;
+  border-radius: 50%;
+  background: #f9f9f9;
+  animation: gallery-pyramid-pulse 2.4s ease-in-out infinite;
+  transform-origin: center center;
+}
+.gallery-pyramid__stack {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  margin: 0;
+  padding: 14% 0 10%;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(6px, 1.2vw, 8px);
+}
+.gallery-pyramid__tier {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  cursor: pointer;
+  transform: scale(1);
+  transform-origin: center center;
+  transition: transform 0.35s ease;
+  will-change: transform;
+}
+.gallery-pyramid__tier:hover,
+.gallery-pyramid__tier:focus-visible {
+  transform: scale(1.1);
+  z-index: 4;
+}
+.gallery-pyramid__tier:focus-visible {
+  outline: 2px solid var(--gallery-pyramid-mint);
+  outline-offset: 6px;
+}
+.gallery-pyramid__shape {
+  display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+.gallery-pyramid__tier--mid .gallery-pyramid__shape,
+.gallery-pyramid__tier--bot .gallery-pyramid__shape {
+  filter: drop-shadow(0 10px 18px rgba(35, 48, 59, 0.35));
+}
+.gallery-pyramid__label {
+  position: absolute;
+  left: 50%;
+  top: 48%;
+  transform: translate(-50%, -50%);
+  margin: 0;
+  font-size: clamp(18px, 3.2vw, 28px);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+.gallery-pyramid__tier--top .gallery-pyramid__label {
+  top: 52%;
+  color: #fff;
+}
+.gallery-pyramid__tier--mid .gallery-pyramid__label,
+.gallery-pyramid__tier--bot .gallery-pyramid__label {
+  color: var(--gallery-pyramid-mint);
+}
+
+@keyframes gallery-pyramid-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes gallery-pyramid-pulse {
+  0%,
+  100% {
+    transform: scale(0.88);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-pyramid__ring,
+  .gallery-pyramid__disc {
+    animation: none;
+  }
+  .gallery-pyramid__disc {
+    transform: none;
+  }
+  .gallery-pyramid__tier {
+    transition: none;
+  }
 }
 
 /* —— serif quote —— */
