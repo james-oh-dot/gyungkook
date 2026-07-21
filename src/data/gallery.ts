@@ -11,8 +11,8 @@
  *
  * Assets:
  *   - `sub-01-04` hero (node 94:3371): baked title painted out for live SubVisual
- *   - Pyramid layers (node 94:3384): `gallery/pyramid-ring.svg` + tier SVGs;
- *     labels are live HTML (not baked) so hover scale includes the text.
+ *   - Pyramid layers (node 94:3384): `gallery/pyramid-ring.png` (sunburst) +
+ *     tier SVGs; labels are live HTML (not baked) so hover scale includes text.
  */
 
 import { asset } from '../utils/asset'
@@ -49,7 +49,7 @@ export type GalleryPyramidTier = {
 /** Layered brand pyramid (Figma 94:3384) — ring / disc / 3 tiers. */
 export const GALLERY_PYRAMID = {
   alt: '경국 · 경국인 · 고객 3단 브랜드 피라미드',
-  ring: asset('assets/gallery/pyramid-ring.svg'),
+  ring: asset('assets/gallery/pyramid-ring.png'),
   tiers: [
     {
       id: 'top',
