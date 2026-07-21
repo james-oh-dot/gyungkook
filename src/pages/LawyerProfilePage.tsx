@@ -1,9 +1,8 @@
-import { Link, Navigate, useParams } from 'react-router-dom'
+import { Navigate, useParams } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { LocalTabs } from '../components/sub/LocalTabs'
 import { ProgressiveImage } from '../components/ProgressiveImage'
 import {
-  adjacentLawyers,
   DEFAULT_LAWYER_ID,
   findLawyer,
   LAWYERS,
@@ -17,7 +16,19 @@ import './LawyerProfile.css'
 
 const BULLET_SRC = asset('assets/icon-bullet.svg')
 const ARROW_SRC = asset('assets/icon-arrow.svg')
+const SHARE_SRC = asset('assets/icon-share.svg')
+const DOWNLOAD_SRC = asset('assets/icon-download.svg')
 const HERO = progressiveAsset('assets/sub/sub-01-03')
+
+/** Share the current lawyer page (native share sheet, else copy the link). */
+function shareLawyer(name: string) {
+  const url = window.location.href
+  if (typeof navigator.share === 'function') {
+    navigator.share({ title: `${name} 변호사 · 법무법인 경국`, url }).catch(() => {})
+  } else {
+    navigator.clipboard?.writeText(url).catch(() => {})
+  }
+}
 
 /** Label + content row (alternating tint via CSS :nth-child). */
 function Block({ label, children }: { label: string; children: ReactNode }) {
@@ -110,9 +121,10 @@ function LawyerHero({ lawyer }: { lawyer: Lawyer }) {
       <div className="lawyer-hero__scrim" aria-hidden="true" />
       <div className="lawyer-hero__inner">
         <div className="lawyer-hero__info">
-          <p className="lawyer-hero__eyebrow">법무법인 경국 변호사자문단</p>
-          <h1 className="lawyer-hero__name">{lawyer.name}</h1>
-          <p className="lawyer-hero__title">{lawyer.title}</p>
+          <div className="lawyer-hero__name-row">
+            <h1 className="lawyer-hero__name">{lawyer.name}</h1>
+            <p className="lawyer-hero__title">{lawyer.title}</p>
+          </div>
           {hasContact ? (
             <p className="lawyer-hero__contact">
               {[lawyer.phone, lawyer.fax, lawyer.email]
@@ -122,6 +134,8 @@ function LawyerHero({ lawyer }: { lawyer: Lawyer }) {
                 ))}
             </p>
           ) : null}
+          {/* Figma Line 6 — divider extends past the text to the portrait centre */}
+          <span className="lawyer-hero__divider" aria-hidden="true" />
           <ul className="lawyer-hero__intro">
             {lawyer.intro.map((line) => (
               <li key={line}>{line}</li>
@@ -161,7 +175,6 @@ export function LawyerProfilePage() {
     return <Navigate to={lawyerPath(DEFAULT_LAWYER_ID)} replace />
   }
 
-  const { prev, next } = adjacentLawyers(lawyer.id)
   const tabs = LAWYERS.map((l) => ({ id: l.id, label: l.tabLabel }))
   const hasCareers = lawyer.careers.some((c) => c.length > 0)
 
@@ -178,21 +191,24 @@ export function LawyerProfilePage() {
       />
 
       <main className="lawyer-main">
+        {/* Figma `btn` — 공유하기 + PDF 다운받기, top-right of the content */}
         <div className="lawyer-toolbar">
-          <Link
-            className="lawyer-nav-btn"
-            to={lawyerPath(prev.id)}
-            aria-label={`이전 변호사 ${prev.name}`}
+          <button
+            type="button"
+            className="lawyer-action"
+            onClick={() => shareLawyer(lawyer.name)}
+            aria-label="공유하기"
           >
-            <img className="is-flip" src={ARROW_SRC} alt="" />
-          </Link>
-          <Link
-            className="lawyer-nav-btn"
-            to={lawyerPath(next.id)}
-            aria-label={`다음 변호사 ${next.name}`}
+            <img src={SHARE_SRC} alt="" />
+          </button>
+          <button
+            type="button"
+            className="lawyer-action"
+            onClick={() => window.print()}
+            aria-label="PDF 다운받기"
           >
-            <img src={ARROW_SRC} alt="" />
-          </Link>
+            <img src={DOWNLOAD_SRC} alt="" />
+          </button>
         </div>
 
         <div className="lawyer-blocks">
