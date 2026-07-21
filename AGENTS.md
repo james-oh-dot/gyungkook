@@ -47,6 +47,12 @@
   - Hero: `SubVisual` with `showChip={false}` (Figma `hero_type2`)
   - Mock data: `src/data/aboutIntro.ts`; GNB `about-intro` → `/about/intro`, visual `public/assets/sub/sub-01-01.webp` (+ `.preview.webp`)
   - Section assets under `public/assets/about/` (large photos also use progressive pairs)
+- **변호사자문단** (법무법인경국 3rd / Figma `sub-01-03`):
+  - `/about/lawyers` → `Navigate` to first lawyer; `/about/lawyers/:lawyerId` → `LawyerProfilePage`.
+  - Local tabs = **route mode**, one tab per lawyer (공대호 / 박효영 / 공성준 / 신지호). Pass `LocalTabs routeState={null}` so a tab switch scrolls to top (reveals the new lawyer's hero) instead of sticking under GNB — the route-mode default `{ scrollToLocalTabs: true }` is unchanged for boards.
+  - Custom dark hero cover (not `SubVisual`): sub-01-03 bg + scrim + name/contact/intro + portrait. prev/next arrow buttons cycle lawyers. Profile = label/value rows (alternating `:nth-child` tint) + captioned certificate/appointment/award image grids.
+  - Data: `src/data/lawyers.ts` (공대호 full from Figma; others placeholders). GNB `about-lawyers` visual = `sub-01-03` (`nav.ts` `GNB_SUB_VISUAL_ABOUT_LAWYERS`).
+  - **⚠️ Placeholders (egress-blocked):** `sub-01-03` = copy of `sub-01-01`; lawyer portraits reuse `profile*.png`; certificate images are striped placeholder frames. Replace when real exports are available.
 - **정비사업** (재개발·보상업무 1st / Figma `sub-02-01`):
   - Single page: `/practice/renewal` → `RenewalPage` (all 9 sections on one scroll)
   - Local tabs use **scroll mode** (`onTabSelect`) — click scrolls to section under sticky tabs; **not** route tabs

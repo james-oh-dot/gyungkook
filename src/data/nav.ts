@@ -1,6 +1,7 @@
 import { ABOUT_INTRO_PAGE } from './aboutIntro'
 import { CASE_STUDIES_PAGE } from './caseStudies'
 import { COLUMN_MEDIA_PAGE } from './columnMedia'
+import { LAWYERS_PAGE } from './lawyers'
 import { PLACEHOLDER_VISUAL_SRC } from './placeholderPages'
 import { PRESS_COVERAGE_PAGE } from './pressCoverage'
 import { PUBLIC_PROJECT_PAGE } from './publicProject'
@@ -32,6 +33,9 @@ export const GNB_SUB_VISUAL_PLACEHOLDER = PLACEHOLDER_VISUAL_SRC
 
 /** Figma sub-01-01 — 법무법인경국 > 법인소개 */
 export const GNB_SUB_VISUAL_ABOUT_INTRO = ABOUT_INTRO_PAGE.visual
+
+/** Figma sub-01-03 — 법무법인경국 > 변호사자문단 */
+export const GNB_SUB_VISUAL_ABOUT_LAWYERS = LAWYERS_PAGE.visual
 
 /** Figma sub-02-01 — 재개발·보상업무 > 정비사업 */
 export const GNB_SUB_VISUAL_RENEWAL = RENEWAL_PAGE.visual
@@ -113,7 +117,7 @@ export const NAV_ITEMS: NavItem[] = [
         id: 'about-lawyers',
         label: '변호사자문단',
         href: '/about/lawyers',
-        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+        visual: GNB_SUB_VISUAL_ABOUT_LAWYERS,
       },
       {
         id: 'about-gallery',

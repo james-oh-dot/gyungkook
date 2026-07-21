@@ -7,6 +7,7 @@ import {
   useLocation,
 } from 'react-router-dom'
 import { COLUMN_MEDIA_BOARD } from './data/columnMedia'
+import { DEFAULT_LAWYER_ID } from './data/lawyers'
 import { PRESS_COVERAGE_BOARD } from './data/pressCoverage'
 import { SOCIAL_CONTRIBUTION_BOARD } from './data/socialContribution'
 import { shouldScrollToLocalTabs } from './hooks/useScrollToLocalTabs'
@@ -16,6 +17,7 @@ import { CaseStudiesPage } from './pages/CaseStudiesPage'
 import { ColumnMediaLayout } from './pages/ColumnMediaLayout'
 import { ColumnMediaListPage } from './pages/ColumnMediaListPage'
 import { HomePage } from './pages/HomePage'
+import { LawyerProfilePage } from './pages/LawyerProfilePage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { PublicProjectPage } from './pages/PublicProjectPage'
 import { PressCoverageLayout } from './pages/PressCoverageLayout'
@@ -49,11 +51,12 @@ function ScrollToTop() {
  * - /press/social                         → 사회공헌 list (sub-04-04)
  * - /press/social/:postId                 → shared post detail
  * - /about/intro                          → 법인소개 (sub-01-01)
+ * - /about/lawyers/:lawyerId              → 변호사자문단 (sub-01-03, route-mode tabs)
  * - /practice/renewal                     → 정비사업 (sub-02-01)
  * - /practice/public                      → 공익사업 (sub-02-02)
  *
  * Placeholders (sub-01-01 visual + “곧 업데이트예정”):
- * - /about/greeting|lawyers|gallery|history|location
+ * - /about/greeting|gallery|history|location
  * - /other/misc|realestate
  * - /news/notice|cases|careers|consult
  *
@@ -78,8 +81,9 @@ function App() {
           />
           <Route
             path="about/lawyers"
-            element={<PlaceholderPage pageId="about-lawyers" />}
+            element={<Navigate to={DEFAULT_LAWYER_ID} replace />}
           />
+          <Route path="about/lawyers/:lawyerId" element={<LawyerProfilePage />} />
           <Route
             path="about/gallery"
             element={<PlaceholderPage pageId="about-gallery" />}

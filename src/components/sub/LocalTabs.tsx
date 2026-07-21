@@ -26,6 +26,13 @@ type LocalTabsBase = {
 type LocalTabsRouteProps = LocalTabsBase & {
   toTab: (tabId: string) => string
   onTabSelect?: never
+  /**
+   * Location state attached to each tab NavLink. Defaults to
+   * `{ scrollToLocalTabs: true }` (board tabs stick under GNB). Pass `null`
+   * for page-switch tabs that should reveal the new hero at the top
+   * (e.g. 변호사자문단 — each tab is a different lawyer page).
+   */
+  routeState?: Record<string, unknown> | null
 }
 
 /** Scroll mode — in-page section tabs (e.g. 정비사업) */
@@ -57,6 +64,10 @@ export function LocalTabs(props: LocalTabsProps) {
   const { tabs, activeTab, ariaLabel = '로컬 메뉴' } = props
   const toTab = 'toTab' in props ? props.toTab : undefined
   const onTabSelect = 'onTabSelect' in props ? props.onTabSelect : undefined
+  const routeState =
+    'routeState' in props && props.routeState !== undefined
+      ? props.routeState
+      : { scrollToLocalTabs: true }
 
   const location = useLocation()
   const navRef = useRef<HTMLElement>(null)
@@ -197,7 +208,7 @@ export function LocalTabs(props: LocalTabsProps) {
                 {toTab ? (
                   <NavLink
                     to={toTab(tab.id)}
-                    state={{ scrollToLocalTabs: true }}
+                    state={routeState ?? undefined}
                     className={() =>
                       `local-tabs__link${tab.id === activeTab ? ' is-selected' : ''}`
                     }
