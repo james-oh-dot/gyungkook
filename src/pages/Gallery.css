@@ -52,14 +52,14 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: contain;
-  animation: gallery-pyramid-spin 48s linear infinite;
+  animation: gallery-pyramid-spin 18s linear infinite;
 }
 .gallery-pyramid__disc {
   z-index: 2;
   inset: 6.5%;
   border-radius: 50%;
   background: #f9f9f9;
-  animation: gallery-pyramid-pulse 3.2s ease-in-out infinite;
+  animation: gallery-pyramid-pulse 2.4s ease-in-out infinite;
   transform-origin: center center;
 }
 .gallery-pyramid__stack {
@@ -141,10 +141,10 @@
 @keyframes gallery-pyramid-pulse {
   0%,
   100% {
-    transform: scale(0.92);
+    transform: scale(0.88);
   }
   50% {
-    transform: scale(1.04);
+    transform: scale(1.06);
   }
 }
 
