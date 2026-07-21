@@ -1,5 +1,71 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-21 — 실제 이미지 3장 반영 (sub-01-03 히어로 / sub-02-02 히어로 / 공대호 변호사 사진)
+
+> Branch: `claude/o-boinida-98drdm` (PR #77 · #78 머지 후 최신 main에서 재시작)
+
+### 배경
+figma.com이 이 세션의 egress 정책으로 계속 403 차단되어(직접 다운로드 불가 재확인:
+`curl`로 `www.figma.com` → `CONNECT tunnel failed, 403`, `api.github.com` → 200), 사용자가
+플레이스홀더로 남아있던 3개 이미지(변호사자문단 sub-01-03 히어로, 공익사업 sub-02-02 히어로,
+공대호 변호사 사진)를 **채팅에 직접 첨부**하는 방식(제안한 3가지 대안 중 ①)으로 제공.
+지시: "이미지 첨부하니, 이미지 규칙에 맞게 반영해줘".
+
+### 이미지 식별 및 매칭 근거
+세션 트랜스크립트(`~/.claude/projects/.../*.jsonl`)에 첨부 당시 메시지의 base64 이미지
+3장이 그대로 보존되어 있어 이를 추출:
+1. **인물사진**(PNG, 451×581, **실제 알파채널 있는 투명 배경 컷아웃** — bbox (10,25)-(445,581),
+   캔버스 대부분을 차지) → 정장+안경 착용 남성, 공대호 변호사 사진으로 확정(다른 후보 없음).
+2. **흑백 도심 스카이라인**(JPEG, 1920×619, 법원풍 건물 포함, 어두운 그라데이션)
+3. **흑백 금속 루버 파사드 클로즈업**(JPEG, 1920×622)
+
+2·3번의 페이지 매칭은 **기존 sub-02-01.jpg(정비사업 히어로, 현재 실사용 중인 진짜 Figma
+이미지)와의 스타일 대조**로 판단: sub-02-01은 청록 틴트의 유리·금속 루버/핀 파사드
+클로즈업 — 이미지 3(금속 루버 파사드)과 동일 계열. 재개발·보상업무 그룹(정비사업 ↔
+공익사업)의 히어로 톤을 통일하는 것이 합리적이므로 **이미지3 → sub-02-02**, 남는
+**이미지2(도심/법원 스카이라인) → sub-01-03**(법무법인경국 > 변호사자문단 — 법원·도심
+이미지가 그룹 성격에 부합)으로 배정. Figma 원본 재확인은 egress 차단으로 불가했으므로
+스타일 연속성에 근거한 합리적 추론이며, 향후 실제 export 확보 시 대조 권장.
+
+### 구현 (이미지 규칙 = `docs/progressive-images.md` blur-up 파이프라인)
+- 원본 저장: `public/assets/sub/sub-01-03.jpg`(이미지2), `public/assets/sub/sub-02-02.jpg`
+  (이미지3), `public/assets/lawyers/gongdaeho.png`(이미지1, 알파 보존을 위해 PNG 유지).
+- `scripts/generate-progressive-images.py`의 `TARGETS`에 3개 항목 추가
+  (`sub/sub-01-03.jpg` 1920w, `sub/sub-02-02.jpg` 1920w, `lawyers/gongdaeho.png` 900w) →
+  스크립트 실행해 `.webp` + `.preview.webp` 쌍 재생성 (더 이상 sub-01-01/sub-02-01의
+  단순 복사본이 아님).
+- `src/data/lawyers.ts`: `Lawyer.photo`는 유지하되 `photoPreview?: string` 필드 신설.
+  `GONG_DAEHO`만 `progressiveAsset('assets/lawyers/gongdaeho')`로 실제 blur-up 쌍 연결,
+  나머지 placeholder 변호사 3명은 `photoPreview` 미설정(변화 없음, 기존 `profile2-4.png`
+  그대로 raw `<img>`).
+- `src/pages/LawyerProfilePage.tsx`의 `LawyerHero`: `lawyer.photoPreview`가 있으면
+  `ProgressiveImage`(objectFit=cover, objectPosition="top center", priority)로 렌더,
+  없으면 기존 raw `<img>` fallback — 회귀 없이 실제 사진만 blur-up 적용.
+- `LawyerProfile.css`: `.lawyer-hero__photo-progressive { width/height:100% }` 추가
+  (`ProgressiveImage` 컨테이너가 기존 `.lawyer-hero__photo`의 86%/420px 박스를 그대로 채움).
+- `src/data/publicProject.ts` / `src/data/lawyers.ts` / `AGENTS.md`의 "⚠️ 임시 복사본
+  (egress 차단)" 경고 문구를 "실제 사진 반영 완료(2026-07-21)"로 갱신.
+
+### 검증 (Playwright, `vite build` + `vite preview`)
+- 1440/768/390 스크린샷: 변호사 히어로(공대호 실제 사진 + 도심 배경), 공익사업 히어로
+  (금속 루버 배경) 모두 정상 렌더 — 가로 넘침 없음, 크롭 비율 자연스러움(우려했던
+  `.sub-visual__img`의 `height:163.88%` 오버스케일 크롭도 실제 렌더에서는 파사드 대각선
+  구도가 오히려 극적으로 잘 어울림, 스카이라인도 건물 라인이 잘 보임 → 별도 CSS 조정
+  불필요).
+- 모바일(≤768): `.lawyer-hero__photo{display:none}` 규칙대로 사진 숨김·텍스트만 노출
+  (기존 규칙 그대로 유지, 회귀 없음).
+- GNB fullmenu 호버 스왑(법무법인경국>변호사자문단, 재개발·보상업무>공익사업) 모두
+  새 이미지로 정상 교체 확인.
+- `npm run build`(tsc strict + vite) / `npm run lint`(oxlint) 클린.
+
+### ⚠️ 여전히 남은 플레이스홀더
+- 박효영·공성준·신지호 3명 프로필 콘텐츠 및 사진 — 사용자 제공 대기.
+- 공대호 변호사의 인증서·위촉·수상 이미지(13개) — 캡션 있는 줄무늬 플레이스홀더 프레임 유지.
+- 홈페이지 "전문가소개" 섹션(`content.ts`의 `professionals` 배열, 공대호 항목이
+  `profile-2.jpg` 사용 중)은 이번 작업 범위 밖 — 필요 시 별도 요청으로 처리.
+
+---
+
 ## 2026-07-20 — 신규 페이지: 법무법인경국 > 변호사자문단 (sub-01-03)
 
 > Branch: `claude/o-boinida-98drdm` (PR #74 머지 후 최신 main에서 재시작)

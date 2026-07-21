@@ -8,21 +8,23 @@
  * (`/about/lawyers/:lawyerId`). Only 공대호 has full content from Figma; the
  * others are placeholders until their designs arrive.
  *
- * ⚠️ Visual assets blocked by egress (figma.com 403): the sub-01-03 hero and
- * the lawyer photo / certificate images could not be fetched. `sub-01-03.*` is
- * a TEMPORARY copy of sub-01-01; lawyer photos reuse existing profile images;
- * certificate/award images render as captioned placeholder frames.
+ * ⚠️ Still pending: 박효영/공성준/신지호 profile content + all three portraits
+ * reuse home-page profile stock photos. 공대호's certificate/appointment/award
+ * images (13 items) render as captioned placeholder frames — real exports not
+ * yet provided. The sub-01-03 hero and 공대호's portrait are real photos
+ * (provided directly by the user, figma.com exports remain egress-blocked).
  */
 
 import { progressiveAsset } from '../utils/progressiveImage'
 import { asset } from '../utils/asset'
 
 const LAWYERS_VISUAL = progressiveAsset('assets/sub/sub-01-03')
+const GONGDAEHO_PHOTO = progressiveAsset('assets/lawyers/gongdaeho')
 
 export const LAWYERS_PAGE = {
   parentLabel: '법무법인경국',
   title: '변호사자문단',
-  /** Figma sub-01-03 — progressive WebP pair (placeholder = sub-01-01) */
+  /** Figma sub-01-03 — progressive WebP pair */
   visual: LAWYERS_VISUAL.src,
   visualPreview: LAWYERS_VISUAL.preview,
   basePath: '/about/lawyers',
@@ -46,8 +48,10 @@ export type Lawyer = {
   email?: string
   /** Hero description lines under the contact row */
   intro: string[]
-  /** Hero portrait (placeholder profile image until real cutout arrives) */
+  /** Hero portrait (full-quality WebP) */
   photo: string
+  /** Tiny blur-up preview for `photo`; omitted for stock placeholder photos */
+  photoPreview?: string
   practiceAreas: string[]
   specialties: string[]
   education: string[]
@@ -76,7 +80,8 @@ const GONG_DAEHO: Lawyer = {
     '대한변호사협회 재개발·재건축, 행정전문변호사',
     '대한법률봉사회 회장',
   ],
-  photo: asset('assets/profile1.png'),
+  photo: GONGDAEHO_PHOTO.src,
+  photoPreview: GONGDAEHO_PHOTO.preview,
   practiceAreas: [
     '재개발·재건축',
     '행정',

@@ -129,7 +129,20 @@ function LawyerHero({ lawyer }: { lawyer: Lawyer }) {
           </ul>
         </div>
         <div className="lawyer-hero__photo">
-          <img src={lawyer.photo} alt={`${lawyer.name} 변호사`} />
+          {lawyer.photoPreview ? (
+            <ProgressiveImage
+              className="lawyer-hero__photo-progressive"
+              imgClassName="lawyer-hero__photo-img"
+              src={lawyer.photo}
+              preview={lawyer.photoPreview}
+              alt={`${lawyer.name} 변호사`}
+              objectFit="cover"
+              objectPosition="top center"
+              priority
+            />
+          ) : (
+            <img src={lawyer.photo} alt={`${lawyer.name} 변호사`} />
+          )}
         </div>
       </div>
     </section>

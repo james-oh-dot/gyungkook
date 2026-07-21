@@ -52,7 +52,7 @@
   - Local tabs = **route mode**, one tab per lawyer (공대호 / 박효영 / 공성준 / 신지호). Pass `LocalTabs routeState={null}` so a tab switch scrolls to top (reveals the new lawyer's hero) instead of sticking under GNB — the route-mode default `{ scrollToLocalTabs: true }` is unchanged for boards.
   - Custom dark hero cover (not `SubVisual`): sub-01-03 bg + scrim + name/contact/intro + portrait. prev/next arrow buttons cycle lawyers. Profile = label/value rows (alternating `:nth-child` tint) + captioned certificate/appointment/award image grids.
   - Data: `src/data/lawyers.ts` (공대호 full from Figma; others placeholders). GNB `about-lawyers` visual = `sub-01-03` (`nav.ts` `GNB_SUB_VISUAL_ABOUT_LAWYERS`).
-  - **⚠️ Placeholders (egress-blocked):** `sub-01-03` = copy of `sub-01-01`; lawyer portraits reuse `profile*.png`; certificate images are striped placeholder frames. Replace when real exports are available.
+  - **Real photos (2026-07-21):** `sub-01-03` hero + 공대호's portrait (`public/assets/lawyers/gongdaeho.png`, real transparent cutout) were provided directly by the user in-chat (figma.com exports remain egress-blocked) and run through the normal progressive pipeline. `Lawyer.photo`/`photoPreview` — only set `photoPreview` when a real progressive pair exists; `LawyerHero` falls back to a plain `<img>` (no blur-up) when it's absent, which is still the case for 박효영/공성준/신지호 (`profile2-4.png`, not in the progressive pipeline) and all certificate/appointment/award images (13 items, striped placeholder frames). Replace those when the real exports/content arrive.
 - **정비사업** (재개발·보상업무 1st / Figma `sub-02-01`):
   - Single page: `/practice/renewal` → `RenewalPage` (all 9 sections on one scroll)
   - Local tabs use **scroll mode** (`onTabSelect`) — click scrolls to section under sticky tabs; **not** route tabs
@@ -67,7 +67,7 @@
   - **Icon bullets:** teal `#58BDC2` square + black ▶ (`public/assets/icon-bullet.svg`). Procedure/rights lists use `.pp-list` with that glyph — do not revert to `list-style: disc` in these frames.
   - Data: `src/data/publicProject.ts`; GNB `redev-public` → `/practice/public`, visual `sub-02-02` (`nav.ts` `GNB_SUB_VISUAL_PUBLIC`).
   - **enLabel eyebrows** were re-translated from legal glossary (Figma had copy-paste leftovers) — see WORKLOG 2026-07-20.
-  - **⚠️ `sub-02-02` hero is a TEMPORARY copy of `sub-02-01`** (figma.com blocked by egress; could not fetch the real export). Replace the jpg and regenerate the WebP pair when the asset is available.
+  - **Real photo (2026-07-21):** `sub-02-02` hero is a real photo (metal-louver facade close-up) provided directly by the user in-chat — no longer a copy of `sub-02-01` (figma.com exports remain egress-blocked).
 - Local tabs: route mode (`toTab`) for 컬럼미디어 / 언론보도; scroll mode (`onTabSelect`) for 법인소개 / 정비사업 / 공익사업. Hover underline works in both.
 - **Comparison tables (`.renewal-table`)**: overflow-scroll wraps need `min-width: 0` on the wrap (it is a flex item — default `min-width:auto` = table's `min-width:640` balloons past the viewport and gets clipped by `body{overflow-x:hidden}`). On ≤767 the table is CSS-reflowed into one card per row (thead visually hidden, `td[data-col]` supplies the 재개발/재건축 eyebrow via `::before`). Keep the semantic `<table>` + `data-col` — don't fork mobile markup.
 - **Board abstraction (2026-07 refactor — use this for any new board):**
