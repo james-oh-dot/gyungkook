@@ -28,15 +28,15 @@
   z-index: 0;
 }
 
+/* Figma cover overlay — 247deg, dark toward the right (portrait side) */
 .lawyer-hero__scrim {
   position: absolute;
   inset: 0;
   z-index: 1;
   background: linear-gradient(
-    90deg,
-    rgba(15, 20, 28, 0.94) 0%,
-    rgba(15, 20, 28, 0.78) 42%,
-    rgba(15, 20, 28, 0.4) 100%
+    247deg,
+    rgba(0, 0, 0, 0.88) 25.51%,
+    rgba(102, 102, 102, 0.88) 78.432%
   );
 }
 
@@ -59,6 +59,7 @@
 .lawyer-hero__info {
   padding-bottom: 64px;
   align-self: center;
+  overflow: visible;
 }
 
 .lawyer-hero__name-row {
@@ -92,13 +93,14 @@
   letter-spacing: -0.025em;
 }
 
-/* Figma Line 6 — 1004px wide from the text-left, reaching the portrait centre.
-   Info column ≈ 900px at 1280 inner, so ~111.5% overflows past it toward the
-   photo (clipped by the hero's overflow:hidden; degrades on narrow widths). */
+/* Figma Line 6 — from text-left through the gap and behind the portrait.
+   Info is wider than Figma's 623px text block, so use calc(info + gap + photo)
+   rather than a fixed 1004px cap that stopped short of the photo. Portrait
+   paints after the divider in DOM so the line reads as behind the profile. */
 .lawyer-hero__divider {
   display: block;
-  width: 130%;
-  max-width: 1004px;
+  width: calc(100% + 40px + 340px);
+  max-width: none;
   height: 1px;
   margin: 22px 0 0;
   background: rgba(255, 255, 255, 0.32);
@@ -118,6 +120,8 @@
 }
 
 .lawyer-hero__photo {
+  position: relative;
+  z-index: 1;
   align-self: end;
   height: 86%;
   min-height: 420px;
@@ -326,6 +330,10 @@
     min-height: 0;
     grid-template-columns: minmax(0, 1fr) 260px;
     padding-top: calc(var(--gnb-bar-h, 100px) + 40px);
+  }
+  .lawyer-hero__divider {
+    /* tablet photo col = 260px */
+    width: calc(100% + 40px + 260px);
   }
   .lawyer-hero__photo {
     min-height: 340px;
