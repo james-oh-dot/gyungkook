@@ -1,11 +1,20 @@
 .hero {
   --hero-ease: cubic-bezier(0.22, 1, 0.36, 1);
-  /* Must clear full swipe block (thumb + meta + gage + bottom offset) */
-  --hero-swipe-reserve: clamp(280px, 34vh, 380px);
+  /*
+    Swipe size/position matches teal Hero.css (responsive only).
+    Classic keeps dark chrome colors — do not restyle to the white card look.
+  */
   --hero-pad-x: clamp(20px, 10.42vw, 200px);
   --hero-pad-top: clamp(120px, 18vh, 200px);
-  --hero-thumb-h: 170px;
-  --hero-thumb-scale: 1;
+  --hero-swipe-scale: 1;
+  --hero-swipe-w: 460px;
+  --hero-swipe-reserve: 320px;
+  --hero-thumb-w: 240px;
+  --hero-thumb-h: 136px;
+  --hero-swipe-meta-w: 219px;
+  --hero-swipe-meta-h: 67px;
+  --hero-swipe-meta-pad-x: 26px;
+  --hero-swipe-meta-size: 12px;
 
   position: relative;
   width: 100%;
@@ -14,6 +23,21 @@
   background: #000;
   color: #fff;
   overflow: hidden;
+}
+
+/* Desktop → mid-width scale ramp (same steps as teal Hero) */
+@media (max-width: 1600px) {
+  .hero {
+    --hero-swipe-scale: 0.85;
+    --hero-swipe-reserve: 324px;
+  }
+}
+
+@media (max-width: 1280px) {
+  .hero {
+    --hero-swipe-scale: 0.7;
+    --hero-swipe-reserve: 280px;
+  }
 }
 
 .hero__bg {
@@ -103,7 +127,7 @@
   padding:
     var(--hero-pad-top)
     var(--hero-pad-x)
-    calc(var(--hero-swipe-reserve) + 32px);
+    var(--hero-swipe-reserve);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -189,39 +213,50 @@
   line-height: inherit;
 }
 
+/*
+  Swipe + gage geometry = teal Hero (flush BR + zoom ramp; ≤1024 inset card).
+  Colors stay classic dark.
+*/
 .hero__swipe {
   position: absolute;
   z-index: 4;
-  right: var(--hero-pad-x);
-  bottom: clamp(24px, 5.5vh, 80px);
-  width: min(574px, calc(100% - (var(--hero-pad-x) * 2)));
+  right: 0;
+  bottom: 0;
+  left: auto;
+  width: var(--hero-swipe-w);
+  max-width: 460px;
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  /* Soft layout morph across breakpoints */
-  transition:
-    width 0.55s var(--hero-ease),
-    right 0.55s var(--hero-ease),
-    left 0.55s var(--hero-ease),
-    bottom 0.55s var(--hero-ease),
-    gap 0.45s var(--hero-ease);
+  align-items: flex-end;
+  gap: 10px;
+  padding: 40px 0 40px 0;
+  margin: 0;
+  box-sizing: border-box;
+  zoom: var(--hero-swipe-scale);
+  transform-origin: bottom right;
+}
+
+@supports not (zoom: 1) {
+  .hero__swipe {
+    transform: scale(var(--hero-swipe-scale));
+    transform-origin: bottom right;
+  }
 }
 
 .hero__swipe-preview {
   display: flex;
   align-items: flex-end;
+  justify-content: flex-end;
   width: 100%;
+  max-width: 100%;
+  flex-direction: row;
   padding: 0;
+  margin: 0;
   border: 0;
   background: transparent;
   color: inherit;
   cursor: pointer;
   text-align: left;
-  transform: scale(var(--hero-thumb-scale));
-  transform-origin: bottom right;
-  transition:
-    transform 0.55s var(--hero-ease),
-    opacity 0.45s var(--hero-ease);
 }
 
 .hero__swipe-preview:hover,
@@ -231,14 +266,12 @@
 }
 
 .hero__swipe-thumb {
-  width: min(300px, 52%);
+  width: var(--hero-thumb-w);
   height: var(--hero-thumb-h);
   overflow: hidden;
   flex: 0 0 auto;
   background: #111;
-  transition:
-    width 0.55s var(--hero-ease),
-    height 0.55s var(--hero-ease);
+  box-sizing: border-box;
 }
 
 .hero__swipe-thumb img {
@@ -258,32 +291,38 @@
 
 .hero__swipe-meta {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 8px;
-  min-height: 84px;
-  width: min(274px, 48%);
-  padding: 0 32px;
+  gap: 6px;
+  min-height: var(--hero-swipe-meta-h);
+  width: var(--hero-swipe-meta-w);
+  flex: 0 0 auto;
+  padding: 0 var(--hero-swipe-meta-pad-x);
   background: #111;
-  font-size: 14px;
+  color: #fff;
+  font-size: var(--hero-swipe-meta-size);
   font-weight: 600;
   letter-spacing: -0.025em;
-  transition:
-    min-height 0.55s var(--hero-ease),
-    width 0.55s var(--hero-ease),
-    padding 0.45s var(--hero-ease);
+  line-height: 1.4;
+  box-sizing: border-box;
 }
 
 .hero__gage {
   display: flex;
   align-items: center;
-  gap: 26px;
-  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 16px;
+  flex-wrap: nowrap;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .hero__gage-track {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex: 0 0 auto;
 }
 
 .hero__gage-no {
@@ -295,7 +334,7 @@
 
 .hero__gage-bar {
   position: relative;
-  width: min(231px, 36vw);
+  width: 231px;
   height: 2px;
   background: rgba(255, 255, 255, 0.2);
   overflow: hidden;
@@ -436,9 +475,12 @@
 @media (max-width: 1024px) {
   .hero {
     --hero-pad-x: 40px;
-    --hero-swipe-reserve: 300px;
-    --hero-thumb-h: 120px;
-    --hero-thumb-scale: 0.98;
+    /* Match teal inset card swipe geometry */
+    --hero-swipe-scale: 1;
+    --hero-swipe-w: auto;
+    --hero-swipe-reserve: 186px;
+    --hero-thumb-w: 138px;
+    --hero-thumb-h: 138px;
   }
 
   .hero__bg-slide img {
@@ -455,36 +497,69 @@
   .hero__copy {
     flex-direction: column;
     gap: 12px;
-    /* Leave clear lane above full-width swipe */
     max-width: 100%;
   }
 
   .hero__swipe {
-    right: var(--hero-pad-x);
-    left: var(--hero-pad-x);
+    right: 24px;
+    bottom: 24px;
+    left: auto;
     width: auto;
-    bottom: 40px;
+    max-width: calc(100% - 48px);
+    padding: 0;
+    gap: 0;
+    zoom: 1;
+    transform: none;
+    align-items: stretch;
   }
 
   .hero__swipe-preview {
-    transform-origin: bottom center;
+    width: auto;
+    max-width: 100%;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 14px;
+    padding: 0 24px 0 0;
+    /* Dark chrome — size/pad match teal white card */
+    background: #111;
+    color: #fff;
+    opacity: 0.94;
+    border: 4px solid #111;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .hero__swipe-thumb {
+    width: var(--hero-thumb-w);
+    height: var(--hero-thumb-h);
+    border: 4px solid #111;
+    background: #000;
   }
 
   .hero__swipe-meta {
-    min-height: 64px;
-    padding: 0 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 6px;
+    width: auto;
+    min-width: 128px;
+    min-height: 0;
+    padding: 0;
+    background: transparent;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.45;
+  }
+
+  .hero__gage {
+    display: none;
   }
 }
 
-/* Mid widths: swipe still right-aligned but content must stay left of it */
+/* Mid widths: keep copy clear of bottom-right swipe */
 @media (min-width: 768px) and (max-width: 1400px) {
-  .hero {
-    --hero-swipe-reserve: clamp(300px, 36vh, 400px);
-  }
-
   .hero__content {
-    /* Keep main copy from colliding with bottom-right swipe */
-    padding-right: max(var(--hero-pad-x), min(48vw, 600px));
+    padding-right: max(var(--hero-pad-x), min(42vw, 520px));
   }
 
   .hero__maincopy,
@@ -498,10 +573,9 @@
   .hero {
     --hero-pad-x: 20px;
     --hero-pad-top: 100px;
-    /* Thumb stacked + meta + gage */
-    --hero-swipe-reserve: 380px;
-    --hero-thumb-h: 132px;
-    --hero-thumb-scale: 0.96;
+    --hero-swipe-reserve: 148px;
+    --hero-thumb-w: 100px;
+    --hero-thumb-h: 100px;
   }
 
   .hero__title {
@@ -513,43 +587,23 @@
     line-height: 1.7;
   }
 
-  .hero__swipe {
-    right: var(--hero-pad-x);
-    left: var(--hero-pad-x);
-    bottom: 24px;
-    gap: 16px;
-  }
-
   .hero__swipe-preview {
-    flex-direction: column;
-    align-items: stretch;
-    transform-origin: bottom center;
+    padding-right: 14px;
+    gap: 14px;
   }
 
-  .hero__swipe-thumb,
-  .hero__swipe-meta {
-    width: 100%;
+  .hero__swipe-thumb {
+    border-width: 3px;
   }
 
   .hero__swipe-meta {
-    min-height: 56px;
-  }
-
-  .hero__gage {
-    gap: 16px;
-  }
-
-  .hero__gage-bar {
-    width: min(160px, 40vw);
+    gap: 2px;
   }
 }
 
-/* Short viewports: prioritize readable copy over tall thumb */
-@media (max-height: 720px) {
+/* Short viewports: keep copy readable above swipe reserve */
+@media (max-height: 720px) and (min-width: 1025px) {
   .hero {
-    --hero-swipe-reserve: clamp(240px, 38vh, 320px);
-    --hero-thumb-h: 110px;
-    --hero-thumb-scale: 0.94;
     --hero-pad-top: 80px;
   }
 
