@@ -1,12 +1,27 @@
 /*
  * 공익사업 (sub-02-02) — net-new components on top of Renewal.css.
- * Layout / section rhythm is inherited from `.renewal*` classes; this file only
- * styles pieces unique to this page: the two-up work blocks, the strengths box,
- * the loss-compensation procedure flow, and the rights cards.
  *
- * Responsive contract mirrors 정비사업: columns collapse at ≤1024, gutters/type
- * step at ≤768 / ≤767 (handled by shared tokens + renewal split rules).
+ * Figma Brand/Main_Color for these frames is #58BDC2 (mint) — NOT global
+ * `--color-teal` (#008075). Use `--pp-brand` locally so colors match Figma.
+ *
+ * 손실보상절차: two vertical columns of step cards (92:1746). Desktop + tablet
+ * stay 2-col; mobile (≤767) stacks full-width. (Earlier flowchart UI retired.)
  */
+
+.public-project {
+  /* Brand mint from Figma — NOT global --color-teal (#008075) */
+  --pp-brand: #58bdc2;
+  --pp-brand-soft: #e0f7fa;
+  --pp-bg-light: #f7f7fb;
+  --pp-line: #e5e5ec;
+  --pp-ink-sub: #505050;
+  --pp-ink-body: #29303b;
+  --pp-danger: #e53935;
+  --pp-note-bg: #f1f1f5;
+  --pp-note: #767676;
+  /* Inline SVG so GH Pages base (`/gyungkook/`) never breaks list bullets */
+  --pp-bullet: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Crect width='24' height='24' fill='%2358BDC2'/%3E%3Cpath d='M9 6.5v11L18 12 9 6.5Z' fill='%23111111'/%3E%3C/svg%3E");
+}
 
 /* 공익사업: 주요 업무 + 주요 대상 사업 side by side */
 .pp-two-col {
@@ -15,10 +30,60 @@
   gap: 48px;
 }
 
-/* ============================ Strengths box ============================ */
+/* ============================ Shared list (teal ▶ bullet) ============================ */
+.pp-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--pp-ink-sub);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  word-break: keep-all;
+}
+
+.pp-list li {
+  position: relative;
+  padding-left: 28px;
+}
+
+.pp-list li + li {
+  margin-top: 0;
+}
+
+.pp-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  width: 16px;
+  height: 16px;
+  background: var(--pp-bullet) center / contain no-repeat;
+}
+
+.pp-list--sm {
+  font-size: 14px;
+}
+
+.pp-list--sm li {
+  padding-left: 24px;
+}
+
+.pp-list--sm li::before {
+  width: 14px;
+  height: 14px;
+  top: 0.25em;
+}
+
+.pp-em {
+  color: var(--pp-danger);
+}
+
+/* ============================ Strengths box (역할및경쟁력) ============================ */
 .pp-strengths {
   width: 100%;
-  background: #f7f7fb;
+  background: var(--pp-bg-light);
   padding: clamp(32px, 5vw, 64px) clamp(24px, 5.6vw, 72px);
   display: flex;
   flex-direction: column;
@@ -32,7 +97,8 @@
 }
 
 .pp-strengths__eyebrow {
-  color: #505050;
+  margin: 0;
+  color: var(--pp-ink-sub);
   font-size: 16px;
   letter-spacing: -0.025em;
 }
@@ -44,11 +110,13 @@
   line-height: 1.3;
   letter-spacing: -0.025em;
 }
+
 .pp-strengths__title .is-teal {
-  color: var(--color-teal);
+  color: var(--pp-brand);
 }
+
 .pp-strengths__title .is-ink {
-  color: var(--color-ink);
+  color: #111;
 }
 
 .pp-strengths__summary {
@@ -58,7 +126,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: var(--color-teal);
+  background: var(--pp-brand);
   color: #fff;
   font-size: clamp(16px, 1.6vw, 20px);
   font-weight: 500;
@@ -76,9 +144,11 @@
 .pp-strength-card {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 16px;
+  min-height: 244px;
   background: #fff;
-  border: 1px solid #e5e5ec;
+  border: 1px solid var(--pp-line);
   padding: 28px;
 }
 
@@ -91,11 +161,11 @@
 .pp-strength-card__no {
   flex-shrink: 0;
   width: 40px;
-  height: 40px;
+  height: 39px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--color-teal);
+  background: var(--pp-brand);
   color: #fff;
   font-size: 14px;
   font-weight: 600;
@@ -104,7 +174,7 @@
 
 .pp-strength-card__title {
   margin: 0;
-  color: #505050;
+  color: var(--pp-ink-sub);
   font-size: clamp(20px, 2vw, 28px);
   font-weight: 600;
   line-height: 1.4;
@@ -114,7 +184,7 @@
 .pp-strength-card__desc {
   margin: 0;
   flex: 1;
-  color: #29303b;
+  color: var(--pp-ink-body);
   font-size: 18px;
   line-height: 1.4;
   letter-spacing: -0.025em;
@@ -124,8 +194,9 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #e0f7fa;
-  color: var(--color-teal);
+  min-height: 52px;
+  background: var(--pp-brand-soft);
+  color: var(--pp-brand);
   font-size: 16px;
   font-weight: 600;
   line-height: 1.4;
@@ -137,400 +208,287 @@
   flex-shrink: 0;
   width: 4px;
   height: 20px;
-  background: var(--color-teal);
+  background: var(--pp-brand);
 }
 
-/* ============================ Procedure flow ============================ */
-/*
-  Figma 손실보상절차 flowchart. Desktop (>1024): steps 1–3 row → 협의 결정
-  (성립 | 불성립) → step 4 → Y-fork → steps 5·6 (parallel), joined by right-angle
-  connectors. Tablet/mobile (≤1024): the SAME cards stack into one column with
-  centred vertical connectors. All UI is sharp-rect (no border-radius).
-*/
-.pp-flows {
-  display: flex;
-  flex-direction: column;
-  gap: 72px;
+/* ============================ Procedure columns (손실보상절차) ============================ */
+.pp-procedures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
   width: 100%;
+  background: var(--pp-bg-light);
+  padding: 36px 28px;
+  box-sizing: border-box;
 }
 
-.pp-flow {
+.pp-procedure {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 8px;
+  min-width: 0;
 }
 
-/* Heading: teal square marker + title */
-.pp-flow__heading {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--color-ink);
-  font-size: clamp(20px, 2vw, 26px);
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: -0.025em;
-}
-.pp-flow__heading::before {
-  content: '';
-  flex-shrink: 0;
-  width: 22px;
-  height: 22px;
-  background: var(--color-teal);
+.pp-procedure .renewal-bullet-title {
+  margin-bottom: 4px;
 }
 
-.pp-flow__chart {
-  display: flex;
-  flex-direction: column;
+.pp-procedure .renewal-bullet-title__text {
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 400;
+  color: #111;
 }
 
-/* —— Step card (shared by every row + breakpoint) —— */
-.pp-step {
+.pp-procedure__steps {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  height: 100%;
+}
+
+.pp-procedure__block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.pp-step {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 166px;
   background: #fff;
-  border: 1px solid #e5e5ec;
-  padding: 20px;
+  border: 1px solid var(--pp-line);
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .pp-step__head {
   display: flex;
   align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.pp-step__no {
-  flex-shrink: 0;
-  width: 24px;
-  height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-teal);
-  color: #fff;
-  font-size: 13px;
-  font-weight: 700;
 }
 
 .pp-step__title {
   margin: 0;
   display: flex;
-  align-items: baseline;
-  gap: 8px;
   flex-wrap: wrap;
-  color: var(--color-ink);
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.35;
+  align-items: baseline;
+  gap: 4px;
+  color: var(--pp-ink-sub);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
   letter-spacing: -0.025em;
 }
 
 .pp-step__sub {
-  color: #767676;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 400;
   letter-spacing: -0.025em;
-}
-
-.pp-step__list {
-  margin: 0;
-  padding-left: 18px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  color: #505050;
-  font-size: 15px;
-  line-height: 1.45;
-  letter-spacing: -0.025em;
-}
-.pp-step__list li {
-  list-style: disc;
+  color: var(--pp-ink-sub);
 }
 
 .pp-step__note {
-  margin: auto 0 0;
-  background: #f7f7fb;
-  padding: 10px 12px;
-  color: #767676;
-  font-size: 13px;
-  line-height: 1.45;
-  letter-spacing: -0.025em;
-}
-.pp-step__note span {
-  margin-right: 2px;
-  font-weight: 700;
-}
-
-/* —— Rows —— */
-.pp-flow__row {
-  list-style: none;
   margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 16px;
-}
-.pp-flow__row--top {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-.pp-flow__row--parallel {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.pp-flow__cell {
-  position: relative;
   display: flex;
-}
-
-/* —— Decision (성립 | 불성립) —— */
-.pp-flow__decision {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-}
-
-.pp-outcome {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 20px 24px;
-  border: 1px solid transparent;
-}
-.pp-outcome__icon {
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1;
+  gap: 8px;
+  width: 100%;
+  background: var(--pp-note-bg);
+  color: var(--pp-note);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.025em;
+  padding: 4px 10px;
+  box-sizing: border-box;
+  word-break: keep-all;
 }
-.pp-outcome__body {
+
+.pp-step__note .pp-em {
+  font-size: inherit;
+}
+
+.pp-procedure__side {
+  align-self: flex-end;
+  background: var(--pp-note-bg);
+  padding: 8px;
+}
+
+/* ============================ Rights (반드시확인해야할권리) ============================ */
+.pp-rights-wrap {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  min-width: 0;
-}
-.pp-outcome__label {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 700;
-  line-height: 1.3;
-  letter-spacing: -0.025em;
-}
-.pp-outcome__note {
-  margin: 0;
-  font-size: 14px;
-  line-height: 1.4;
-  letter-spacing: -0.025em;
-}
-.pp-outcome--success {
-  background: #e0f7fa;
-  border-color: #a7e2e7;
-}
-.pp-outcome--success .pp-outcome__icon {
-  background: var(--color-teal);
-}
-.pp-outcome--success .pp-outcome__label {
-  color: #086b66;
-}
-.pp-outcome--success .pp-outcome__note {
-  color: #505050;
-}
-.pp-outcome--fail {
-  background: #ffebee;
-  border-color: #ef9a9a;
-}
-.pp-outcome--fail .pp-outcome__icon {
-  background: #e53935;
-}
-.pp-outcome--fail .pp-outcome__label {
-  color: #e53935;
-}
-.pp-outcome--fail .pp-outcome__note {
-  color: #505050;
+  gap: 12px;
+  width: 100%;
+  background: var(--pp-bg-light);
+  padding: 36px 28px;
+  box-sizing: border-box;
 }
 
-/* —— Fork side-note (재개발) —— */
-.pp-flow__fork-note {
-  align-self: flex-start;
-  max-width: min(520px, 100%);
-  background: #f7f7fb;
-  border: 1px solid #e5e5ec;
-  padding: 14px 18px;
+.pp-rights-wrap .renewal-bullet-title__text {
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 400;
+  color: #111;
 }
 
-/* —— Connectors (right-angle grey lines) —— */
-.pp-flow__link {
-  position: relative;
-  height: 26px;
-}
-.pp-flow__link::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 2px;
-  background: #c9ccd4;
-  transform: translateX(-50%);
-}
-.pp-flow__link--branch::before {
-  left: 75%; /* drops from the 불성립 (right) box on desktop */
-}
-
-.pp-flow__fork {
-  position: relative;
-  height: 40px;
-}
-.pp-flow__fork::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 50%;
-  height: 20px;
-  width: 2px;
-  background: #c9ccd4;
-  transform: translateX(-50%);
-}
-/* ┌──┐ bracket → two legs down to the 5 / 6 columns */
-.pp-flow__fork::after {
-  content: '';
-  position: absolute;
-  top: 20px;
-  bottom: 0;
-  left: 25%;
-  right: 25%;
-  border-top: 2px solid #c9ccd4;
-  border-left: 2px solid #c9ccd4;
-  border-right: 2px solid #c9ccd4;
-}
-
-/* ============ Tablet + mobile: stack cards into a single column ============ */
-@media (max-width: 1024px) {
-  .pp-flow__row--top,
-  .pp-flow__row--parallel,
-  .pp-flow__decision {
-    grid-template-columns: 1fr;
-  }
-
-  /* Sequential top steps get a short connector in the grid gap. */
-  .pp-flow__row--top .pp-flow__cell:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 50%;
-    bottom: -16px;
-    height: 16px;
-    width: 2px;
-    background: #c9ccd4;
-    transform: translateX(-50%);
-  }
-
-  .pp-flow__link--branch::before {
-    left: 50%;
-  }
-
-  /* Y-fork collapses to a straight vertical line when 5·6 stack. */
-  .pp-flow__fork {
-    height: 26px;
-  }
-  .pp-flow__fork::before {
-    height: 100%;
-  }
-  .pp-flow__fork::after {
-    content: none;
-  }
-
-  .pp-flow__fork-note {
-    max-width: 100%;
-  }
-}
-
-
-/* ============================ Rights cards ============================ */
 .pp-rights {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 20px;
-  align-items: start;
+  grid-template-columns: minmax(0, 353px) minmax(0, 1fr);
+  gap: 10px;
+  align-items: stretch;
 }
 
 .pp-right-card {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
   background: #fff;
-  border: 1px solid #e5e5ec;
-  padding: 28px 24px;
+  padding: 20px;
+  box-sizing: border-box;
+  min-width: 0;
 }
 
-.pp-right-card__head {
+/* 영업손실 spans full width under the 2-up row */
+.pp-right-card:last-child {
+  grid-column: 1 / -1;
+}
+
+.pp-right-card__banner {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #f1f1f5;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: var(--pp-brand);
+  padding: 8px 10px;
+  box-sizing: border-box;
 }
 
 .pp-right-card__title {
   margin: 0;
-  color: var(--color-ink);
-  font-size: 22px;
+  color: #fff;
+  font-size: 28px;
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.4;
   letter-spacing: -0.025em;
+  text-align: center;
 }
 
 .pp-right-card__subtitle {
-  color: var(--color-teal);
-  font-size: 14px;
+  margin: 0;
+  color: var(--pp-ink-sub);
+  font-size: 24px;
   font-weight: 600;
+  line-height: 1.4;
   letter-spacing: -0.025em;
 }
 
-.pp-right-card__list {
-  margin: 0;
+.pp-right-card .pp-list {
+  font-size: 20px;
+}
+
+.pp-right-card .pp-list li {
+  padding-left: 30px;
+}
+
+.pp-right-card .pp-list li::before {
+  width: 18px;
+  height: 18px;
+}
+
+.pp-right-card .pp-step__note {
+  font-size: 16px;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.pp-right-card__groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
 }
 
 .pp-right-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
+  min-width: 0;
 }
 
 .pp-right-group__label {
   margin: 0;
-  color: var(--color-teal);
-  font-size: 16px;
+  color: var(--pp-ink-sub);
+  font-size: 24px;
   font-weight: 600;
+  line-height: 1.4;
   letter-spacing: -0.025em;
 }
 
 /* ============================ Responsive ============================ */
-@media (max-width: 1024px) {
+/*
+  Tablet (768–1024): same as desktop for procedure + rights + strengths
+  (user: 태블릿은 데스크탑과 동일).
+  Mobile (≤767): stack procedure columns + rights + strengths to full width.
+*/
+@media (max-width: 767px) {
   .pp-two-col,
-  .pp-strengths__grid,
-  .pp-rights {
+  .pp-strengths__grid {
     grid-template-columns: 1fr;
   }
+
   .pp-strengths__summary {
     min-height: 0;
   }
-}
 
-@media (max-width: 768px) {
-  .pp-two-col {
+  .pp-strength-card {
+    min-height: 0;
+  }
+
+  .pp-procedures {
+    grid-template-columns: 1fr;
+    padding: 24px 16px;
     gap: 40px;
   }
-  .pp-flows {
-    gap: 56px;
+
+  .pp-procedure {
+    width: 100%;
   }
-  .pp-step {
-    padding: 18px;
+
+  .pp-rights-wrap {
+    padding: 24px 16px;
+  }
+
+  .pp-rights {
+    grid-template-columns: 1fr;
+  }
+
+  .pp-right-card:last-child {
+    grid-column: auto;
+  }
+
+  .pp-right-card__groups {
+    grid-template-columns: 1fr;
+  }
+
+  .pp-right-card__title {
+    font-size: 22px;
+  }
+
+  .pp-right-card__subtitle,
+  .pp-right-group__label {
+    font-size: 20px;
+  }
+
+  .pp-right-card .pp-list {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .pp-two-col {
+    grid-template-columns: 1fr;
+    gap: 40px;
   }
 }
