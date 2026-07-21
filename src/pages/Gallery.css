@@ -1,0 +1,247 @@
+/*
+ * 경국인 · 갤러리 (sub-01-04).
+ * hero (SubVisual, no chip) → 경국인 tab (pyramid + serif quote + 경국인의 약속)
+ * → 갤러리 tab (masonry photo grid). Scroll-mode local tabs. Sharp-rect;
+ * brand mint = #58bdc2. Gallery tiles are placeholders until real photos arrive.
+ */
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.gallery__main {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: clamp(64px, 8vw, 120px) var(--page-pad) clamp(96px, 12vw, 160px);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(80px, 10vw, 140px);
+}
+
+/* ============================ 경국인 section ============================ */
+.gallery-people {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(80px, 10vw, 140px);
+}
+
+/* —— pyramid diagram —— */
+.gallery-pyramid {
+  align-self: center;
+  width: min(564px, 90%);
+  aspect-ratio: 564 / 580;
+}
+.gallery-pyramid__img {
+  width: 100%;
+  height: 100%;
+}
+
+/* —— serif quote —— */
+.gallery-quote {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+}
+.gallery-quote__mark {
+  width: 63px;
+  height: 51px;
+}
+.gallery-quote__mark--close {
+  transform: rotate(180deg);
+}
+.gallery-quote__lines {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-serif);
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 2;
+  color: #505050;
+  letter-spacing: -0.025em;
+}
+.gallery-quote__strong {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 8px;
+  font-family: var(--font-serif);
+  font-weight: 800;
+  font-size: clamp(20px, 2.2vw, 28px);
+  line-height: 1.3;
+  color: #111;
+  letter-spacing: -0.025em;
+}
+
+/* —— 경국인의 약속 (label left + rows right) —— */
+.gallery-promise {
+  display: grid;
+  grid-template-columns: 299px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+.gallery-promise__head {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.gallery-promise__en {
+  margin: 0;
+  color: #58bdc2;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  letter-spacing: -0.025em;
+}
+.gallery-promise__title {
+  margin: 0;
+  color: #111;
+  font-size: clamp(24px, 2.8vw, 36px);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+.gallery-promise__list {
+  margin: 0;
+  padding: 20px 0 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.gallery-promise__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  background: #f9f9f9;
+}
+.gallery-promise__no {
+  flex-shrink: 0;
+  align-self: center;
+  width: 34px;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #58bdc2;
+  color: #111;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+.gallery-promise__term {
+  flex-shrink: 0;
+  color: #111;
+  font-size: clamp(22px, 2.4vw, 32px);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+.gallery-promise__desc {
+  color: #767676;
+  font-size: clamp(15px, 1.4vw, 18px);
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+/* ============================ 갤러리 section ============================ */
+.gallery-grid-section {
+  display: grid;
+  grid-template-columns: 299px minmax(0, 1fr);
+  gap: 28px;
+  align-items: start;
+}
+.gallery-grid__title {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  color: #111;
+  font-size: clamp(24px, 2.8vw, 36px);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+/* Masonry: 3 cols × 5 rows; two 2×2 "big" tiles anchor TL + BR (Figma 94:3781) */
+.gallery-grid {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(5, 1fr);
+  grid-template-areas:
+    'a a b'
+    'a a c'
+    'd e f'
+    'g i i'
+    'h i i';
+  gap: 28px;
+  aspect-ratio: 953 / 1233;
+}
+.gallery-tile {
+  background: linear-gradient(135deg, #f4f4f7 0%, #e7e7ee 100%);
+  min-height: 0;
+}
+.gallery-grid > .gallery-tile:nth-child(1) { grid-area: a; }
+.gallery-grid > .gallery-tile:nth-child(2) { grid-area: b; }
+.gallery-grid > .gallery-tile:nth-child(3) { grid-area: c; }
+.gallery-grid > .gallery-tile:nth-child(4) { grid-area: d; }
+.gallery-grid > .gallery-tile:nth-child(5) { grid-area: e; }
+.gallery-grid > .gallery-tile:nth-child(6) { grid-area: f; }
+.gallery-grid > .gallery-tile:nth-child(7) { grid-area: g; }
+.gallery-grid > .gallery-tile:nth-child(8) { grid-area: h; }
+.gallery-grid > .gallery-tile:nth-child(9) { grid-area: i; }
+
+/* ============================ Responsive ============================ */
+@media (max-width: 1024px) {
+  /* Label stacks above content (promise + gallery) */
+  .gallery-promise,
+  .gallery-grid-section {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 767px) {
+  .gallery-promise__list {
+    padding-top: 4px;
+  }
+  /* Promise row: no + term on top, desc full-width below */
+  .gallery-promise__item {
+    flex-wrap: wrap;
+    padding: 20px;
+    gap: 10px 12px;
+  }
+  .gallery-promise__no {
+    align-self: center;
+    min-height: 34px;
+  }
+  .gallery-promise__desc {
+    flex-basis: 100%;
+    font-size: 15px;
+  }
+
+  /* Masonry → simple 2-col uniform grid (big spans dropped) */
+  .gallery-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+    grid-template-areas: none;
+    grid-auto-rows: 1fr;
+    aspect-ratio: auto;
+    gap: 12px;
+  }
+  .gallery-grid > .gallery-tile {
+    grid-area: auto !important;
+    aspect-ratio: 4 / 3;
+  }
+}

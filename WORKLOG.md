@@ -1,5 +1,61 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-21 — 신규 페이지: 법무법인경국 > 경국인 · 갤러리 (sub-01-04)
+
+> Branch: `claude/o-boinida-98drdm` (PR #83 머지 후 최신 main에서 재시작)
+> Figma: `SUB_법무법인경국_경국인갤러리` (94:3369).
+
+### 요구
+- 메뉴 법무법인경국 > 경국인갤러리 (sub-01-04) 신규 페이지, 반응형 규칙대로 대응.
+- **탭 갤러리 선택 시 gallery 섹션으로 스크롤 이동**(스크롤 모드).
+- 서브비주얼 = sub-01-04, GNB 메뉴 스왑에 반영. 메뉴 연결.
+
+### 구조 (Figma)
+로컬탭 2개(경국인 / 갤러리) **스크롤 모드**(법인소개와 동일 패턴):
+- **경국인 섹션**: 브랜드 피라미드(고객/경국인/경국) + serif 인용구(NanumMyeongjo) +
+  경국인의 약속 10개(번호 배지 + 영문 + 국문 설명).
+- **갤러리 섹션**: 마조너리 포토 그리드(3열×5행, 좌상단·우하단에 2×2 big 타일).
+
+### 이미지 (Figma 직접 추출 — get_screenshot base64 우회)
+- **sub-01-04 히어로**(node 94:3371): 금속 피라미드 빌딩 사진. 원본에 "경국인 · 갤러리"
+  타이틀 베이크 → **cv2 인페인트로 제거** 후 SubVisual이 라이브 타이틀 오버레이(다른
+  서브페이지와 동일). 규칙적 격자 패턴이라 인페인트 잔흔이 약간 남지만 scrim + 라이브
+  타이틀 아래라 실제로는 비가시.
+- **피라미드 다이어그램**(node 94:3384): 고객/경국인/경국 3단 + 청록 방사 링. 라벨이
+  이미지에 베이크된 브랜드 그래픽 → `gallery/pyramid.*`로 저장.
+- **인용부호**: `icon-quote.svg`(청록) 신규 제작, 닫는 인용부호는 rotate(180).
+- **갤러리 사진**: Figma는 하트 스톡(플레이스홀더) → 실제 경국인 사진 미제공이므로
+  중립 그라데이션 플레이스홀더 타일로 구현(마조너리 레이아웃은 정확히 유지).
+
+### 구현
+- 데이터 `src/data/gallery.ts`: 탭 2개, 피라미드, 인용구(lines+strong), 약속 10개
+  (no/en/ko), 갤러리 타일 9개(big 플래그).
+- 페이지 `src/pages/GalleryPage.tsx` + `Gallery.css`: SubVisual → 경국인 섹션(피라미드
+  중앙 + 인용구 + 약속 2단) → 갤러리 섹션(제목 좌 + 마조너리 우). IntersectionObserver
+  스크롤스파이 + `scrollToSection`(법인소개와 동일).
+- 약속 번호 배지: 청록 `#58bdc2` `w-34` 정사각(초기엔 stretch 바였으나 Figma대로 compact
+  square로 교정).
+- 라우트 `App.tsx`: `/about/gallery` Placeholder → `GalleryPage`.
+- 네비 `nav.ts`: `about-gallery` visual = sub-01-04 (`GNB_SUB_VISUAL_ABOUT_GALLERY`).
+
+### 반응형
+- 데스크톱: 피라미드 564 중앙, 약속 2단(라벨 299 + 행), 갤러리 마조너리 3열.
+- ≤1024: 약속·갤러리 라벨이 콘텐츠 위로 스택. 마조너리 유지(aspect-ratio로 스케일).
+- ≤767: 약속 행이 [번호+영문] / [국문] 2줄로 랩. **갤러리 마조너리 → 균일 2열
+  (aspect 4/3)** 로 단순화.
+
+### 검증 (Playwright, vite preview)
+- 1440/900/390 풀페이지: Figma와 일치. **가로 넘침 0**, JS 에러 0(외부 폰트 CDN 차단 무관).
+- **갤러리 탭 클릭 → gallery 섹션으로 스크롤 이동 PASS**(scrollY 0→3121, 섹션 top이 sticky
+  탭 바로 아래 180px). 스크롤스파이로 탭 활성 전환 확인.
+- GNB 메뉴 호버(경국인갤러리) → sub-01-04 클린 히어로 스왑 확인.
+- build(strict)·lint 클린.
+
+### ⚠️ 후속
+- 갤러리 실제 경국인 사진(9장) 제공 시 플레이스홀더 타일 교체.
+
+---
+
 ## 2026-07-21 — 변호사자문단 히어로 divider + 상단 버튼 2개 Figma 정밀 일치
 
 > Branch: `claude/o-boinida-98drdm` (PR #82 머지 후 최신 main에서 재시작)
