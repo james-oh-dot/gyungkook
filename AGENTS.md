@@ -57,6 +57,7 @@
   - 갤러리 section: **masonry** (`.gallery-grid`, Figma `94:3781`) — 3 cols × 5 rows, `grid-template-areas` with two 2×2 "big" tiles anchoring TL + BR; `aspect-ratio: 953/1233`. **Mobile (≤767)** drops the mosaic → uniform 2-col `aspect-ratio: 4/3` tiles. Tiles are **placeholder gradients** until real 경국인 photos arrive.
   - Data: `src/data/gallery.ts`; GNB `about-gallery` → `/about/gallery`, visual `sub-01-04` (`nav.ts` `GNB_SUB_VISUAL_ABOUT_GALLERY`). Replaced the old PlaceholderPage route.
   - **sub-01-04 hero (2026-07-21):** metallic-pyramid photo, extracted from Figma (node 94:3371) via `get_screenshot`; baked "경국인 · 갤러리" title painted out (cv2 inpaint) so `SubVisual` overlays its own live title. A faint inpaint residue on the regular grid pattern sits under the scrim + live title and is not visible in practice.
+- **연혁수상인증 / 오시는길** (법무법인경국 5th–6th): still `PlaceholderPage` (“곧 업데이트예정”) but heroes + GNB visuals use progressive pairs `sub-01-05` / `sub-01-06` (`placeholderPages.ts` per-page `visual` override; `nav.ts` `GNB_SUB_VISUAL_ABOUT_HISTORY` / `_LOCATION`). Do not point these stubs back at shared `sub-01-01`.
 - **변호사자문단** (법무법인경국 3rd / Figma `sub-01-03`):
   - `/about/lawyers` → `Navigate` to first lawyer; `/about/lawyers/:lawyerId` → `LawyerProfilePage`.
   - Local tabs = **route mode**, one tab per lawyer (공대호 / 박효영 / 공성준 / 신지호). Pass `LocalTabs routeState={null}` so a tab switch scrolls to top (reveals the new lawyer's hero) instead of sticking under GNB — the route-mode default `{ scrollToLocalTabs: true }` is unchanged for boards.

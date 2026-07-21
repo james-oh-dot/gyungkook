@@ -12,10 +12,13 @@ type PlaceholderPageProps = {
 
 /**
  * Temporary subpage shell until real content is designed.
- * Sub visual = sub-01-01 (1번 비주얼); body = “곧 업데이트예정”.
+ * Sub visual defaults to sub-01-01; pages with dedicated photos override.
  */
 export function PlaceholderPage({ pageId }: PlaceholderPageProps) {
   const page = PLACEHOLDER_PAGES[pageId]
+  const image = page.visual ?? PLACEHOLDER_VISUAL_SRC
+  const imagePreview = page.visualPreview ?? PLACEHOLDER_VISUAL_PREVIEW
+  const visualKey = page.visualKey ?? 'sub-01-01'
 
   return (
     <div className="placeholder-page" data-name={`SUB_${page.title}`}>
@@ -23,9 +26,9 @@ export function PlaceholderPage({ pageId }: PlaceholderPageProps) {
         <SubVisual
           parentLabel={page.parentLabel}
           title={page.title}
-          image={PLACEHOLDER_VISUAL_SRC}
-          imagePreview={PLACEHOLDER_VISUAL_PREVIEW}
-          visualKey="sub-01-01"
+          image={image}
+          imagePreview={imagePreview}
+          visualKey={visualKey}
           showChip={page.showChip}
         />
       </div>
