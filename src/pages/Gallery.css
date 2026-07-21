@@ -56,9 +56,9 @@
 }
 .gallery-pyramid__disc {
   z-index: 2;
-  inset: 6.5%;
+  inset: 8%;
   border-radius: 50%;
-  background: #f9f9f9;
+  background: #fff;
   animation: gallery-pyramid-pulse 2.4s ease-in-out infinite;
   transform-origin: center center;
 }
@@ -141,10 +141,10 @@
 @keyframes gallery-pyramid-pulse {
   0%,
   100% {
-    transform: scale(0.88);
+    transform: scale(0.5);
   }
   50% {
-    transform: scale(1.06);
+    transform: scale(1);
   }
 }
 
