@@ -16,6 +16,7 @@ import { BoardDetailPage } from './pages/BoardDetailPage'
 import { CaseStudiesPage } from './pages/CaseStudiesPage'
 import { ColumnMediaLayout } from './pages/ColumnMediaLayout'
 import { ColumnMediaListPage } from './pages/ColumnMediaListPage'
+import { GalleryPage } from './pages/GalleryPage'
 import { GreetingPage } from './pages/GreetingPage'
 import { HomePage } from './pages/HomePage'
 import { LawyerProfilePage } from './pages/LawyerProfilePage'
@@ -54,11 +55,12 @@ function ScrollToTop() {
  * - /about/intro                          → 법인소개 (sub-01-01)
  * - /about/greeting                       → 대표 인사말 (sub-01-02)
  * - /about/lawyers/:lawyerId              → 변호사자문단 (sub-01-03, route-mode tabs)
+ * - /about/gallery                        → 경국인 · 갤러리 (sub-01-04, scroll-mode tabs)
  * - /practice/renewal                     → 정비사업 (sub-02-01)
  * - /practice/public                      → 공익사업 (sub-02-02)
  *
  * Placeholders (sub-01-01 visual + “곧 업데이트예정”):
- * - /about/gallery|history|location
+ * - /about/history|location
  * - /other/misc|realestate
  * - /news/notice|cases|careers|consult
  *
@@ -83,10 +85,7 @@ function App() {
             element={<Navigate to={DEFAULT_LAWYER_ID} replace />}
           />
           <Route path="about/lawyers/:lawyerId" element={<LawyerProfilePage />} />
-          <Route
-            path="about/gallery"
-            element={<PlaceholderPage pageId="about-gallery" />}
-          />
+          <Route path="about/gallery" element={<GalleryPage />} />
           <Route
             path="about/history"
             element={<PlaceholderPage pageId="about-history" />}
