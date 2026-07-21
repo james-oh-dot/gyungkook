@@ -189,6 +189,7 @@ These failures are treated as **blocking bugs**. Never ship a hero change withou
 - Global tokens in `src/styles/global.css`: `--page-pad` (section inset) and `--footer-pad` (footer inset).
 - Desktop: `--page-pad` stays the existing clamp; `--footer-pad` follows it. Tablet (≤768): sections `48px`, footer `40px`. Mobile (≤767): both `24px`.
 - Below-hero sections use `var(--page-pad)`. Footer uses `var(--footer-pad)`.
+- **HARD RULE — 1280 content width (do not regress to 880):** `--page-pad` caps at **200px** on ≥1920px screens, so putting **both** `max-width: 1280px` **and** `padding: … var(--page-pad) …` on the *same* element caps content at `1280 − 2×200 = 880px`. Two correct patterns: (a) **split** — a full-width outer with `padding: … var(--page-pad)` + a separate inner `max-width: 1280px; margin: 0 auto` (법인소개/정비/board pages); or (b) **single element** — `max-width: calc(1280px + 2 * var(--page-pad))` with `padding-inline: var(--page-pad)` (대표인사말 `.greeting__main`, 갤러리 `.gallery__main`, 변호사 `.lawyer-hero__inner`). Never `max-width:1280` + page-pad on one box. (2026-07-21 fix.)
 - Achieve cards: on tablet/mobile reduce card own horizontal margin so it does not double-inset against `--page-pad`.
 
 ### Responsive system (desktop → tablet → mobile)
