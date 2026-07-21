@@ -9,10 +9,18 @@
  * others are placeholders until their designs arrive.
  *
  * ⚠️ Still pending: 박효영/공성준/신지호 profile content + all three portraits
- * reuse home-page profile stock photos. 공대호's certificate/appointment/award
- * images (13 items) render as captioned placeholder frames — real exports not
- * yet provided. The sub-01-03 hero and 공대호's portrait are real photos
- * (provided directly by the user, figma.com exports remain egress-blocked).
+ * reuse home-page profile stock photos.
+ *
+ * 공대호's 11 of 13 certificate/appointment/award images (2026-07-21) were
+ * extracted directly from the Figma node tree via `get_screenshot`
+ * (`enableBase64Response`) — MCP tool traffic isn't subject to this session's
+ * curl/egress block on figma.com, unlike `download_assets`' short-lived URLs.
+ * See node IDs 89:3357/3360 (인증서), 89:3374/3377/3380/3384/3387/3390 (위촉),
+ * 89:3411/3414/3417 (수상) in file `iijQYSn6QBUMArHdBUSqKr`. The remaining 2
+ * appointments (서울시사회복지협의회봉사단 / 대한법률봉사회회장) reuse OTHER
+ * items' images in the Figma source itself (identical asset refs — designer
+ * placeholder, not a real cert scan) — left as captioned placeholder frames
+ * on purpose; do not wire a duplicate/wrong image to them.
  */
 
 import { progressiveAsset } from '../utils/progressiveImage'
@@ -20,6 +28,9 @@ import { asset } from '../utils/asset'
 
 const LAWYERS_VISUAL = progressiveAsset('assets/sub/sub-01-03')
 const GONGDAEHO_PHOTO = progressiveAsset('assets/lawyers/gongdaeho')
+
+/** 공대호 인증서/위촉/수상 real photos (Figma node screenshots). */
+const cert = (stem: string) => progressiveAsset(`assets/lawyers/${stem}`).src
 
 export const LAWYERS_PAGE = {
   parentLabel: '법무법인경국',
@@ -163,23 +174,23 @@ const GONG_DAEHO: Lawyer = {
     '창원 대상공원사업',
   ],
   certificates: [
-    { label: '재개발·재건축' },
-    { label: '행정법' },
+    { label: '재개발·재건축', image: cert('gongdaeho-cert-redevelopment') },
+    { label: '행정법', image: cert('gongdaeho-cert-admin') },
   ],
   appointments: [
-    { label: 'LH 정비사업 자문위원' },
-    { label: '서울시 인권지킴이단 변호사' },
-    { label: '대한중앙의료봉사회 자문위원' },
-    { label: '한국청소년육성회 법률자문위촉' },
-    { label: '북한인권 특별위원회 위원' },
-    { label: '법무부 마을 변호사' },
+    { label: 'LH 정비사업 자문위원', image: cert('gongdaeho-apt-lh') },
+    { label: '서울시 인권지킴이단 변호사', image: cert('gongdaeho-apt-seoul-human-rights') },
+    { label: '대한중앙의료봉사회 자문위원', image: cert('gongdaeho-apt-medical-volunteer') },
+    { label: '한국청소년육성회 법률자문위촉', image: cert('gongdaeho-apt-youth-legal') },
+    { label: '북한인권 특별위원회 위원', image: cert('gongdaeho-apt-nk-human-rights') },
+    { label: '법무부 마을 변호사', image: cert('gongdaeho-apt-village-lawyer') },
     { label: '서울시사회복지협의회봉사단' },
     { label: '대한법률봉사회회장' },
   ],
   awards: [
-    { label: '서울시 인권지킴이단' },
-    { label: '서울관악경찰서장 표창' },
-    { label: '2025 한국브랜드만족지수 1위' },
+    { label: '서울시 인권지킴이단', image: cert('gongdaeho-award-human-rights') },
+    { label: '서울관악경찰서장 표창', image: cert('gongdaeho-award-police') },
+    { label: '2025 한국브랜드만족지수 1위', image: cert('gongdaeho-award-brand-index') },
   ],
 }
 
