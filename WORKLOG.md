@@ -1168,3 +1168,16 @@ GNB 소식·공지 fullmenu에서 상담신청 hover 시 sub-05-01 노출, href 
 - `src/data/consult.ts`(신규), `src/pages/ConsultPage.tsx`(신규),
   `src/pages/Consult.css`(신규), `public/assets/icon-naver.svg`·`icon-kakao.svg`(신규),
   `src/App.tsx`, `src/data/nav.ts`, `src/data/placeholderPages.ts`.
+
+---
+
+## 2026-07-22 — 상담신청 카카오 방문예약 링크 연결
+
+상담신청 SNS 버튼 중 **카카오**를 실링크로 연결(사용자 제공).
+- `consult.ts` `CONSULT_SNS.links` 카카오: `href`(PC) `http://pf.kakao.com/_twVnn`,
+  `hrefMobile`(모바일 카톡 채팅) `http://pf.kakao.com/_twVnn/chat`.
+- `ConsultPage`: `IS_MOBILE_UA`(user-agent) 판별 → 모바일이면 `hrefMobile` 우선.
+  외부(http) 링크는 `target=_blank rel=noopener noreferrer`.
+- 네이버는 실링크 미확보로 `href:'#'` 유지.
+- 검증(Playwright): 데스크탑 → `_twVnn`(target _blank), iPhone UA → `_twVnn/chat`.
+  lint/build 통과.
