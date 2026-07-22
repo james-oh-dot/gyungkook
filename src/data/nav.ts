@@ -4,6 +4,7 @@ import { COLUMN_MEDIA_PAGE } from './columnMedia'
 import { GALLERY_PAGE } from './gallery'
 import { GREETING_PAGE } from './greeting'
 import { LAWYERS_PAGE } from './lawyers'
+import { NEWS_NOTICE_PAGE } from './newsNotice'
 import {
   PLACEHOLDER_PAGES,
   PLACEHOLDER_VISUAL_SRC,
@@ -73,6 +74,9 @@ export const GNB_SUB_VISUAL_PRESS_COLUMN = COLUMN_MEDIA_PAGE.visual
 
 /** Figma sub-04-04 — 활동·보도 > 사회공헌 */
 export const GNB_SUB_VISUAL_PRESS_SOCIAL = SOCIAL_CONTRIBUTION_PAGE.visual
+
+/** Figma sub-05-01 — 소식·공지 (one visual for the whole section) */
+export const GNB_SUB_VISUAL_NEWS = NEWS_NOTICE_PAGE.visual
 
 /**
  * Match the current SPA pathname to a drawer parent + sub item.
@@ -236,19 +240,19 @@ export const NAV_ITEMS: NavItem[] = [
         id: 'news-notice',
         label: '소식공지',
         href: '/news/notice',
-        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+        visual: GNB_SUB_VISUAL_NEWS,
       },
       {
         id: 'news-cases',
         label: '판례뉴스',
         href: '/news/cases',
-        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+        visual: GNB_SUB_VISUAL_NEWS,
       },
       {
         id: 'news-careers',
         label: '인재영입',
         href: '/news/careers',
-        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+        visual: GNB_SUB_VISUAL_NEWS,
       },
       {
         id: 'news-consult',

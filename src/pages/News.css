@@ -1,0 +1,544 @@
+/*
+ * 소식 · 공지 (sub-05-01) — shared styles for 소식공지 / 판례뉴스 / 인재영입.
+ * Layout mirrors the board pattern (full-width __main with --page-pad gutter +
+ * 1280 __contents inner). Sharp-rect; brand mint #58bdc2.
+ */
+
+.news-board {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #fff;
+}
+.news-board__visual {
+  width: 100%;
+}
+/* Detail / tab scroll target under the sticky GNB */
+.news-board__anchor {
+  height: 0;
+  margin: 0;
+  scroll-margin-top: var(--gnb-bar-h, 100px);
+  pointer-events: none;
+}
+.news-board__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: clamp(56px, 8vw, 140px) var(--page-pad) clamp(96px, 12vw, 160px);
+  background: #fff;
+}
+.news-board__contents {
+  width: 100%;
+  max-width: 1280px;
+}
+
+/* ============================ 소식공지 (2-col cards) ============================ */
+.news-notice-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: min-content;
+  align-content: start;
+  gap: 40px;
+  width: 100%;
+}
+.news-notice-grid > li {
+  display: flex;
+}
+.news-notice-card {
+  display: flex;
+  width: 100%;
+}
+.news-notice-card__link {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #f1f1f5;
+  box-shadow: 0 16px 20px -2px rgba(35, 48, 59, 0.1);
+  text-decoration: none;
+  transition:
+    box-shadow 0.2s var(--ease-premium, ease),
+    transform 0.2s var(--ease-premium, ease);
+}
+.news-notice-card__link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 30px -4px rgba(35, 48, 59, 0.18);
+}
+.news-notice-card__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.45px;
+  color: #111;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.news-notice-card__divider {
+  display: block;
+  width: 242px;
+  max-width: 60%;
+  height: 1px;
+  background: #f1f1f5;
+}
+.news-notice-card__body {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  letter-spacing: -0.35px;
+  color: #767676;
+  white-space: pre-line;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.news-notice-card__meta {
+  margin: auto 0 0;
+  padding-top: 4px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1.45;
+  letter-spacing: -0.35px;
+  color: #767676;
+}
+.news-notice-card__dot {
+  color: #000;
+}
+
+/* ============================ 판례뉴스 (full-width cards) ============================ */
+.case-news-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+}
+.case-news-card__link {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 48px;
+  background: #fff;
+  border: 1px solid #f1f1f5;
+  box-shadow: 0 32px 36px -2px rgba(35, 48, 59, 0.1);
+  text-decoration: none;
+  transition:
+    box-shadow 0.2s var(--ease-premium, ease),
+    transform 0.2s var(--ease-premium, ease);
+}
+.case-news-card__link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 36px 44px -6px rgba(35, 48, 59, 0.18);
+}
+.case-news-card__title-row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.case-news-card__chip {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background: #101010;
+  border-radius: 2px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.275px;
+  white-space: nowrap;
+}
+.case-news-card__title {
+  margin: 0;
+  flex: 1 1 0;
+  min-width: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.6px;
+  color: #111;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.case-news-card__body {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.4;
+  letter-spacing: -0.4px;
+  color: #767676;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.case-news-card__source {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.45;
+  letter-spacing: -0.35px;
+  color: #111;
+}
+.case-news-card__meta {
+  margin: 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1.45;
+  letter-spacing: -0.35px;
+  color: #767676;
+}
+.case-news-card__dot {
+  color: #000;
+}
+
+/* ============================ 인재영입 info ============================ */
+.careers-info {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(72px, 9vw, 140px);
+}
+.careers-intro {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  text-align: center;
+  color: #505050;
+  font-size: clamp(16px, 1.9vw, 24px);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.6px;
+}
+
+.careers-values {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+}
+.careers-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 39px 24px;
+  background: #fff;
+  border: 1px solid #f1f1f5;
+  box-shadow: 0 16px 10px rgba(35, 48, 59, 0.1);
+  text-align: center;
+}
+.careers-value__title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.6px;
+  color: #111;
+}
+.careers-value__desc {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: -0.45px;
+  color: #111;
+}
+.careers-value__icon {
+  width: 86px;
+  height: 86px;
+  margin-top: auto;
+}
+
+/* Dark 수시지원 contact block */
+.careers-contact {
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+  padding: 62px 48px;
+  background: #111;
+}
+.careers-contact__title {
+  margin: 0;
+  width: 299px;
+  flex-shrink: 0;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.8px;
+  color: #fff;
+}
+.careers-contact__group {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  gap: 28px;
+}
+.careers-contact__divider {
+  align-self: stretch;
+  width: 2px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.1);
+}
+.careers-contact__col {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.careers-contact__label {
+  margin: 0;
+  color: #58bdc2;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.45px;
+}
+.careers-contact__row {
+  margin: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.careers-contact__row img {
+  width: 24px;
+  height: 24px;
+  color: #fff;
+}
+.careers-contact__row a {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none;
+}
+.careers-contact__row a:hover {
+  text-decoration: underline;
+}
+
+/* ============================ 채용공고 (search + job list) ============================ */
+.jobs {
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+}
+.jobs-filter {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+}
+.jobs-filter__search {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  height: 48px;
+  padding: 0 16px;
+  background: #fff;
+  border: 1px solid #dbe0e0;
+}
+.jobs-filter__search img {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.jobs-filter__search input {
+  flex: 1 1 0;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-size: 16px;
+  color: #333;
+}
+.jobs-filter__search input::placeholder {
+  color: #9e9e9e;
+}
+.jobs-filter__select {
+  flex-shrink: 0;
+  width: 168px;
+  height: 48px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  background: #fff;
+  border: 1px solid #dbe0e0;
+  cursor: pointer;
+  font-size: 16px;
+  color: #8c8c8c;
+}
+.jobs-filter__select img {
+  width: 20px;
+  height: 20px;
+}
+
+.jobs-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border: 1px solid #f1f1f5;
+  box-shadow: 0 32px 36px -2px rgba(35, 48, 59, 0.1);
+}
+.jobs-list > li + li .job-card {
+  border-top: 1px solid #f1f1f5;
+}
+.job-card__link {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  padding: 48px;
+  background: #fff;
+  text-decoration: none;
+  transition: background 0.2s var(--ease-premium, ease);
+}
+.job-card__link:hover {
+  background: #fafafb;
+}
+.job-card__copy {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.job-card__title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.6px;
+  color: #111;
+}
+.job-card__info {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1.45;
+  letter-spacing: -0.35px;
+  color: #767676;
+}
+.job-card__info-item {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+}
+.job-card__sep {
+  width: 1px;
+  height: 10px;
+  background: #e5e5ec;
+}
+.job-card__date {
+  flex-shrink: 0;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  line-height: 1.45;
+  letter-spacing: -0.35px;
+  color: #767676;
+}
+.job-card__dday {
+  padding: 0 6px;
+  background: #f5f5f5;
+  color: #767676;
+}
+
+/* ============================ Responsive ============================ */
+@media (max-width: 1024px) {
+  .careers-contact {
+    flex-direction: column;
+    gap: 32px;
+  }
+  .careers-contact__title {
+    width: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .news-notice-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .case-news-list {
+    gap: 16px;
+  }
+  .case-news-card__link {
+    padding: 28px 20px;
+    gap: 10px;
+  }
+  .case-news-card__title-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .case-news-card__title {
+    font-size: 18px;
+    -webkit-line-clamp: 2;
+  }
+  .case-news-card__body {
+    font-size: 14px;
+  }
+  .careers-values {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .careers-contact {
+    padding: 40px 24px;
+  }
+  .careers-contact__group {
+    flex-direction: column;
+    gap: 24px;
+  }
+  .careers-contact__divider {
+    width: 100%;
+    height: 1px;
+  }
+  .jobs-filter {
+    flex-wrap: wrap;
+  }
+  .jobs-filter__search {
+    flex-basis: 100%;
+  }
+  .jobs-filter__select {
+    flex: 1 1 0;
+    width: auto;
+  }
+  .job-card__link {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 24px 20px;
+  }
+  .job-card__title {
+    font-size: 18px;
+  }
+}

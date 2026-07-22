@@ -45,9 +45,11 @@ export function PostDetail({
         </header>
 
         <div className="post-detail__body" data-name="object_frame">
-          <figure className="post-detail__figure">
-            <img src={image} alt="" />
-          </figure>
+          {image ? (
+            <figure className="post-detail__figure">
+              <img src={image} alt="" />
+            </figure>
+          ) : null}
           <div className="post-detail__prose">
             {post.body.map((paragraph, i) => (
               <p key={i}>{paragraph}</p>

@@ -911,3 +911,58 @@ Real map Office remains `1:7571` / `OfficeSection` (unchanged).
 ### Follow-ups
 - Replace awards per-item images when provided
 - Optional: apply same hover language to Achievements white-card rows if design wants parity (separate from misnamed Figma frames)
+
+---
+
+## 2026-07-22 — 소식 · 공지 section (소식공지 / 판례뉴스 / 인재영입)
+
+Built the 3-menu 소식·공지 section from Figma `AI_dev` node `99:5666`
+(`SUB_소식공지_소식공지 / _판례뉴스 / _인재영입_인재영입 / _인재영입_채용공고 DESKTOP`),
+verified visually against Figma at desktop (1440) / tablet (900) / mobile (390).
+
+### Structure
+- **One sub-visual for the whole section** — `sub-05-01` for every child menu.
+  `nav.ts` exports `GNB_SUB_VISUAL_NEWS = NEWS_NOTICE_PAGE.visual`; `news-notice`,
+  `news-cases`, `news-careers` all use it (GNB menu-swap thumbnail reflects it too).
+  `news-consult` 상담신청 stays a placeholder for now.
+- **소식공지** `/news/notice` — single board (`hasTabSegment:false`), 2-col cards
+  (`NoticeCard`: title / divider / 3-line body / date · 조회).
+- **판례뉴스** `/news/cases` — single board, `CaseNewsCard` (category chip + title /
+  body / source / date · 조회).
+- **인재영입** `/news/careers` — **route-mode local tabs** (인재영입 ↔ 채용공고).
+  Index = `CareersInfoPage` (intro + 3 value cards + dark contact block; not a board).
+  `/news/careers/jobs` = `JobsListPage` (search + 직군/경력/고용형태 selects + job-card list).
+- Shared detail: notice / cases / jobs all reuse `BoardDetailPage` + `PostDetail`.
+  `PostDetail` figure made conditional so imageless job posts don't render a broken img.
+
+### Class-collision bug (root-caused via Playwright measurement)
+Notice list cards rendered ~745–770px tall (should be ~185px). Cause: the **home
+page** already defines `.notice-grid` / `.notice-card*`; the subpage list reused the
+same names and the two rule-sets cross-contaminated into a grid-height feedback loop.
+Fix: renamed all subpage classes to `news-notice-*` (`sed` across NoticeCard.tsx /
+NewsNoticeListPage.tsx / News.css) + `grid-auto-rows: min-content; align-content:
+start` + `.news-notice-card{display:flex}` / `__link{flex:1}` (not `height:100%`).
+Card back to 185px. → new HARD RULE in AGENTS.md: never reuse a home-section class
+name for a subpage; grep both first.
+
+### Assets
+- `public/assets/sub/sub-05-01.jpg` (+ `.webp` / `.preview.webp`): inpainted grayscale
+  geometric hero (baked title painted out via cv2, `generate-progressive-images.py`
+  TARGETS += `sub/sub-05-01.jpg`).
+- New icons: `icon-mail.svg`, `icon-chevron-down.svg`, `icon-value-people/share/warmth.svg`.
+
+### Key files
+- Data: `src/data/newsNotice.ts` / `caseNews.ts` / `careers.ts`; `board.ts`
+  (`BoardPost` += `jobMeta` / `deadline` / `dday`); `nav.ts`; `App.tsx` (nested routes).
+- Components: `NoticeCard` / `CaseNewsCard` / `JobCard`; `PostDetail` (conditional figure).
+- Pages: `NewsNoticeLayout` / `NewsNoticeListPage`, `CaseNewsLayout` /
+  `CaseNewsListPage`, `CareersLayout` / `CareersInfoPage`, `JobsListPage`; `News.css`.
+
+### QA
+`npm run lint` + `npm run build` clean. Desktop/tablet/mobile: 0 overflow-x,
+0 console errors. GNB menu-swap shows `sub-05-01` for all news items; 인재영입 ↔
+채용공고 tab routing works; list → shared detail scroll behaves.
+
+### Follow-ups
+- 상담신청 (`/news/consult`) still a placeholder — needs its own Figma frame.
+- Seed posts are mock data; swap each module's `posts` source when CMS lands.
