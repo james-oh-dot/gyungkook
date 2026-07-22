@@ -40,12 +40,30 @@ export const CONSULT_CONTACT = {
 
 /**
  * SNS 상담문의 — 다크 CTA 버튼 (Figma 100:843).
- * `href`는 실제 네이버/카카오 예약 링크로 교체 예정(플레이스홀더 '#').
+ * `hrefMobile`이 있으면 모바일(터치/모바일 UA)에서 우선 사용한다 — 카카오는
+ * 모바일에서 `/chat` 딥링크(카톡 채팅), PC에서 채널 페이지로 연결.
+ * 네이버는 실제 예약 링크 확보 시 `href` 교체 예정(현재 '#').
  */
-export const CONSULT_SNS = {
+export type ConsultSnsLink = {
+  id: string
+  text: string
+  icon: string
+  /** 기본/PC 링크 */
+  href: string
+  /** 모바일 전용 링크(있으면 모바일에서 우선) */
+  hrefMobile?: string
+}
+
+export const CONSULT_SNS: { label: string; links: ConsultSnsLink[] } = {
   label: 'SNS 상담문의',
   links: [
     { id: 'naver', text: '네이버 방문예약 바로 신청', icon: 'icon-naver.svg', href: '#' },
-    { id: 'kakao', text: '카카오 방문예약 바로 신청', icon: 'icon-kakao.svg', href: '#' },
+    {
+      id: 'kakao',
+      text: '카카오 방문예약 바로 신청',
+      icon: 'icon-kakao.svg',
+      href: 'http://pf.kakao.com/_twVnn',
+      hrefMobile: 'http://pf.kakao.com/_twVnn/chat',
+    },
   ],
-} as const
+}

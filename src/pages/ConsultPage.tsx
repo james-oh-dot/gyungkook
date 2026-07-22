@@ -12,6 +12,15 @@ const PHONE_SRC = asset('assets/icon-call.svg')
 const MAIL_SRC = asset('assets/icon-mail.svg')
 
 /**
+ * 카카오 `/chat` 딥링크는 모바일에서 카톡 앱을 열고, PC에선 채널 페이지가
+ * 맞다. 실기기 기준(뷰포트 아님)이라 user-agent로 판별한다. Client-only SPA라
+ * 모듈 로드 시 navigator가 항상 존재한다.
+ */
+const IS_MOBILE_UA =
+  typeof navigator !== 'undefined' &&
+  /Android|iPhone|iPad|iPod|Mobi/i.test(navigator.userAgent)
+
+/**
  * 소식 · 공지 > 상담신청 (Figma SUB_소식공지_상담문의 / node 100:723).
  * Static single page (no local tabs): SubVisual(sub-05-01) → 2-col split
  * (좌 eyebrow+타이틀 / 우 리드 + 연락처·SNS 카드). ≤1024 stacks to 1 column.
@@ -72,14 +81,26 @@ export function ConsultPage() {
                 aria-label={CONSULT_SNS.label}
               >
                 <p className="consult-card__label">{CONSULT_SNS.label}</p>
-                {CONSULT_SNS.links.map((link) => (
-                  <a key={link.id} className="consult-sns" href={link.href}>
-                    <span className="consult-sns__icon" aria-hidden="true">
-                      <img src={asset(`assets/${link.icon}`)} alt="" />
-                    </span>
-                    <span className="consult-sns__text">{link.text}</span>
-                  </a>
-                ))}
+                {CONSULT_SNS.links.map((link) => {
+                  const href =
+                    IS_MOBILE_UA && link.hrefMobile ? link.hrefMobile : link.href
+                  const external = href.startsWith('http')
+                  return (
+                    <a
+                      key={link.id}
+                      className="consult-sns"
+                      href={href}
+                      {...(external
+                        ? { target: '_blank', rel: 'noopener noreferrer' }
+                        : {})}
+                    >
+                      <span className="consult-sns__icon" aria-hidden="true">
+                        <img src={asset(`assets/${link.icon}`)} alt="" />
+                      </span>
+                      <span className="consult-sns__text">{link.text}</span>
+                    </a>
+                  )
+                })}
               </section>
             </div>
           </div>
