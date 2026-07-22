@@ -87,6 +87,11 @@
   - **보상업무실적 카드 라벨**: `PUBLIC_RECORD_2.chip = '보상업무'` (2026-07-22, 기존 `'재개발 · 재건축'` 대체). 이 탭 실적 카드 카테고리 칩이 `보상업무`로 표기된다.
   - Data: `src/data/publicProject.ts`; GNB `redev-public` → `/practice/public`, visual `sub-02-02` (`nav.ts` `GNB_SUB_VISUAL_PUBLIC`).
   - **enLabel eyebrows** were re-translated from legal glossary (Figma had copy-paste leftovers) — see WORKLOG 2026-07-20.
+- **기타업무** (Figma `SUB_기타업무` / node 103:3962, `sub-03-01`):
+  - `/other/misc` → `MiscPage` — **스크롤-모드 로컬 탭 단일 페이지**(정비/공익과 동일 머신, `renewal-*` 쉘 재사용 → 탭 400/88 · 내부 140/74 간격 자동). 브레드크럼 탭 5개: 부동산 분야 / 상속 · 이혼 · 가사 / 민사 · 형사 / 행정 / 기업 · 스타트업. `/other/realestate`는 `/other/misc`로 redirect.
+  - Data `src/data/misc.ts`: `MiscTab → MiscSection → MiscGroup`. 한 탭이 여러 섹션 가능(상속+이혼, 민사+형사). 카드 = `.misc-cards`(3→2→1) `#f7f7fb` + 제목 + 기본 disc 리스트. 기업·스타트업엔 협력사 파트너 프로필(`MiscPartners`: 머스트 특허법률사무소, 김영애/공대우 — 자격 teal 칩 + 전문분야 회색 칩 + 학력/경력).
+  - GNB `other` 메뉴 = 5개 영역 children(모두 `/other/misc`), visual `GNB_SUB_VISUAL_OTHER = sub-03-01`.
+  - **이미지(사용자 채팅 제공, 2026-07-22):** `sub-03-01` 히어로(대법원 페디먼트, **타이틀 없는 클린 버전**이라 인페인트 불필요 → progressive 페어 생성) + 파트너 사진 2장(`public/assets/other/partner-kimyeongae.jpg` / `partner-gongdaewoo.jpg`, `misc.ts`의 `partner.photo`). Figma로의 `curl`은 조직 egress 정책 차단(403)이고 `get_screenshot` base64도 트랜스크립트에 풀해상도 미보존 → **egress 필요 이미지는 사용자가 채팅에 올려주는 방식**(변호사 사진/sub-02-02와 동일). 머스트 특허법률사무소 로고만 미확보(현재 텍스트만).
   - **Real photo (2026-07-21):** `sub-02-02` hero is a real photo (metal-louver facade close-up) provided directly by the user in-chat — no longer a copy of `sub-02-01` (figma.com exports remain egress-blocked).
 - **소식 · 공지** (Figma `sub-05-01`, `SUB_소식공지_*_DESKTOP`, node 99:5666):
   - **One sub-visual for the whole section** — every child menu (소식공지 / 판례뉴스 / 인재영입 / 상담신청) shows `sub-05-01`. `nav.ts` `GNB_SUB_VISUAL_NEWS = NEWS_NOTICE_PAGE.visual`; `news-notice` / `news-cases` / `news-careers` / `news-consult` GNB children all point at it. Hero title per page is live/responsive over the inpainted `sub-05-01` (baked title painted out with cv2 — same pipeline as sub-01-02/04).

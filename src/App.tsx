@@ -29,6 +29,7 @@ import { GreetingPage } from './pages/GreetingPage'
 import { HomePage } from './pages/HomePage'
 import { JobsListPage } from './pages/JobsListPage'
 import { LawyerProfilePage } from './pages/LawyerProfilePage'
+import { MiscPage } from './pages/MiscPage'
 import { NewsNoticeLayout } from './pages/NewsNoticeLayout'
 import { NewsNoticeListPage } from './pages/NewsNoticeListPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
@@ -110,14 +111,11 @@ function App() {
           <Route path="practice/renewal" element={<RenewalPage />} />
           <Route path="practice/public" element={<PublicProjectPage />} />
 
-          {/* 기타업무 */}
-          <Route
-            path="other/misc"
-            element={<PlaceholderPage pageId="other-misc" />}
-          />
+          {/* 기타업무 (부동산 분야 등 5개 영역 스크롤 탭 단일 페이지) */}
+          <Route path="other/misc" element={<MiscPage />} />
           <Route
             path="other/realestate"
-            element={<PlaceholderPage pageId="other-realestate" />}
+            element={<Navigate to="/other/misc" replace />}
           />
 
           {/* 활동 · 보도 */}

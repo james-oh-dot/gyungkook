@@ -51,18 +51,7 @@ export const PLACEHOLDER_PAGES: Record<string, PlaceholderPageDef> = {
     visualPreview: LOCATION_VISUAL.preview,
     visualKey: 'sub-01-06',
   },
-  'other-misc': {
-    path: '/other/misc',
-    parentLabel: '기타업무',
-    title: '기타업무',
-    showChip: true,
-  },
-  'other-realestate': {
-    path: '/other/realestate',
-    parentLabel: '기타업무',
-    title: '부동산',
-    showChip: true,
-  },
+  /* other-misc / other-realestate 는 실페이지(MiscPage)로 대체되어 placeholder 불필요 */
   'news-notice': {
     path: '/news/notice',
     parentLabel: '소식 · 공지',

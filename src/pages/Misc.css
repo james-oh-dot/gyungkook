@@ -1,0 +1,292 @@
+/*
+ * 기타업무 (Figma SUB_기타업무 / sub-03-01) — renewal 쉘(Renewal.css) 위에 얹는
+ * 카드 그리드 컴포넌트. 탭 400/88 · 내부 140/74 간격은 renewal 규칙을 상속.
+ * Brand mint #58bdc2, sharp-rect(no border-radius).
+ */
+
+.misc {
+  --misc-brand: #58bdc2;
+  --misc-card-bg: #f7f7fb;
+  --misc-ink: #111;
+  --misc-ink-sub: #505050;
+}
+
+/* block_right 내부: 리드 / 그룹들 세로 스택 (140px 간격은 renewal-split__body) */
+.misc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.misc-lead {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  color: var(--misc-ink-sub);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.45px;
+  word-break: keep-all;
+}
+
+.misc-lead p {
+  margin: 0;
+}
+
+/* 문단 사이 한 줄 간격(Figma 빈 문단) */
+.misc-lead p + p {
+  margin-top: 1.4em;
+}
+
+/* 카드 그리드 — 3열 → 2열(≤1024) → 1열(≤767) */
+.misc-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  width: 100%;
+}
+
+.misc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  box-sizing: border-box;
+  background: var(--misc-card-bg);
+}
+
+.misc-card__title {
+  margin: 0;
+  text-align: center;
+  color: var(--misc-ink);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.6px;
+  word-break: keep-all;
+}
+
+.misc-card__list {
+  margin: 0;
+  padding-left: 22px;
+  list-style: disc;
+  color: var(--misc-ink-sub);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.45px;
+  word-break: keep-all;
+}
+
+.misc-card__list li {
+  margin: 0;
+}
+
+.misc-card__list li::marker {
+  color: var(--misc-ink-sub);
+}
+
+/* CTA 버튼 (상속 센터 바로가기 등) */
+.misc-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px 24px;
+  border: 0;
+  background: var(--misc-brand);
+  color: #fff;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.45px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.misc-cta:hover,
+.misc-cta:focus-visible {
+  background: #47a9ae;
+}
+
+.misc-cta img {
+  width: 20px;
+  height: 20px;
+  /* icon-arrow.svg currentColor → 흰색 */
+  filter: brightness(0) invert(1);
+}
+
+/* ============================ 협력사 파트너 프로필 ============================ */
+.misc-partners {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.misc-partners__firm {
+  margin: 0;
+  color: var(--misc-ink);
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.misc-partners__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  width: 100%;
+}
+
+.misc-partner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+  box-sizing: border-box;
+  background: var(--misc-card-bg);
+}
+
+.misc-partner__photo {
+  width: 100%;
+  aspect-ratio: 382 / 344;
+  overflow: hidden;
+  background: #e7e7ee;
+}
+
+.misc-partner__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* 사진 미확보 placeholder */
+.misc-partner__photo-ph {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #d7d7e0, #ececf2);
+}
+
+.misc-partner__head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.misc-partner__name {
+  margin: 0;
+  color: var(--misc-ink);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+}
+
+.misc-partner__quals {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.misc-partner__qual {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  background: var(--misc-brand);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.3px;
+}
+
+.misc-partner__fields {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.misc-partner__field {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  background: #ececf2;
+  color: var(--misc-ink-sub);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.3px;
+}
+
+.misc-partner__divider {
+  width: 100%;
+  height: 1px;
+  background: #dcdce4;
+}
+
+.misc-partner__block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.misc-partner__label {
+  margin: 0;
+  color: var(--misc-ink);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+}
+
+.misc-partner__list {
+  margin: 0;
+  padding-left: 20px;
+  list-style: disc;
+  color: var(--misc-ink-sub);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.375px;
+  word-break: keep-all;
+}
+
+/* ============================ Responsive ============================ */
+@media (max-width: 1024px) {
+  .misc-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .misc-partners__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .misc-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .misc-lead {
+    font-size: 16px;
+  }
+
+  .misc-card__title {
+    font-size: 20px;
+  }
+
+  .misc-card__list {
+    font-size: 16px;
+  }
+
+  .misc-cta {
+    font-size: 16px;
+  }
+}

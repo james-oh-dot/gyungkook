@@ -4,6 +4,7 @@ import { COLUMN_MEDIA_PAGE } from './columnMedia'
 import { GALLERY_PAGE } from './gallery'
 import { GREETING_PAGE } from './greeting'
 import { LAWYERS_PAGE } from './lawyers'
+import { MISC_PAGE } from './misc'
 import { NEWS_NOTICE_PAGE } from './newsNotice'
 import {
   PLACEHOLDER_PAGES,
@@ -77,6 +78,9 @@ export const GNB_SUB_VISUAL_PRESS_SOCIAL = SOCIAL_CONTRIBUTION_PAGE.visual
 
 /** Figma sub-05-01 — 소식·공지 (one visual for the whole section) */
 export const GNB_SUB_VISUAL_NEWS = NEWS_NOTICE_PAGE.visual
+
+/** Figma sub-03-01 — 기타업무 (one visual for all 5 practice areas) */
+export const GNB_SUB_VISUAL_OTHER = MISC_PAGE.visual
 
 /**
  * Match the current SPA pathname to a drawer parent + sub item.
@@ -187,16 +191,34 @@ export const NAV_ITEMS: NavItem[] = [
     href: '/other/misc',
     children: [
       {
-        id: 'other-misc',
-        label: '기타업무',
+        id: 'other-realestate',
+        label: '부동산 분야',
         href: '/other/misc',
-        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+        visual: GNB_SUB_VISUAL_OTHER,
       },
       {
-        id: 'other-realestate',
-        label: '부동산',
-        href: '/other/realestate',
-        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+        id: 'other-family',
+        label: '상속 · 이혼 · 가사',
+        href: '/other/misc',
+        visual: GNB_SUB_VISUAL_OTHER,
+      },
+      {
+        id: 'other-civil',
+        label: '민사 · 형사',
+        href: '/other/misc',
+        visual: GNB_SUB_VISUAL_OTHER,
+      },
+      {
+        id: 'other-admin',
+        label: '행정',
+        href: '/other/misc',
+        visual: GNB_SUB_VISUAL_OTHER,
+      },
+      {
+        id: 'other-corporate',
+        label: '기업 · 스타트업',
+        href: '/other/misc',
+        visual: GNB_SUB_VISUAL_OTHER,
       },
     ],
   },
