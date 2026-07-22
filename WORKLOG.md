@@ -1015,3 +1015,42 @@ Firefox)에서 정상 렌더. 기존 닫기 버튼 글래스도 동일하게 `-w
 - `src/pages/LawyerProfilePage.tsx` + `LawyerProfile.css`(`.lawyer-hero__eyebrow`).
 - `src/components/SearchOverlay.tsx`(스크롤 잠금 강화) + `SearchOverlay.css`
   (dim glass + results `overscroll-behavior`).
+
+---
+
+## 2026-07-22 — 검색 백드롭 blur 미적용 수정 (Firefox: -webkit- 단독 문제)
+
+### 증상
+검색 딤드 레이어의 리퀴드글라스 blur가 (특히 Firefox 등에서) 적용 안 됨.
+
+### 근거 (root cause)
+lightningcss(rolldown-vite CSS 트랜스포머)가 소스에 `backdrop-filter`와
+`-webkit-backdrop-filter`를 **둘 다** 손으로 쓰면 이를 병합해 **`-webkit-`
+단독**으로만 출력하고 표준 프로퍼티를 드롭. Firefox는 `-webkit-backdrop-filter`를
+지원하지 않고 표준 `backdrop-filter`만 인식 → blur 사라짐.
+- 확인: 빌드 산출물 `.search-overlay__dim` 규칙에 `-webkit-backdrop-filter`만
+  존재, 표준 프로퍼티 없음. headless `getComputedStyle().backdropFilter`도
+  `none`(표준 미설정) 반환.
+- 대조: 소스에 **표준만** 쓴 `global.css`(blur(3px))·`VersionSwitch.css`는
+  lightningcss가 알아서 `-webkit-`을 추가해 **둘 다** 출력되어 이미 정상이었음.
+
+### 조치
+문제 3곳(`SearchOverlay.css` dim + close, `Gnb.css` glass 버튼)에서 **손으로 쓴
+`-webkit-backdrop-filter` 라인 제거** → 표준 프로퍼티만 남김. lightningcss가
+빌드 시 `-webkit-` 별칭을 자동 추가.
+
+### 검증
+- 빌드 후 `dist/assets/*.css`의 모든 실제 `backdrop-filter` 선언이
+  `-webkit-` + 표준 **양쪽** 모두 출력됨을 스크립트로 확인
+  (blur(28px)saturate(180%), blur(10px)×3, blur(3px) 전부 ✅).
+- headless `getComputedStyle().backdropFilter` = `blur(28px) saturate(1.8)`
+  (기존 `none`에서 정상화) → 표준 프로퍼티 인식 확인. GNB 버튼도 `blur(10px)`.
+- `npm run lint`/`build` 통과.
+
+### 규칙 (AGENTS.md)
+`backdrop-filter`는 **표준 프로퍼티만** 작성(‑webkit‑ 수기 금지). lightningcss가
+프리픽스를 붙임. 손으로 둘 다 쓰면 `-webkit-` 단독으로 collapse되어 Firefox에서
+깨짐.
+
+### Key files
+- `src/components/SearchOverlay.css`(dim + close 버튼), `src/components/Gnb.css`.
