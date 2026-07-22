@@ -22,7 +22,6 @@ export function NewsNoticeLayout() {
           image={NEWS_NOTICE_PAGE.visual}
           imagePreview={NEWS_NOTICE_PAGE.visualPreview}
           visualKey="sub-05-01"
-          showChip={false}
         />
       </div>
       <div id={LOCAL_TABS_ANCHOR_ID} className="news-board__anchor" aria-hidden="true" />

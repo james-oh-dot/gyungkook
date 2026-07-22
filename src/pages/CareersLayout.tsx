@@ -26,7 +26,6 @@ export function CareersLayout() {
           image={CAREERS_PAGE.visual}
           imagePreview={CAREERS_PAGE.visualPreview}
           visualKey="sub-05-01"
-          showChip={false}
         />
       </div>
       <LocalTabs

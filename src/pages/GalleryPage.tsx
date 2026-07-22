@@ -102,7 +102,6 @@ export function GalleryPage() {
           image={GALLERY_PAGE.visual}
           imagePreview={GALLERY_PAGE.visualPreview}
           visualKey="sub-01-04"
-          showChip={false}
         />
       </div>
 

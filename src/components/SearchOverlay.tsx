@@ -70,15 +70,22 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
       setQuery('')
       return
     }
-    const prev = document.body.style.overflow
+    // Lock the page behind the glass; scrolling now only happens inside the
+    // overlay's results list. Pad for the reclaimed scrollbar width so the
+    // frozen page doesn't shift under the frosted layer.
+    const prevOverflow = document.body.style.overflow
+    const prevPadRight = document.body.style.paddingRight
+    const scrollbarW = window.innerWidth - document.documentElement.clientWidth
     document.body.style.overflow = 'hidden'
+    if (scrollbarW > 0) document.body.style.paddingRight = `${scrollbarW}px`
     const t = window.setTimeout(() => inputRef.current?.focus(), 40)
     const onKey = (e: globalThis.KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
     window.addEventListener('keydown', onKey)
     return () => {
-      document.body.style.overflow = prev
+      document.body.style.overflow = prevOverflow
+      document.body.style.paddingRight = prevPadRight
       window.clearTimeout(t)
       window.removeEventListener('keydown', onKey)
     }

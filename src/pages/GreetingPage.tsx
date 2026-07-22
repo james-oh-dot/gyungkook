@@ -21,7 +21,6 @@ export function GreetingPage() {
           image={p.visual}
           imagePreview={p.visualPreview}
           visualKey="sub-01-02"
-          showChip={false}
         />
       </div>
 
