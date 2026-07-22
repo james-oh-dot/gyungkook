@@ -282,6 +282,37 @@
   line-height: 1.35;
 }
 
+/* Per-page hit count — how many times the keyword appears on that page. */
+.search-overlay__count {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 26px;
+  height: 26px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: var(--search-brand);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* "총 N개 페이지에서 발견" line above the list. */
+.search-overlay__summary {
+  margin: 0 4px 4px;
+  color: var(--color-muted, #767676);
+  font-size: 14px;
+  letter-spacing: -0.02em;
+}
+
+.search-overlay__summary strong {
+  color: var(--search-brand);
+  font-weight: 700;
+}
+
 @media (max-width: 767px) {
   .search-overlay__panel {
     width: calc(100% - 32px);
@@ -304,16 +335,21 @@
   }
 
   .search-overlay__link {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px 12px;
   }
 
+  /* Chips take their own row; title + count share the next row. */
   .search-overlay__chips {
+    flex-basis: 100%;
     max-width: 100%;
   }
 
   .search-overlay__title {
+    /* basis 0 so a long title wraps internally instead of bumping the
+       count badge onto its own line */
+    flex: 1 1 0;
     font-size: 17px;
   }
 
