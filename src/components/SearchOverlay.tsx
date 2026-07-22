@@ -7,40 +7,10 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from 'react'
-import { NAV_ITEMS } from '../data/nav'
+import { searchDocs } from '../data/searchIndex'
 import { asset } from '../utils/asset'
 import { resolveNavHref } from '../utils/path'
 import './SearchOverlay.css'
-
-export type SearchHit = {
-  id: string
-  label: string
-  href: string
-  depth: string[]
-}
-
-function buildSearchIndex(): SearchHit[] {
-  const hits: SearchHit[] = []
-  for (const item of NAV_ITEMS) {
-    hits.push({
-      id: item.id,
-      label: item.label,
-      href: item.href,
-      depth: [item.label],
-    })
-    for (const sub of item.children) {
-      hits.push({
-        id: sub.id,
-        label: sub.label,
-        href: sub.href,
-        depth: [item.label, sub.label],
-      })
-    }
-  }
-  return hits
-}
-
-const SEARCH_INDEX = buildSearchIndex()
 
 type SearchOverlayProps = {
   open: boolean
@@ -53,14 +23,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
   const reactId = useId()
   const [query, setQuery] = useState('')
 
-  const results = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return []
-    return SEARCH_INDEX.filter((hit) => {
-      const hay = [...hit.depth, hit.label].join(' ').toLowerCase()
-      return hay.includes(q)
-    })
-  }, [query])
+  const results = useMemo(() => searchDocs(query), [query])
 
   const hasResults = results.length > 0
   const searching = query.trim().length > 0
@@ -113,11 +76,18 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
     const first = results[0]
     if (!first) return
     onClose()
+    // Home-anchor hit: smooth-scroll if the section is on the current page,
+    // otherwise navigate home to it. Route hit: plain navigation.
     if (first.href.startsWith('#')) {
-      document.querySelector(first.href)?.scrollIntoView({ behavior: 'smooth' })
-      window.history.replaceState(null, '', first.href)
+      const target = document.querySelector(first.href)
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth' })
+        window.history.replaceState(null, '', first.href)
+      } else {
+        window.location.href = resolveNavHref(first.href)
+      }
     } else {
-      window.location.href = first.href
+      window.location.href = resolveNavHref(first.href)
     }
   }
 
@@ -186,29 +156,40 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
             <p className="search-overlay__empty">검색 결과가 없습니다.</p>
           ) : null}
           {hasResults ? (
-            <ul className="search-overlay__list" role="list">
-              {results.map((hit) => (
-                <li key={hit.id} className="search-overlay__item">
-                  <a
-                    className="search-overlay__link"
-                    href={resolveNavHref(hit.href)}
-                    onClick={onClose}
-                  >
-                    <span className="search-overlay__chips" aria-hidden="true">
-                      {hit.depth.map((part, i) => (
-                        <span key={`${hit.id}-${i}`} className="search-overlay__depth">
-                          {i > 0 ? (
-                            <span className="search-overlay__depth-sep">/</span>
-                          ) : null}
-                          <span className="search-overlay__chip">{part}</span>
-                        </span>
-                      ))}
-                    </span>
-                    <span className="search-overlay__title">{hit.label}</span>
-                  </a>
-                </li>
-              ))}
-            </ul>
+            <>
+              <p className="search-overlay__summary">
+                총 <strong>{results.length}</strong>개 페이지에서 발견
+              </p>
+              <ul className="search-overlay__list" role="list">
+                {results.map((hit) => (
+                  <li key={hit.id} className="search-overlay__item">
+                    <a
+                      className="search-overlay__link"
+                      href={resolveNavHref(hit.href)}
+                      onClick={onClose}
+                    >
+                      <span className="search-overlay__chips" aria-hidden="true">
+                        {hit.depth.map((part, i) => (
+                          <span key={`${hit.id}-${i}`} className="search-overlay__depth">
+                            {i > 0 ? (
+                              <span className="search-overlay__depth-sep">/</span>
+                            ) : null}
+                            <span className="search-overlay__chip">{part}</span>
+                          </span>
+                        ))}
+                      </span>
+                      <span className="search-overlay__title">{hit.title}</span>
+                      <span
+                        className="search-overlay__count"
+                        aria-label={`이 페이지에서 ${hit.count}회 일치`}
+                      >
+                        {hit.count}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </>
           ) : null}
         </div>
       </div>
