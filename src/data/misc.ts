@@ -15,6 +15,7 @@
  * 서브비주얼 = sub-03-01 (전 영역 공통).
  */
 
+import { asset } from '../utils/asset'
 import { progressiveAsset } from '../utils/progressiveImage'
 
 const VISUAL = progressiveAsset('assets/sub/sub-03-01')
@@ -248,6 +249,7 @@ const CORPORATE: MiscSection = {
     people: [
       {
         name: '김영애',
+        photo: asset('assets/other/partner-kimyeongae.jpg'),
         quals: ['대표변리사'],
         fields: ['의약', '바이오', '헬스케어', '의료(의료 AI 및 의료기기)'],
         education: ['고려대학교 생명과학대학 식품공학부 졸업', 'UC Davis Bioscience 1년 수료'],
@@ -263,6 +265,7 @@ const CORPORATE: MiscSection = {
       },
       {
         name: '공대우',
+        photo: asset('assets/other/partner-gongdaewoo.jpg'),
         quals: ['파트너변리사', '기업기술가치평가사'],
         fields: ['기술사업화', '기술이전', '창업 지원', '가치평가'],
         education: ['서울대학교 농업생명과학대학 응용생물학과 졸업'],
