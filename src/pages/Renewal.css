@@ -20,10 +20,13 @@
   background: #fff;
 }
 
+/* Figma: 탭으로 구분된 섹션(각 탭 = .renewal-section) 사이 간격 400px
+   (태블릿/모바일 88px). 탭 섹션 내부 중간섹션 간격은 .renewal-section /
+   .renewal-split__body 의 140px(태블릿/모바일 74px). */
 .renewal__contents {
   display: flex;
   flex-direction: column;
-  gap: 140px;
+  gap: 400px;
   width: 100%;
   max-width: 1280px;
 }
@@ -723,8 +726,17 @@
     display: none;
   }
 
+  /* 태블릿/모바일: 탭 섹션 간 88px, 중간섹션 74px */
+  .renewal__contents {
+    gap: 88px;
+  }
+
+  .renewal-section {
+    gap: 74px;
+  }
+
   .renewal-split__body {
-    gap: 80px;
+    gap: 74px;
     padding-top: 0;
   }
 
@@ -753,14 +765,7 @@
     padding: 80px var(--page-pad) 120px;
   }
 
-  .renewal__contents,
-  .renewal-section {
-    gap: 80px;
-  }
-
-  .renewal-split__body {
-    gap: 64px;
-  }
+  /* 탭/중간섹션 간격은 ≤1024 규칙(88/74)을 그대로 유지 */
 
   .renewal-law {
     padding: 32px 24px;
@@ -798,10 +803,7 @@
     padding: 56px var(--page-pad) 96px;
   }
 
-  .renewal__contents,
-  .renewal-section {
-    gap: 56px;
-  }
+  /* 탭/중간섹션 간격은 ≤1024 규칙(88/74)을 그대로 유지 */
 
   .renewal-section {
     scroll-margin-top: calc(var(--gnb-bar-h, 82px) + 64px);

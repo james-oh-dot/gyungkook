@@ -408,7 +408,8 @@ export const PUBLIC_PROCEDURE = {
 export const PUBLIC_RECORD_2: ResultSection = {
   enLabel: 'Compensation Track Record',
   titleLines: ['공익사업', '(보상업무)실적'],
-  chip: '재개발 · 재건축',
+  /* 보상업무실적 카드 레이블은 '보상업무' (기존 '재개발 · 재건축' 대체) */
+  chip: '보상업무',
   result: '4천만원청구 전부 인용',
   total: 47,
   initialVisible: 15,

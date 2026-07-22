@@ -759,12 +759,13 @@
     padding: 100px var(--page-pad) 120px;
   }
 
+  /* 태블릿/모바일: 탭 섹션 간 88px, 중간섹션 74px */
   .about-intro__contents {
-    gap: 200px;
+    gap: 88px;
   }
 
   .about-intro-section {
-    gap: 80px;
+    gap: 74px;
   }
 
   .about-intro-split {
@@ -909,12 +910,13 @@
     padding: 80px var(--page-pad) 100px;
   }
 
+  /* 탭/중간섹션 간격은 ≤1024 규칙(88/74)을 유지 */
   .about-intro__contents {
-    gap: 120px;
+    gap: 88px;
   }
 
   .about-intro-section {
-    gap: 56px;
+    gap: 74px;
   }
 
   .about-intro-section__title {
