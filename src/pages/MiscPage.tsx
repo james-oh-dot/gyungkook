@@ -11,6 +11,7 @@ import {
   MISC_PAGE,
   MISC_TABS,
   type MiscGroup,
+  type MiscPartner,
   type MiscSection,
 } from '../data/misc'
 import { LOCAL_TABS_ANCHOR_ID } from '../hooks/useScrollToLocalTabs'
@@ -86,6 +87,54 @@ function GroupView({ group }: { group: MiscGroup }) {
   )
 }
 
+function PartnerCard({ partner }: { partner: MiscPartner }) {
+  return (
+    <article className="misc-partner">
+      <div className="misc-partner__photo">
+        {partner.photo ? (
+          <img src={partner.photo} alt={`${partner.name} 변리사`} />
+        ) : (
+          <span className="misc-partner__photo-ph" aria-hidden="true" />
+        )}
+      </div>
+      <div className="misc-partner__head">
+        <h4 className="misc-partner__name">{partner.name}</h4>
+        <div className="misc-partner__quals">
+          {partner.quals.map((q) => (
+            <span key={q} className="misc-partner__qual">
+              {q}
+            </span>
+          ))}
+        </div>
+        <div className="misc-partner__fields">
+          {partner.fields.map((f) => (
+            <span key={f} className="misc-partner__field">
+              {f}
+            </span>
+          ))}
+        </div>
+      </div>
+      <span className="misc-partner__divider" aria-hidden="true" />
+      <div className="misc-partner__block">
+        <p className="misc-partner__label">학력</p>
+        <ul className="misc-partner__list">
+          {partner.education.map((e) => (
+            <li key={e}>{e}</li>
+          ))}
+        </ul>
+      </div>
+      <div className="misc-partner__block">
+        <p className="misc-partner__label">주요 경력</p>
+        <ul className="misc-partner__list">
+          {partner.careers.map((c) => (
+            <li key={c}>{c}</li>
+          ))}
+        </ul>
+      </div>
+    </article>
+  )
+}
+
 function SectionView({ section }: { section: MiscSection }) {
   return (
     <div className="renewal-split">
@@ -98,6 +147,17 @@ function SectionView({ section }: { section: MiscSection }) {
         {section.groups.map((group, i) => (
           <GroupView key={group.headline || `group-${i}`} group={group} />
         ))}
+        {section.partners ? (
+          <div className="misc-partners">
+            <BulletTitle>{section.partners.headline}</BulletTitle>
+            <p className="misc-partners__firm">{section.partners.firm}</p>
+            <div className="misc-partners__grid">
+              {section.partners.people.map((p) => (
+                <PartnerCard key={p.name} partner={p} />
+              ))}
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   )

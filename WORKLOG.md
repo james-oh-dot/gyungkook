@@ -1181,3 +1181,36 @@ GNB 소식·공지 fullmenu에서 상담신청 hover 시 sub-05-01 노출, href 
 - 네이버는 실링크 미확보로 `href:'#'` 유지.
 - 검증(Playwright): 데스크탑 → `_twVnn`(target _blank), iPhone UA → `_twVnn/chat`.
   lint/build 통과.
+
+---
+
+## 2026-07-22 — 기타업무 (SUB_기타업무 / sub-03-01) 5개 영역 완성
+
+정비사업/공익사업과 동일한 스크롤-모드 로컬 탭 단일 페이지. renewal 쉘 재사용으로
+탭 400/88 · 내부 140/74 간격 상속. 5개 브레드크럼 탭:
+부동산 분야 / 상속·이혼·가사 / 민사·형사 / 행정 / 기업·스타트업.
+
+### 구조
+- 통합 데이터 모델 `MiscTab → MiscSection → MiscGroup`(`src/data/misc.ts`).
+  한 탭이 여러 섹션(상속+이혼, 민사+형사)을 가질 수 있고, 섹션은 eyebrow+타이틀
+  헤드 + (섹션 리드) + 그룹들(teal-bullet 헤드라인 + 리드 + 카드 그리드).
+- 카드 = `#f7f7fb` + 제목(24px) + 기본 disc 리스트(`.misc-cards` 3→2→1).
+- 기업·스타트업: 실무 7카드 + 협력사 파트너 프로필(`MiscPartners` — 머스트
+  특허법률사무소, 김영애/공대우: 자격 teal 칩 + 전문분야 회색 칩 + 학력 + 주요경력).
+- 페이지 `MiscPage.tsx`(IntersectionObserver 스크롤-스파이 + LocalTabs onTabSelect,
+  RenewalPage와 동일 머신) + `Misc.css`.
+
+### 메뉴 연결
+- `nav.ts`: 기타업무 GNB를 5개 영역으로 재구성, `GNB_SUB_VISUAL_OTHER = sub-03-01`로
+  메뉴 전환 이미지 반영. `App.tsx` `/other/misc` → MiscPage, `/other/realestate` → redirect.
+  `placeholderPages.ts`의 other-misc/other-realestate 제거.
+
+### egress 차단으로 미확보(사용자 제공 필요)
+- sub-03-01 히어로: Figma로의 curl이 조직 egress 정책으로 차단(403)되고, get_screenshot
+  base64는 트랜스크립트에 풀해상도로 보존되지 않아 인페인트용 원본을 디스크로 가져올
+  수 없음. 현재 임시 sub-05-01 복사본. 사용자가 이미지 제공 시 인페인트 후 교체.
+- 파트너 사진 2장(김영애/공대우) + 머스트 로고: 동일 사유로 캡션 placeholder.
+
+### 검증
+5개 탭 렌더(부동산 9 / 상속 6+CTA / 민사·형사 4+4 / 행정 11 / 기업 7카드 + 파트너 2),
+데스크탑/모바일 overflow 0, 콘솔 에러 0, lint/build 통과.
