@@ -39,6 +39,12 @@ export type BoardPost = {
   thumbnail: string
   detailImage?: string
   body: string[]
+  /** 채용공고 전용 — 직무 / 직책 / 고용형태 (list card `info` row) */
+  jobMeta?: string[]
+  /** 채용공고 전용 — 마감 표기 (e.g. "2026.06.29 23:59 까지") */
+  deadline?: string
+  /** 채용공고 전용 — 마감 D-day 배지 (e.g. "D-10") */
+  dday?: string
 }
 
 export type BoardAdjacent = {

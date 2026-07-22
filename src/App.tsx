@@ -6,8 +6,11 @@ import {
   Routes,
   useLocation,
 } from 'react-router-dom'
+import { CASE_NEWS_BOARD } from './data/caseNews'
+import { JOBS_BOARD } from './data/careers'
 import { COLUMN_MEDIA_BOARD } from './data/columnMedia'
 import { DEFAULT_LAWYER_ID } from './data/lawyers'
+import { NEWS_NOTICE_BOARD } from './data/newsNotice'
 import { PRESS_COVERAGE_BOARD } from './data/pressCoverage'
 import { SOCIAL_CONTRIBUTION_BOARD } from './data/socialContribution'
 import { shouldScrollToLocalTabs } from './hooks/useScrollToLocalTabs'
@@ -16,10 +19,17 @@ import { BoardDetailPage } from './pages/BoardDetailPage'
 import { CaseStudiesPage } from './pages/CaseStudiesPage'
 import { ColumnMediaLayout } from './pages/ColumnMediaLayout'
 import { ColumnMediaListPage } from './pages/ColumnMediaListPage'
+import { CareersInfoPage } from './pages/CareersInfoPage'
+import { CareersLayout } from './pages/CareersLayout'
+import { CaseNewsLayout } from './pages/CaseNewsLayout'
+import { CaseNewsListPage } from './pages/CaseNewsListPage'
 import { GalleryPage } from './pages/GalleryPage'
 import { GreetingPage } from './pages/GreetingPage'
 import { HomePage } from './pages/HomePage'
+import { JobsListPage } from './pages/JobsListPage'
 import { LawyerProfilePage } from './pages/LawyerProfilePage'
+import { NewsNoticeLayout } from './pages/NewsNoticeLayout'
+import { NewsNoticeListPage } from './pages/NewsNoticeListPage'
 import { PlaceholderPage } from './pages/PlaceholderPage'
 import { PublicProjectPage } from './pages/PublicProjectPage'
 import { PressCoverageLayout } from './pages/PressCoverageLayout'
@@ -142,18 +152,30 @@ function App() {
           </Route>
 
           {/* 소식 · 공지 */}
-          <Route
-            path="news/notice"
-            element={<PlaceholderPage pageId="news-notice" />}
-          />
-          <Route
-            path="news/cases"
-            element={<PlaceholderPage pageId="news-cases" />}
-          />
-          <Route
-            path="news/careers"
-            element={<PlaceholderPage pageId="news-careers" />}
-          />
+          <Route path="news/notice" element={<NewsNoticeLayout />}>
+            <Route index element={<NewsNoticeListPage />} />
+            <Route
+              path=":postId"
+              element={<BoardDetailPage board={NEWS_NOTICE_BOARD} />}
+            />
+          </Route>
+          <Route path="news/cases" element={<CaseNewsLayout />}>
+            <Route index element={<CaseNewsListPage />} />
+            <Route
+              path=":postId"
+              element={<BoardDetailPage board={CASE_NEWS_BOARD} />}
+            />
+          </Route>
+          <Route path="news/careers" element={<CareersLayout />}>
+            <Route index element={<CareersInfoPage />} />
+            <Route path="jobs">
+              <Route index element={<JobsListPage />} />
+              <Route
+                path=":postId"
+                element={<BoardDetailPage board={JOBS_BOARD} />}
+              />
+            </Route>
+          </Route>
           <Route
             path="news/consult"
             element={<PlaceholderPage pageId="news-consult" />}

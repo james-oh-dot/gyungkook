@@ -70,6 +70,7 @@ TARGETS: list[tuple[str, int]] = [
     ("sub/sub-04-02.jpg", 1920),
     ("sub/sub-04-03.jpg", 1920),
     ("sub/sub-04-04.jpg", 1920),
+    ("sub/sub-05-01.jpg", 1920),
     # Lawyer portraits
     ("lawyers/gongdaeho.png", 900),
     # 공대호 인증서 / 위촉장 / 수상 (Figma node screenshots, native 184x260)
