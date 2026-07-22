@@ -19,6 +19,8 @@
   --pp-danger: #e53935;
   --pp-note-bg: #f1f1f5;
   --pp-note: #767676;
+  /* 손실보상절차 흐름도 라인 */
+  --pp-flow: #c9c9d2;
   /* Inline SVG so GH Pages base (`/gyungkook/`) never breaks list bullets */
   --pp-bullet: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Crect width='24' height='24' fill='%2358BDC2'/%3E%3Cpath d='M9 6.5v11L18 12 9 6.5Z' fill='%23111111'/%3E%3C/svg%3E");
 }
@@ -240,12 +242,30 @@
 }
 
 .pp-procedure__steps {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  /* clip the horizontal branch overshoot (see .pp-procedure__side::before) */
+  overflow: hidden;
+}
+
+/* Figma 흐름도: 카드 뒤로 이어지는 세로 라인. 카드(불투명 흰색)가 덮어
+   카드 사이 간격에서만 보인다 → 흐름도 커넥터처럼 읽힌다. */
+.pp-procedure__steps::before {
+  content: '';
+  position: absolute;
+  left: 26px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--pp-flow);
+  z-index: 0;
 }
 
 .pp-procedure__block {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -253,6 +273,7 @@
 }
 
 .pp-step {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -311,9 +332,46 @@
 }
 
 .pp-procedure__side {
+  position: relative;
   align-self: flex-end;
   background: var(--pp-note-bg);
   padding: 8px;
+}
+
+/* Figma Line 17: 세로 라인에서 갈라져 side 박스(명도소송/이주대책)로 잇는
+   가로 브랜치. box 왼쪽에서 세로 라인 쪽으로 뻗고, steps overflow:hidden 이
+   왼쪽 오버슈트를 잘라낸다. */
+.pp-procedure__side::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  width: 500px;
+  height: 1px;
+  background: var(--pp-flow);
+  z-index: -1;
+}
+
+/* 절차 카드 불릿: Figma는 teal 플래그가 아니라 기본 회색 도트 */
+.pp-procedure .pp-list li {
+  padding-left: 15px;
+}
+
+.pp-procedure .pp-list li::before {
+  top: 0.55em;
+  left: 3px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #6b6b73;
+}
+
+.pp-procedure .pp-list--sm li {
+  padding-left: 13px;
+}
+
+.pp-procedure .pp-list--sm li::before {
+  top: 0.5em;
 }
 
 /* ============================ Rights (반드시확인해야할권리) ============================ */

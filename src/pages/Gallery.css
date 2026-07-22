@@ -22,14 +22,16 @@
   padding: clamp(64px, 8vw, 120px) var(--page-pad) clamp(96px, 12vw, 160px);
   display: flex;
   flex-direction: column;
-  gap: clamp(80px, 10vw, 140px);
+  /* 탭으로 구분된 섹션(경국인 · 갤러리) 사이 간격 400px (태블릿/모바일 88px) */
+  gap: 400px;
 }
 
 /* ============================ 경국인 section ============================ */
 .gallery-people {
   display: flex;
   flex-direction: column;
-  gap: clamp(80px, 10vw, 140px);
+  /* 섹션 내부 중간섹션 간격 140px (태블릿/모바일 74px) */
+  gap: 140px;
 }
 
 /* —— layered brand pyramid (ring rotate / disc pulse / tier hover) —— */
@@ -329,6 +331,14 @@
 
 /* ============================ Responsive ============================ */
 @media (max-width: 1024px) {
+  /* 태블릿/모바일: 탭 섹션 간 88px, 중간섹션 74px */
+  .gallery__main {
+    gap: 88px;
+  }
+  .gallery-people {
+    gap: 74px;
+  }
+
   /* Label stacks above content (promise + gallery) */
   .gallery-promise,
   .gallery-grid-section {
