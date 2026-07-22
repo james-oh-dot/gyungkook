@@ -81,12 +81,7 @@ export const PLACEHOLDER_PAGES: Record<string, PlaceholderPageDef> = {
     title: '인재영입',
     showChip: true,
   },
-  'news-consult': {
-    path: '/news/consult',
-    parentLabel: '소식 · 공지',
-    title: '상담신청',
-    showChip: true,
-  },
+  /* news-consult 는 실페이지(ConsultPage)로 대체되어 placeholder 불필요 */
 }
 
 export const PLACEHOLDER_PAGE_LIST = Object.values(PLACEHOLDER_PAGES)

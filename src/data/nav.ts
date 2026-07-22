@@ -258,7 +258,7 @@ export const NAV_ITEMS: NavItem[] = [
         id: 'news-consult',
         label: '상담신청',
         href: '/news/consult',
-        visual: GNB_SUB_VISUAL_PLACEHOLDER,
+        visual: GNB_SUB_VISUAL_NEWS,
       },
     ],
   },
