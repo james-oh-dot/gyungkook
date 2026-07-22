@@ -18,9 +18,22 @@
   border-radius: 0;
   padding: 0;
   margin: 0;
-  background: rgba(255, 255, 255, 0.8);
+  /* Liquid-glass: translucent white veil + heavy backdrop blur so the page
+     reads as frosted glass behind the search, not a flat opacity wash. */
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
   cursor: pointer;
-  transition: opacity 0.35s var(--search-ease);
+  transition:
+    opacity 0.35s var(--search-ease),
+    backdrop-filter 0.35s var(--search-ease);
+}
+
+/* Fallback: no backdrop-filter support → keep legibility with a denser veil. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .search-overlay__dim {
+    background: rgba(255, 255, 255, 0.85);
+  }
 }
 
 .search-overlay__panel {
@@ -181,6 +194,9 @@
   transform: translateY(0);
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  /* Long result lists scroll here only — never chain to the (locked)
+     page behind the glass. */
+  overscroll-behavior: contain;
 }
 
 .search-overlay__empty {

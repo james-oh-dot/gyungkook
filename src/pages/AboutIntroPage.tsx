@@ -115,7 +115,6 @@ export function AboutIntroPage() {
           image={ABOUT_INTRO_PAGE.visual}
           imagePreview={ABOUT_INTRO_PAGE.visualPreview}
           visualKey="sub-01-01"
-          showChip={false}
         />
       </div>
 

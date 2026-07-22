@@ -23,7 +23,6 @@ export function SocialContributionLayout() {
           image={SOCIAL_CONTRIBUTION_PAGE.visual}
           imagePreview={SOCIAL_CONTRIBUTION_PAGE.visualPreview}
           visualKey="sub-04-04"
-          showChip={false}
         />
       </div>
       <div

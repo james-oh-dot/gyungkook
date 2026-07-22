@@ -6,6 +6,7 @@ import {
   DEFAULT_LAWYER_ID,
   findLawyer,
   LAWYERS,
+  LAWYERS_PAGE,
   lawyerPath,
   type CertItem,
   type Lawyer,
@@ -122,6 +123,7 @@ function LawyerHero({ lawyer }: { lawyer: Lawyer }) {
       <div className="lawyer-hero__inner">
         <div className="lawyer-hero__info">
           <div className="lawyer-hero__name-row">
+            <span className="lawyer-hero__eyebrow">{LAWYERS_PAGE.parentLabel}</span>
             <h1 className="lawyer-hero__name">{lawyer.name}</h1>
             <p className="lawyer-hero__title">{lawyer.title}</p>
           </div>

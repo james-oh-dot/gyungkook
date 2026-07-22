@@ -19,7 +19,6 @@ export function CaseNewsLayout() {
           image={CASE_NEWS_PAGE.visual}
           imagePreview={CASE_NEWS_PAGE.visualPreview}
           visualKey="sub-05-01"
-          showChip={false}
         />
       </div>
       <div id={LOCAL_TABS_ANCHOR_ID} className="news-board__anchor" aria-hidden="true" />

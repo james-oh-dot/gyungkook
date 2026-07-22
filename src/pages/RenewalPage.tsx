@@ -281,7 +281,6 @@ export function RenewalPage() {
           image={RENEWAL_PAGE.visual}
           imagePreview={RENEWAL_PAGE.visualPreview}
           visualKey="sub-02-01"
-          showChip={false}
         />
       </div>
 

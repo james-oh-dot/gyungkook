@@ -966,3 +966,52 @@ name for a subpage; grep both first.
 ### Follow-ups
 - 상담신청 (`/news/consult`) still a placeholder — needs its own Figma frame.
 - Seed posts are mock data; swap each module's `posts` source when CMS lands.
+
+---
+
+## 2026-07-22 — 서브비주얼 대메뉴 라벨 전면 적용 + 검색 리퀴드글라스
+
+세 가지 누락/개선 요청 처리.
+
+### 1. 서브비주얼 대메뉴(부모 메뉴) 라벨 — 4번 메뉴 외 전부 누락 → 전면 적용
+서브비주얼 타이틀은 서브메뉴명이라 어느 대메뉴로 진입했는지 알기 어려웠음.
+활동·보도(4번) 페이지에만 있던 `.sub-visual__chip`(부모 라벨)을 **모든 서브페이지
+히어로에 동일 적용**.
+- `showChip={false}` 오버라이드 9개 제거(법인소개/정비사업/공익사업/대표인사말/
+  경국인갤러리/소식공지/판례뉴스/인재영입/사회공헌). `SubVisual`의 `showChip` 기본값
+  `true`가 그대로 노출.
+- `placeholderPages.ts`의 `showChip: false` 4개(연혁수상인증/오시는길/기타업무/부동산)
+  → `true`.
+- **변호사자문단**은 `SubVisual`이 아닌 커스텀 다크 커버라 별도 처리 — 이름 위에
+  `.lawyer-hero__eyebrow`(teal 칩, `.sub-visual__chip`과 동일 스타일) 추가. 기존
+  Figma엔 eyebrow가 없었으나 대메뉴 라벨 전역 규칙에 맞춰 신설.
+- 검증: 11개 서브비주얼 페이지 + 변호사자문단 커버 라벨 노출 확인(desktop),
+  mobile(390)/tablet(900) overflow-x 0.
+
+### 2. 검색 딤드 레이어 — 리퀴드글라스
+`.search-overlay__dim`을 단순 흰색 오퍼시티(0.8) → **frosted glass**:
+`rgba(255,255,255,0.55)` + `backdrop-filter: blur(28px) saturate(180%)`
+(`-webkit-` 프리픽스 + `@supports not` 폴백은 0.85 흰색). 기존 GNB/닫기 버튼 글래스와
+동일한 컨벤션(미니파이어가 `-webkit-`로 출력).
+
+### 3. 검색 열렸을 때 스크롤 잠금 + 결과 목록 내부 스크롤
+- 뒤 원본 화면 스크롤 **잠금**: `document.body.overflow='hidden'` +
+  스크롤바 폭만큼 `padding-right` 보정(잠금 시 콘텐츠 밀림 방지).
+- 조회 결과가 많아 화면을 벗어나면 `.search-overlay__results` **내부에서만** 스크롤
+  (`overflow-y:auto` + `overscroll-behavior:contain` → 뒤 페이지로 스크롤 체이닝 차단).
+- 검증(Playwright): 오버레이 open 시 `body.overflow=hidden`, wheel 이벤트에도
+  `window.scrollY` 0 유지, 결과 컨테이너 `overflow-y:auto`/`overscroll:contain`.
+
+### 검증 노트 — headless backdrop-filter
+headless Chromium은 GPU 컴포짓 부재로 `-webkit-backdrop-filter`를 표준 프로퍼티
+읽기에 반영하지 않아 `getComputedStyle().backdropFilter`가 `none`으로 나옴. 인라인
+표준 프로퍼티는 정상 라운드트립 확인 → CSS는 유효하며 실브라우저(Chrome/Safari/Edge/
+Firefox)에서 정상 렌더. 기존 닫기 버튼 글래스도 동일하게 `-webkit-`만 출력되어
+이미 정상 동작 중.
+
+### Key files
+- `src/components/sub/SubVisual.tsx`(기본 chip 유지) — 무변경, 호출부만 정리.
+- 9개 페이지/레이아웃에서 `showChip={false}` 제거; `src/data/placeholderPages.ts`.
+- `src/pages/LawyerProfilePage.tsx` + `LawyerProfile.css`(`.lawyer-hero__eyebrow`).
+- `src/components/SearchOverlay.tsx`(스크롤 잠금 강화) + `SearchOverlay.css`
+  (dim glass + results `overscroll-behavior`).

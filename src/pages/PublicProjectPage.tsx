@@ -366,7 +366,6 @@ export function PublicProjectPage() {
           image={PUBLIC_PROJECT_PAGE.visual}
           imagePreview={PUBLIC_PROJECT_PAGE.visualPreview}
           visualKey="sub-02-02"
-          showChip={false}
         />
       </div>
 
