@@ -19,6 +19,7 @@ import { BoardDetailPage } from './pages/BoardDetailPage'
 import { CaseStudiesPage } from './pages/CaseStudiesPage'
 import { ColumnMediaLayout } from './pages/ColumnMediaLayout'
 import { ColumnMediaListPage } from './pages/ColumnMediaListPage'
+import { ConsultPage } from './pages/ConsultPage'
 import { CareersInfoPage } from './pages/CareersInfoPage'
 import { CareersLayout } from './pages/CareersLayout'
 import { CaseNewsLayout } from './pages/CaseNewsLayout'
@@ -176,10 +177,7 @@ function App() {
               />
             </Route>
           </Route>
-          <Route
-            path="news/consult"
-            element={<PlaceholderPage pageId="news-consult" />}
-          />
+          <Route path="news/consult" element={<ConsultPage />} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
