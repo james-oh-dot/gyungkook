@@ -58,7 +58,7 @@ export function ConsultPage() {
 
             <div className="consult-card">
               <section
-                className="consult-card__section"
+                className="consult-card__section consult-card__section--contact"
                 aria-label={CONSULT_CONTACT.label}
               >
                 <p className="consult-card__label">{CONSULT_CONTACT.label}</p>

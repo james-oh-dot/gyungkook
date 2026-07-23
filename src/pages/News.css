@@ -227,6 +227,10 @@
   line-height: 1.4;
   letter-spacing: -0.6px;
 }
+.careers-intro__line,
+.careers-value__line {
+  display: block;
+}
 
 .careers-values {
   list-style: none;
@@ -510,6 +514,22 @@
   .careers-values {
     grid-template-columns: 1fr;
     gap: 16px;
+  }
+  /* Desktop Figma line groups become one normal sentence on mobile: each
+     former forced line break contributes a real space and wraps naturally. */
+  .careers-intro,
+  .careers-value__desc {
+    display: block;
+    word-break: keep-all;
+  }
+  .careers-intro__line,
+  .careers-value__line {
+    display: inline;
+  }
+  .careers-intro__line:not(:last-child)::after,
+  .careers-value__line:not(:last-child)::after {
+    content: ' ';
+    white-space: pre;
   }
   .careers-contact {
     padding: 40px 24px;

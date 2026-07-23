@@ -218,9 +218,28 @@
     font-size: 16px;
   }
 
+  .consult-body {
+    width: 100%;
+  }
+
   .consult-card {
-    padding: 24px 20px;
-    gap: 32px;
+    padding: 16px;
+    gap: 16px;
+    background: #f1f1f5;
+  }
+
+  /* Give the primary free-consultation area a full-size card of its own,
+     rather than letting it read as a narrow row inside the shared panel. */
+  .consult-card__section--contact {
+    min-height: 192px;
+    justify-content: center;
+    padding: 28px 24px;
+    box-sizing: border-box;
+    background: #fff;
+  }
+
+  .consult-card__divider {
+    display: none;
   }
 
   .consult-contact,

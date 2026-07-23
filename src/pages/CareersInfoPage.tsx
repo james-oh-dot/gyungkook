@@ -17,7 +17,9 @@ export function CareersInfoPage() {
     <div className="news-board__contents careers-info" data-name="Contents">
       <p className="careers-intro">
         {CAREERS_INTRO.map((line) => (
-          <span key={line}>{line}</span>
+          <span key={line} className="careers-intro__line">
+            {line}
+          </span>
         ))}
       </p>
 
@@ -27,7 +29,9 @@ export function CareersInfoPage() {
             <p className="careers-value__title">{v.title}</p>
             <p className="careers-value__desc">
               {v.lines.map((l) => (
-                <span key={l}>{l}</span>
+                <span key={l} className="careers-value__line">
+                  {l}
+                </span>
               ))}
             </p>
             <img className="careers-value__icon" src={v.icon} alt="" />
