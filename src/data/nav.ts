@@ -64,8 +64,8 @@ export const GNB_SUB_VISUAL_RENEWAL = RENEWAL_PAGE.visual
 /** Figma sub-02-02 — 재개발·보상업무 > 공익사업 */
 export const GNB_SUB_VISUAL_PUBLIC = PUBLIC_PROJECT_PAGE.visual
 
-/** Figma sub-04-01 — 재개발·보상업무 > 업무사례 */
-export const GNB_SUB_VISUAL_PRESS_CASES = CASE_STUDIES_PAGE.visual
+/** Figma sub-04-01 — 기타업무 > 업무사례 (별도 페이지) */
+export const GNB_SUB_VISUAL_OTHER_CASES = CASE_STUDIES_PAGE.visual
 
 /** Figma sub-04-02 — 활동·보도 > 언론보도 */
 export const GNB_SUB_VISUAL_PRESS_MEDIA = PRESS_COVERAGE_PAGE.visual
@@ -208,12 +208,6 @@ export const NAV_ITEMS: NavItem[] = [
         href: '/practice/public',
         visual: GNB_SUB_VISUAL_PUBLIC,
       },
-      {
-        id: 'redev-cases',
-        label: '업무사례',
-        href: '/press/cases',
-        visual: GNB_SUB_VISUAL_PRESS_CASES,
-      },
     ],
   },
   {
@@ -250,6 +244,12 @@ export const NAV_ITEMS: NavItem[] = [
         label: '기업 · 스타트업',
         href: '/other/misc#corporate',
         visual: GNB_SUB_VISUAL_OTHER,
+      },
+      {
+        id: 'other-cases',
+        label: '업무사례',
+        href: '/other/cases',
+        visual: GNB_SUB_VISUAL_OTHER_CASES,
       },
     ],
   },

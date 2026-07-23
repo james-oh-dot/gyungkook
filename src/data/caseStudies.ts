@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * 업무사례 (재개발 · 보상업무 3rd / Figma sub-04-01)
+ * 업무사례 (기타업무 마지막 / Figma sub-04-01)
  * ============================================================================
  *
  * Frames:
@@ -18,12 +18,12 @@ import { progressiveAsset } from '../utils/progressiveImage'
 const CASE_STUDIES_VISUAL = progressiveAsset('assets/sub/sub-04-01')
 
 export const CASE_STUDIES_PAGE = {
-  parentLabel: '재개발 · 보상업무',
+  parentLabel: '기타업무',
   title: '업무사례',
-  /** Figma layer sub-04-01 — also GNB fullmenu visual for redev-cases */
+  /** Figma layer sub-04-01 — also GNB fullmenu visual for other-cases */
   visual: CASE_STUDIES_VISUAL.src,
   visualPreview: CASE_STUDIES_VISUAL.preview,
-  basePath: '/press/cases',
+  basePath: '/other/cases',
 } as const
 
 export type CaseStudy = {

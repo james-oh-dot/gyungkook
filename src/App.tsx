@@ -70,8 +70,9 @@ function ScrollToTop() {
  * - /about/gallery                        → 경국인 · 갤러리 (sub-01-04, scroll-mode tabs)
  * - /practice/renewal                     → 정비사업 (sub-02-01)
  * - /practice/public                      → 공익사업 (sub-02-02)
- * - /press/cases                          → 업무사례 (redev 3rd; Figma sub-04-01)
  * - /other/misc[#tab]                     → 기타업무 scroll tabs (hash = tab id)
+ * - /other/cases                          → 업무사례 (other last; Figma sub-04-01)
+ * - /press/cases                          → redirect → /other/cases
  *
  * Placeholders (sub-01-01 visual + “곧 업데이트예정”):
  * - /about/history|location
@@ -108,15 +109,20 @@ function App() {
           <Route path="practice/renewal" element={<RenewalPage />} />
           <Route path="practice/public" element={<PublicProjectPage />} />
 
-          {/* 기타업무 (부동산 분야 등 5개 영역 스크롤 탭 단일 페이지) */}
+          {/* 기타업무 */}
           <Route path="other/misc" element={<MiscPage />} />
           <Route
             path="other/realestate"
             element={<Navigate to="/other/misc" replace />}
           />
+          <Route path="other/cases" element={<CaseStudiesPage />} />
+          {/* Legacy URL from 활동·보도 era */}
+          <Route
+            path="press/cases"
+            element={<Navigate to="/other/cases" replace />}
+          />
 
           {/* 활동 · 보도 */}
-          <Route path="press/cases" element={<CaseStudiesPage />} />
           <Route
             path="press/coverage"
             element={<Navigate to="tv" replace />}

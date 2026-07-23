@@ -80,14 +80,15 @@
   - **보상업무실적 카드 라벨**: `PUBLIC_RECORD_2.chip = '보상업무'` (2026-07-22, 기존 `'재개발 · 재건축'` 대체). 이 탭 실적 카드 카테고리 칩이 `보상업무`로 표기된다.
   - Data: `src/data/publicProject.ts`; GNB `redev-public` → `/practice/public`, visual `sub-02-02` (`nav.ts` `GNB_SUB_VISUAL_PUBLIC`).
   - **enLabel eyebrows** were re-translated from legal glossary (Figma had copy-paste leftovers) — see WORKLOG 2026-07-20.
-- **업무사례** (재개발·보상업무 3rd / Figma `sub-04-01`; URL kept `/press/cases`):
-  - `/press/cases` → `CaseStudiesPage` (4/2/1 col grid). SubVisual chip `parentLabel` = **재개발 · 보상업무**.
+- **업무사례** (기타업무 마지막 / Figma `sub-04-01`; route `/other/cases`):
+  - `/other/cases` → `CaseStudiesPage` (4/2/1 col grid). SubVisual chip `parentLabel` = **기타업무**.
+  - Legacy `/press/cases` redirects to `/other/cases`.
   - Hover: hovered card highlight + siblings dim (see `CaseStudies.css`)
-  - GNB `redev-cases` (under `redev`, not `press`) → `/press/cases`, visual `public/assets/sub/sub-04-01.webp` (+ `.preview.webp`)
-  - Mock data: `src/data/caseStudies.ts`. Search depth under `REDEV`.
+  - GNB `other-cases` (last under `other`, not `redev`/`press`) → `/other/cases`, visual `public/assets/sub/sub-04-01.webp` (+ `.preview.webp`)
+  - Mock data: `src/data/caseStudies.ts`. Search depth under `OTHER`.
 - **기타업무** (Figma `SUB_기타업무` / node 103:3962, `sub-03-01`):
   - `/other/misc` → `MiscPage` — **스크롤-모드 로컬 탭 단일 페이지**(정비/공익과 동일 머신, `renewal-*` 쉘 재사용 → 탭 400/88 · 내부 140/74 간격 자동). 브레드크럼 탭 5개: 부동산 분야 / 상속 · 이혼 · 가사 / 민사 · 형사 / 행정 / 기업 · 스타트업. `/other/realestate`는 `/other/misc`로 redirect.
-  - **GNB deep-link:** each child uses `/other/misc#{tabId}` (`realestate` | `family` | `civil` | `admin` | `corporate`). `MiscPage` reads `location.hash` → activate that LocalTab + scroll to `misc-section-{id}`. Scroll-spy also writes the hash (`replace`). Drawer highlight: `findActiveDrawerNav(pathname, hash)` scores hash hrefs (bare `/other/misc` ≈ `#realestate`).
+  - **GNB deep-link:** each practice-area child uses `/other/misc#{tabId}` (`realestate` | `family` | `civil` | `admin` | `corporate`). `MiscPage` reads `location.hash` → activate that LocalTab + scroll to `misc-section-{id}`. Scroll-spy also writes the hash (`replace`). Drawer highlight: `findActiveDrawerNav(pathname, hash)` scores hash hrefs (bare `/other/misc` ≈ `#realestate`). **업무사례** is a separate route (`/other/cases`), not a hash tab.
   - Data `src/data/misc.ts`: `MiscTab → MiscSection → MiscGroup`. 한 탭이 여러 섹션 가능(상속+이혼, 민사+형사). 카드 = `.misc-cards`(3→2→1) `#f7f7fb` + 제목 + 기본 disc 리스트. 기업·스타트업엔 협력사 파트너 프로필(`MiscPartners`: 머스트 특허법률사무소, 김영애/공대우 — 자격 teal 칩 + 전문분야 회색 칩 + 학력/경력).
   - GNB `other` visual `GNB_SUB_VISUAL_OTHER = sub-03-01`.
   - **이미지(사용자 채팅 제공, 2026-07-22):** `sub-03-01` 히어로(대법원 페디먼트, **타이틀 없는 클린 버전**이라 인페인트 불필요 → progressive 페어 생성) + 파트너 사진 2장(`public/assets/other/partner-kimyeongae.jpg` / `partner-gongdaewoo.jpg`, `misc.ts`의 `partner.photo`). Figma로의 `curl`은 조직 egress 정책 차단(403)이고 `get_screenshot` base64도 트랜스크립트에 풀해상도 미보존 → **egress 필요 이미지는 사용자가 채팅에 올려주는 방식**(변호사 사진/sub-02-02와 동일). 머스트 특허법률사무소 로고만 미확보(현재 텍스트만).
