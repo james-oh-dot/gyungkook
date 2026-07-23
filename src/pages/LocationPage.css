@@ -1,0 +1,30 @@
+.location-page { display: flex; flex-direction: column; width: 100%; background: #fff; }
+.location-page__main { width: 100%; padding: 140px var(--page-pad) 160px; }
+.location-page__contents { width: 100%; max-width: 1280px; margin: 0 auto; }
+.location-page__heading { display: flex; align-items: flex-start; gap: 28px; }
+.location-page__section-title { flex: 0 0 299px; }
+.location-page__section-title p, .location-page__section-title h1, .location-page__intro h2, .location-page__intro h2 span, .location-page__intro > p { margin: 0; }
+.location-page__section-title p { color: #58bdc2; font-size: 14px; font-weight: 600; line-height: 1.45; letter-spacing: -0.025em; }
+.location-page__section-title h1 { color: #111; font-size: 36px; font-weight: 600; line-height: 1.3; letter-spacing: -0.025em; }
+.location-page__intro { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 40px; padding-top: 20px; }
+.location-page__intro h2 { display: flex; flex-direction: column; color: #12171f; font-size: 48px; font-weight: 600; line-height: 1.3; letter-spacing: -0.025em; word-break: keep-all; }
+.location-page__intro > p { color: #505050; font-size: 18px; line-height: 1.4; letter-spacing: -0.025em; word-break: keep-all; }
+.location-page__map { display: grid; place-items: center; height: 425px; margin-top: 40px; border: 1px solid #d8e1e1; background: #f6f8f9; }
+.location-page__map p { margin: 0; color: #66707a; font-size: 18px; font-weight: 500; letter-spacing: -0.025em; }
+.location-page__details { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 668px); gap: 72px; margin-top: 40px; }
+.location-page__access { display: flex; flex-direction: column; justify-content: space-between; gap: 32px; }
+.location-page__access-list, .location-page__contact { display: flex; flex-direction: column; gap: 16px; }
+.location-page__contact { padding: 24px; border: 1px solid #e0e5e8; background: #fbfcfc; }
+.location-page__row { display: flex; align-items: flex-start; gap: 18px; min-width: 0; }
+.location-page__icon { display: grid; place-items: center; flex: 0 0 auto; width: 52px; height: 52px; border: 1px solid #e0e5e8; border-radius: 14px; background: #f6f8f9; }
+.location-page__icon img { width: 24px; height: 24px; }
+.location-page__row h3, .location-page__row p { margin: 0; word-break: keep-all; }
+.location-page__row h3 { color: #141a21; font-size: 18px; font-weight: 500; line-height: 1.4; }
+.location-page__row p { margin-top: 6px; color: #66707a; font-size: 14px; line-height: 1.45; letter-spacing: -0.025em; }
+.location-page__metro { display: inline-grid; place-items: center; width: 20px; height: 20px; margin-right: 4px; color: #fff; font-size: 14px; line-height: 1; vertical-align: -2px; }
+.location-page__metro--2 { background: #3bda1f; }.location-page__metro--3 { background: #ff8400; }
+.location-page__chips { display: flex; flex-wrap: wrap; gap: 2px; }
+.location-page__chips span { padding: 8px 16px; border: 1px solid #dbe0e5; color: #454f57; font-size: 14px; font-weight: 500; line-height: 1.45; letter-spacing: -0.025em; }
+.location-page__chips .is-accent { border-color: #39deaf; background: #e3faf7; color: #00665e; }
+@media (max-width: 1024px) { .location-page__main { padding: 80px var(--page-pad) 120px; } .location-page__heading, .location-page__details { grid-template-columns: 1fr; flex-direction: column; } .location-page__section-title { flex-basis: auto; } .location-page__intro { padding-top: 0; } .location-page__details { display: flex; gap: 40px; } .location-page__access { gap: 24px; } }
+@media (max-width: 767px) { .location-page__main { padding: 56px var(--page-pad) 96px; } .location-page__heading { gap: 20px; } .location-page__section-title h1 { font-size: 28px; } .location-page__intro { gap: 24px; } .location-page__intro h2 { font-size: 30px; } .location-page__intro > p { font-size: 16px; } .location-page__map { height: 280px; margin-top: 32px; } .location-page__details { margin-top: 32px; } .location-page__contact { padding: 20px; } .location-page__row h3 { font-size: 16px; } .location-page__chips span { padding: 7px 12px; font-size: 13px; } }

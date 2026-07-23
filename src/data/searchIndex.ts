@@ -31,6 +31,7 @@ import { GREETING_PAGE } from './greeting'
 import { HISTORY_AWARDS, HISTORY_CERTIFICATIONS, HISTORY_INTRO, HISTORY_PAGE, HISTORY_TABS, HISTORY_TIMELINE } from './history'
 import { ADVISORS } from './advisors'
 import { LAWYERS, LAWYERS_PAGE, lawyerPath } from './lawyers'
+import { LOCATION_PAGE } from './location'
 import { NAV_ITEMS } from './nav'
 import { NEWS_NOTICE_BOARD } from './newsNotice'
 import { PRESS_COVERAGE_BOARD } from './pressCoverage'
@@ -154,6 +155,7 @@ const ROUTE_DOCS: SearchDoc[] = [
     GALLERY_TABS, GALLERY_PYRAMID, GALLERY_QUOTE, GALLERY_PROMISE),
   doc('about-history', HISTORY_PAGE.title, '/about/history', [ABOUT, HISTORY_PAGE.title],
     HISTORY_PAGE, HISTORY_TABS, HISTORY_INTRO, HISTORY_TIMELINE, HISTORY_AWARDS, HISTORY_CERTIFICATIONS),
+  doc('about-location', LOCATION_PAGE.title, '/about/location', [ABOUT, LOCATION_PAGE.title], LOCATION_PAGE),
   doc('practice-renewal', '정비사업', '/practice/renewal', [REDEV, '정비사업'],
     RENEWAL_TABS, RENEWAL_OVERVIEW, RENEWAL_EVICTION, RENEWAL_SALE, RENEWAL_EXPROPRIATION,
     RENEWAL_TRANSFER, RENEWAL_LEVY, RENEWAL_PUBLIC_LAND, RENEWAL_ADVISORY, RENEWAL_TRACK_RECORD),

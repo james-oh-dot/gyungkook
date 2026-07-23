@@ -30,10 +30,10 @@ import { HomePage } from './pages/HomePage'
 import { JobsListPage } from './pages/JobsListPage'
 import { LawyerProfilePage } from './pages/LawyerProfilePage'
 import { LawyersDirectoryPage } from './pages/LawyersDirectoryPage'
+import { LocationPage } from './pages/LocationPage'
 import { MiscPage } from './pages/MiscPage'
 import { NewsNoticeLayout } from './pages/NewsNoticeLayout'
 import { NewsNoticeListPage } from './pages/NewsNoticeListPage'
-import { PlaceholderPage } from './pages/PlaceholderPage'
 import { PublicProjectPage } from './pages/PublicProjectPage'
 import { PressCoverageLayout } from './pages/PressCoverageLayout'
 import { PressCoverageListPage } from './pages/PressCoverageListPage'
@@ -98,10 +98,7 @@ function App() {
           <Route path="about/lawyers/:lawyerId" element={<LawyerProfilePage />} />
           <Route path="about/gallery" element={<GalleryPage />} />
           <Route path="about/history" element={<HistoryPage />} />
-          <Route
-            path="about/location"
-            element={<PlaceholderPage pageId="about-location" />}
-          />
+          <Route path="about/location" element={<LocationPage />} />
 
           {/* 재개발 · 보상업무 */}
           <Route path="practice/renewal" element={<RenewalPage />} />
