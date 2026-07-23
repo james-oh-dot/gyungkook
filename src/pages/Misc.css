@@ -126,12 +126,19 @@
   width: 100%;
 }
 
-.misc-partners__firm {
-  margin: 0;
-  color: var(--misc-ink);
-  font-size: 20px;
-  font-weight: 600;
-  letter-spacing: -0.5px;
+.misc-partners__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  width: 100%;
+}
+
+.misc-partners__logo {
+  display: block;
+  width: 373px;
+  height: 65px;
+  object-fit: contain;
 }
 
 .misc-partners__grid {
@@ -144,10 +151,11 @@
 .misc-partner {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 32px;
   padding: 24px;
   box-sizing: border-box;
-  background: var(--misc-card-bg);
+  background: #fff;
+  border: 1px solid #e5e5ec;
 }
 
 .misc-partner__photo {
@@ -176,13 +184,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
 .misc-partner__name {
   margin: 0;
   color: var(--misc-ink);
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 600;
   letter-spacing: -0.6px;
 }
@@ -191,16 +199,16 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 6px;
+  gap: 10px;
 }
 
 .misc-partner__qual {
   display: inline-flex;
   align-items: center;
-  padding: 3px 10px;
-  background: var(--misc-brand);
-  color: #fff;
-  font-size: 13px;
+  padding: 2px 8px;
+  background: #b2ebf2;
+  color: #0097a7;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: -0.3px;
 }
@@ -209,46 +217,46 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .misc-partner__field {
   display: inline-flex;
   align-items: center;
-  padding: 3px 10px;
-  background: #ececf2;
-  color: var(--misc-ink-sub);
-  font-size: 13px;
-  font-weight: 500;
+  padding: 2px 8px;
+  background: #f5f5f5;
+  color: #767676;
+  font-size: 14px;
+  font-weight: 600;
   letter-spacing: -0.3px;
 }
 
 .misc-partner__divider {
   width: 100%;
   height: 1px;
-  background: #dcdce4;
+  background: #e5e5ec;
 }
 
 .misc-partner__block {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 16px;
 }
 
 .misc-partner__label {
   margin: 0;
   color: var(--misc-ink);
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 600;
   letter-spacing: -0.4px;
 }
 
 .misc-partner__list {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 27px;
   list-style: disc;
   color: var(--misc-ink-sub);
-  font-size: 15px;
+  font-size: 18px;
   font-weight: 400;
   line-height: 1.5;
   letter-spacing: -0.375px;
@@ -266,6 +274,11 @@
 @media (max-width: 767px) {
   .misc-partners__grid {
     grid-template-columns: 1fr;
+  }
+
+  .misc-partners__logo {
+    width: min(373px, 100%);
+    height: auto;
   }
 }
 

@@ -151,11 +151,19 @@ function SectionView({ section }: { section: MiscSection }) {
         {section.partners ? (
           <div className="misc-partners">
             <BulletTitle>{section.partners.headline}</BulletTitle>
-            <p className="misc-partners__firm">{section.partners.firm}</p>
-            <div className="misc-partners__grid">
-              {section.partners.people.map((p) => (
-                <PartnerCard key={p.name} partner={p} />
-              ))}
+            <div className="misc-partners__content">
+              <img
+                className="misc-partners__logo"
+                src={section.partners.logo}
+                alt={section.partners.firm}
+                width={373}
+                height={65}
+              />
+              <div className="misc-partners__grid">
+                {section.partners.people.map((p) => (
+                  <PartnerCard key={p.name} partner={p} />
+                ))}
+              </div>
             </div>
           </div>
         ) : null}

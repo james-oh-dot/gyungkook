@@ -57,8 +57,10 @@ export type MiscPartner = {
 export type MiscPartners = {
   /** teal-bullet 헤드라인 (스타트업 업무 협력사) */
   headline: string
-  /** 협력 특허법률사무소명 */
+  /** 협력 특허법률사무소명 (로고 대체 텍스트) */
   firm: string
+  /** Figma 제공 협력사 로고 */
+  logo: string
   people: MiscPartner[]
 }
 
@@ -246,6 +248,7 @@ const CORPORATE: MiscSection = {
   partners: {
     headline: '스타트업 업무 협력사',
     firm: '머스트 특허법률사무소',
+    logo: asset('assets/other/must-patent-law-firm.png'),
     people: [
       {
         name: '김영애',
