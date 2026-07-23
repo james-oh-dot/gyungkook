@@ -38,6 +38,50 @@
   background: transparent;
 }
 
+/*
+  Scrolled but not hovered/open → liquid glass (strong frosted).
+  Standard `backdrop-filter` only — lightningcss adds the -webkit- prefix at
+  build; hand-writing both makes it drop the unprefixed one (breaks Firefox).
+*/
+.gnb--glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(1.6);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.14);
+}
+
+/* Over light content the type flips dark — thicken the frost so it still
+   reads as glass on a near-white background. */
+.gnb--glass[data-gnb-theme='light'] {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow:
+    inset 0 -1px 0 rgba(17, 17, 17, 0.06),
+    0 1px 0 rgba(17, 17, 17, 0.04);
+}
+
+/* No backdrop-filter support (older Firefox) → opaque-enough fallback. */
+@supports not (backdrop-filter: blur(1px)) {
+  .gnb--glass {
+    background: rgba(20, 20, 20, 0.6);
+  }
+  .gnb--glass[data-gnb-theme='light'] {
+    background: rgba(250, 250, 250, 0.9);
+  }
+}
+
+/*
+  Auto text-contrast: when the bar is transparent/glass and the content
+  scrolling under it is light, flip the type + icons to dark so they stay
+  legible. Dark content keeps the base white type.
+*/
+.gnb--over-hero[data-gnb-theme='light'],
+.gnb--glass[data-gnb-theme='light'] {
+  --gnb-fg: #111;
+  --gnb-muted: #5a5a5a;
+  --gnb-glass: rgba(17, 17, 17, 0.04);
+  --gnb-glass-border: rgba(17, 17, 17, 0.12);
+  --gnb-icon-filter: brightness(0);
+}
+
 .gnb--open.gnb--desktop {
   background: #fff;
   --gnb-fg: #111;
@@ -132,8 +176,16 @@
     background var(--gnb-duration) var(--gnb-ease);
 }
 
-.gnb--over-hero:not(.gnb--open) .gnb__indicator {
+/* White nav highlight over dark content (transparent or glass). */
+.gnb--over-hero:not(.gnb--open) .gnb__indicator,
+.gnb--glass .gnb__indicator {
   background: rgba(255, 255, 255, 0.16);
+}
+
+/* Light content underneath → dark highlight so it stays visible. */
+.gnb--over-hero[data-gnb-theme='light']:not(.gnb--open) .gnb__indicator,
+.gnb--glass[data-gnb-theme='light'] .gnb__indicator {
+  background: rgba(17, 17, 17, 0.06);
 }
 
 .gnb__indicator.is-ready {

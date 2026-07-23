@@ -38,6 +38,7 @@ export function SubVisual({
     <section
       className="sub-visual"
       data-name={visualKey ?? 'sub-visual'}
+      data-header-theme="dark"
       aria-label={`${parentLabel} ${title}`}
     >
       <div className="sub-visual__media" aria-hidden="true">

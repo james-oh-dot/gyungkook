@@ -1,5 +1,42 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-23 — GNB 리퀴드글라스 + 스크롤 자동 글자색 대비
+
+> Branch: `claude/o-boinida-98drdm` (최신 main 7f81e42에서 재시작)
+> 파일: `src/components/Gnb.tsx`, `src/components/Gnb.css`, 히어로 3종 + Footer.
+
+### 요구
+- GNB 헤더: **스크롤할 때 배경이 흰색이 되지 말 것**. 대신 **리퀴드글라스**(반투명+블러).
+- **마우스 호버했을 때만** 흰색.
+- 폰트 색은 항상 잘 보이게 — GNB 밑으로 지나가는 콘텐츠가 어두우면 밝게, 밝으면 어둡게
+  **자동** 적용(“이미지 위에 텍스트” 자동 대비 기법). 브라우저 렌더링 부하 없이 가볍게.
+
+### 조사 결론 (자동 대비 기법 3안)
+1. `mix-blend-mode: difference` — 순수 CSS·JS 0줄이지만 **fixed 헤더가 스크롤 중 매 프레임
+   리페인트**(부하) + 중간톤 색 왜곡 + `backdrop-filter`와 **공존 불가** → 탈락.
+2. **IntersectionObserver 섹션 테마** — 섹션에 밝기 라벨 부여 → 헤더 라인에 걸친 섹션만
+   감지해 글자색 결정. **프레임당 연산 없음**(경계 교차 시에만 콜백) + 리퀴드글라스 공존 +
+   결정적/접근성 통제. → **채택.**
+3. 스크림/텍스트 그림자 — 보조 안전망.
+
+### 구현
+- **3-state 배경**: `over-hero`(투명) → `.gnb--glass`(스크롤·프로스티드) → `.gnb--solid`(흰색).
+  `solid = menuOpen || (scrolled && hovered)`, `glass = scrolled && !solid`.
+  스크롤만으로는 절대 흰색이 안 되고, **호버(또는 메뉴 오픈)** 때만 흰색.
+- **글라스**: `backdrop-filter: blur(20px) saturate(1.6)`(“확실한 프로스티드”) + 반투명 흰색.
+  표준 프로퍼티만 작성(HARD RULE) → lightningcss가 webkit 접두사 페어링(빌드 산출물로 검증).
+  `@supports not`로 구형 Firefox 폴백.
+- **자동 글자색(`data-gnb-theme`)**: `Gnb.tsx`가 바 하단(`--gnb-bar-h`)에 1px IO 밴드를 두고,
+  그 밑에 걸친 `[data-header-theme]` 섹션의 값을 읽어 `<header>`에 `data-gnb-theme="dark|light"`
+  토글. **어두운 섹션 밑 → 흰 글자, 아니면 → 검은 글자**(기본 light). 라우트 변경/리사이즈 시
+  재구성. 어두운 영역만 태깅하면 되므로 `Hero`/`SubVisual`/`LawyerHero`/`Footer` 4곳에
+  `data-header-theme="dark"` 1줄씩. 워드마크·아이콘 필터도 테마 따라 자동 스왑.
+
+### 검증 (Playwright, 1440×900)
+- top: 투명 + 흰 글자 / 스크롤: 프로스티드 글라스, 히어로 위=흰 글자 / 밝은 본문 위=검은 글자.
+- 스크롤 상태에서 로고(비-네비) 호버 → **메뉴 안 열고** solid 흰색 전환 확인.
+- 서브페이지 동일 동작. lint/build clean, 관련 콘솔 에러 0.
+
 ## 2026-07-21 — 신규 페이지: 법무법인경국 > 경국인 · 갤러리 (sub-01-04)
 
 > Branch: `claude/o-boinida-98drdm` (PR #83 머지 후 최신 main에서 재시작)

@@ -110,7 +110,7 @@ function CertGrid({ label, items }: { label: string; items: CertItem[] }) {
 function LawyerHero({ lawyer }: { lawyer: Lawyer }) {
   const hasContact = !!(lawyer.phone || lawyer.fax || lawyer.email)
   return (
-    <section className="lawyer-hero" aria-label={`${lawyer.name} 변호사`}>
+    <section className="lawyer-hero" aria-label={`${lawyer.name} 변호사`} data-header-theme="dark">
       <ProgressiveImage
         className="lawyer-hero__bg"
         src={HERO.src}
