@@ -113,7 +113,7 @@ export function Hero() {
   )
 
   return (
-    <section className="hero" aria-label="메인 비주얼">
+    <section className="hero" aria-label="메인 비주얼" data-header-theme="dark">
       <div className="hero__stage" aria-hidden="true">
         {heroSlides.map((item, i) => (
           <div

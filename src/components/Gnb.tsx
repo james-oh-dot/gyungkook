@@ -62,6 +62,16 @@ function useMediaQuery(query: string) {
   return matches
 }
 
+type GnbTheme = 'dark' | 'light'
+
+/** Bar height from the header's `--gnb-bar-h` var (100 desktop / 82 compact). */
+function readGnbBarH(el: HTMLElement | null): number {
+  if (!el) return 100
+  const raw = getComputedStyle(el).getPropertyValue('--gnb-bar-h').trim()
+  const n = Number.parseFloat(raw)
+  return Number.isFinite(n) && n > 0 ? n : 100
+}
+
 export function Gnb() {
   const { pathname, hash } = useDrawerLocation()
   const activeDrawerNav = findActiveDrawerNav(pathname, hash)
@@ -76,6 +86,8 @@ export function Gnb() {
   const reactId = useId()
 
   const [scrolled, setScrolled] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  const [gnbTheme, setGnbTheme] = useState<GnbTheme>('dark')
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeTop, setActiveTop] = useState<number | null>(null)
   const [activeSubId, setActiveSubId] = useState<string | null>(null)
@@ -87,7 +99,15 @@ export function Gnb() {
   const [drawerExpanded, setDrawerExpanded] = useState<string | null>(null)
   const [searchOpen, setSearchOpen] = useState(false)
 
-  const solid = scrolled || menuOpen
+  /*
+    3-state background:
+    - solid  (white)  → a menu is open, or the user hovers the scrolled bar
+    - glass  (frosted)→ scrolled but not hovered / open
+    - over-hero (clear)→ at the very top
+    Scroll alone no longer turns the bar white — hover does.
+  */
+  const solid = menuOpen || (scrolled && hovered)
+  const glass = scrolled && !solid
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -95,6 +115,63 @@ export function Gnb() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  /*
+    Auto text-contrast: watch the labeled section (`data-header-theme`) that
+    sits directly under the GNB bar. Dark hero under the bar → light type;
+    once scrolled past into light body (no label) → dark type. Uses an
+    IntersectionObserver band 1px tall at the bar's bottom edge, so there is
+    no per-frame scroll math — only fires when a section crosses that line.
+  */
+  useEffect(() => {
+    const targets = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-header-theme]'),
+    )
+    if (!targets.length) {
+      setGnbTheme('light')
+      return
+    }
+    /* Every page opens on a dark hero — assume dark until the observer runs
+       (avoids a one-frame dark-on-dark flash on route change). */
+    setGnbTheme('dark')
+
+    const active = new Set<Element>()
+    let io: IntersectionObserver | null = null
+
+    const evaluate = () => {
+      const chosen = targets.find((t) => active.has(t))
+      const theme = chosen?.getAttribute('data-header-theme')
+      setGnbTheme(theme === 'dark' ? 'dark' : 'light')
+    }
+
+    const build = () => {
+      const barH = Math.round(readGnbBarH(rootRef.current))
+      const bottom = Math.max(0, Math.round(window.innerHeight - barH - 1))
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) active.add(entry.target)
+            else active.delete(entry.target)
+          }
+          evaluate()
+        },
+        { root: null, rootMargin: `-${barH}px 0px -${bottom}px 0px`, threshold: 0 },
+      )
+      targets.forEach((t) => io!.observe(t))
+    }
+
+    build()
+    const onResize = () => {
+      io?.disconnect()
+      active.clear()
+      build()
+    }
+    window.addEventListener('resize', onResize)
+    return () => {
+      io?.disconnect()
+      window.removeEventListener('resize', onResize)
+    }
+  }, [pathname])
 
   /* Close desktop mega when switching to compact (or vice versa). */
   useEffect(() => {
@@ -301,13 +378,20 @@ export function Gnb() {
       ref={rootRef}
       className={[
         'gnb',
-        solid ? 'gnb--solid' : 'gnb--over-hero',
+        solid ? 'gnb--solid' : glass ? 'gnb--glass' : 'gnb--over-hero',
         menuOpen ? 'gnb--open' : '',
         isCompact ? 'gnb--compact' : 'gnb--desktop',
       ]
         .filter(Boolean)
         .join(' ')}
-      onMouseLeave={onRootLeave}
+      data-gnb-theme={gnbTheme}
+      onMouseEnter={() => {
+        if (!isCompact) setHovered(true)
+      }}
+      onMouseLeave={(e) => {
+        onRootLeave(e)
+        if (!isCompact) setHovered(false)
+      }}
       onBlur={onRootBlur}
     >
       <div className="gnb__bar">
@@ -333,7 +417,9 @@ export function Gnb() {
             <img
               className="gnb__logo-word"
               src={asset(
-                solid ? 'assets/logo-wordmark-dark.svg' : 'assets/logo-wordmark-light.svg',
+                solid || gnbTheme === 'light'
+                  ? 'assets/logo-wordmark-dark.svg'
+                  : 'assets/logo-wordmark-light.svg',
               )}
               alt="법무법인 경국 LAW FIRM GYUNGKOOK"
             />

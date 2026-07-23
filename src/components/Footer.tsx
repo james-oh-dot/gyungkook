@@ -21,7 +21,7 @@ const SNS = [
 
 export function Footer() {
   return (
-    <footer className="site-footer" data-name="Footer">
+    <footer className="site-footer" data-name="Footer" data-header-theme="dark">
       <div className="site-footer__inner">
         <div className="site-footer__top">
           <a className="site-footer__logo" href="./" aria-label="법무법인 경국 홈">
