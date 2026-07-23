@@ -227,7 +227,8 @@
 .ld-drawer {
   position: fixed;
   inset: 0;
-  z-index: 80;
+  /* Above GNB (900); below SearchOverlay (1200) */
+  z-index: 1000;
   pointer-events: none;
 }
 
