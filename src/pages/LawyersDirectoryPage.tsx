@@ -126,6 +126,20 @@ function AdvisorDrawer({
     if (!open) return
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
+      if (e.key !== 'Tab' || !panelRef.current) return
+      const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+      )
+      if (!focusable.length) return
+      const first = focusable[0]!
+      const last = focusable[focusable.length - 1]!
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault()
+        last.focus()
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault()
+        first.focus()
+      }
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -164,32 +178,46 @@ function AdvisorDrawer({
         </div>
         {advisor ? (
           <div className="ld-drawer__content">
-            <div className="ld-drawer__photo">
-              <ProgressiveImage
-                className="ld-drawer__progressive"
-                imgClassName="ld-drawer__img"
-                src={advisor.photo}
-                preview={advisor.photoPreview}
-                alt={`${advisor.name} ${advisor.title}`}
-                objectFit="cover"
-                objectPosition="top center"
-                priority
-              />
-            </div>
+            <aside className="ld-drawer__visual">
+              <div className="ld-drawer__photo">
+                <ProgressiveImage
+                  className="ld-drawer__progressive"
+                  imgClassName="ld-drawer__img"
+                  src={advisor.photo}
+                  preview={advisor.photoPreview}
+                  alt={`${advisor.name} ${advisor.title}`}
+                  objectFit="cover"
+                  objectPosition="top center"
+                  priority
+                />
+              </div>
+              <div className="ld-drawer__visual-note" aria-hidden="true">
+                <span>ADVISORY PROFILE</span>
+                <span>{String(ADVISORS.indexOf(advisor) + 1).padStart(2, '0')}</span>
+              </div>
+            </aside>
             <div className="ld-drawer__meta">
-              <h2 id={titleId} className="ld-drawer__name">
-                {advisor.name}
-              </h2>
-              <p className="ld-drawer__role">{advisor.title}</p>
+              <div className="ld-drawer__identity">
+                <p className="ld-drawer__kicker">GYUNGKOOK ADVISOR</p>
+                <h2 id={titleId} className="ld-drawer__name">
+                  {advisor.name}
+                </h2>
+                <p className="ld-drawer__role">{advisor.title}</p>
+              </div>
               <div className="ld-drawer__rule" aria-hidden="true" />
               <div className="ld-drawer__sections">
-                {advisor.sections.map((section) => (
+                {advisor.sections.map((section, index) => (
                   <section
                     key={section.title}
                     className="ld-drawer__section"
                     aria-label={section.title}
                   >
-                    <h3 className="ld-drawer__section-title">{section.title}</h3>
+                    <div className="ld-drawer__section-head">
+                      <span className="ld-drawer__section-no" aria-hidden="true">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <h3 className="ld-drawer__section-title">{section.title}</h3>
+                    </div>
                     <ul className="ld-drawer__highlights">
                       {section.items.map((line) => (
                         <li key={line}>{line}</li>

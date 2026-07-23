@@ -213,8 +213,8 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  color: #111;
-  font-size: 16px;
+  color: #6d6d73;
+  font-size: 14px;
   line-height: 1.4;
   letter-spacing: -0.025em;
 }
@@ -259,13 +259,13 @@
   right: 0;
   display: flex;
   flex-direction: column;
-  width: min(900px, 100%);
+  width: min(860px, 100%);
   height: 100%;
   height: 100dvh;
   background: #fff;
   color: #111;
   border-radius: 0;
-  box-shadow: -18px 0 48px rgba(17, 17, 17, 0.22);
+  box-shadow: -24px 0 64px rgba(17, 17, 17, 0.24);
   transform: translate3d(105%, 0, 0);
   transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
   overscroll-behavior: contain;
@@ -281,8 +281,8 @@
   justify-content: space-between;
   gap: 16px;
   flex-shrink: 0;
-  padding: 20px 28px;
-  border-bottom: 1px solid #f1f1f5;
+  padding: 18px 32px;
+  border-bottom: 1px solid #e5e5ec;
 }
 
 .ld-drawer__eyebrow {
@@ -297,12 +297,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   padding: 0;
   border: 0;
   border-radius: 0;
-  background: #f7f7fb;
+  background: #f1f1f5;
   cursor: pointer;
   transition: background 0.2s var(--ease-premium, ease);
 }
@@ -327,20 +327,37 @@
 
 .ld-drawer__content {
   display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
-  gap: 40px;
+  grid-template-columns: minmax(240px, 0.75fr) minmax(0, 1.25fr);
+  gap: 48px;
   flex: 1;
   min-height: 0;
-  padding: 36px 40px 48px;
+  padding: 44px 48px 56px;
   overflow: auto;
+}
+
+.ld-drawer__visual {
+  align-self: start;
+  position: sticky;
+  top: 0;
 }
 
 .ld-drawer__photo {
   position: relative;
   width: 100%;
-  aspect-ratio: 3 / 4;
+  aspect-ratio: 3 / 4.15;
   overflow: hidden;
   background: #2f2f33;
+}
+
+.ld-drawer__visual-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  color: #767676;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
 }
 
 .ld-drawer__progressive,
@@ -358,13 +375,27 @@
 .ld-drawer__meta {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding-top: 8px;
+  gap: 0;
+  padding-top: 10px;
+}
+
+.ld-drawer__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ld-drawer__kicker {
+  margin: 0 0 8px;
+  color: #58bdc2;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
 }
 
 .ld-drawer__name {
   margin: 0;
-  font-size: clamp(32px, 3vw, 44px);
+  font-size: clamp(36px, 3vw, 48px);
   font-weight: 600;
   line-height: 1.2;
   letter-spacing: -0.03em;
@@ -372,7 +403,7 @@
 
 .ld-drawer__role {
   margin: 0;
-  font-size: 20px;
+  font-size: 18px;
   letter-spacing: -0.025em;
   color: #505050;
 }
@@ -380,27 +411,43 @@
 .ld-drawer__rule {
   width: 100%;
   height: 1px;
-  margin: 12px 0 8px;
+  margin: 28px 0 24px;
   background: #e5e5ec;
 }
 
 .ld-drawer__sections {
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  margin-top: 4px;
+  gap: 16px;
+  margin-top: 0;
 }
 
 .ld-drawer__section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  padding: 20px;
+  background: #f7f7fb;
+  border-left: 2px solid #58bdc2;
+}
+
+.ld-drawer__section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.ld-drawer__section-no {
+  color: #58bdc2;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
 }
 
 .ld-drawer__section-title {
   margin: 0;
-  color: #58bdc2;
-  font-size: 15px;
+  color: #111;
+  font-size: 18px;
   font-weight: 600;
   letter-spacing: -0.025em;
 }
@@ -409,10 +456,10 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  font-size: 18px;
-  line-height: 1.55;
+  font-size: 16px;
+  line-height: 1.6;
   letter-spacing: -0.025em;
-  color: #111;
+  color: #505050;
 }
 
 .ld-drawer__highlights li {
@@ -425,13 +472,13 @@
   position: absolute;
   left: 0;
   top: 0.7em;
-  width: 5px;
-  height: 5px;
+  width: 4px;
+  height: 4px;
   background: #58bdc2;
 }
 
 .ld-drawer__highlights li + li {
-  margin-top: 8px;
+  margin-top: 5px;
 }
 
 /* ---------- Responsive ---------- */
@@ -483,7 +530,7 @@
   }
 
   .ld-card__highlights {
-    font-size: 15px;
+    font-size: 14px;
   }
 
   /* Mobile = bottom sheet (slide up), max 80vh */
@@ -514,6 +561,10 @@
   .ld-drawer__photo {
     max-height: 42vh;
     aspect-ratio: 4 / 5;
+  }
+
+  .ld-drawer__visual {
+    position: static;
   }
 
   .ld-drawer__highlights {
