@@ -529,6 +529,16 @@
     font-size: 16px;
   }
 
+  /* Directory cards only: keep the mobile list compact without affecting
+     the advisor drawer's full-size profile image. */
+  .ld-card__photo {
+    aspect-ratio: 299 / 267;
+  }
+
+  .ld-card__img {
+    object-position: center center !important;
+  }
+
   .ld-card__highlights {
     font-size: 14px;
   }
