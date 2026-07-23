@@ -1,10 +1,10 @@
 /**
  * ============================================================================
- * 업무사례 (활동·보도 > 업무사례 / Figma sub-04-01)
+ * 업무사례 (재개발 · 보상업무 3rd / Figma sub-04-01)
  * ============================================================================
  *
  * Frames:
- * - SUB_활동보도_업무사례_{DESKTOP|TABLET|MOBILE}
+ * - SUB_활동보도_업무사례_{DESKTOP|TABLET|MOBILE} (asset still sub-04-01)
  * - Hover: 닿은 아이템만 하이라이트, 나머지 딤드
  *
  * Backend notes:
@@ -18,9 +18,9 @@ import { progressiveAsset } from '../utils/progressiveImage'
 const CASE_STUDIES_VISUAL = progressiveAsset('assets/sub/sub-04-01')
 
 export const CASE_STUDIES_PAGE = {
-  parentLabel: '활동 · 보도',
+  parentLabel: '재개발 · 보상업무',
   title: '업무사례',
-  /** Figma layer sub-04-01 — also GNB fullmenu visual for press-cases */
+  /** Figma layer sub-04-01 — also GNB fullmenu visual for redev-cases */
   visual: CASE_STUDIES_VISUAL.src,
   visualPreview: CASE_STUDIES_VISUAL.preview,
   basePath: '/press/cases',

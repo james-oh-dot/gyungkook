@@ -57,7 +57,6 @@ function ScrollToTop() {
  * Main SPA routes (index.html).
  *
  * Implemented:
- * - /press/cases                          → 업무사례 (sub-04-01)
  * - /press/coverage/:tab                  → TV방송 | 보도자료 list (sub-04-02)
  * - /press/coverage/:tab/:postId          → shared post detail
  * - /press/column-media/:tab              → 컬럼 | 간행물 | 미디어 list (sub-04-03)
@@ -71,11 +70,11 @@ function ScrollToTop() {
  * - /about/gallery                        → 경국인 · 갤러리 (sub-01-04, scroll-mode tabs)
  * - /practice/renewal                     → 정비사업 (sub-02-01)
  * - /practice/public                      → 공익사업 (sub-02-02)
+ * - /press/cases                          → 업무사례 (redev 3rd; Figma sub-04-01)
+ * - /other/misc[#tab]                     → 기타업무 scroll tabs (hash = tab id)
  *
  * Placeholders (sub-01-01 visual + “곧 업데이트예정”):
  * - /about/history|location
- * - /other/misc|realestate
- * - /news/notice|cases|careers|consult
  *
  * GitHub Pages deep links require dist/404.html → index.html (see deploy workflow).
  */

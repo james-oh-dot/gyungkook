@@ -38,9 +38,12 @@ const MQ_COMPACT = '(max-width: 1024px)'
  * Router pathname when under BrowserRouter; otherwise `/` (classic.html).
  * Avoids calling `useLocation()` outside a Router (hooks throw).
  */
-function useDrawerPathname(): string {
+function useDrawerLocation(): { pathname: string; hash: string } {
   const ctx = useContext(UNSAFE_LocationContext)
-  return ctx?.location.pathname ?? '/'
+  return {
+    pathname: ctx?.location.pathname ?? '/',
+    hash: ctx?.location.hash ?? '',
+  }
 }
 
 function useMediaQuery(query: string) {
@@ -60,8 +63,8 @@ function useMediaQuery(query: string) {
 }
 
 export function Gnb() {
-  const pathname = useDrawerPathname()
-  const activeDrawerNav = findActiveDrawerNav(pathname)
+  const { pathname, hash } = useDrawerLocation()
+  const activeDrawerNav = findActiveDrawerNav(pathname, hash)
   const isCompact = useMediaQuery(MQ_COMPACT)
   const rootRef = useRef<HTMLElement>(null)
   const navListRef = useRef<HTMLUListElement>(null)
