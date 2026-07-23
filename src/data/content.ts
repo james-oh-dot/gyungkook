@@ -27,18 +27,21 @@ export const practices = [
   {
     no: '01',
     title: '정비사업',
+    to: '/practice/renewal',
     image: progressiveAsset('assets/practice-1'),
     featured: true,
   },
   {
     no: '02',
     title: '공익사업',
+    to: '/practice/public',
     image: progressiveAsset('assets/practice-2'),
     featured: false,
   },
   {
     no: '03',
     title: '기타 분야별 업무',
+    to: '/other/misc',
     image: progressiveAsset('assets/practice-3'),
     featured: false,
   },
@@ -80,6 +83,7 @@ export const achievements = [
       '보조참가인을 포함시키지 않았을 때에는 피고2의 유류분초과비율은 약 62%이나, 포함시켰을 때에는 39%로 급감. 상속포기자와 유증자의 지위를 정확하게 이해함으로써 그만큼 의뢰인으로 하여금 적은 유류분을 반환토톡 한 사례',
     ],
     cta: '업무 사례 보기',
+    to: '/other/cases',
     image: progressiveAsset('assets/achieve-3'),
     align: 'right' as const,
   },
@@ -88,6 +92,7 @@ export const achievements = [
 export const professionals = [
   {
     role: '변호사',
+    id: 'parkhyoyoung',
     name: '박효영',
     tags: ['재개발/재건축 전문', '수용보상 전문'],
     headline: '전문 · 집중',
@@ -101,6 +106,7 @@ export const professionals = [
   },
   {
     role: '대표변호사',
+    id: 'gongdaeho',
     name: '공대호',
     tags: ['재개발/재건축 전문', '행정법 전문', '법원감정인', '감정평가사'],
     headline: '실력 · 신뢰',
@@ -114,6 +120,7 @@ export const professionals = [
   },
   {
     role: '변호사',
+    id: 'gongseongjun',
     name: '공성준',
     tags: ['재개발/재건축 전문', '감정평가사', '공인중개사', '공학석사'],
     headline: '분석 · 실행',
@@ -127,6 +134,7 @@ export const professionals = [
   },
   {
     role: '변호사',
+    id: 'sinjiho',
     name: '신지호',
     tags: ['재개발/재건축 전문'],
     headline: '소통 · 동행',

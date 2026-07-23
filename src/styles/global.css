@@ -363,6 +363,18 @@ p {
   min-height: clamp(360px, 28vw, 540px);
 }
 
+.practice-card-link,
+.pro-card-link {
+  display: block;
+  min-width: 0;
+  color: inherit;
+}
+
+.practice-card-link .practice-card,
+.pro-card-link .pro-card {
+  height: 100%;
+}
+
 .practice-card {
   position: relative;
   min-height: clamp(320px, 28vw, 540px);
@@ -1302,6 +1314,16 @@ p {
 }
 
 @media (max-width: 767px) {
+  /* HOME2_MOBILE uses a consistent 72px section rhythm. */
+  .section {
+    padding-top: 72px;
+    padding-bottom: 72px;
+  }
+
+  .section-title {
+    font-size: 32px;
+  }
+
   /* Mobile (Figma HOME_MOBILE_390): overlay portrait cards, 8px gutter */
   .notice-grid {
     grid-template-columns: 1fr;
@@ -1345,5 +1367,149 @@ p {
   .social__quote {
     font-size: 20px;
     line-height: 1.6;
+  }
+
+  /* 법인소개 (Figma 108:6138) */
+  .section--about {
+    background: #f5f6f6;
+    padding-bottom: 24px;
+  }
+  .about {
+    gap: 34px;
+  }
+  .about__copy {
+    min-height: 0;
+    gap: 30px;
+  }
+  .about__lead {
+    margin-top: 8px;
+    font-size: 28px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+  .about__points {
+    gap: 0;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+  .about__media {
+    min-height: 0;
+    height: 240px;
+    border-radius: 6px;
+  }
+  .about__appeal {
+    margin-top: 0;
+    padding: 40px 16px;
+    align-items: center;
+    text-align: center;
+    font-size: 16px;
+    line-height: 25px;
+  }
+  .about__appeal-divider {
+    width: 40px;
+  }
+
+  /* 업무영역 (Figma 108:6161): stacked image/caption cards. */
+  .practice-head {
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .practice-head__desc {
+    font-size: 28px;
+    font-weight: 400;
+  }
+  .practice-grid {
+    gap: 0;
+  }
+  .practice-card {
+    min-height: 0;
+    padding: 0;
+    display: block;
+    background: #090909;
+  }
+  .practice-card__media {
+    position: relative;
+    height: 190px;
+  }
+  .practice-card.is-featured .practice-card__media {
+    height: 380px;
+  }
+  .practice-card__shade,
+  .practice-card__top {
+    display: none;
+  }
+  .practice-card__title {
+    min-height: 90px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+    padding: 18px;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.82), rgba(0, 0, 0, 0.05));
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+  }
+  .practice-card__title::before {
+    content: attr(data-number);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 17px;
+  }
+  .practice-card__title img {
+    display: none;
+  }
+  .practice-card:not(.is-featured) .practice-card__title {
+    font-size: 20px;
+  }
+
+  /* 실적 (Figma 108:6182): image above a full-width content card. */
+  .achieve-list {
+    gap: 26px;
+  }
+  .achieve-row {
+    min-height: 0;
+    flex-direction: column;
+  }
+  .achieve-row__media {
+    position: relative;
+    height: 210px;
+  }
+  .achieve-row__card,
+  .achieve-row.is-left .achieve-row__card,
+  .achieve-row.is-right .achieve-row__card {
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    gap: 16px;
+    box-shadow: none;
+  }
+  .achieve-row__card .text-btn {
+    align-self: flex-end;
+  }
+  .achieve-row__title {
+    font-size: 20px;
+  }
+  .achieve-row__subtitle,
+  .achieve-row__body {
+    margin-top: 8px;
+  }
+
+  /* Professionals & Advisors (Figma 108:6222): 342 × 400 cards. */
+  .professionals .section-head {
+    gap: 10px;
+    margin-bottom: 0;
+  }
+  .professionals .section-title {
+    font-size: 32px;
+  }
+  .pro-grid {
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .pro-card {
+    height: 400px;
+    aspect-ratio: auto;
   }
 }

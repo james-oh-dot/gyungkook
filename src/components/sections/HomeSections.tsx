@@ -64,7 +64,7 @@ export function NoticeSection() {
           </p>
         </Reveal>
         <Reveal delay={120}>
-          <TextBtn label="전체보기" />
+          <TextBtn label="전체보기" to="/news/notice" />
         </Reveal>
       </div>
       <div className="notice-grid">
@@ -157,35 +157,40 @@ export function PracticeSection() {
           const isActive = hovered === index
           const isDimmed = hasHover && !isActive
           return (
-            <article
+            <a
               key={item.title}
-              className={`practice-card media-card${item.featured ? ' is-featured' : ''}${
-                isActive ? ' is-active' : ''
-              }${isDimmed ? ' is-dimmed' : ''}`}
-              onMouseEnter={() => setHovered(index)}
-              onMouseLeave={() => setHovered(null)}
-              onFocus={() => setHovered(index)}
-              onBlur={() => setHovered(null)}
-              tabIndex={0}
+              className="practice-card-link"
+              href={resolveNavHref(item.to)}
+              aria-label={`${item.title} 자세히 보기`}
             >
-              <div className="practice-card__media">
-                <ProgressiveImage
-                  className="media-card__img"
-                  src={item.image.src}
-                  preview={item.image.preview}
-                  alt=""
-                />
-                {item.featured ? <div className="practice-card__shade" /> : null}
-              </div>
-              <div className="practice-card__top">
-                <span className="practice-card__line" />
-                <span>{item.no}</span>
-              </div>
-              <div className="practice-card__title">
-                <span>{item.title}</span>
-                <img src={asset('assets/icon-link-white.svg')} alt="" />
-              </div>
-            </article>
+              <article
+                className={`practice-card media-card${item.featured ? ' is-featured' : ''}${
+                  isActive ? ' is-active' : ''
+                }${isDimmed ? ' is-dimmed' : ''}`}
+                onMouseEnter={() => setHovered(index)}
+                onMouseLeave={() => setHovered(null)}
+                onFocus={() => setHovered(index)}
+                onBlur={() => setHovered(null)}
+              >
+                <div className="practice-card__media">
+                  <ProgressiveImage
+                    className="media-card__img"
+                    src={item.image.src}
+                    preview={item.image.preview}
+                    alt=""
+                  />
+                  {item.featured ? <div className="practice-card__shade" /> : null}
+                </div>
+                <div className="practice-card__top">
+                  <span className="practice-card__line" />
+                  <span>{item.no}</span>
+                </div>
+                <div className="practice-card__title" data-number={item.no}>
+                  <span>{item.title}</span>
+                  <img src={asset('assets/icon-link-white.svg')} alt="" />
+                </div>
+              </article>
+            </a>
           )
         })}
       </div>
@@ -288,7 +293,11 @@ export function ProfessionalsSection() {
             </h2>
           </Reveal>
           <Reveal delay={100}>
-            <TextBtn label="변호사 자문단 보기" icon={asset('assets/icon-btn-white.svg')} />
+            <TextBtn
+              label="변호사 자문단 보기"
+              icon={asset('assets/icon-btn-white.svg')}
+              to="/about/lawyers"
+            />
           </Reveal>
         </div>
         <div className="pro-grid">
@@ -296,27 +305,31 @@ export function ProfessionalsSection() {
             const isActive = hovered === index
             const isDimmed = hasHover && !isActive
             return (
-              <article
+              <a
                 key={person.name}
-                className={`pro-card${isActive ? ' is-active' : ''}${
-                  isDimmed ? ' is-dimmed' : ''
-                }`}
-                onMouseEnter={() => {
-                  clearLeaveTimer()
-                  setHovered(index)
-                }}
-                onMouseLeave={() => {
-                  if (hovered === index) scheduleClear(index)
-                }}
-                onFocus={() => {
-                  clearLeaveTimer()
-                  setHovered(index)
-                }}
-                onBlur={() => {
-                  if (hovered === index) scheduleClear(index)
-                }}
-                tabIndex={0}
+                className="pro-card-link"
+                href={resolveNavHref(`/about/lawyers/${person.id}`)}
+                aria-label={`${person.name} 변호사 프로필 보기`}
               >
+                <article
+                  className={`pro-card${isActive ? ' is-active' : ''}${
+                    isDimmed ? ' is-dimmed' : ''
+                  }`}
+                  onMouseEnter={() => {
+                    clearLeaveTimer()
+                    setHovered(index)
+                  }}
+                  onMouseLeave={() => {
+                    if (hovered === index) scheduleClear(index)
+                  }}
+                  onFocus={() => {
+                    clearLeaveTimer()
+                    setHovered(index)
+                  }}
+                  onBlur={() => {
+                    if (hovered === index) scheduleClear(index)
+                  }}
+                >
                 <div className="pro-card__media">
                   <ProgressiveImage
                     className="progressive-image--fill"
@@ -358,6 +371,7 @@ export function ProfessionalsSection() {
                   </div>
                 </div>
               </article>
+              </a>
             )
           })}
         </div>
@@ -394,7 +408,7 @@ export function PressSection() {
           </p>
         </Reveal>
         <Reveal delay={100}>
-          <TextBtn label="전체보기" />
+          <TextBtn label="전체보기" to="/press/coverage/tv" />
         </Reveal>
       </div>
 
@@ -505,7 +519,11 @@ export function AwardsSection() {
             법무법인경국의 가치는 다양한 수상, 위촉, 인증 경력에서 더욱 빛을
             발합니다.
           </p>
-          <TextBtn label="전체보기" icon={asset('assets/icon-btn-award.svg')} />
+          <TextBtn
+            label="전체보기"
+            icon={asset('assets/icon-btn-award.svg')}
+            to="/about/history"
+          />
         </Reveal>
         {/*
           Hover preview only while the pointer is inside the awards list.
