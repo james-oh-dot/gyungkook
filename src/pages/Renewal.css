@@ -648,6 +648,7 @@
   letter-spacing: -0.45px;
   color: #111;
   word-break: keep-all;
+  overflow-wrap: anywhere;
 }
 
 .renewal-results__actions {

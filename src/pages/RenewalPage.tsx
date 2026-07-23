@@ -26,6 +26,7 @@ import {
 import { useScrollGage } from '../hooks/useScrollGage'
 import { LOCAL_TABS_ANCHOR_ID } from '../hooks/useScrollToLocalTabs'
 import { asset } from '../utils/asset'
+import { formatPerformanceTitle } from '../utils/performanceTitle'
 import './Renewal.css'
 
 const BULLET_SRC = asset('assets/icon-bullet.svg')
@@ -609,7 +610,9 @@ export function RenewalPage() {
                         <span className="renewal-result-card__cat">
                           {item.category}
                         </span>
-                        <p className="renewal-result-card__result">{item.result}</p>
+                        <p className="renewal-result-card__result">
+                          {formatPerformanceTitle(item.result)}
+                        </p>
                       </li>
                     ))}
                   </ul>
