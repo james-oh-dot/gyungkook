@@ -64,7 +64,7 @@ export const GNB_SUB_VISUAL_RENEWAL = RENEWAL_PAGE.visual
 /** Figma sub-02-02 — 재개발·보상업무 > 공익사업 */
 export const GNB_SUB_VISUAL_PUBLIC = PUBLIC_PROJECT_PAGE.visual
 
-/** Figma sub-04-01 — 활동·보도 > 업무사례 */
+/** Figma sub-04-01 — 재개발·보상업무 > 업무사례 */
 export const GNB_SUB_VISUAL_PRESS_CASES = CASE_STUDIES_PAGE.visual
 
 /** Figma sub-04-02 — 활동·보도 > 언론보도 */
@@ -83,23 +83,30 @@ export const GNB_SUB_VISUAL_NEWS = NEWS_NOTICE_PAGE.visual
 export const GNB_SUB_VISUAL_OTHER = MISC_PAGE.visual
 
 /**
- * Match the current SPA pathname to a drawer parent + sub item.
+ * Match the current SPA pathname (+ hash) to a drawer parent + sub item.
  * Home (`/`) → null (all accordion sections stay collapsed).
  * Subpages → longest matching SPA child href (incl. local-tab siblings
- * like `/press/coverage/tv` ↔ `/press/coverage/newspaper`).
+ * like `/press/coverage/tv` ↔ `/press/coverage/newspaper`, and hash tabs
+ * like `/other/misc#family`).
  */
 export function findActiveDrawerNav(
   pathname: string,
+  hash = '',
 ): { parentId: string; subId: string } | null {
   const path = pathname.replace(/\/+$/, '') || '/'
   if (path === '/') return null
+
+  const rawHash = hash.replace(/^#/, '')
+  /* Bare /other/misc (no hash) behaves like the first tab. */
+  const effectiveHash =
+    rawHash || (path === '/other/misc' ? 'realestate' : '')
 
   let best: { parentId: string; subId: string; score: number } | null = null
 
   for (const item of NAV_ITEMS) {
     for (const sub of item.children) {
       if (!sub.href.startsWith('/')) continue
-      const score = navHrefMatchScore(path, sub.href)
+      const score = navHrefMatchScore(path, effectiveHash, sub.href)
       if (score <= 0) continue
       if (!best || score > best.score) {
         best = { parentId: item.id, subId: sub.id, score }
@@ -110,9 +117,27 @@ export function findActiveDrawerNav(
   return best ? { parentId: best.parentId, subId: best.subId } : null
 }
 
-function navHrefMatchScore(pathname: string, href: string): number {
-  const target = href.replace(/\/+$/, '') || '/'
-  if (pathname === target) return 10_000 + target.length
+function splitNavHref(href: string): { path: string; hash: string } {
+  const i = href.indexOf('#')
+  if (i < 0) {
+    return { path: href.replace(/\/+$/, '') || '/', hash: '' }
+  }
+  const pathPart = href.slice(0, i).replace(/\/+$/, '') || '/'
+  return { path: pathPart, hash: href.slice(i + 1) }
+}
+
+function navHrefMatchScore(
+  pathname: string,
+  hash: string,
+  href: string,
+): number {
+  const { path: target, hash: hrefHash } = splitNavHref(href)
+  if (pathname === target) {
+    if (hrefHash) {
+      return hrefHash === hash ? 20_000 + target.length : 0
+    }
+    return 10_000 + target.length
+  }
   if (pathname.startsWith(`${target}/`)) return 5_000 + target.length
   /* Local tabs under the same section prefix (drop last segment). */
   const parent = target.replace(/\/[^/]+$/, '')
@@ -183,41 +208,47 @@ export const NAV_ITEMS: NavItem[] = [
         href: '/practice/public',
         visual: GNB_SUB_VISUAL_PUBLIC,
       },
+      {
+        id: 'redev-cases',
+        label: '업무사례',
+        href: '/press/cases',
+        visual: GNB_SUB_VISUAL_PRESS_CASES,
+      },
     ],
   },
   {
     id: 'other',
     label: '기타업무',
-    href: '/other/misc',
+    href: '/other/misc#realestate',
     children: [
       {
         id: 'other-realestate',
         label: '부동산 분야',
-        href: '/other/misc',
+        href: '/other/misc#realestate',
         visual: GNB_SUB_VISUAL_OTHER,
       },
       {
         id: 'other-family',
         label: '상속 · 이혼 · 가사',
-        href: '/other/misc',
+        href: '/other/misc#family',
         visual: GNB_SUB_VISUAL_OTHER,
       },
       {
         id: 'other-civil',
         label: '민사 · 형사',
-        href: '/other/misc',
+        href: '/other/misc#civil',
         visual: GNB_SUB_VISUAL_OTHER,
       },
       {
         id: 'other-admin',
         label: '행정',
-        href: '/other/misc',
+        href: '/other/misc#admin',
         visual: GNB_SUB_VISUAL_OTHER,
       },
       {
         id: 'other-corporate',
         label: '기업 · 스타트업',
-        href: '/other/misc',
+        href: '/other/misc#corporate',
         visual: GNB_SUB_VISUAL_OTHER,
       },
     ],
@@ -225,14 +256,8 @@ export const NAV_ITEMS: NavItem[] = [
   {
     id: 'press',
     label: '활동 · 보도',
-    href: '/press/cases',
+    href: '/press/coverage/tv',
     children: [
-      {
-        id: 'press-cases',
-        label: '업무사례',
-        href: '/press/cases',
-        visual: GNB_SUB_VISUAL_PRESS_CASES,
-      },
       {
         id: 'press-media',
         label: '언론보도',

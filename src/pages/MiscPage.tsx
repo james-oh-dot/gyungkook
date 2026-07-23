@@ -5,6 +5,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { LocalTabs } from '../components/sub/LocalTabs'
 import { SubVisual } from '../components/sub/SubVisual'
 import {
@@ -166,25 +167,51 @@ function SectionView({ section }: { section: MiscSection }) {
 /**
  * 기타업무 (Figma SUB_기타업무 / sub-03-01). 스크롤-모드 로컬 탭 단일 페이지 —
  * 정비사업/공익사업과 동일 쉘(renewal-* 클래스)로 탭 400/88 · 내부 140/74 간격을
- * 그대로 상속. 각 탭 섹션 = 관련법령형 split(head + body: 리드 + 카드 그리드).
+ * 그대로 상속. GNB 서브메뉴는 `/other/misc#{tabId}` 해시로 진입 → 해당 섹션 스크롤
+ * + 탭 활성화.
  */
+function tabIdFromHash(hash: string): string | null {
+  const id = hash.replace(/^#/, '')
+  return MISC_TABS.some((t) => t.id === id) ? id : null
+}
+
 export function MiscPage() {
-  const [activeTab, setActiveTab] = useState(MISC_TABS[0]!.id)
+  const { hash } = useLocation()
+  const navigate = useNavigate()
+  const [activeTab, setActiveTab] = useState(
+    () => tabIdFromHash(hash) ?? MISC_TABS[0]!.id,
+  )
   const scrollingRef = useRef(false)
   const mainRef = useRef<HTMLElement>(null)
 
-  const scrollToSection = useCallback((id: string) => {
+  const scrollToSection = useCallback((id: string, syncHash = true) => {
     const el = document.getElementById(sectionId(id))
     if (!el) return
     scrollingRef.current = true
     setActiveTab(id)
+    if (syncHash) {
+      const next = `#${id}`
+      if (window.location.hash !== next) {
+        navigate({ pathname: '/other/misc', hash: id }, { replace: true })
+      }
+    }
     const offset = readGnbBarH() + readLocalTabsH() + 8
     const top = el.getBoundingClientRect().top + window.scrollY - offset
     window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
     window.setTimeout(() => {
       scrollingRef.current = false
     }, 700)
-  }, [])
+  }, [navigate])
+
+  /* GNB / deep-link: /other/misc#family → activate + scroll that tab */
+  useEffect(() => {
+    const id = tabIdFromHash(hash)
+    if (!id) return
+    const timer = window.setTimeout(() => {
+      scrollToSection(id, false)
+    }, 50)
+    return () => window.clearTimeout(timer)
+  }, [hash, scrollToSection])
 
   useEffect(() => {
     const root = mainRef.current
@@ -203,7 +230,12 @@ export function MiscPage() {
           const first = visible[0]
           if (!first) return
           const id = first.target.getAttribute('data-misc-section')
-          if (id) setActiveTab(id)
+          if (!id || id === activeTab) return
+          setActiveTab(id)
+          const next = `#${id}`
+          if (window.location.hash !== next) {
+            navigate({ pathname: '/other/misc', hash: id }, { replace: true })
+          }
         },
         { root: null, rootMargin: `-${offset}px 0px -55% 0px`, threshold: [0, 0.1, 0.25] },
       )
@@ -221,7 +253,7 @@ export function MiscPage() {
       io.disconnect()
       window.removeEventListener('resize', onResize)
     }
-  }, [])
+  }, [activeTab, navigate])
 
   return (
     <div className="renewal misc" data-name="SUB_기타업무">
@@ -238,7 +270,7 @@ export function MiscPage() {
       <LocalTabs
         tabs={MISC_TABS}
         activeTab={activeTab}
-        onTabSelect={scrollToSection}
+        onTabSelect={(id) => scrollToSection(id, true)}
         ariaLabel="기타업무 로컬 메뉴"
       />
 

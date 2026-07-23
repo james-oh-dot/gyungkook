@@ -155,7 +155,7 @@ const ROUTE_DOCS: SearchDoc[] = [
     RENEWAL_TRANSFER, RENEWAL_LEVY, RENEWAL_PUBLIC_LAND, RENEWAL_ADVISORY, RENEWAL_TRACK_RECORD),
   doc('practice-public', '공익사업', '/practice/public', [REDEV, '공익사업'],
     PUBLIC_TABS, PUBLIC_OVERVIEW, PUBLIC_RECORD_1, PUBLIC_COMPENSATION, PUBLIC_PROCEDURE, PUBLIC_RECORD_2),
-  doc('press-cases', '업무사례', '/press/cases', [PRESS, '업무사례'], CASE_STUDIES),
+  doc('press-cases', '업무사례', '/press/cases', [REDEV, '업무사례'], CASE_STUDIES),
   doc('news-careers', '인재영입', '/news/careers', [NEWS, '인재영입'],
     CAREERS_INTRO, CAREERS_VALUES, CAREERS_CONTACT),
 ]

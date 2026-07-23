@@ -19,25 +19,20 @@
 ### Subpages (React Router on main SPA)
 - Router lives in `src/App.tsx` (`BrowserRouter` + `basename` from `import.meta.env.BASE_URL`). `classic.html` stays a separate MPA entry without these routes.
 - **HARD RULE — every subpage hero shows the 대메뉴(parent-menu) label.** The sub-visual title is the *sub*-menu name; the teal `.sub-visual__chip` above it names the top menu so visitors know where they landed. `SubVisual` renders it whenever `showChip` is truthy — **default `true`, and every page must keep it on** (do NOT pass `showChip={false}`; the earlier "Figma hero_type2 has no chip" exemption is retired). Placeholder pages set `showChip: true` in `placeholderPages.ts`. The 변호사 · 자문단 profile cover (not a `SubVisual`) carries the same label as `.lawyer-hero__eyebrow`. When adding a new subpage, wire `parentLabel` and leave the chip on.
-- **업무사례** (활동·보도 1st / Figma `sub-04-01`):
-  - `/press/cases` → `CaseStudiesPage` (4/2/1 col grid)
-  - Hover: hovered card highlight + siblings dim (see `CaseStudies.css`)
-  - GNB `press-cases` → `/press/cases`, visual `public/assets/sub/sub-04-01.webp` (+ `.preview.webp`)
-  - Mock data: `src/data/caseStudies.ts`
-- **언론보도** (활동·보도 2nd / Figma `sub-04-02`):
+- **언론보도** (활동·보도 1st / Figma `sub-04-02`):
   - List: `/press/coverage/:tab` where `tab` = `tv` | `release` (TV방송 / 보도자료)
   - Detail (shared board layout): `/press/coverage/:tab/:postId` → `PostDetail`
   - Shell: `PressCoverageLayout` = `SubVisual` + `LocalTabs` + Outlet
   - List UI: 4/2/1 **card grid** (`PressGridCard`) — not the horizontal list used by 컬럼미디어
   - Mock data: `src/data/pressCoverage.ts`
   - GNB item `press-media` → `/press/coverage/tv`, visual `public/assets/sub/sub-04-02.webp` (+ `.preview.webp`)
-- **컬럼·미디어** (활동·보도 3rd / Figma `sub-04-03`):
+- **컬럼·미디어** (활동·보도 2nd / Figma `sub-04-03`):
   - List: `/press/column-media/:tab` where `tab` = `column` | `publication` | `media`
   - Detail (shared board layout): `/press/column-media/:tab/:postId` → `PostDetail`
   - Shell: `ColumnMediaLayout` = `SubVisual` + `LocalTabs` + Outlet
   - Mock data + CMS notes: `src/data/columnMedia.ts`
   - GNB item `press-column` → `/press/column-media/column`, visual `public/assets/sub/sub-04-03.webp` (+ `.preview.webp`)
-- **사회공헌** (활동·보도 4th / Figma `sub-04-04`):
+- **사회공헌** (활동·보도 3rd / Figma `sub-04-04`):
   - List: `/press/social` → `SocialContributionListPage` (intro + **4→2→1** card grid; copy above thumb)
   - Detail (shared board layout): `/press/social/:postId` → `PostDetail`
   - Shell: `SocialContributionLayout` = `SubVisual` (`showChip={false}`) + content anchor + Outlet — **no LocalTabs**
@@ -85,10 +80,16 @@
   - **보상업무실적 카드 라벨**: `PUBLIC_RECORD_2.chip = '보상업무'` (2026-07-22, 기존 `'재개발 · 재건축'` 대체). 이 탭 실적 카드 카테고리 칩이 `보상업무`로 표기된다.
   - Data: `src/data/publicProject.ts`; GNB `redev-public` → `/practice/public`, visual `sub-02-02` (`nav.ts` `GNB_SUB_VISUAL_PUBLIC`).
   - **enLabel eyebrows** were re-translated from legal glossary (Figma had copy-paste leftovers) — see WORKLOG 2026-07-20.
+- **업무사례** (재개발·보상업무 3rd / Figma `sub-04-01`; URL kept `/press/cases`):
+  - `/press/cases` → `CaseStudiesPage` (4/2/1 col grid). SubVisual chip `parentLabel` = **재개발 · 보상업무**.
+  - Hover: hovered card highlight + siblings dim (see `CaseStudies.css`)
+  - GNB `redev-cases` (under `redev`, not `press`) → `/press/cases`, visual `public/assets/sub/sub-04-01.webp` (+ `.preview.webp`)
+  - Mock data: `src/data/caseStudies.ts`. Search depth under `REDEV`.
 - **기타업무** (Figma `SUB_기타업무` / node 103:3962, `sub-03-01`):
   - `/other/misc` → `MiscPage` — **스크롤-모드 로컬 탭 단일 페이지**(정비/공익과 동일 머신, `renewal-*` 쉘 재사용 → 탭 400/88 · 내부 140/74 간격 자동). 브레드크럼 탭 5개: 부동산 분야 / 상속 · 이혼 · 가사 / 민사 · 형사 / 행정 / 기업 · 스타트업. `/other/realestate`는 `/other/misc`로 redirect.
+  - **GNB deep-link:** each child uses `/other/misc#{tabId}` (`realestate` | `family` | `civil` | `admin` | `corporate`). `MiscPage` reads `location.hash` → activate that LocalTab + scroll to `misc-section-{id}`. Scroll-spy also writes the hash (`replace`). Drawer highlight: `findActiveDrawerNav(pathname, hash)` scores hash hrefs (bare `/other/misc` ≈ `#realestate`).
   - Data `src/data/misc.ts`: `MiscTab → MiscSection → MiscGroup`. 한 탭이 여러 섹션 가능(상속+이혼, 민사+형사). 카드 = `.misc-cards`(3→2→1) `#f7f7fb` + 제목 + 기본 disc 리스트. 기업·스타트업엔 협력사 파트너 프로필(`MiscPartners`: 머스트 특허법률사무소, 김영애/공대우 — 자격 teal 칩 + 전문분야 회색 칩 + 학력/경력).
-  - GNB `other` 메뉴 = 5개 영역 children(모두 `/other/misc`), visual `GNB_SUB_VISUAL_OTHER = sub-03-01`.
+  - GNB `other` visual `GNB_SUB_VISUAL_OTHER = sub-03-01`.
   - **이미지(사용자 채팅 제공, 2026-07-22):** `sub-03-01` 히어로(대법원 페디먼트, **타이틀 없는 클린 버전**이라 인페인트 불필요 → progressive 페어 생성) + 파트너 사진 2장(`public/assets/other/partner-kimyeongae.jpg` / `partner-gongdaewoo.jpg`, `misc.ts`의 `partner.photo`). Figma로의 `curl`은 조직 egress 정책 차단(403)이고 `get_screenshot` base64도 트랜스크립트에 풀해상도 미보존 → **egress 필요 이미지는 사용자가 채팅에 올려주는 방식**(변호사 사진/sub-02-02와 동일). 머스트 특허법률사무소 로고만 미확보(현재 텍스트만).
   - **Real photo (2026-07-21):** `sub-02-02` hero is a real photo (metal-louver facade close-up) provided directly by the user in-chat — no longer a copy of `sub-02-01` (figma.com exports remain egress-blocked).
 - **소식 · 공지** (Figma `sub-05-01`, `SUB_소식공지_*_DESKTOP`, node 99:5666):
