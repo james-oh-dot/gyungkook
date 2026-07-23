@@ -39,7 +39,7 @@ function CertificateGrid({ items }: { items: HistoryImageItem[] }) {
     <div className="history-cert-grid" role="list">
       {items.map((item) => (
         <figure className="history-cert" role="listitem" key={item.label}>
-          <div className="history-cert__image">
+          <div className={`history-cert__image${item.fit === 'contain' ? ' history-cert__image--contain' : ''}`}>
             <ProgressiveImage
               src={item.image.src}
               preview={item.image.preview}

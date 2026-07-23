@@ -27,6 +27,7 @@
 .history-cert { display: flex; flex-direction: column; align-items: center; gap: 10px; min-width: 0; margin: 0; }
 .history-cert__image { position: relative; width: 100%; aspect-ratio: 543 / 768; overflow: hidden; border: 1px solid #e5e5ec; background: #fff; }
 .history-cert__img { object-fit: cover; object-position: center; }
+.history-cert__image--contain .history-cert__img { object-fit: contain; }
 .history-cert figcaption { padding: 4.5px 6px; color: #111; font-size: 16.5px; font-weight: 500; line-height: 1.45; letter-spacing: -0.025em; text-align: center; word-break: keep-all; }
 @media (max-width: 1024px) { .history-page__contents { gap: 88px; } .history-section { gap: 74px; } .history-split { flex-direction: column; gap: 20px; } .history-section__head { flex-basis: auto; } .history-split__body { width: 100%; padding-top: 0; } .history-timeline__track { max-width: 100%; } }
 @media (max-width: 768px) { .history-page__main { padding: 80px var(--page-pad) 120px; } .history-section__title { font-size: 32px; } .history-timeline__entry { grid-template-columns: 1fr 68px 1fr; } .history-timeline__year { width: 68px; height: 68px; font-size: 18px; } .history-cert-grid { gap: 32px 16px; } }

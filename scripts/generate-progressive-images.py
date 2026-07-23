@@ -87,18 +87,20 @@ TARGETS: list[tuple[str, int]] = [
     ("sub/sub-05-01.jpg", 1920),
     # Lawyer portraits
     ("lawyers/gongdaeho.png", 900),
-    # 공대호 인증서 / 위촉장 / 수상 (Figma node screenshots, native 184x260)
-    ("lawyers/gongdaeho-cert-redevelopment.png", 400),
-    ("lawyers/gongdaeho-cert-admin.png", 400),
-    ("lawyers/gongdaeho-apt-lh.png", 400),
-    ("lawyers/gongdaeho-apt-seoul-human-rights.png", 400),
-    ("lawyers/gongdaeho-apt-medical-volunteer.png", 400),
-    ("lawyers/gongdaeho-apt-youth-legal.png", 400),
-    ("lawyers/gongdaeho-apt-nk-human-rights.png", 400),
-    ("lawyers/gongdaeho-apt-village-lawyer.png", 400),
-    ("lawyers/gongdaeho-award-human-rights.png", 400),
-    ("lawyers/gongdaeho-award-police.png", 400),
-    ("lawyers/gongdaeho-award-brand-index.png", 400),
+    # 공대호 인증서 / 위촉장 / 수상 — preserve the higher-resolution Figma exports.
+    # These render at ~304px on desktop, so do not downscale them below a
+    # high-density display's required source width.
+    ("lawyers/gongdaeho-cert-redevelopment.png", 800),
+    ("lawyers/gongdaeho-cert-admin.png", 800),
+    ("lawyers/gongdaeho-apt-lh.png", 800),
+    ("lawyers/gongdaeho-apt-seoul-human-rights.png", 800),
+    ("lawyers/gongdaeho-apt-medical-volunteer.png", 800),
+    ("lawyers/gongdaeho-apt-youth-legal.png", 800),
+    ("lawyers/gongdaeho-apt-nk-human-rights.png", 800),
+    ("lawyers/gongdaeho-apt-village-lawyer.png", 800),
+    ("lawyers/gongdaeho-award-human-rights.png", 800),
+    ("lawyers/gongdaeho-award-police.png", 800),
+    ("lawyers/gongdaeho-award-brand-index.png", 800),
     # 대표인사말 (greeting)
     ("greeting/ceo.jpg", 1280),
     ("greeting/signature.png", 368),

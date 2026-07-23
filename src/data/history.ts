@@ -62,12 +62,14 @@ export const HISTORY_TIMELINE = [
 export type HistoryImageItem = {
   label: string
   image: ProgressiveSrc
+  /** Figma's square brand-mark export sits inside a white portrait card. */
+  fit?: 'cover' | 'contain'
 }
 
 export const HISTORY_AWARDS: HistoryImageItem[] = [
   { label: '서울시 인권지킴이단', image: certificate('gongdaeho-award-human-rights') },
   { label: '서울관악경찰서장 표창', image: certificate('gongdaeho-award-police') },
-  { label: '2025 한국브랜드만족지수 1위', image: certificate('gongdaeho-award-brand-index') },
+  { label: '2025 한국브랜드만족지수 1위', image: certificate('gongdaeho-award-brand-index'), fit: 'contain' },
 ]
 
 export const HISTORY_CERTIFICATIONS: HistoryImageItem[] = [
