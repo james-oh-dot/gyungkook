@@ -169,6 +169,7 @@ const LAWYER_DOCS: SearchDoc[] = [
     [ABOUT, LAWYERS_PAGE.title, '변호사단', '자문단'],
     LAWYERS_PAGE,
     LAWYERS,
+    ADVISORS,
   ),
   ...LAWYERS.map((l) =>
     doc(
