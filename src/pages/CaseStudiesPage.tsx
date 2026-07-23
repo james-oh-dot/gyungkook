@@ -3,12 +3,12 @@ import { CASE_STUDIES, CASE_STUDIES_PAGE } from '../data/caseStudies'
 import './CaseStudies.css'
 
 /**
- * 재개발 · 보상업무 > 업무사례 (sub-04-01).
+ * 기타업무 > 업무사례 (sub-04-01).
  * Grid hover: hovered card stays highlighted; siblings dim (Figma note).
  */
 export function CaseStudiesPage() {
   return (
-    <div className="case-studies" data-name="SUB_재개발보상_업무사례">
+    <div className="case-studies" data-name="SUB_기타업무_업무사례">
       <div className="case-studies__top" data-name="SUB_LAYOUT">
         <SubVisual
           parentLabel={CASE_STUDIES_PAGE.parentLabel}
