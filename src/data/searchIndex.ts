@@ -28,6 +28,7 @@ import { COLUMN_MEDIA_BOARD } from './columnMedia'
 import { achievements, awards, notices, practices, pressItems, professionals } from './content'
 import { GALLERY_PROMISE, GALLERY_PYRAMID, GALLERY_QUOTE, GALLERY_TABS } from './gallery'
 import { GREETING_PAGE } from './greeting'
+import { ADVISORS } from './advisors'
 import { LAWYERS, LAWYERS_PAGE, lawyerPath } from './lawyers'
 import { NAV_ITEMS } from './nav'
 import { NEWS_NOTICE_BOARD } from './newsNotice'
@@ -168,6 +169,7 @@ const LAWYER_DOCS: SearchDoc[] = [
     [ABOUT, LAWYERS_PAGE.title, '변호사단', '자문단'],
     LAWYERS_PAGE,
     LAWYERS,
+    ADVISORS,
   ),
   ...LAWYERS.map((l) =>
     doc(

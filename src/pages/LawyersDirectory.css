@@ -227,7 +227,8 @@
 .ld-drawer {
   position: fixed;
   inset: 0;
-  z-index: 80;
+  /* Above GNB (900); below SearchOverlay (1200) */
+  z-index: 1000;
   pointer-events: none;
 }
 
@@ -381,6 +382,27 @@
   height: 1px;
   margin: 12px 0 8px;
   background: #e5e5ec;
+}
+
+.ld-drawer__sections {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  margin-top: 4px;
+}
+
+.ld-drawer__section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ld-drawer__section-title {
+  margin: 0;
+  color: #58bdc2;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
 }
 
 .ld-drawer__highlights {
