@@ -1,12 +1,17 @@
 /**
  * ============================================================================
- * 법무법인 경국 > 변호사자문단 (sub-01-03) — content
+ * 법무법인 경국 > 변호사 · 자문단 (sub-01-03) — content
  * ============================================================================
  *
- * Figma frames: `SUB_법무법인경국_변호사자문단_공대호` (89:2963) + _TABLET / _MOBILE.
- * Route-mode local tabs: each tab is a different lawyer's profile page
- * (`/about/lawyers/:lawyerId`). Only 공대호 has full content from Figma; the
- * others are placeholders until their designs arrive.
+ * Entry directory: Figma `SUB_법무법인경국_변호사자문단` (105:1229) →
+ * `/about/lawyers` (변호사단 cards + 자문단 cards).
+ * Profile detail: `SUB_…_공대호` (89:2963) + tablet/mobile →
+ * `/about/lawyers/:lawyerId` (route-mode local tabs).
+ *
+ * Directory card portraits (upload + progressive pipeline):
+ *   public/assets/lawyers/{id}.jpg          — 박효영/공성준/신지호
+ *   public/assets/lawyers/gongdaeho-card.jpg — 공대호 card crop (hero cutout stays gongdaeho.png)
+ *
  *
  * ⚠️ Still pending: 박효영/공성준/신지호 profile content + all three portraits
  * reuse home-page profile stock photos.
@@ -24,7 +29,6 @@
  */
 
 import { progressiveAsset } from '../utils/progressiveImage'
-import { asset } from '../utils/asset'
 
 const LAWYERS_VISUAL = progressiveAsset('assets/sub/sub-01-03')
 const GONGDAEHO_PHOTO = progressiveAsset('assets/lawyers/gongdaeho')
@@ -34,12 +38,30 @@ const cert = (stem: string) => progressiveAsset(`assets/lawyers/${stem}`).src
 
 export const LAWYERS_PAGE = {
   parentLabel: '법무법인경국',
-  title: '변호사자문단',
-  /** Figma sub-01-03 — progressive WebP pair */
+  /** GNB label + SubVisual title — middle-dot form matches Figma 105:1229 */
+  title: '변호사 · 자문단',
+  /** Figma sub-01-03 — progressive WebP pair (GNB hover visual) */
   visual: LAWYERS_VISUAL.src,
   visualPreview: LAWYERS_VISUAL.preview,
   basePath: '/about/lawyers',
 } as const
+
+const GONGDAEHO_CARD = progressiveAsset('assets/lawyers/gongdaeho-card')
+const PARKHYOYOUNG_PHOTO = progressiveAsset('assets/lawyers/parkhyoyoung')
+const GONGSEONGJUN_PHOTO = progressiveAsset('assets/lawyers/gongseongjun')
+const SINJIHO_PHOTO = progressiveAsset('assets/lawyers/sinjiho')
+
+/** Directory-card highlight lines (Figma 105:1229 Achievement Cards). */
+export type LawyerCard = {
+  id: string
+  name: string
+  title: string
+  highlights: string[]
+  photo: string
+  photoPreview?: string
+  /** SPA profile route — all 변호사단 cards navigate here */
+  href: string
+}
 
 /** Captioned image tile (certificate / appointment / award). */
 export type CertItem = {
@@ -223,9 +245,102 @@ function placeholderLawyer(
 
 export const LAWYERS: Lawyer[] = [
   GONG_DAEHO,
-  placeholderLawyer('parkhyoyoung', '박효영', asset('assets/profile2.png')),
-  placeholderLawyer('gongseongjun', '공성준', asset('assets/profile3.png')),
-  placeholderLawyer('sinjiho', '신지호', asset('assets/profile4.png')),
+  {
+    ...placeholderLawyer(
+      'parkhyoyoung',
+      '박효영',
+      PARKHYOYOUNG_PHOTO.src,
+    ),
+    photoPreview: PARKHYOYOUNG_PHOTO.preview,
+    intro: [
+      'LH 정비사업 자문위원',
+      '감정평가사 자격보유, 법원감정인 경력',
+      '대한변호사협회 재개발·재건축, 행정전문변호사',
+      '대한법률봉사회 회장',
+    ],
+  },
+  {
+    ...placeholderLawyer(
+      'gongseongjun',
+      '공성준',
+      GONGSEONGJUN_PHOTO.src,
+    ),
+    photoPreview: GONGSEONGJUN_PHOTO.preview,
+    intro: [
+      'LH 정비사업 자문위원',
+      '감정평가사 자격보유, 법원감정인 경력',
+      '대한변호사협회 재개발·재건축, 행정전문변호사',
+      '대한법률봉사회 회장',
+    ],
+  },
+  {
+    ...placeholderLawyer('sinjiho', '신지호', SINJIHO_PHOTO.src),
+    photoPreview: SINJIHO_PHOTO.preview,
+    intro: [
+      'LH 정비사업 자문위원',
+      '감정평가사 자격보유, 법원감정인 경력',
+      '대한변호사협회 재개발·재건축, 행정전문변호사',
+      '대한법률봉사회 회장',
+    ],
+  },
+]
+
+/**
+ * Directory grid order (Figma 105:1256) — 박효영 → 공대호 → 공성준 → 신지호.
+ * Profile tabs keep `LAWYERS` order (공대호 first as default detail).
+ */
+export const LAWYER_CARDS: LawyerCard[] = [
+  {
+    id: 'parkhyoyoung',
+    name: '박효영',
+    title: '변호사',
+    highlights: [
+      'LH 정비사업 자문위원',
+      '감정평가사 자격보유, 법원감정인 경력',
+      '대한변호사협회 재개발·재건축, 행정전문변호사',
+      '대한법률봉사회 회장',
+    ],
+    photo: PARKHYOYOUNG_PHOTO.src,
+    photoPreview: PARKHYOYOUNG_PHOTO.preview,
+    href: lawyerPath('parkhyoyoung'),
+  },
+  {
+    id: 'gongdaeho',
+    name: '공대호',
+    title: '변호사',
+    highlights: GONG_DAEHO.intro,
+    photo: GONGDAEHO_CARD.src,
+    photoPreview: GONGDAEHO_CARD.preview,
+    href: lawyerPath('gongdaeho'),
+  },
+  {
+    id: 'gongseongjun',
+    name: '공성준',
+    title: '변호사',
+    highlights: [
+      'LH 정비사업 자문위원',
+      '감정평가사 자격보유, 법원감정인 경력',
+      '대한변호사협회 재개발·재건축, 행정전문변호사',
+      '대한법률봉사회 회장',
+    ],
+    photo: GONGSEONGJUN_PHOTO.src,
+    photoPreview: GONGSEONGJUN_PHOTO.preview,
+    href: lawyerPath('gongseongjun'),
+  },
+  {
+    id: 'sinjiho',
+    name: '신지호',
+    title: '변호사',
+    highlights: [
+      'LH 정비사업 자문위원',
+      '감정평가사 자격보유, 법원감정인 경력',
+      '대한변호사협회 재개발·재건축, 행정전문변호사',
+      '대한법률봉사회 회장',
+    ],
+    photo: SINJIHO_PHOTO.src,
+    photoPreview: SINJIHO_PHOTO.preview,
+    href: lawyerPath('sinjiho'),
+  },
 ]
 
 export const DEFAULT_LAWYER_ID = LAWYERS[0]!.id

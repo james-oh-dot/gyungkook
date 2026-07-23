@@ -30,7 +30,7 @@ type LocalTabsRouteProps = LocalTabsBase & {
    * Location state attached to each tab NavLink. Defaults to
    * `{ scrollToLocalTabs: true }` (board tabs stick under GNB). Pass `null`
    * for page-switch tabs that should reveal the new hero at the top
-   * (e.g. 변호사자문단 — each tab is a different lawyer page).
+   * (e.g. 변호사 · 자문단 — each tab is a different lawyer page).
    */
   routeState?: Record<string, unknown> | null
 }

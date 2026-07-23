@@ -9,7 +9,6 @@ import {
 import { CASE_NEWS_BOARD } from './data/caseNews'
 import { JOBS_BOARD } from './data/careers'
 import { COLUMN_MEDIA_BOARD } from './data/columnMedia'
-import { DEFAULT_LAWYER_ID } from './data/lawyers'
 import { NEWS_NOTICE_BOARD } from './data/newsNotice'
 import { PRESS_COVERAGE_BOARD } from './data/pressCoverage'
 import { SOCIAL_CONTRIBUTION_BOARD } from './data/socialContribution'
@@ -29,6 +28,7 @@ import { GreetingPage } from './pages/GreetingPage'
 import { HomePage } from './pages/HomePage'
 import { JobsListPage } from './pages/JobsListPage'
 import { LawyerProfilePage } from './pages/LawyerProfilePage'
+import { LawyersDirectoryPage } from './pages/LawyersDirectoryPage'
 import { MiscPage } from './pages/MiscPage'
 import { NewsNoticeLayout } from './pages/NewsNoticeLayout'
 import { NewsNoticeListPage } from './pages/NewsNoticeListPage'
@@ -66,7 +66,8 @@ function ScrollToTop() {
  * - /press/social/:postId                 → shared post detail
  * - /about/intro                          → 법인소개 (sub-01-01)
  * - /about/greeting                       → 대표 인사말 (sub-01-02)
- * - /about/lawyers/:lawyerId              → 변호사자문단 (sub-01-03, route-mode tabs)
+ * - /about/lawyers                        → 변호사 · 자문단 entry (sub-01-03, 105:1229)
+ * - /about/lawyers/:lawyerId              → 변호사 프로필 (route-mode tabs)
  * - /about/gallery                        → 경국인 · 갤러리 (sub-01-04, scroll-mode tabs)
  * - /practice/renewal                     → 정비사업 (sub-02-01)
  * - /practice/public                      → 공익사업 (sub-02-02)
@@ -92,10 +93,7 @@ function App() {
           {/* 법무법인경국 */}
           <Route path="about/intro" element={<AboutIntroPage />} />
           <Route path="about/greeting" element={<GreetingPage />} />
-          <Route
-            path="about/lawyers"
-            element={<Navigate to={DEFAULT_LAWYER_ID} replace />}
-          />
+          <Route path="about/lawyers" element={<LawyersDirectoryPage />} />
           <Route path="about/lawyers/:lawyerId" element={<LawyerProfilePage />} />
           <Route path="about/gallery" element={<GalleryPage />} />
           <Route

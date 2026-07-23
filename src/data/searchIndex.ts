@@ -28,7 +28,7 @@ import { COLUMN_MEDIA_BOARD } from './columnMedia'
 import { achievements, awards, notices, practices, pressItems, professionals } from './content'
 import { GALLERY_PROMISE, GALLERY_PYRAMID, GALLERY_QUOTE, GALLERY_TABS } from './gallery'
 import { GREETING_PAGE } from './greeting'
-import { LAWYERS, lawyerPath } from './lawyers'
+import { LAWYERS, LAWYERS_PAGE, lawyerPath } from './lawyers'
 import { NAV_ITEMS } from './nav'
 import { NEWS_NOTICE_BOARD } from './newsNotice'
 import { PRESS_COVERAGE_BOARD } from './pressCoverage'
@@ -159,10 +159,26 @@ const ROUTE_DOCS: SearchDoc[] = [
     CAREERS_INTRO, CAREERS_VALUES, CAREERS_CONTACT),
 ]
 
-/* 변호사자문단 — one doc per lawyer. */
-const LAWYER_DOCS: SearchDoc[] = LAWYERS.map((l) =>
-  doc(`lawyer-${l.id}`, `${l.name} ${l.title}`, lawyerPath(l.id), [ABOUT, '변호사자문단', l.name], l),
-)
+/* 변호사 · 자문단 — entry + one doc per lawyer profile. */
+const LAWYER_DOCS: SearchDoc[] = [
+  doc(
+    'about-lawyers',
+    LAWYERS_PAGE.title,
+    LAWYERS_PAGE.basePath,
+    [ABOUT, LAWYERS_PAGE.title, '변호사단', '자문단'],
+    LAWYERS_PAGE,
+    LAWYERS,
+  ),
+  ...LAWYERS.map((l) =>
+    doc(
+      `lawyer-${l.id}`,
+      `${l.name} ${l.title}`,
+      lawyerPath(l.id),
+      [ABOUT, LAWYERS_PAGE.title, l.name],
+      l,
+    ),
+  ),
+]
 
 /* Home sections (unique copy that isn't on a dedicated subpage). */
 const HOME_DOCS: SearchDoc[] = [

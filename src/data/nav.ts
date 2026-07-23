@@ -44,7 +44,7 @@ export const GNB_SUB_VISUAL_ABOUT_INTRO = ABOUT_INTRO_PAGE.visual
 /** Figma sub-01-02 — 법무법인경국 > 대표인사말 */
 export const GNB_SUB_VISUAL_ABOUT_GREETING = GREETING_PAGE.visual
 
-/** Figma sub-01-03 — 법무법인경국 > 변호사자문단 */
+/** Figma sub-01-03 — 법무법인경국 > 변호사 · 자문단 */
 export const GNB_SUB_VISUAL_ABOUT_LAWYERS = LAWYERS_PAGE.visual
 
 /** Figma sub-01-04 — 법무법인경국 > 경국인갤러리 */
@@ -142,7 +142,7 @@ export const NAV_ITEMS: NavItem[] = [
       },
       {
         id: 'about-lawyers',
-        label: '변호사자문단',
+        label: '변호사 · 자문단',
         href: '/about/lawyers',
         visual: GNB_SUB_VISUAL_ABOUT_LAWYERS,
       },
