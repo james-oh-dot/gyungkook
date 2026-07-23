@@ -19,6 +19,10 @@
  */
 
 import { progressiveAsset } from '../utils/progressiveImage'
+import {
+  COMPENSATION_PERFORMANCE_RECORDS,
+  PUBLIC_PERFORMANCE_RECORDS,
+} from './performanceRecords'
 
 const PUBLIC_VISUAL = progressiveAsset('assets/sub/sub-02-02')
 
@@ -66,8 +70,7 @@ export type ResultCard = {
 export type ResultSection = {
   enLabel: string
   titleLines: string[]
-  chip: string
-  result: string
+  results: ResultCard[]
   total: number
   initialVisible: number
   pageSize: number
@@ -123,9 +126,8 @@ export const PUBLIC_OVERVIEW = {
 export const PUBLIC_RECORD_1: ResultSection = {
   enLabel: 'Public Works Track Record',
   titleLines: ['공익사업', '(시행자대리) 실적'],
-  chip: '공익사업',
-  result: '4천만원청구 전부 인용',
-  total: 47,
+  results: PUBLIC_PERFORMANCE_RECORDS,
+  total: PUBLIC_PERFORMANCE_RECORDS.length,
   initialVisible: 15,
   pageSize: 15,
 }
@@ -408,19 +410,8 @@ export const PUBLIC_PROCEDURE = {
 export const PUBLIC_RECORD_2: ResultSection = {
   enLabel: 'Compensation Track Record',
   titleLines: ['공익사업', '(보상업무)실적'],
-  /* 보상업무실적 카드 레이블은 '보상업무' (기존 '재개발 · 재건축' 대체) */
-  chip: '보상업무',
-  result: '4천만원청구 전부 인용',
-  total: 47,
+  results: COMPENSATION_PERFORMANCE_RECORDS,
+  total: COMPENSATION_PERFORMANCE_RECORDS.length,
   initialVisible: 15,
   pageSize: 15,
-}
-
-/** Build a mock result list (all identical placeholder cards, like Figma). */
-export function buildResults(section: ResultSection, prefix: string): ResultCard[] {
-  return Array.from({ length: section.total }, (_, i) => ({
-    id: `${prefix}-${i + 1}`,
-    category: section.chip,
-    result: section.result,
-  }))
 }

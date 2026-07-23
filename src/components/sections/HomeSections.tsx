@@ -235,7 +235,7 @@ export function AchievementsSection() {
                   ))}
                 </div>
               </div>
-              <TextBtn label={item.cta} />
+              <TextBtn label={item.cta} to={item.to} />
             </div>
           </Reveal>
         ))}

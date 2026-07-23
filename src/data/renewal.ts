@@ -14,6 +14,7 @@
  */
 
 import { progressiveAsset } from '../utils/progressiveImage'
+import { RENEWAL_PERFORMANCE_RECORDS } from './performanceRecords'
 
 const RENEWAL_VISUAL = progressiveAsset('assets/sub/sub-02-01')
 
@@ -504,11 +505,6 @@ export const RENEWAL_ADVISORY = {
   ] as AdvisoryService[],
 } as const
 
-const TRACK_SAMPLE = {
-  category: '재개발 · 재건축',
-  result: '4천만원청구 전부 인용',
-} as const
-
 export const RENEWAL_TRACK_RECORD = {
   enLabel: 'STRENGTH',
   titleLines: ['법무법인 경국의', '정비사업 전문 서비스'],
@@ -524,12 +520,9 @@ export const RENEWAL_TRACK_RECORD = {
   resultsLabel: 'STRENGTH',
   resultsTitle: '정비사업 실적',
   initialVisible: 15,
-  total: 47,
+  total: RENEWAL_PERFORMANCE_RECORDS.length,
   pageSize: 15,
-  results: Array.from({ length: 47 }, (_, i) => ({
-    id: `renewal-result-${i + 1}`,
-    ...TRACK_SAMPLE,
-  })) as TrackResult[],
+  results: RENEWAL_PERFORMANCE_RECORDS as TrackResult[],
 } as const
 
 export function isRenewalTab(value: string | undefined): value is RenewalTabId {

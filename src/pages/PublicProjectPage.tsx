@@ -8,7 +8,6 @@ import {
 import { LocalTabs } from '../components/sub/LocalTabs'
 import { SubVisual } from '../components/sub/SubVisual'
 import {
-  buildResults,
   PUBLIC_COMPENSATION,
   PUBLIC_OVERVIEW,
   PUBLIC_PROJECT_PAGE,
@@ -109,16 +108,14 @@ function Quotes({ quotes }: { quotes: string[] }) {
   )
 }
 
-/** 실적 grid with show-more / collapse (Figma 15/47 dropdown). */
+/** 실적 grid with incremental show-more / collapse. */
 function ResultsBlock({
   section,
-  prefix,
 }: {
   section: ResultSection
-  prefix: string
 }) {
   const [visibleCount, setVisibleCount] = useState(section.initialVisible)
-  const results = buildResults(section, prefix)
+  const results = section.results
   const visible = results.slice(0, visibleCount)
   const canShowMore = visibleCount < section.total
   const canCollapse = visibleCount > section.initialVisible
@@ -317,6 +314,13 @@ export function PublicProjectPage() {
   }, [])
 
   useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1))
+    if (!PUBLIC_TABS.some((tab) => tab.id === id)) return
+    const frame = window.requestAnimationFrame(() => scrollToSection(id))
+    return () => window.cancelAnimationFrame(frame)
+  }, [scrollToSection])
+
+  useEffect(() => {
     const root = mainRef.current
     if (!root) return
     const nodes = root.querySelectorAll<HTMLElement>('[data-public-section]')
@@ -415,7 +419,7 @@ export function PublicProjectPage() {
             className="renewal-section"
             aria-label="공익사업 시행자대리 실적"
           >
-            <ResultsBlock section={PUBLIC_RECORD_1} prefix="pub" />
+            <ResultsBlock section={PUBLIC_RECORD_1} />
           </section>
 
           {/* —— 3. 보상업무 —— */}
@@ -524,7 +528,7 @@ export function PublicProjectPage() {
             className="renewal-section"
             aria-label="공익사업 보상업무 실적"
           >
-            <ResultsBlock section={PUBLIC_RECORD_2} prefix="comp" />
+            <ResultsBlock section={PUBLIC_RECORD_2} />
           </section>
         </div>
       </main>

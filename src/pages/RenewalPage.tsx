@@ -216,6 +216,13 @@ export function RenewalPage() {
   }, [])
 
   useEffect(() => {
+    const id = decodeURIComponent(window.location.hash.slice(1))
+    if (!RENEWAL_TABS.some((tab) => tab.id === id)) return
+    const frame = window.requestAnimationFrame(() => scrollToSection(id))
+    return () => window.cancelAnimationFrame(frame)
+  }, [scrollToSection])
+
+  useEffect(() => {
     const root = mainRef.current
     if (!root) return
     const nodes = root.querySelectorAll<HTMLElement>('[data-renewal-section]')
