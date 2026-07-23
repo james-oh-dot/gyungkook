@@ -166,8 +166,9 @@ function LawyerHero({ lawyer }: { lawyer: Lawyer }) {
 }
 
 /**
- * 법무법인 경국 > 변호사자문단 (sub-01-03).
- * Route-mode local tabs (each tab = a lawyer page). GNB/menu entry & tab switch
+ * 법무법인 경국 > 변호사 · 자문단 프로필 (sub-01-03).
+ * Route-mode local tabs (each tab = a lawyer). GNB/menu entry lands on the
+ * directory (`/about/lawyers`); profile routes keep local tabs for switching.
  * reveal the new hero at the top (routeState={null} → ScrollToTop).
  */
 export function LawyerProfilePage() {
@@ -181,7 +182,7 @@ export function LawyerProfilePage() {
   const hasCareers = lawyer.careers.some((c) => c.length > 0)
 
   return (
-    <div className="lawyer" data-name="SUB_법무법인경국_변호사자문단">
+    <div className="lawyer" data-name="SUB_법무법인경국_변호사프로필">
       <LawyerHero lawyer={lawyer} />
 
       <LocalTabs
@@ -189,7 +190,7 @@ export function LawyerProfilePage() {
         activeTab={lawyer.id}
         toTab={lawyerPath}
         routeState={null}
-        ariaLabel="변호사자문단 로컬 메뉴"
+        ariaLabel="변호사 · 자문단 로컬 메뉴"
       />
 
       <main className="lawyer-main">
