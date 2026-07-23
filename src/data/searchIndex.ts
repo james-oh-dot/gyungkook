@@ -28,6 +28,7 @@ import { COLUMN_MEDIA_BOARD } from './columnMedia'
 import { achievements, awards, notices, practices, pressItems, professionals } from './content'
 import { GALLERY_PROMISE, GALLERY_PYRAMID, GALLERY_QUOTE, GALLERY_TABS } from './gallery'
 import { GREETING_PAGE } from './greeting'
+import { HISTORY_AWARDS, HISTORY_CERTIFICATIONS, HISTORY_INTRO, HISTORY_PAGE, HISTORY_TABS, HISTORY_TIMELINE } from './history'
 import { ADVISORS } from './advisors'
 import { LAWYERS, LAWYERS_PAGE, lawyerPath } from './lawyers'
 import { NAV_ITEMS } from './nav'
@@ -151,6 +152,8 @@ const ROUTE_DOCS: SearchDoc[] = [
   doc('about-greeting', '대표 인사말', '/about/greeting', [ABOUT, '대표인사말'], GREETING_PAGE),
   doc('about-gallery', '경국인 · 갤러리', '/about/gallery', [ABOUT, '경국인갤러리'],
     GALLERY_TABS, GALLERY_PYRAMID, GALLERY_QUOTE, GALLERY_PROMISE),
+  doc('about-history', HISTORY_PAGE.title, '/about/history', [ABOUT, HISTORY_PAGE.title],
+    HISTORY_PAGE, HISTORY_TABS, HISTORY_INTRO, HISTORY_TIMELINE, HISTORY_AWARDS, HISTORY_CERTIFICATIONS),
   doc('practice-renewal', '정비사업', '/practice/renewal', [REDEV, '정비사업'],
     RENEWAL_TABS, RENEWAL_OVERVIEW, RENEWAL_EVICTION, RENEWAL_SALE, RENEWAL_EXPROPRIATION,
     RENEWAL_TRANSFER, RENEWAL_LEVY, RENEWAL_PUBLIC_LAND, RENEWAL_ADVISORY, RENEWAL_TRACK_RECORD),

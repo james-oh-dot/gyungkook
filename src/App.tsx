@@ -25,6 +25,7 @@ import { CaseNewsLayout } from './pages/CaseNewsLayout'
 import { CaseNewsListPage } from './pages/CaseNewsListPage'
 import { GalleryPage } from './pages/GalleryPage'
 import { GreetingPage } from './pages/GreetingPage'
+import { HistoryPage } from './pages/HistoryPage'
 import { HomePage } from './pages/HomePage'
 import { JobsListPage } from './pages/JobsListPage'
 import { LawyerProfilePage } from './pages/LawyerProfilePage'
@@ -96,10 +97,7 @@ function App() {
           <Route path="about/lawyers" element={<LawyersDirectoryPage />} />
           <Route path="about/lawyers/:lawyerId" element={<LawyerProfilePage />} />
           <Route path="about/gallery" element={<GalleryPage />} />
-          <Route
-            path="about/history"
-            element={<PlaceholderPage pageId="about-history" />}
-          />
+          <Route path="about/history" element={<HistoryPage />} />
           <Route
             path="about/location"
             element={<PlaceholderPage pageId="about-location" />}
