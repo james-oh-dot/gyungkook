@@ -182,11 +182,22 @@ function AdvisorDrawer({
               </h2>
               <p className="ld-drawer__role">{advisor.title}</p>
               <div className="ld-drawer__rule" aria-hidden="true" />
-              <ul className="ld-drawer__highlights">
-                {advisor.highlights.map((line) => (
-                  <li key={line}>{line}</li>
+              <div className="ld-drawer__sections">
+                {advisor.sections.map((section) => (
+                  <section
+                    key={section.title}
+                    className="ld-drawer__section"
+                    aria-label={section.title}
+                  >
+                    <h3 className="ld-drawer__section-title">{section.title}</h3>
+                    <ul className="ld-drawer__highlights">
+                      {section.items.map((line) => (
+                        <li key={line}>{line}</li>
+                      ))}
+                    </ul>
+                  </section>
                 ))}
-              </ul>
+              </div>
             </div>
           </div>
         ) : null}
