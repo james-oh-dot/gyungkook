@@ -22,10 +22,9 @@
  * curl/egress block on figma.com, unlike `download_assets`' short-lived URLs.
  * See node IDs 89:3357/3360 (인증서), 89:3374/3377/3380/3384/3387/3390 (위촉),
  * 89:3411/3414/3417 (수상) in file `iijQYSn6QBUMArHdBUSqKr`. The remaining 2
- * appointments (서울시사회복지협의회봉사단 / 대한법률봉사회회장) reuse OTHER
- * items' images in the Figma source itself (identical asset refs — designer
- * placeholder, not a real cert scan) — left as captioned placeholder frames
- * on purpose; do not wire a duplicate/wrong image to them.
+ * appointments (서울시사회복지협의회봉사단 / 대한법률봉사회회장) reuse the LH / 서울시
+ * scans in the Figma source itself (identical asset refs — no distinct scan was
+ * supplied), so the profile mirrors those source mappings.
  */
 
 import { progressiveAsset } from '../utils/progressiveImage'
@@ -210,8 +209,14 @@ const GONG_DAEHO: Lawyer = {
     { label: '한국청소년육성회 법률자문위촉', image: cert('gongdaeho-apt-youth-legal') },
     { label: '북한인권 특별위원회 위원', image: cert('gongdaeho-apt-nk-human-rights') },
     { label: '법무부 마을 변호사', image: cert('gongdaeho-apt-village-lawyer') },
-    { label: '서울시사회복지협의회봉사단' },
-    { label: '대한법률봉사회회장' },
+    {
+      label: '서울시사회복지협의회봉사단',
+      image: cert('gongdaeho-apt-lh'),
+    },
+    {
+      label: '대한법률봉사회회장',
+      image: cert('gongdaeho-apt-seoul-human-rights'),
+    },
   ],
   awards: [
     { label: '서울시 인권지킴이단', image: cert('gongdaeho-award-human-rights') },
