@@ -219,9 +219,6 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 28px;
   width: 100%;
-  background: var(--pp-bg-light);
-  padding: 36px 28px;
-  box-sizing: border-box;
 }
 
 .pp-procedure {
@@ -245,9 +242,8 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  /* clip the horizontal branch overshoot (see .pp-procedure__side::before) */
-  overflow: hidden;
+  gap: 24px;
+  overflow: visible;
 }
 
 /* Figma 흐름도: 카드 뒤로 이어지는 세로 라인. 카드(불투명 흰색)가 덮어
@@ -255,11 +251,11 @@
 .pp-procedure__steps::before {
   content: '';
   position: absolute;
-  left: 26px;
+  left: 54px;
   top: 0;
   bottom: 0;
-  width: 1px;
-  background: var(--pp-flow);
+  width: 2px;
+  background: #111;
   z-index: 0;
 }
 
@@ -277,11 +273,18 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  height: 166px;
   min-height: 166px;
   background: #fff;
   border: 1px solid var(--pp-line);
   padding: 16px;
   box-sizing: border-box;
+}
+
+.pp-step:has(.pp-step__note),
+.pp-procedure__block:last-child .pp-step {
+  height: 176px;
+  min-height: 176px;
 }
 
 .pp-step__head {
@@ -318,7 +321,7 @@
   width: 100%;
   background: var(--pp-note-bg);
   color: var(--pp-note);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 400;
   line-height: 1.45;
   letter-spacing: -0.025em;
@@ -331,11 +334,19 @@
   font-size: inherit;
 }
 
+.pp-step:has(.pp-em) .pp-step__note {
+  font-size: 14px;
+}
+
 .pp-procedure__side {
-  position: relative;
-  align-self: flex-end;
+  position: absolute;
+  top: calc(100% + 24px);
+  right: -8px;
+  width: 210px;
   background: var(--pp-note-bg);
   padding: 8px;
+  box-sizing: border-box;
+  z-index: 2;
 }
 
 /* Figma Line 17: 세로 라인에서 갈라져 side 박스(명도소송/이주대책)로 잇는
@@ -344,11 +355,11 @@
 .pp-procedure__side::before {
   content: '';
   position: absolute;
-  top: 50%;
+  top: 24px;
   right: 100%;
-  width: 500px;
-  height: 1px;
-  background: var(--pp-flow);
+  width: 250px;
+  height: 2px;
+  background: #111;
   z-index: -1;
 }
 
@@ -378,11 +389,8 @@
 .pp-rights-wrap {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
   width: 100%;
-  background: var(--pp-bg-light);
-  padding: 36px 28px;
-  box-sizing: border-box;
 }
 
 .pp-rights-wrap .renewal-bullet-title__text {
@@ -393,18 +401,16 @@
 
 .pp-rights {
   display: grid;
-  grid-template-columns: minmax(0, 353px) minmax(0, 1fr);
-  gap: 10px;
+  grid-template-columns: minmax(0, 306px) minmax(0, 1fr);
+  gap: 48px;
   align-items: stretch;
 }
 
 .pp-right-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  background: #fff;
-  padding: 20px;
-  box-sizing: border-box;
+  gap: 16px;
+  padding: 0;
   min-width: 0;
 }
 
@@ -419,6 +425,7 @@
   justify-content: center;
   width: 100%;
   background: var(--pp-brand);
+  min-height: 54px;
   padding: 8px 10px;
   box-sizing: border-box;
 }
@@ -464,7 +471,7 @@
 .pp-right-card__groups {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 48px;
   width: 100%;
 }
 
@@ -506,16 +513,11 @@
 
   .pp-procedures {
     grid-template-columns: 1fr;
-    padding: 24px 16px;
     gap: 40px;
   }
 
   .pp-procedure {
     width: 100%;
-  }
-
-  .pp-rights-wrap {
-    padding: 24px 16px;
   }
 
   .pp-rights {
@@ -528,6 +530,18 @@
 
   .pp-right-card__groups {
     grid-template-columns: 1fr;
+  }
+
+  .pp-procedure__side {
+    position: relative;
+    top: auto;
+    right: auto;
+    align-self: flex-end;
+    width: min(100%, 280px);
+  }
+
+  .pp-procedure__side::before {
+    display: none;
   }
 
   .pp-right-card__title {
