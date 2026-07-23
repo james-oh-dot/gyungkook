@@ -569,8 +569,16 @@
   }
 
   .ld-drawer__photo {
-    max-height: 42vh;
-    aspect-ratio: 4 / 5;
+    max-height: none;
+    aspect-ratio: 299 / 400;
+    background: #f1f1f5;
+  }
+
+  /* Bottom-sheet profiles preserve the full portrait instead of using the
+     desktop cover crop in the shallower mobile frame. */
+  .ld-drawer__img {
+    object-fit: contain;
+    object-position: center center;
   }
 
   .ld-drawer__visual {

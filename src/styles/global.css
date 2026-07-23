@@ -370,8 +370,7 @@ p {
   color: inherit;
 }
 
-.practice-card-link .practice-card,
-.pro-card-link .pro-card {
+.practice-card-link .practice-card {
   height: 100%;
 }
 
