@@ -11,7 +11,8 @@ import {
 import { asset } from '../utils/asset'
 import './LawyersDirectory.css'
 
-const ARROW_SRC = asset('assets/icon-btn.svg')
+const ARROW_DEFAULT_SRC = asset('assets/icon-member-arrow.svg')
+const ARROW_HOVER_SRC = asset('assets/icon-member-arrow-hover.svg')
 const CLOSE_SRC = asset('assets/icon-close.svg')
 const BULLET_SRC = asset('assets/icon-bullet.svg')
 
@@ -56,7 +57,16 @@ function MemberCard({
             <p className="ld-card__role">{title}</p>
           </div>
           <span className="ld-card__arrow" aria-hidden="true">
-            <img src={ARROW_SRC} alt="" />
+            <img
+              className="ld-card__arrow-img ld-card__arrow-img--default"
+              src={ARROW_DEFAULT_SRC}
+              alt=""
+            />
+            <img
+              className="ld-card__arrow-img ld-card__arrow-img--hover"
+              src={ARROW_HOVER_SRC}
+              alt=""
+            />
           </span>
         </div>
         <div className="ld-card__rule" aria-hidden="true" />

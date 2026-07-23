@@ -8,13 +8,13 @@
  * Profile detail: `SUB_…_공대호` (89:2963) + tablet/mobile →
  * `/about/lawyers/:lawyerId` (route-mode local tabs).
  *
- * Directory card portraits (upload + progressive pipeline):
- *   public/assets/lawyers/{id}.jpg          — 박효영/공성준/신지호
- *   public/assets/lawyers/gongdaeho-card.jpg — 공대호 card crop (hero cutout stays gongdaeho.png)
+ * Directory card portraits (`*-card`) + profile hero portraits (no `-card`):
+ *   public/assets/lawyers/{id}-card.jpg  — directory cards (3×)
+ *   public/assets/lawyers/{id}.png       — profile hero / sub-visual (3×)
+ *   public/assets/lawyers/gongdaeho.png  — 공대호 hero cutout (kept)
+ *   public/assets/lawyers/arrow-default.svg + arrow-hover.svg — shared card arrows
+ *   (upload typo `parkhyuyoung` is normalized to route id `parkhyoyoung`)
  *
- *
- * ⚠️ Still pending: 박효영/공성준/신지호 profile content + all three portraits
- * reuse home-page profile stock photos.
  *
  * 공대호's 11 of 13 certificate/appointment/award images (2026-07-21) were
  * extracted directly from the Figma node tree via `get_screenshot`
@@ -47,6 +47,10 @@ export const LAWYERS_PAGE = {
 } as const
 
 const GONGDAEHO_CARD = progressiveAsset('assets/lawyers/gongdaeho-card')
+const PARKHYOYOUNG_CARD = progressiveAsset('assets/lawyers/parkhyoyoung-card')
+const GONGSEONGJUN_CARD = progressiveAsset('assets/lawyers/gongseongjun-card')
+const SINJIHO_CARD = progressiveAsset('assets/lawyers/sinjiho-card')
+/** Profile hero / lawyer-page portrait (no `-card`) */
 const PARKHYOYOUNG_PHOTO = progressiveAsset('assets/lawyers/parkhyoyoung')
 const GONGSEONGJUN_PHOTO = progressiveAsset('assets/lawyers/gongseongjun')
 const SINJIHO_PHOTO = progressiveAsset('assets/lawyers/sinjiho')
@@ -300,8 +304,8 @@ export const LAWYER_CARDS: LawyerCard[] = [
       '대한변호사협회 재개발·재건축, 행정전문변호사',
       '대한법률봉사회 회장',
     ],
-    photo: PARKHYOYOUNG_PHOTO.src,
-    photoPreview: PARKHYOYOUNG_PHOTO.preview,
+    photo: PARKHYOYOUNG_CARD.src,
+    photoPreview: PARKHYOYOUNG_CARD.preview,
     href: lawyerPath('parkhyoyoung'),
   },
   {
@@ -323,8 +327,8 @@ export const LAWYER_CARDS: LawyerCard[] = [
       '대한변호사협회 재개발·재건축, 행정전문변호사',
       '대한법률봉사회 회장',
     ],
-    photo: GONGSEONGJUN_PHOTO.src,
-    photoPreview: GONGSEONGJUN_PHOTO.preview,
+    photo: GONGSEONGJUN_CARD.src,
+    photoPreview: GONGSEONGJUN_CARD.preview,
     href: lawyerPath('gongseongjun'),
   },
   {
@@ -337,8 +341,8 @@ export const LAWYER_CARDS: LawyerCard[] = [
       '대한변호사협회 재개발·재건축, 행정전문변호사',
       '대한법률봉사회 회장',
     ],
-    photo: SINJIHO_PHOTO.src,
-    photoPreview: SINJIHO_PHOTO.preview,
+    photo: SINJIHO_CARD.src,
+    photoPreview: SINJIHO_CARD.preview,
     href: lawyerPath('sinjiho'),
   },
 ]

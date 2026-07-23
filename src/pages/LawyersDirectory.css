@@ -94,11 +94,7 @@
 }
 
 .ld-card:focus-visible .ld-card__arrow {
-  background: #58bdc2;
-}
-
-.ld-card:focus-visible .ld-card__arrow img {
-  filter: brightness(0) invert(1);
+  outline: none;
 }
 
 .ld-card__photo {
@@ -166,32 +162,46 @@
 }
 
 .ld-card__arrow {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   flex-shrink: 0;
-  background: #f7f7fb;
-  transition:
-    background 0.25s var(--ease-premium, ease),
-    transform 0.25s var(--ease-premium, ease);
+  background: transparent;
+  transition: transform 0.25s var(--ease-premium, ease);
 }
 
-.ld-card__arrow img {
-  width: 32px;
-  height: 32px;
+.ld-card__arrow-img {
+  position: absolute;
+  inset: 0;
+  width: 24px;
+  height: 24px;
   display: block;
+  transition: opacity 0.22s var(--ease-premium, ease);
 }
 
-.ld-card:hover .ld-card__arrow {
-  background: #58bdc2;
-  transform: translateX(2px);
+.ld-card__arrow-img--hover {
+  opacity: 0;
 }
 
-.ld-card:hover .ld-card__arrow img {
-  filter: brightness(0) invert(1);
+.ld-card:hover .ld-card__arrow,
+.ld-card:focus-visible .ld-card__arrow {
+  transform: translate(2px, -2px);
 }
+
+.ld-card:hover .ld-card__arrow-img--default,
+.ld-card:focus-visible .ld-card__arrow-img--default {
+  opacity: 0;
+}
+
+.ld-card:hover .ld-card__arrow-img--hover,
+.ld-card:focus-visible .ld-card__arrow-img--hover {
+  opacity: 1;
+}
+
+/* legacy single-img rules removed — default/hover SVG pair above */
 
 .ld-card__rule {
   width: 100%;
