@@ -159,29 +159,35 @@ export function HeroClassic() {
       </div>
 
       <div className="hero__content" key={animKey}>
-        <div className="hero__maincopy" data-name="hero_maincopy">
-          <p className="hero__index">
-            <CharReveal
-              key={`${animKey}-index`}
-              text={slide.index}
-              baseDelay={60}
-              step={34}
-            />
-          </p>
-          <div className="hero__title">{titleBlocks}</div>
-        </div>
-
-        <div className="hero__copy" data-name="hero_copy">
-          <div className="hero__label">
-            <LineReveal key={`${animKey}-label`} lines={[slide.label]} baseDelay={420} step={0} />
+        {/*
+          Left column stays inside `.hero__content` (pad-x). Absolute Y pins
+          for maincopy/copy are scoped to this col so `left:0` = content inset.
+        */}
+        <div className="hero__copy-col">
+          <div className="hero__maincopy" data-name="hero_maincopy">
+            <p className="hero__index">
+              <CharReveal
+                key={`${animKey}-index`}
+                text={slide.index}
+                baseDelay={60}
+                step={34}
+              />
+            </p>
+            <div className="hero__title">{titleBlocks}</div>
           </div>
-          <div className="hero__desc">
-            <LineReveal
-              key={`${animKey}-desc`}
-              lines={slide.description}
-              baseDelay={520}
-              step={160}
-            />
+
+          <div className="hero__copy" data-name="hero_copy">
+            <div className="hero__label">
+              <LineReveal key={`${animKey}-label`} lines={[slide.label]} baseDelay={420} step={0} />
+            </div>
+            <div className="hero__desc">
+              <LineReveal
+                key={`${animKey}-desc`}
+                lines={slide.description}
+                baseDelay={520}
+                step={160}
+              />
+            </div>
           </div>
         </div>
       </div>
