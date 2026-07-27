@@ -753,9 +753,13 @@
   .hero {
     --hero-pad-x: 20px;
     --hero-pad-top: 100px;
-    --hero-swipe-reserve: 218px;
-    --hero-thumb-w: 100px;
-    --hero-thumb-h: 100px;
+    /*
+      Swipe card was 100×100 — too small for thumb + gage hit targets.
+      ~2× width / ~1.5× height; reserve grows with the taller card.
+    */
+    --hero-swipe-reserve: 288px;
+    --hero-thumb-w: 200px;
+    --hero-thumb-h: 150px;
   }
 
   .hero__title {
@@ -779,20 +783,35 @@
     top: 0;
     left: 0;
     right: 0;
-    min-height: 36px;
-    padding: 6px 8px;
-    font-size: 12px;
+    min-height: 48px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .hero__gage-track {
+    width: var(--hero-thumb-w);
+    gap: 10px;
+  }
+
+  .hero__gage-no {
+    font-size: 14px;
   }
 
   .hero__gage-btns {
     right: 0;
     bottom: 0;
-    width: 32px;
-    height: 32px;
+    width: 44px;
+    height: 44px;
   }
 
   .hero__gage-btns--prev {
-    right: 32px;
+    right: 44px;
+  }
+
+  .hero__gage-btns button,
+  .hero__gage-btns img {
+    width: 28px;
+    height: 28px;
   }
 }
 
