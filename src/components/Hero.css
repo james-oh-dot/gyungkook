@@ -327,30 +327,117 @@
   align-items: flex-start;
 }
 
+/*
+  Desktop (≥1025): pin typography to viewport geometry.
+  - `.hero__maincopy` top edge → vertical center (50svh)
+  - `.hero__copy` top edge → `.hero__swipe-controls` top (measured)
+  Zoom lives on each pin so `top` is not distorted by parent zoom.
+*/
+@media (min-width: 1025px) {
+  .hero__shell {
+    justify-content: flex-start;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .hero__content {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    width: auto;
+    max-width: none;
+    pointer-events: none;
+  }
+
+  .hero__copy-scale {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    max-width: none;
+    zoom: 1;
+  }
+
+  .hero__copy-scale.is-compact {
+    zoom: 1;
+  }
+
+  .hero__copy {
+    position: absolute;
+    left: 0;
+    top: var(--hero-swipe-controls-top, 72%);
+    z-index: 1;
+    gap: 0;
+    zoom: var(--hero-copy-scale);
+    transform-origin: top left;
+    pointer-events: none;
+  }
+
+  .hero__copy-scale.is-compact .hero__copy {
+    zoom: var(--hero-copy-scale-compact);
+  }
+
+  .hero__maincopy {
+    position: absolute;
+    left: 0;
+    /* Top edge of the maincopy block = browser vertical center */
+    top: 50%;
+    top: 50svh;
+    z-index: 1;
+    zoom: var(--hero-copy-scale);
+    transform-origin: top left;
+    pointer-events: none;
+  }
+
+  .hero__copy-scale.is-compact .hero__maincopy {
+    zoom: var(--hero-copy-scale-compact);
+  }
+}
+
+@supports not (zoom: 1) {
+  @media (min-width: 1025px) {
+    .hero__copy,
+    .hero__maincopy {
+      zoom: unset;
+      transform: scale(var(--hero-copy-scale));
+      transform-origin: top left;
+    }
+
+    .hero__copy-scale.is-compact .hero__copy,
+    .hero__copy-scale.is-compact .hero__maincopy {
+      transform: scale(var(--hero-copy-scale-compact));
+    }
+  }
+}
+
 .hero__content {
   width: fit-content;
   max-width: 100%;
 }
 
-/* Layout-affecting scale so tablet keeps desktop side-by-side structure */
-.hero__copy-scale {
-  width: fit-content;
-  max-width: none;
-  zoom: var(--hero-copy-scale);
-}
-
-.hero__copy-scale.is-compact {
-  zoom: var(--hero-copy-scale-compact);
-}
-
-@supports not (zoom: 1) {
+/*
+  Tablet/mobile keep a single zoom wrapper (stacked copy).
+  Desktop (≥1025) zeroes parent zoom and zooms each pin — see block above.
+*/
+@media (max-width: 1024px) {
   .hero__copy-scale {
-    transform: scale(var(--hero-copy-scale));
-    transform-origin: left bottom;
+    width: fit-content;
+    max-width: none;
+    zoom: var(--hero-copy-scale);
   }
 
   .hero__copy-scale.is-compact {
-    transform: scale(var(--hero-copy-scale-compact));
+    zoom: var(--hero-copy-scale-compact);
+  }
+
+  @supports not (zoom: 1) {
+    .hero__copy-scale {
+      transform: scale(var(--hero-copy-scale));
+      transform-origin: left bottom;
+    }
+
+    .hero__copy-scale.is-compact {
+      transform: scale(var(--hero-copy-scale-compact));
+    }
   }
 }
 
@@ -485,6 +572,15 @@
     transform: scale(var(--hero-swipe-scale));
     transform-origin: bottom right;
   }
+}
+
+.hero__swipe-controls {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: 100%;
 }
 
 .hero__swipe-preview {
@@ -1025,14 +1121,18 @@
   }
 
   .hero__copy {
-    flex: 1 1 auto;
+    position: static;
+    flex: 0 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 0;
+    zoom: 1;
+    transform: none;
     /* Use the full padded stage — no narrow artboard clamp */
     max-width: none;
     width: 100%;
     min-height: 0;
+    pointer-events: auto;
   }
 
   .hero__desc {
@@ -1043,7 +1143,9 @@
   }
 
   .hero__maincopy {
+    position: static;
     flex: 1 1 auto;
+    display: flex;
     flex-direction: column;
     align-items: stretch;
     /* Word stays under desc; title is pushed to the stage bottom */
@@ -1051,6 +1153,9 @@
     min-height: 0;
     width: 100%;
     max-width: none;
+    zoom: 1;
+    transform: none;
+    pointer-events: auto;
   }
 
   .hero__copy-scale.is-compact .hero__maincopy {
