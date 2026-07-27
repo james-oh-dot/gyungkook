@@ -198,29 +198,35 @@
 }
 
 /*
-  Desktop (≥1025): pin independently (matches annotated QA).
-  - `.hero__maincopy` top → browser vertical center (50svh)
-  - `.hero__copy` top → `.hero__swipe` top (`--hero-swipe-top` measured)
+  Desktop (≥1025): pin Y independently (annotated QA), keep X inside
+  `.hero__content` like the old in-flow left column.
+  Absolute `left` is from the padding edge — padding does NOT inset absolute
+  children, so `left: 0` with horizontal padding looked “outside” the content
+  inset. Apply `--hero-pad-x` on the children instead.
+  - `.hero__maincopy` top → 50svh
+  - `.hero__copy` top → `--hero-swipe-top` (measured `.hero__swipe` top)
 */
 @media (min-width: 1025px) {
   .hero__content {
     display: block;
-    padding: 0 var(--hero-pad-x);
+    padding: 0;
   }
 
   .hero__maincopy {
     position: absolute;
-    left: 0;
+    left: var(--hero-pad-x);
     top: 50%;
     top: 50svh;
     z-index: 3;
+    max-width: min(640px, calc(100% - (2 * var(--hero-pad-x))));
   }
 
   .hero__copy {
     position: absolute;
-    left: 0;
+    left: var(--hero-pad-x);
     top: var(--hero-swipe-top, 72%);
     z-index: 3;
+    max-width: min(760px, calc(100% - (2 * var(--hero-pad-x))));
   }
 }
 
@@ -614,8 +620,11 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    align-items: flex-start;
     gap: 28px;
     padding-top: var(--hero-pad-top);
+    padding-left: var(--hero-pad-x);
+    padding-right: var(--hero-pad-x);
     /* Swipe is an inset card over the copy here — keep reserving its height */
     padding-bottom: var(--hero-swipe-reserve);
   }
@@ -625,6 +634,7 @@
     position: static;
     top: auto;
     left: auto;
+    max-width: min(640px, 100%);
   }
 
   .hero__copy {
