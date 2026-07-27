@@ -8,6 +8,7 @@ import {
 import { ProgressiveImage } from '../ProgressiveImage'
 import { Reveal } from '../Reveal'
 import { CharReveal } from '../CharReveal'
+import { LineReveal } from '../LineReveal'
 import { WordReveal } from '../WordReveal'
 import { asset } from '../../utils/asset'
 import { useScrollGage } from '../../hooks/useScrollGage'
@@ -156,12 +157,17 @@ export function AboutSection() {
             step={110}
             active={leadActive}
           />
-          <div className="about__appeal">
-            <span>감정평가사 자격 보유 변호사의 차별화된 전문성</span>
-            <span className="about__appeal-divider" />
-            <span>전문 인증 변호사의 철저한 법리분석</span>
-            <span className="about__appeal-divider" />
-            <span>소송 그 이후의 고민까지, 분야별 전문가의 협력공조</span>
+          <div className="about__appeal" data-parallax data-parallax-strength="10">
+            <LineReveal
+              lines={[
+                '감정평가사 자격 보유 변호사의 차별화된 전문성',
+                '전문 인증 변호사의 철저한 법리분석',
+                '소송 그 이후의 고민까지, 분야별 전문가의 협력공조',
+              ]}
+              baseDelay={3600}
+              step={220}
+              active={leadActive}
+            />
           </div>
         </Reveal>
         <Reveal delay={160} className="about__media media-card">

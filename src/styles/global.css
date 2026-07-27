@@ -368,25 +368,29 @@ p {
 }
 
 .about__appeal {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  padding: 40px;
-  background: #eee;
-  text-align: center;
+  padding: 0;
+  background: transparent;
+  text-align: left;
   font-size: 16px;
   font-weight: 500;
   line-height: 25px;
   letter-spacing: -0.025em;
 }
 
-.about__appeal-divider {
-  width: 40px;
-  height: 1px;
-  background: #bbb;
-  flex: 0 0 auto;
+.about__appeal .line-reveal {
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.about__appeal .line-reveal__item {
+  margin: 0;
+  padding: 2px 0 2px 16px;
+  border-left: 2px solid #9aa9a6;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  text-align: left;
 }
 
 .practice-head {
@@ -541,7 +545,8 @@ p {
   position: relative;
   z-index: 1;
   width: min(760px, 100%);
-  margin-top: auto;
+  margin-top: 0;
+  margin-bottom: auto;
   background: #fff;
   border: 1px solid #f1f3f5;
   padding: 40px;
@@ -1283,10 +1288,6 @@ p {
     margin-top: 0;
   }
 
-  .about__appeal-divider {
-    width: 40px;
-  }
-
   .achieve-row__title {
     font-size: 40px;
   }
@@ -1320,7 +1321,7 @@ p {
   .achieve-row.is-right .achieve-row__card {
     width: min(100%, 560px);
     /* Section already has --page-pad; avoid double horizontal inset */
-    margin: auto 0 24px;
+    margin: 0 0 auto;
     box-shadow: 0 24px 40px rgba(0, 0, 0, 0.18);
   }
 }
@@ -1476,14 +1477,10 @@ p {
   }
   .about__appeal {
     margin-top: 0;
-    padding: 40px;
-    align-items: center;
-    text-align: center;
+    padding: 0;
+    text-align: left;
     font-size: 16px;
     line-height: 25px;
-  }
-  .about__appeal-divider {
-    width: 40px;
   }
 
   /* 업무영역 (Figma 108:6161): stacked image/caption cards. */
