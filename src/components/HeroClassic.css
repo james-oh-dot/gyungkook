@@ -244,18 +244,20 @@
 }
 
 .hero__swipe-controls {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  width: auto;
+  gap: 0;
+  width: var(--hero-thumb-w);
+  height: var(--hero-thumb-h);
 }
 
 .hero__swipe-preview {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  width: var(--hero-thumb-w);
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
   padding: 0;
   margin: 0;
   border: 0;
@@ -272,8 +274,10 @@
 }
 
 .hero__swipe-thumb {
-  width: var(--hero-thumb-w);
-  height: var(--hero-thumb-h);
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   overflow: hidden;
   flex: 0 0 auto;
   background: #111;
@@ -296,15 +300,22 @@
 }
 
 .hero__swipe-meta {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 12px;
+  right: 12px;
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 6px;
-  min-height: 44px;
-  width: 100%;
-  flex: 0 0 auto;
-  padding: 0 var(--hero-swipe-meta-pad-x);
-  background: #111;
+  min-height: 40px;
+  width: auto;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(10, 18, 20, 0.34);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(18px) saturate(1.55);
   color: #fff;
   font-size: var(--hero-swipe-meta-size);
   font-weight: 600;
@@ -351,10 +362,23 @@
 }
 
 .hero__gage-btns {
+  position: absolute;
+  z-index: 3;
+  right: 12px;
+  bottom: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 24px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(10, 18, 20, 0.34);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px) saturate(1.55);
+}
+
+.hero__gage-btns--prev {
+  right: 54px;
 }
 
 .hero__gage-btns button {
@@ -512,7 +536,7 @@
   }
 
   .hero__swipe-controls {
-    gap: 10px;
+    gap: 0;
   }
 
   .hero__swipe-preview {
@@ -530,9 +554,12 @@
   }
 
   .hero__swipe-meta {
-    min-height: 40px;
-    padding: 0 12px;
-    background: #111;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    min-height: 38px;
+    padding: 7px 10px;
+    background: rgba(10, 18, 20, 0.34);
     font-size: 14px;
     font-weight: 600;
     line-height: 1.45;
@@ -548,7 +575,14 @@
   }
 
   .hero__gage-btns {
-    width: 24px;
+    right: 10px;
+    bottom: 10px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .hero__gage-btns--prev {
+    right: 50px;
   }
 }
 
@@ -592,9 +626,23 @@
   }
 
   .hero__swipe-meta {
+    top: 8px;
+    left: 8px;
+    right: 8px;
     min-height: 36px;
-    padding: 0 8px;
+    padding: 6px 8px;
     font-size: 12px;
+  }
+
+  .hero__gage-btns {
+    right: 8px;
+    bottom: 8px;
+    width: 32px;
+    height: 32px;
+  }
+
+  .hero__gage-btns--prev {
+    right: 46px;
   }
 }
 

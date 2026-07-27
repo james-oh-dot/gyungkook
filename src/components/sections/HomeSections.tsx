@@ -8,6 +8,7 @@ import {
 import { ProgressiveImage } from '../ProgressiveImage'
 import { Reveal } from '../Reveal'
 import { CharReveal } from '../CharReveal'
+import { WordReveal } from '../WordReveal'
 import { asset } from '../../utils/asset'
 import { useScrollGage } from '../../hooks/useScrollGage'
 import { resolveNavHref } from '../../utils/path'
@@ -143,12 +144,18 @@ export function AboutSection() {
               )}
             </div>
           </div>
-          <div className="about__points">
-            <p>고객의 가치를</p>
-            <p>“정확히 분석”하며</p>
-            <p>“볼륨을 극대화” 하고,</p>
-            <p>“영속성 있게 수호”하는 것</p>
-          </div>
+          <WordReveal
+            className="about__points"
+            lines={[
+              '고객의 가치를',
+              '“정확히 분석”하며',
+              '“볼륨을 극대화” 하고,',
+              '“영속성 있게 수호”하는 것',
+            ]}
+            baseDelay={2100}
+            step={110}
+            active={leadActive}
+          />
           <div className="about__appeal">
             <span>감정평가사 자격 보유 변호사의 차별화된 전문성</span>
             <span className="about__appeal-divider" />
@@ -637,10 +644,12 @@ export function SocialSection() {
           </h2>
         </Reveal>
         <Reveal delay={140}>
-          <div className="social__quote">
-            <p>“혼자서 빨리 뛰어가는 것 보다는”</p>
-            <p>“다소 늦더라도 함께 걸어가는 것”</p>
-          </div>
+          <WordReveal
+            className="social__quote"
+            lines={['“혼자서 빨리 뛰어가는 것 보다는”', '“다소 늦더라도 함께 걸어가는 것”']}
+            baseDelay={180}
+            step={130}
+          />
           <p className="social__body">
             경국이 추구하는 또 하나의 가치,
             <br />

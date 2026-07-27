@@ -344,6 +344,24 @@ p {
   letter-spacing: -0.025em;
 }
 
+.word-reveal__word {
+  display: inline-block;
+  opacity: 0;
+  transform: translate3d(0, 0.6em, 0);
+  filter: blur(4px);
+  transition:
+    opacity 0.72s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.82s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.82s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
+}
+
+.word-reveal__word.is-active {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: blur(0);
+}
+
 .about__media {
   min-height: clamp(420px, 61vw, 1176px);
   overflow: hidden;
@@ -1089,6 +1107,15 @@ p {
 
 .social__quote p:last-child {
   text-align: right;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .word-reveal__word {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
 }
 
 .social__body {
