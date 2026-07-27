@@ -8,6 +8,8 @@
   --color-gray-50: #f9f9f9;
   --color-gray-100: #f1f1f5;
   --color-white: #fff;
+  /* Home section alternating tint (소식·공지 / 업무영역) */
+  --color-section-tint: #f7f7fb;
   /*
     Figma HOME gutters (below-hero sections):
     Desktop — fluid up to 200px
@@ -96,6 +98,10 @@ p {
 
 .section--gray {
   background: var(--color-gray-50);
+}
+
+.section--tint {
+  background: var(--color-section-tint);
 }
 
 .section--dark {
@@ -228,7 +234,7 @@ p {
 }
 
 .notice-section {
-  background: #f7f7fb;
+  background: var(--color-section-tint);
 }
 
 .notice-card {
@@ -281,6 +287,7 @@ p {
 }
 
 .section--about {
+  background: var(--color-white);
   padding-bottom: var(--section-y);
 }
 
@@ -1492,9 +1499,9 @@ p {
     line-height: 1.6;
   }
 
-  /* 법인소개 (Figma 108:6138) */
+  /* 법인소개 (Figma 108:6138) — home alternating bg: white */
   .section--about {
-    background: #f5f6f6;
+    background: var(--color-white);
     padding-bottom: 24px;
   }
   .about {
