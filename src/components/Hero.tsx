@@ -17,7 +17,7 @@ export function Hero() {
   const progressRef = useRef(0)
   const lastJumpAtRef = useRef(0)
   const heroRef = useRef<HTMLElement>(null)
-  const swipeControlsRef = useRef<HTMLDivElement>(null)
+  const swipeRef = useRef<HTMLDivElement>(null)
 
   const slide = heroSlides[index]
   const nextSlide = heroSlides[(index + 1) % heroSlides.length]
@@ -94,25 +94,25 @@ export function Hero() {
   }, [jumpTo])
 
   /*
-    Publish swipe-controls top (offset from hero top) as `--hero-swipe-controls-top`
-    so `.hero__copy` can share that horizontal line on desktop. Measured: swipe uses
-    `zoom` + breakpoint reflow, so CSS-only math drifts.
+    Publish `.hero__swipe` top (offset from hero top) as `--hero-swipe-top`
+    so `.hero__copy` shares that horizontal line on desktop. Measured: swipe
+    uses `zoom` + breakpoint reflow, so CSS-only math drifts.
   */
   useEffect(() => {
     const hero = heroRef.current
-    const controls = swipeControlsRef.current
-    if (!hero || !controls) return
+    const swipe = swipeRef.current
+    if (!hero || !swipe) return
 
     const sync = () => {
       const top =
-        controls.getBoundingClientRect().top - hero.getBoundingClientRect().top
-      if (top > 0) hero.style.setProperty('--hero-swipe-controls-top', `${top}px`)
+        swipe.getBoundingClientRect().top - hero.getBoundingClientRect().top
+      if (top > 0) hero.style.setProperty('--hero-swipe-top', `${top}px`)
     }
 
     sync()
     const ro = new ResizeObserver(sync)
     ro.observe(hero)
-    ro.observe(controls)
+    ro.observe(swipe)
     window.addEventListener('resize', sync)
     void document.fonts?.ready?.then(sync)
     return () => {
@@ -186,7 +186,7 @@ export function Hero() {
             Desktop: artboard sizes + zoom scale (side-by-side maincopy).
             ≤768 (HOME_TABLET2 / MOBILE2): native stacked sizes — see Hero.css.
             DOM: hero_copy (desc) + hero_maincopy are siblings so desktop can
-            pin maincopy top to 50vh and copy top to swipe-controls top.
+            pin maincopy top to 50vh and copy top to swipe top.
           */}
           <div
             className={`hero__copy-scale${slide.wordSize === 'md' ? ' is-compact' : ''}`}
@@ -218,8 +218,8 @@ export function Hero() {
           </div>
         </div>
 
-        <div className="hero__swipe" data-name="hero_swipe">
-          <div ref={swipeControlsRef} className="hero__swipe-controls">
+        <div ref={swipeRef} className="hero__swipe" data-name="hero_swipe">
+          <div className="hero__swipe-controls">
             <button
               type="button"
               className="hero__swipe-preview"
