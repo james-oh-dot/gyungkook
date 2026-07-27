@@ -623,9 +623,13 @@
     /* Match teal inset card swipe geometry */
     --hero-swipe-scale: 1;
     --hero-swipe-w: auto;
-    --hero-swipe-reserve: 254px;
-    --hero-thumb-w: 138px;
-    --hero-thumb-h: 138px;
+    /*
+      Same readability bump as mobile: ~2× width / ~1.5× height vs prior 138².
+      (≤767 overrides with its own 200×150 tokens below.)
+    */
+    --hero-swipe-reserve: 340px;
+    --hero-thumb-w: 276px;
+    --hero-thumb-h: 207px;
   }
 
   .hero__bg-slide > .progressive-image {
@@ -707,32 +711,38 @@
     top: 0;
     left: 0;
     right: 0;
-    min-height: 38px;
-    padding: 7px 10px;
+    min-height: 52px;
+    padding: 10px 14px;
     background: rgba(10, 18, 20, 0.34);
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 600;
     line-height: 1.45;
   }
 
   .hero__gage-track {
     width: var(--hero-thumb-w);
-    gap: 8px;
+    gap: 10px;
   }
 
   .hero__gage-no {
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .hero__gage-btns {
     right: 0;
     bottom: 0;
-    width: 34px;
-    height: 34px;
+    width: 48px;
+    height: 48px;
   }
 
   .hero__gage-btns--prev {
-    right: 34px;
+    right: 48px;
+  }
+
+  .hero__gage-btns button,
+  .hero__gage-btns img {
+    width: 28px;
+    height: 28px;
   }
 }
 
