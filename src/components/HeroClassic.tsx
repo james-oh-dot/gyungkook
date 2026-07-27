@@ -98,7 +98,7 @@ export function HeroClassic() {
   )
 
   return (
-    <section className="hero" aria-label="메인 비주얼">
+    <section className="hero" aria-label="메인 비주얼" data-header-theme="dark">
       <div className="hero__bg">
         {classicHeroSlides.map((item, i) => (
           <div
@@ -149,87 +149,46 @@ export function HeroClassic() {
       </div>
 
       <div className="hero__swipe" data-name="hero_swipe">
-        <button
-          type="button"
-          className="hero__swipe-preview"
-          onMouseEnter={() => {
-            pausedRef.current = true
-            pauseElapsedRef.current = progressRef.current * HERO_DURATION_MS
-          }}
-          onMouseLeave={() => {
-            startRef.current = performance.now() - pauseElapsedRef.current
-            pausedRef.current = false
-          }}
-          onClick={(e) => {
-            e.preventDefault()
-            next()
-          }}
-          aria-label={`다음 화면 ${nextSlide.index} ${slide.nextLabel}로 이동`}
-        >
-          <div className="hero__swipe-thumb">
-            <img
-              key={nextSlide.id}
-              src={nextSlide.image}
-              alt=""
-              decoding="sync"
-              draggable={false}
-            />
+        <div className="hero__swipe-controls">
+          <div className="hero__gage-btns hero__gage-btns--prev">
+            <button type="button" onClick={prev} aria-label="이전 화면">
+              <img src={asset('assets/icon-arrow.svg')} alt="" className="is-flip" draggable={false} />
+            </button>
           </div>
-          <div className="hero__swipe-meta">
-            <span>{nextSlide.index}</span>
-            <span>{slide.nextLabel}</span>
-          </div>
-        </button>
-
-        <div className="hero__gage" data-name="swipe_gage">
-          <div className="hero__gage-track">
-            <span className="hero__gage-no">01</span>
-            <div
-              className="hero__gage-bar"
-              aria-hidden="true"
-              role="progressbar"
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={Math.round(progress * 100)}
-            >
-              <div
-                className="hero__gage-fill"
-                style={{ transform: `scaleX(${progress})` }}
-              />
+          <button
+            type="button"
+            className="hero__swipe-preview"
+            onMouseEnter={() => {
+              pausedRef.current = true
+              pauseElapsedRef.current = progressRef.current * HERO_DURATION_MS
+            }}
+            onMouseLeave={() => {
+              startRef.current = performance.now() - pauseElapsedRef.current
+              pausedRef.current = false
+            }}
+            onClick={next}
+            aria-label={`다음 화면 ${nextSlide.index} ${slide.nextLabel}로 이동`}
+          >
+            <div className="hero__swipe-meta">
+              <span>{nextSlide.index}</span>
+              <span>{slide.nextLabel}</span>
             </div>
-            <span className="hero__gage-no">05</span>
-          </div>
-          <div className="hero__gage-btns">
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                prev()
-              }}
-              aria-label="이전 화면"
-            >
-              <img
-                src={asset('assets/icon-arrow.svg')}
-                alt=""
-                className="is-flip"
-                draggable={false}
-              />
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation()
-                next()
-              }}
-              aria-label="다음 화면"
-            >
-              <img
-                src={asset('assets/icon-arrow.svg')}
-                alt=""
-                draggable={false}
-              />
+            <div className="hero__swipe-thumb">
+              <img key={nextSlide.id} src={nextSlide.image} alt="" decoding="sync" draggable={false} />
+            </div>
+          </button>
+          <div className="hero__gage-btns hero__gage-btns--next">
+            <button type="button" onClick={next} aria-label="다음 화면">
+              <img src={asset('assets/icon-arrow.svg')} alt="" draggable={false} />
             </button>
           </div>
+        </div>
+        <div className="hero__gage-track" data-name="swipe_gage">
+          <span className="hero__gage-no">01</span>
+          <div className="hero__gage-bar" aria-hidden="true">
+            <div className="hero__gage-fill" style={{ transform: `scaleX(${progress})` }} />
+          </div>
+          <span className="hero__gage-no">05</span>
         </div>
       </div>
     </section>

@@ -1,5 +1,4 @@
-import { Hero } from '../components/Hero'
-import { VersionSwitch } from '../components/VersionSwitch'
+import { HeroClassic } from '../components/HeroClassic'
 import {
   AboutSection,
   AchievementsSection,
@@ -13,14 +12,13 @@ import {
 } from '../components/sections/HomeSections'
 import { useScrollReveal } from '../hooks/useScrollReveal'
 
-/** Teal home (default `/`). */
+/** Dark classic hero is now the single default home direction. */
 export function HomePage() {
   useScrollReveal()
 
   return (
     <>
-      <VersionSwitch current="teal" />
-      <Hero />
+      <HeroClassic />
       <NoticeSection />
       <AboutSection />
       <PracticeSection />

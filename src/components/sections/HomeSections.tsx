@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
 import { ProgressiveImage } from '../ProgressiveImage'
 import { Reveal } from '../Reveal'
+import { LineReveal } from '../LineReveal'
 import { asset } from '../../utils/asset'
 import { useScrollGage } from '../../hooks/useScrollGage'
 import { resolveNavHref } from '../../utils/path'
@@ -101,11 +102,13 @@ export function AboutSection() {
             <h2 id="about-title" className="section-title">
               법인소개
             </h2>
-            <p className="about__lead">
-              경국의 포커스는 오로지
-              <br />
-              고객이 지켜 온 ‘가치’에 집중되어 있습니다.
-            </p>
+            <div className="about__lead">
+              <LineReveal
+                lines={['경국의 포커스는 오로지', '고객이 지켜 온 ‘가치’에 집중되어 있습니다.']}
+                baseDelay={280}
+                step={150}
+              />
+            </div>
           </div>
           <div className="about__points">
             <p>고객의 가치를</p>
@@ -416,14 +419,6 @@ export function PressSection() {
         <div className="press-track" ref={trackRef}>
           {items.map((item) => (
             <article key={`${item.title}-${item.desc}`} className="press-card">
-              <div className="press-card__media media-card">
-                <ProgressiveImage
-                  className="media-card__img"
-                  src={item.image.src}
-                  preview={item.image.preview}
-                  alt=""
-                />
-              </div>
               <div className="press-card__body">
                 <div className="press-card__title">
                   <span className="press-card__chip">{item.chip}</span>

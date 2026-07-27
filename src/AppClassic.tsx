@@ -1,5 +1,4 @@
 import { HeroClassic } from './components/HeroClassic'
-import { VersionSwitch } from './components/VersionSwitch'
 import {
   AboutSection,
   AchievementsSection,
@@ -20,7 +19,6 @@ function AppClassic() {
 
   return (
     <SiteLayout>
-      <VersionSwitch current="classic" />
       <HeroClassic />
       <NoticeSection />
       <AboutSection />

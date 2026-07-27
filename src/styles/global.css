@@ -286,6 +286,20 @@ p {
   padding-bottom: calc(126px + 114px);
 }
 
+/* Keep the two-column About composition comfortably inside large desktop
+   viewports instead of letting the copy/image grow to the old 1176px height. */
+@media (min-width: 1440px) {
+  .about {
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 600px);
+    gap: clamp(32px, 3vw, 64px);
+  }
+
+  .about__copy,
+  .about__media {
+    min-height: clamp(560px, 45vw, 900px);
+  }
+}
+
 .about__copy {
   display: flex;
   flex-direction: column;
@@ -300,6 +314,15 @@ p {
   font-weight: 500;
   line-height: 1.08;
   letter-spacing: -0.02em;
+}
+
+.about__lead .line-reveal__item {
+  margin: -0.08em 0;
+  padding: 0.08em 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
 }
 
 .about__points {
@@ -512,7 +535,7 @@ p {
 }
 
 .achieve-row__title {
-  font-size: 24px;
+  font-size: clamp(36px, 3.33vw, 64px);
   font-weight: 600;
   letter-spacing: -0.025em;
 }
@@ -520,14 +543,14 @@ p {
 .achieve-row__subtitle {
   margin-top: 16px;
   color: var(--color-teal-deep);
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 500;
 }
 
 .achieve-row__body {
   margin-top: 16px;
   color: var(--color-body);
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.45;
   letter-spacing: -0.025em;
 }
@@ -785,7 +808,12 @@ p {
 .press-card {
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  justify-content: flex-end;
+  min-height: 270px;
+  padding: 32px;
+  background: #f7f7fb;
+  border: 1px solid #e5e5ec;
+  border-top: 2px solid #111;
   scroll-snap-align: start;
   min-width: 0;
 }
@@ -794,12 +822,7 @@ p {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  padding-inline: 12px;
-}
-
-.press-card__media {
-  height: clamp(240px, 20.8vw, 400px);
-  overflow: hidden;
+  padding: 0;
 }
 
 .press-card__chip {
@@ -1505,7 +1528,7 @@ p {
     align-self: flex-end;
   }
   .achieve-row__title {
-    font-size: 20px;
+    font-size: 36px;
   }
   .achieve-row__subtitle,
   .achieve-row__body {
