@@ -27,6 +27,15 @@ import {
   professionals,
 } from '../../data/content'
 
+/** Home press-card chips → matching list routes (mock cards have no post ids). */
+function pressCardHref(chip: string): string {
+  if (chip === '컬럼') return '/press/column-media/column'
+  if (chip === '보도자료') return '/press/coverage/release'
+  if (chip === '간행물') return '/press/column-media/publication'
+  if (chip === '미디어') return '/press/column-media/media'
+  return '/press/coverage/tv'
+}
+
 function TextBtn({
   label,
   icon = asset('assets/icon-btn.svg'),
@@ -78,14 +87,20 @@ export function NoticeSection() {
       </div>
       <div className="notice-grid">
         {notices.map((item, index) => (
-          <Reveal key={item.title} delay={index * 120} className="notice-card">
-            <div className="notice-card__body">
-              <h3 className="notice-card__title">{item.title}</h3>
-              <p className="notice-card__desc">{item.desc}</p>
-            </div>
-            <div className="notice-card__footer">
-              <p className="notice-card__date">{item.date}</p>
-            </div>
+          <Reveal key={item.title} delay={index * 120}>
+            <a
+              className="notice-card"
+              href={resolveNavHref('/news/notice')}
+              aria-label={`${item.title} 소식·공지 보기`}
+            >
+              <div className="notice-card__body">
+                <h3 className="notice-card__title">{item.title}</h3>
+                <p className="notice-card__desc">{item.desc}</p>
+              </div>
+              <div className="notice-card__footer">
+                <p className="notice-card__date">{item.date}</p>
+              </div>
+            </a>
           </Reveal>
         ))}
       </div>
@@ -452,16 +467,26 @@ export function PressSection() {
         data-parallax-strength="16"
       >
         <div className="press-track">
-          {items.map((item) => (
-            <article key={`${item.title}-${item.desc}`} className="press-card">
-              <div className="press-card__body">
-                <span className="press-card__chip">{item.chip}</span>
-                <h3 className="press-card__title">{item.title}</h3>
-                <p className="press-card__desc">{item.desc}</p>
-                <time className="press-card__date">{item.date}</time>
-              </div>
-            </article>
-          ))}
+          {items.map((item) => {
+            const href = pressCardHref(item.chip)
+            return (
+              <a
+                key={`${item.title}-${item.desc}`}
+                className="press-card-link"
+                href={resolveNavHref(href)}
+                aria-label={`${item.chip} ${item.title} 자세히 보기`}
+              >
+                <article className="press-card">
+                  <div className="press-card__body">
+                    <span className="press-card__chip">{item.chip}</span>
+                    <h3 className="press-card__title">{item.title}</h3>
+                    <p className="press-card__desc">{item.desc}</p>
+                    <time className="press-card__date">{item.date}</time>
+                  </div>
+                </article>
+              </a>
+            )
+          })}
         </div>
       </div>
 

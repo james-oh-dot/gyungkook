@@ -258,12 +258,14 @@ p {
 }
 
 .notice-card {
-  min-width: 0;
-  min-height: 304px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  min-height: 304px;
   background: #fff;
   color: var(--color-black);
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .notice-card__body {
@@ -474,10 +476,12 @@ p {
 }
 
 .practice-card-link,
-.pro-card-link {
+.pro-card-link,
+.press-card-link {
   display: block;
   min-width: 0;
   color: inherit;
+  cursor: pointer;
 }
 
 .practice-card-link .practice-card {
@@ -871,7 +875,15 @@ p {
   opacity: 0.4;
 }
 
+/* Keep section CTAs above the press scroller hit-area (negative margin/padding). */
+.press > .section-head {
+  position: relative;
+  z-index: 2;
+}
+
 .press-list-wrap {
+  position: relative;
+  z-index: 1;
   width: calc(100% + 48px);
   max-width: none;
   margin: -24px -24px -56px;
@@ -895,6 +907,10 @@ p {
   display: none;
 }
 
+.press-card-link .press-card {
+  height: 100%;
+}
+
 .press-card {
   position: relative;
   isolation: isolate;
@@ -905,6 +921,7 @@ p {
   padding: 32px;
   background: #fff;
   border: 1px solid #f1f1f5;
+  cursor: pointer;
   box-shadow: 0 18px 42px rgba(35, 48, 59, 0.12);
   scroll-snap-align: start;
   min-width: 0;
