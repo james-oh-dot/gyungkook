@@ -1,5 +1,47 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-27 — 히어로: 카피를 스와이프 라인에 정렬 + 프레임 높이 = 스와이프 −20px
+
+> Branch: `claude/o-boinida-98drdm` (최신 main 44ff27b에서 재시작)
+
+### 요구
+1. `hero__copy`를 `hero__swipe`와 **동일한 라인**에 배치.
+2. 프레임 높이를 90vh 고정이 아니라 **`hero__swipe`에서 20px 떨어진 가변값**으로.
+
+### 구현
+- **`--hero-swipe-top` 실측(HeroClassic.tsx)**: `.hero__swipe`는 `zoom` 스케일 + 브레이크
+  포인트별 메타 리플로우라 CSS로 유도 불가 → ResizeObserver(swipe + hero) + `resize` +
+  `fonts.ready`로 hero 상단 기준 top 오프셋을 `.hero`에 CSS 변수로 기록.
+  높이(`100% - height`) 기준이 아니라 **top 기준**으로 앵커해야 서브픽셀 반올림으로
+  ~2px 어긋나는 문제가 없다.
+- **프레임 높이**: `calc(var(--hero-swipe-top) - var(--hero-frame-swipe-gap))`,
+  `--hero-frame-swipe-gap: 20px` 토큰 신설. 기존 `min(90vh, 100%)` 제거.
+- **카피 정렬**: `.hero__content` 하단 패딩을 `var(--hero-swipe-reserve)`(320px, 스와이프
+  높이만큼 예약) → `calc(40px * var(--hero-swipe-scale))`(스와이프 자체의 내부 하단 패딩)로
+  변경 → 카피가 스와이프 위로 쌓이지 않고 **같은 라인 좌측**에 놓인다.
+- **≤1024는 불변**: 인셋 카드 레이아웃이라 `padding-bottom: var(--hero-swipe-reserve)`와
+  `height: 58%` 오버라이드를 명시적으로 유지.
+
+### 패럴랙스 제거 (히어로 프레임 한정)
+간격이 20px가 아니라 18px로 측정되어 추적한 결과, `useScrollReveal`의 `--parallax-y`가
+프레임을 ~2px 아래로 밀고 있었고 스크롤에 따라 간격이 계속 변했다(±14px).
+- 내부 이미지로 옮기는 안은 full 레이어가 정확히 `scale(1)`이라 이동 시 프레임 가장자리가
+  드러나 부적합.
+- 프레임 높이로 보정하는 안은 스크롤마다 height가 변해 레이아웃 스래싱.
+→ **히어로 프레임에서는 패럴랙스를 소비하지 않도록** 정리(`transform: none`). 훅은 그대로
+두어 미디어 카드 등 다른 요소의 패럴랙스는 유지. 히어로 모션은 Ken Burns가 담당.
+
+### 검증
+| 뷰포트 | 프레임 높이 | 프레임↕스와이프 | 카피=스와이프 라인 |
+|---|---|---|---|
+| 1280×800 | 607 | **20.0px** | ✓ |
+| 1440×900 | 669.5 | **20.0px** | ✓ |
+| 1920×1080 | 812 | **20.0px** | ✓ |
+| 2560×1440 | 1172 | **20.0px** | ✓ |
+| 1024 / 390 | 58% | (인셋 카드, 기존 유지) | 기존 유지 |
+
+lint/build clean.
+
 ## 2026-07-27 — 히어로 프레임 유동화 (좌 고정 · 우 밀착 · 높이 90vh)
 
 > Branch: `claude/o-boinida-98drdm` (최신 main a9ca44c에서 재시작)
