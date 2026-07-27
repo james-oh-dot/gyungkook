@@ -27,8 +27,9 @@ ROOT = Path(__file__).resolve().parents[1] / "public" / "assets"
 TARGETS: list[tuple[str, int]] = [
     # Home hero slides
     ("hero-01.png", 1600),
-    ("hero-02.png", 2748),
-    ("hero-03.png", 1964),
+    # 02/03 are full-bleed 1920×1080 scenes (Figma AI-hero `hero-02` / `hero-03`)
+    ("hero-02.png", 1920),
+    ("hero-03.png", 1920),
     ("hero-04.png", 1920),
     ("hero-05.jpg", 1024),
     # Default dark home hero (slides 02/03 reuse the Figma assets above)

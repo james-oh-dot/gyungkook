@@ -142,8 +142,10 @@
 - TypeScript is **`strict: true`** (both tsconfigs, 2026-07). Keep it on; prefer explicit guards over non-null `!` in new code.
 - Reveal timing lives in **`src/hooks/useDoubleRafReveal.ts`** — `CharReveal` / `LineReveal` both consume it. Never inline rAF reveal logic back into the components, and never pass non-primitive deps (see hook comments; hero rAF re-renders every frame).
 - Sub-page heroes use WebP progressive pairs — do not point `SubVisual` at raw multi‑MB JPG/PNG.
-- Hero source of truth (default `/`): Figma canvas `AI-hero-change` (`22:10492`) → frames `hero_1`…`hero_5` (teal).
+- **ACTIVE home hero = `HeroClassic`** (2026-07-27). Both `HomePage` (`/`) and `AppClassic` (`classic.html`) render `HeroClassic` + `src/data/slidesClassic.ts`. The teal `Hero` / `src/data/slides.ts` / `Hero.css` are **currently unreferenced** (tree-shaken out of the bundle) — editing them changes nothing on screen. Check the import in `src/pages/HomePage.tsx` before tuning any hero CSS.
+- Hero source of truth (teal `Hero`, currently inactive): Figma canvas `AI-hero-change` (`22:10492`) → frames `hero_1`…`hero_5`.
 - **Alternate hero for client review:** dark previous hero lives at `classic.html` → `HeroClassic` + `public/assets/classic/*`. Top `VersionSwitch` toggles A Teal / B Dark. Vite MPA inputs: `index.html` + `classic.html`.
+- `HeroClassic` swipe thumb reuses the **next slide's own hero pair** (`nextSlide.image` / `imagePreview`), so replacing a slide's artwork updates its thumb automatically. `slidesClassic.nextImage` (`assets/classic/hero-0N-next.jpg`) is declared but **not rendered** — do not regenerate those files expecting a visible change.
 - **HARD RULE (classic MPA):** shared home chrome/sections used by `AppClassic` must not call `react-router` hooks or render `<Link>` / `<NavLink>` / `<Outlet>` without a Router. Classic has no `BrowserRouter` — a single `<Link>` (e.g. home `TextBtn`) throws and blanks the whole page. Use `resolveNavHref()` + plain `<a>` (same pattern as GNB). `Gnb` already uses `UNSAFE_LocationContext` safely for pathname.
 - Hero carousel timing is `HERO_DURATION_MS = 10000` in `src/data/slides.ts`.
 - Hero structure (do not regress to the old black/right-panel layout):
@@ -152,8 +154,8 @@
   - `hero_maincopy`: large Nanum Myeongjo English **word** + Korean **title** side-by-side
   - Swipe meta is **white** card + white-border thumb (not dark chrome)
 - Hero motion contract: description = `LineReveal`; English word + Korean title = `CharReveal`; image Ken Burns via `--hero-zoom` over 10s; `swipe_gage` = rAF `scaleX(progress)` with **no CSS width transition**; prev/next/thumb click = instant `jumpTo`.
-- Slide 02 visual **must** be the jewel (`public/assets/hero-02.png`).
-- Hero 01/02/04 assets are **RGBA PNG** (2× from Figma `hero-01` / `hero-02` / `hero-04` on `AI-hero-change`). Keep alpha — do not re-bake to JPEG.
+- **`hero-02` / `hero-03` (2026-07-27):** full-bleed **1920×1080 opaque** scenes from Figma canvas `AI-hero` (`119:7584`) → `hero-02` (`119:7586`, wooden icosahedron + gears) / `hero-03` (`119:7585`, isometric coins). These replaced the old near-square RGBA cut-outs (teal jewel / cube cluster), so they have **no alpha** and bake their own background. Both feed `slidesClassic` slides 02/03 (and their swipe thumbs). Progressive width in `scripts/generate-progressive-images.py` is **1920** for each — do not restore 2748 / 1964.
+- Hero 01/04 assets are **RGBA PNG** (2× from Figma `hero-01` / `hero-04` on `AI-hero-change`). Keep alpha — do not re-bake to JPEG.
 - **HARD RULE — Hero images must NEVER crop the source bitmap** (user command; blocking):
   - Especially slide 01 **statue**: hands, scales, head, and left/right edges must always stay visible.
   - Forbidden: `object-fit: cover` on statue; Ken Burns `scale() > 1` inside `overflow: hidden`; width `> 100vw` / wider than the stage; fixed height that fights native aspect (forces side crop); `ProgressiveImage` inline `objectFit: cover` overriding CSS `contain`.
