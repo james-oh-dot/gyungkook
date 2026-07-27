@@ -226,6 +226,7 @@
   align-items: center;
   gap: 10px;
   flex: 0 0 auto;
+  min-width: 0;
 }
 
 .gnb__glass {
@@ -248,6 +249,8 @@
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.4;
+  position: relative;
+  flex: 0 0 auto;
   transition:
     background var(--gnb-duration) var(--gnb-ease),
     border-color var(--gnb-duration) var(--gnb-ease),

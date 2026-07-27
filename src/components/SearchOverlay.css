@@ -2,6 +2,13 @@
   --search-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --search-brand: var(--color-teal, #008075);
   --search-bg: var(--color-gray-50, #f9f9f9);
+  /* Match GNB horizontal pad so close + panel gutters stay aligned. */
+  --search-pad-x: 32px;
+  --search-pad-top: 24px;
+  --search-safe-t: env(safe-area-inset-top, 0px);
+  --search-safe-r: env(safe-area-inset-right, 0px);
+  --search-safe-b: env(safe-area-inset-bottom, 0px);
+  --search-safe-l: env(safe-area-inset-left, 0px);
 
   position: fixed;
   inset: 0;
@@ -9,6 +16,8 @@
   display: flex;
   align-items: stretch;
   justify-content: center;
+  /* Prevent any overlay child from forcing page-level horizontal scroll. */
+  overflow: hidden;
 }
 
 .search-overlay__dim {
@@ -43,10 +52,16 @@
   z-index: 1;
   display: flex;
   flex-direction: column;
-  width: min(960px, calc(100% - 48px));
+  box-sizing: border-box;
+  width: min(
+    960px,
+    calc(100% - (var(--search-pad-x) * 2) - var(--search-safe-l) - var(--search-safe-r))
+  );
+  max-width: 100%;
   max-height: min(100dvh, 100%);
   margin: auto;
   padding: clamp(24px, 6vh, 64px) 0;
+  padding-bottom: calc(clamp(24px, 6vh, 64px) + var(--search-safe-b));
   pointer-events: none;
   transition:
     justify-content 0.45s var(--search-ease),
@@ -69,8 +84,8 @@
 /* Match GNB 검색하기 glass control: 50×50 square, 20px icon, sharp rect */
 .search-overlay__close {
   position: fixed;
-  top: 24px;
-  right: 32px;
+  top: calc(var(--search-pad-top) + var(--search-safe-t));
+  right: calc(var(--search-pad-x) + var(--search-safe-r));
   z-index: 2;
   display: inline-flex;
   align-items: center;
@@ -133,9 +148,12 @@
 
 .search-overlay__input {
   display: block;
+  box-sizing: border-box;
   width: 100%;
+  max-width: 100%;
   margin: 0;
-  padding: 20px 8px 18px;
+  /* Extra right pad so native search-cancel never collides with typed text. */
+  padding: 20px 40px 18px 8px;
   border: 0;
   border-radius: 0;
   border-bottom: 4px solid var(--search-brand);
@@ -146,10 +164,34 @@
   letter-spacing: -0.03em;
   line-height: 1.25;
   outline: none;
+  /* Kill UA search chrome that shifts layout across browsers. */
+  appearance: none;
   transition:
     background 0.3s var(--search-ease),
     border-color 0.3s var(--search-ease),
     box-shadow 0.3s var(--search-ease);
+}
+
+.search-overlay__input::-webkit-search-decoration,
+.search-overlay__input::-webkit-search-results-button,
+.search-overlay__input::-webkit-search-results-decoration {
+  display: none;
+}
+
+.search-overlay__input::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  background: center / 16px 16px no-repeat
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M5 5l10 10M15 5L5 15' stroke='%23111111' stroke-width='1.6' stroke-linecap='square'/%3E%3C/svg%3E");
+  cursor: pointer;
+  opacity: 0.55;
+}
+
+.search-overlay__input::-webkit-search-cancel-button:hover {
+  opacity: 0.9;
 }
 
 .search-overlay__input::placeholder {
@@ -224,6 +266,9 @@
   flex-direction: row;
   align-items: center;
   gap: 16px;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 18px 8px;
   color: #111;
   text-decoration: none;
@@ -276,10 +321,13 @@
 .search-overlay__title {
   flex: 1 1 auto;
   min-width: 0;
+  max-width: 100%;
   font-size: 20px;
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.35;
+  overflow-wrap: anywhere;
+  word-break: keep-all;
 }
 
 /* Per-page hit count — how many times the keyword appears on that page. */
@@ -313,25 +361,11 @@
   font-weight: 700;
 }
 
-@media (max-width: 767px) {
-  .search-overlay__panel {
-    width: calc(100% - 32px);
-    padding-inline: 0;
-  }
-
-  .search-overlay__close {
-    top: 16px;
-    right: 16px;
-  }
-
-  .search-overlay__input {
-    font-size: 28px;
-    padding: 16px 6px 14px;
-    border-bottom-width: 3px;
-  }
-
-  .search-overlay__hint {
-    font-size: 16px;
+/* Tablet + compact desktop: stack result meta so chips/title/count never collide. */
+@media (max-width: 1024px) {
+  .search-overlay {
+    --search-pad-x: 48px;
+    --search-pad-top: 24px;
   }
 
   .search-overlay__link {
@@ -340,21 +374,91 @@
     gap: 10px 12px;
   }
 
-  /* Chips take their own row; title + count share the next row. */
   .search-overlay__chips {
-    flex-basis: 100%;
+    flex: 1 1 100%;
     max-width: 100%;
   }
 
   .search-overlay__title {
-    /* basis 0 so a long title wraps internally instead of bumping the
-       count badge onto its own line */
     flex: 1 1 0;
-    font-size: 17px;
+    font-size: clamp(17px, 2.2vw, 20px);
   }
 
   .search-overlay__panel.is-searching {
-    padding-top: 88px;
+    /* Clear the fixed close control (50) + pad-top + breathing room. */
+    padding-top: calc(var(--search-pad-top) + var(--search-safe-t) + 66px);
+  }
+
+  .search-overlay__hint {
+    font-size: clamp(15px, 2vw, 18px);
+  }
+}
+
+@media (max-width: 767px) {
+  .search-overlay {
+    --search-pad-x: 16px;
+    --search-pad-top: 16px;
+  }
+
+  .search-overlay__panel {
+    padding-inline: 0;
+  }
+
+  .search-overlay__input {
+    font-size: clamp(24px, 7vw, 28px);
+    padding: 16px 36px 14px 6px;
+    border-bottom-width: 3px;
+  }
+
+  .search-overlay__hint {
+    font-size: 15px;
+    margin-top: 12px;
+  }
+
+  .search-overlay__title {
+    font-size: 17px;
+  }
+
+  .search-overlay__results.is-visible,
+  .search-overlay__panel.is-searching .search-overlay__results {
+    margin-top: 20px;
+  }
+
+  .search-overlay__link {
+    padding: 16px 4px;
+  }
+
+  .search-overlay__chip {
+    min-height: 26px;
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+}
+
+/* Short viewports (landscape phones / small height): keep input below close. */
+@media (max-height: 560px) {
+  .search-overlay__panel:not(.is-searching) {
+    justify-content: flex-start;
+    padding-top: calc(var(--search-pad-top) + var(--search-safe-t) + 66px);
+    padding-bottom: calc(16px + var(--search-safe-b));
+  }
+
+  .search-overlay__panel.is-searching {
+    padding-top: calc(var(--search-pad-top) + var(--search-safe-t) + 58px);
+  }
+
+  .search-overlay__input {
+    font-size: clamp(22px, 5vh, 32px);
+    padding-block: 12px;
+  }
+
+  .search-overlay__hint {
+    display: none;
+  }
+
+  .search-overlay__results.is-visible,
+  .search-overlay__panel.is-searching .search-overlay__results {
+    margin-top: 12px;
   }
 }
 
