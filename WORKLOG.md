@@ -1,5 +1,40 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-27 — 히어로 이미지 교체: hero-02 / hero-03 (Figma `AI-hero` 119:7584)
+
+> Branch: `claude/o-boinida-98drdm` (최신 main 35b56aa에서 재시작)
+
+### 요구
+Figma `AI-hero`(119:7584)의 `hero-02` / `hero-03` 두 장을 적용. "이미지 적용 룰"
+(progressive 쌍 · 크롭 금지 · asset() 경유) 준수.
+
+### 에셋 확보 (egress 차단 우회 없이)
+figma.com은 프록시 정책상 403/차단 → `curl` 불가. `get_screenshot`을
+`enableBase64Response: true` + `maxDimension: 1920`로 호출해 **요청 해상도 그대로**
+받은 뒤(1024 요청 → 1024 유지 확인) 트랜스크립트 JSONL의 base64 블록에서 추출.
+harness가 PNG→JPEG로 재인코딩하므로 네이티브 1920×1080으로 받아 손실 1회로 제한.
+
+### 중요한 발견 — 편집 대상이 바뀌어 있었음
+다른 세션 커밋(`e7b0e18` / `35b56aa`)으로 **홈이 `Hero`(티얼) → `HeroClassic`으로 전환**
+되어 있었다. `HomePage`/`AppClassic` 모두 `HeroClassic` + `slidesClassic.ts`를 쓰고,
+티얼 `Hero`/`slides.ts`/`Hero.css`는 **아무도 import하지 않아 번들에서 사라진 상태**
+(dist에 `hero__bg-slide--statue` 등 문자열 자체가 없음). 처음엔 티얼 쪽 `slides.ts`/
+`Hero.css`에 full-bleed 모드(`scene`)를 구현했으나 화면에 반영되지 않아 원인 추적 후
+**해당 편집은 전부 revert**하고 실제 경로만 건드리도록 축소.
+
+### 구현 (최종 diff = 이미지 6개 + 생성 스크립트)
+- `public/assets/hero-02.png` / `hero-03.png` ← 신규 1920×1080(불투명). 기존은 근사
+  정사각 RGBA 컷아웃(2748×2730 / 1964×1882)이었으나 신규는 배경이 구워진 풀프레임.
+- `scripts/generate-progressive-images.py` TARGETS 폭 2748/1964 → **1920**(네이티브).
+- `python3 scripts/generate-progressive-images.py`로 `.webp`(q90) + `.preview.webp`(64px) 재생성.
+- `slidesClassic` 슬라이드 02/03이 이미 `assets/hero-02` / `hero-03`을 가리키므로 **데이터
+  변경 불필요**. 스와이프 썸네일도 `nextSlide.image`(히어로 원본)를 재사용해 자동 반영
+  — `assets/classic/hero-0N-next.jpg`는 선언만 되어 있고 렌더링에 안 쓰임(불필요한 재생성 회피).
+
+### 검증
+- lint/build clean. 데스크톱 1440 / 태블릿 768 / 모바일 390에서 슬라이드 02·03 렌더 확인
+  (`currentSrc`=hero-02/03.webp, natural 1920×1080), 썸네일도 신규 아트로 갱신, pageerror 0.
+
 ## 2026-07-27 — SEO / 소셜 공유 메타태그 (description·keywords·OG·Twitter)
 
 > Branch: `claude/o-boinida-98drdm` (PR #107 머지 후 최신 main 1843c88에서 재시작)
