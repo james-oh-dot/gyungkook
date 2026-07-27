@@ -1,7 +1,13 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from 'react'
 import { ProgressiveImage } from '../ProgressiveImage'
 import { Reveal } from '../Reveal'
-import { LineReveal } from '../LineReveal'
+import { CharReveal } from '../CharReveal'
 import { asset } from '../../utils/asset'
 import { useScrollGage } from '../../hooks/useScrollGage'
 import { resolveNavHref } from '../../utils/path'
@@ -123,12 +129,18 @@ export function AboutSection() {
               법인소개
             </h2>
             <div ref={leadRef} className="about__lead">
-              <LineReveal
-                lines={['경국의 포커스는 오로지', '고객이 지켜 온 ‘가치’에 집중되어 있습니다.']}
-                baseDelay={280}
-                step={150}
-                active={leadActive}
-              />
+              {['경국의 포커스는 오로지', '고객이 지켜 온 ‘가치’에 집중되어 있습니다.'].map(
+                (line, lineIndex) => (
+                  <span className="about__lead-line" key={line}>
+                    <CharReveal
+                      text={line}
+                      baseDelay={180 + lineIndex * 320}
+                      step={28}
+                      active={leadActive}
+                    />
+                  </span>
+                ),
+              )}
             </div>
           </div>
           <div className="about__points">
@@ -136,6 +148,13 @@ export function AboutSection() {
             <p>“정확히 분석”하며</p>
             <p>“볼륨을 극대화” 하고,</p>
             <p>“영속성 있게 수호”하는 것</p>
+          </div>
+          <div className="about__appeal">
+            <span>감정평가사 자격 보유 변호사의 차별화된 전문성</span>
+            <span className="about__appeal-divider" />
+            <span>전문 인증 변호사의 철저한 법리분석</span>
+            <span className="about__appeal-divider" />
+            <span>소송 그 이후의 고민까지, 분야별 전문가의 협력공조</span>
           </div>
         </Reveal>
         <Reveal delay={160} className="about__media media-card">
@@ -147,13 +166,6 @@ export function AboutSection() {
           />
         </Reveal>
       </div>
-      <Reveal delay={220} className="about__appeal">
-        <span>감정평가사 자격 보유 변호사의 차별화된 전문성</span>
-        <span className="about__appeal-divider" />
-        <span>전문 인증 변호사의 철저한 법리분석</span>
-        <span className="about__appeal-divider" />
-        <span>소송 그 이후의 고민까지, 분야별 전문가의 협력공조</span>
-      </Reveal>
     </section>
   )
 }
@@ -440,8 +452,13 @@ export function PressSection() {
         </Reveal>
       </div>
 
-      <div className="press-list-wrap" data-parallax data-parallax-strength="16">
-        <div className="press-track" ref={trackRef}>
+      <div
+        className="press-list-wrap"
+        ref={trackRef}
+        data-parallax
+        data-parallax-strength="16"
+      >
+        <div className="press-track">
           {items.map((item) => (
             <article key={`${item.title}-${item.desc}`} className="press-card">
               <div className="press-card__body">

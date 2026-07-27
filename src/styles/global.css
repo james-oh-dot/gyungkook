@@ -279,7 +279,7 @@ p {
 }
 
 .section--about {
-  padding-bottom: 0;
+  padding-bottom: var(--section-y);
 }
 
 .about {
@@ -287,8 +287,7 @@ p {
   grid-template-columns: minmax(0, 1fr) minmax(280px, 680px);
   gap: clamp(32px, 4vw, 80px);
   align-items: stretch;
-  /* Figma: 126px gap below image, then 114px appeal band */
-  padding-bottom: calc(126px + 114px);
+  padding-bottom: 0;
 }
 
 /* Keep the two-column About composition comfortably inside large desktop
@@ -308,8 +307,8 @@ p {
 .about__copy {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 48px;
+  justify-content: flex-start;
+  gap: 40px;
   min-height: clamp(480px, 61vw, 1176px);
 }
 
@@ -321,9 +320,14 @@ p {
   letter-spacing: -0.02em;
 }
 
-.about__lead .line-reveal__item {
-  margin: -0.08em 0;
-  padding: 0.08em 0;
+.about__lead-line,
+.about__lead .char-reveal {
+  display: block;
+}
+
+.about__lead .char-reveal__item {
+  margin: -0.12em -0.04em;
+  padding: 0.12em 0.04em;
   font: inherit;
   color: inherit;
   letter-spacing: inherit;
@@ -346,24 +350,23 @@ p {
 }
 
 .about__appeal {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 40px var(--page-pad);
+  justify-content: center;
+  gap: 12px;
+  padding: 40px;
   background: #eee;
-  font-size: clamp(14px, 1.25vw, 24px);
+  text-align: center;
+  font-size: 16px;
   font-weight: 500;
+  line-height: 25px;
   letter-spacing: -0.025em;
 }
 
 .about__appeal-divider {
-  width: 1px;
-  height: 22px;
+  width: 40px;
+  height: 1px;
   background: #bbb;
   flex: 0 0 auto;
 }
@@ -541,7 +544,7 @@ p {
 
 .achieve-row__title {
   margin: 0;
-  font-size: clamp(36px, 3.33vw, 64px);
+  font-size: 44px;
   font-weight: 600;
   letter-spacing: -0.025em;
 }
@@ -789,24 +792,26 @@ p {
 }
 
 .press-list-wrap {
-  width: 100%;
+  width: calc(100% + 48px);
   max-width: none;
+  margin: -24px -24px -56px;
+  padding: 24px 24px 56px;
+  overflow-x: auto;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 24px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .press-track {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: minmax(360px, calc((100% - 96px) / 3));
+  grid-auto-columns: calc((100% - 96px) / 3);
   gap: 48px;
-  overflow-x: auto;
-  padding: 0 0 8px;
-  scroll-snap-type: x proximity;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  padding-right: 0;
+  width: 100%;
 }
 
-.press-track::-webkit-scrollbar {
+.press-list-wrap::-webkit-scrollbar {
   display: none;
 }
 
@@ -834,6 +839,8 @@ p {
 .press-card__chip {
   display: inline-flex;
   align-items: center;
+  flex: 0 0 auto;
+  white-space: nowrap;
   padding: 8px 16px;
   border-radius: 100px;
   background: #101010;
@@ -1226,9 +1233,8 @@ p {
   }
 
   .press-track {
-    grid-auto-columns: minmax(280px, calc((100% - 24px) / 2));
+    grid-auto-columns: calc((100% - 24px) / 2);
     gap: 24px;
-    padding-right: 0;
   }
 
   .about,
@@ -1247,16 +1253,15 @@ p {
   }
 
   .about__appeal {
-    position: static;
-    margin-top: 32px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+    margin-top: 0;
   }
 
   .about__appeal-divider {
-    width: 22px;
-    height: 1px;
+    width: 40px;
+  }
+
+  .achieve-row__title {
+    font-size: 40px;
   }
 
   .practice-grid,
@@ -1396,7 +1401,6 @@ p {
   .press-track {
     gap: 24px;
     grid-auto-columns: 100%;
-    padding-right: 0;
   }
 
   .achieve-row__card {
@@ -1424,7 +1428,7 @@ p {
   }
   .about__copy {
     min-height: 0;
-    gap: 30px;
+    gap: 40px;
   }
   .about__lead {
     margin-top: 8px;
@@ -1445,7 +1449,7 @@ p {
   }
   .about__appeal {
     margin-top: 0;
-    padding: 40px 16px;
+    padding: 40px;
     align-items: center;
     text-align: center;
     font-size: 16px;
@@ -1534,7 +1538,7 @@ p {
     align-self: flex-end;
   }
   .achieve-row__title {
-    font-size: 36px;
+    font-size: 32px;
   }
   .achieve-row__subtitle,
   .achieve-row__body {
