@@ -213,7 +213,7 @@
   Desktop (≥1025): pin Y independently (annotated QA).
   Horizontal: stay inside `.hero__content` via `.hero__copy-col` (pad-x on
   content; pins use left:0 within the col — same left edge as before).
-  - `.hero__maincopy` top → 50svh (viewport mid)
+  - `.hero__maincopy` top → `--hero-maincopy-top` (JS: min(50svh, copyTop - 60 - mainH))
   - `.hero__copy` top → `--hero-swipe-top` (`.hero__swipe` top)
 */
 @media (min-width: 1025px) {
@@ -236,8 +236,8 @@
   .hero__maincopy {
     position: absolute;
     left: 0;
-    top: 50%;
-    top: 50svh;
+    /* Prefer mid; JS caps so it never collides with copy (60px gap). */
+    top: var(--hero-maincopy-top, 50svh);
     z-index: 3;
   }
 
