@@ -77,6 +77,26 @@ a {
   font: inherit;
 }
 
+/*
+  Interactive controls: always show pointer on hover (buttons, links, summary).
+  Disabled controls keep the not-allowed cue.
+*/
+button:not(:disabled),
+input[type='button']:not(:disabled),
+input[type='submit']:not(:disabled),
+input[type='reset']:not(:disabled),
+a[href],
+summary,
+[role='button']:not([aria-disabled='true']) {
+  cursor: pointer;
+}
+
+button:disabled,
+input:disabled,
+[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
 a {
   color: inherit;
   text-decoration: none;
