@@ -166,7 +166,7 @@ p {
 
 .reveal {
   opacity: 0;
-  transform: translate3d(0, 84px, 0);
+  transform: translate3d(0, calc(84px + var(--parallax-y, 0px)), 0);
   filter: blur(2px);
   transition:
     opacity 1.15s var(--ease-premium),
@@ -177,8 +177,13 @@ p {
 
 .reveal.is-revealed {
   opacity: 1;
-  transform: translate3d(0, 0, 0);
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
   filter: blur(0);
+}
+
+[data-parallax]:not(.reveal) {
+  transform: translate3d(0, var(--parallax-y, 0px), 0);
+  will-change: transform;
 }
 
 .parallax-img {
@@ -535,6 +540,7 @@ p {
 }
 
 .achieve-row__title {
+  margin: 0;
   font-size: clamp(36px, 3.33vw, 64px);
   font-weight: 600;
   letter-spacing: -0.025em;
@@ -784,21 +790,20 @@ p {
 
 .press-list-wrap {
   width: 100%;
-  max-width: var(--content-max);
+  max-width: none;
 }
 
 .press-track {
   display: grid;
   grid-auto-flow: column;
-  grid-auto-columns: min(600px, 100%);
+  grid-auto-columns: minmax(360px, calc((100% - 96px) / 3));
   gap: 48px;
   overflow-x: auto;
   padding: 0 0 8px;
   scroll-snap-type: x proximity;
   scrollbar-width: none;
   -ms-overflow-style: none;
-  /* Last card stops at 1520px content right edge */
-  padding-right: max(0px, calc(100% - min(600px, 100%)));
+  padding-right: 0;
 }
 
 .press-track::-webkit-scrollbar {
@@ -811,9 +816,10 @@ p {
   justify-content: flex-end;
   min-height: 270px;
   padding: 32px;
-  background: #f7f7fb;
-  border: 1px solid #e5e5ec;
+  background: #fff;
+  border: 1px solid #f1f1f5;
   border-top: 2px solid #111;
+  box-shadow: 0 18px 42px rgba(35, 48, 59, 0.12);
   scroll-snap-align: start;
   min-width: 0;
 }
@@ -1220,9 +1226,9 @@ p {
   }
 
   .press-track {
-    grid-auto-columns: minmax(280px, calc(50% - 24px));
+    grid-auto-columns: minmax(280px, calc((100% - 24px) / 2));
     gap: 24px;
-    padding-right: max(0px, calc(100% - minmax(280px, calc(50% - 24px))));
+    padding-right: 0;
   }
 
   .about,
@@ -1389,8 +1395,8 @@ p {
 
   .press-track {
     gap: 24px;
-    grid-auto-columns: minmax(280px, 85%);
-    padding-right: max(0px, calc(100% - minmax(280px, 85%)));
+    grid-auto-columns: 100%;
+    padding-right: 0;
   }
 
   .achieve-row__card {

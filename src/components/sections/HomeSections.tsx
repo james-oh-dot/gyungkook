@@ -93,6 +93,26 @@ export function NoticeSection() {
 }
 
 export function AboutSection() {
+  const leadRef = useRef<HTMLDivElement>(null)
+  const [leadActive, setLeadActive] = useState(false)
+
+  useEffect(() => {
+    const node = leadRef.current
+    if (!node) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return
+        setLeadActive(true)
+        observer.disconnect()
+      },
+      { threshold: 0.3, rootMargin: '0px 0px -12% 0px' },
+    )
+
+    observer.observe(node)
+    return () => observer.disconnect()
+  }, [])
+
   return (
     <section id="about" className="section section--gray section--about" aria-labelledby="about-title">
       <div className="about">
@@ -102,11 +122,12 @@ export function AboutSection() {
             <h2 id="about-title" className="section-title">
               법인소개
             </h2>
-            <div className="about__lead">
+            <div ref={leadRef} className="about__lead">
               <LineReveal
                 lines={['경국의 포커스는 오로지', '고객이 지켜 온 ‘가치’에 집중되어 있습니다.']}
                 baseDelay={280}
                 step={150}
+                active={leadActive}
               />
             </div>
           </div>
@@ -155,7 +176,11 @@ export function PracticeSection() {
           개별 사건 대응을 위한 분야별 전문팀이 구성되어 있습니다.
         </Reveal>
       </div>
-      <div className={`practice-grid${hasHover ? ' is-hovering' : ''}`}>
+      <div
+        className={`practice-grid${hasHover ? ' is-hovering' : ''}`}
+        data-parallax
+        data-parallax-strength="18"
+      >
         {practices.map((item, index) => {
           const isActive = hovered === index
           const isDimmed = hasHover && !isActive
@@ -213,7 +238,7 @@ export function AchievementsSection() {
           정비사업, 공익사업, 기타 분야별 업무 사례를 분야별로 연결합니다.
         </p>
       </Reveal>
-      <div className="achieve-list">
+      <div className="achieve-list" data-parallax data-parallax-strength="14">
         {achievements.map((item, index) => (
           <Reveal
             key={item.title}
@@ -303,7 +328,7 @@ export function ProfessionalsSection() {
             />
           </Reveal>
         </div>
-        <div className="pro-grid">
+        <div className="pro-grid" data-parallax data-parallax-strength="12">
           {professionals.map((person, index) => {
             const isActive = hovered === index
             const isDimmed = hasHover && !isActive
@@ -415,7 +440,7 @@ export function PressSection() {
         </Reveal>
       </div>
 
-      <div className="press-list-wrap">
+      <div className="press-list-wrap" data-parallax data-parallax-strength="16">
         <div className="press-track" ref={trackRef}>
           {items.map((item) => (
             <article key={`${item.title}-${item.desc}`} className="press-card">
@@ -527,6 +552,8 @@ export function AwardsSection() {
         <Reveal
           delay={120}
           className="awards__list"
+          data-parallax
+          data-parallax-strength="12"
           onMouseMove={(e) => {
             if (!visible) return
             movePreview(e.clientX, e.clientY)
