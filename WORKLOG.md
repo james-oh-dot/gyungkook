@@ -1,5 +1,33 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-27 — 히어로 Ken Burns: 프레임 고정 + 내부 이미지만 확대
+
+> Branch: `claude/o-boinida-98drdm` (최신 main aa7a948에서 재시작)
+
+### 요구
+"이미지 프레임 전체가 커지는 게 아니라, 정해진 프레임 안에서 이미지만 커지게.
+프레임은 처음부터 꽉 찬 이미지로 등장하고 거기서부터 내부 이미지만 확대."
+
+### 원인
+`.hero__bg-slide > .progressive-image`(= 프레임 박스)에 `scale(calc(1.02 + zoom*0.08))`이
+걸려 있어 **패널 자체가 1.02→1.10으로 커졌다**. 내부 이미지는 프레임에 맞춰 따라 커질 뿐
+이었음.
+
+### 구현 (HeroClassic.css)
+- 프레임: `scale()` 제거 → `translate3d(0, var(--parallax-y), 0)`만 유지. 크기는
+  `min(78.125vw,1500px) × min(74.07vh,800px)` 고정, `overflow:hidden`(ProgressiveImage.css)
+  이 확대분을 클리핑.
+- 내부 `__full`: `scale(calc(1 + var(--hero-zoom) * 0.08))` — **rest에서 정확히 1** 이라
+  `object-fit:cover`로 프레임에 꽉 찬 상태로 등장 → 10초 동안 1.08까지 확대.
+- 내부 `__preview`: 블러 프린지 방지용 기존 1.08 베이스 유지 → `scale(calc(1.08 + zoom*0.08))`.
+- reduced-motion: 프레임 + `__full` 모두 `transform: none`(이미지는 여전히 꽉 참).
+
+### 검증 (1440×900)
+- 시간 경과 샘플: 프레임 **1125×667 고정 유지**, 내부 이미지 transform 1.0218 → 1.04207 →
+  1.06207, 페인트 박스 1150→1172→1195(프레임보다 커져 클리핑됨).
+- reduced-motion: 프레임 1125.0×666.6 = 이미지 1125.0×666.6 **정확히 일치**(꽉 참) 확인.
+- lint/build clean.
+
 ## 2026-07-27 — 히어로 이미지 교체: hero-02 / hero-03 (Figma `AI-hero` 119:7584)
 
 > Branch: `claude/o-boinida-98drdm` (최신 main 35b56aa에서 재시작)
