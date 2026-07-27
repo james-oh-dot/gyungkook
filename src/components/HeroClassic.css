@@ -63,6 +63,14 @@
   z-index: 0;
 }
 
+/*
+  Ken Burns contract — the FRAME never resizes; only the bitmap inside it does.
+  The frame keeps its fixed box (and `overflow: hidden` from ProgressiveImage
+  .css) so the artwork is edge-to-edge from the first paint; `--hero-zoom`
+  then scales the inner layers, which the frame clips. Do not move `scale()`
+  back onto this wrapper — that grows the whole panel instead of the image.
+  Only the scroll parallax translate lives here.
+*/
 .hero__bg-slide > .progressive-image {
   position: absolute;
   left: auto;
@@ -70,12 +78,9 @@
   top: 0;
   width: min(78.125vw, 1500px);
   height: min(74.07vh, 800px);
-  object-fit: cover;
-  object-position: center center;
   --parallax-y: 0px;
   --hero-zoom: 0;
-  transform: translate3d(0, var(--parallax-y), 0)
-    scale(calc(1.02 + var(--hero-zoom) * 0.08));
+  transform: translate3d(0, var(--parallax-y), 0);
   transform-origin: center center;
   will-change: transform;
 }
@@ -86,6 +91,18 @@
   height: 100%;
   object-fit: cover;
   object-position: center center;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+/* Full layer: fills the frame at rest (1), grows to 1.08 across the 10s slide */
+.hero__bg-slide > .progressive-image .progressive-image__full {
+  transform: scale(calc(1 + var(--hero-zoom) * 0.08));
+}
+
+/* Preview keeps its 1.08 blur-fringe base so no transparent edge shows */
+.hero__bg-slide > .progressive-image .progressive-image__preview {
+  transform: scale(calc(1.08 + var(--hero-zoom) * 0.08));
 }
 
 .hero__bg-slide.is-active > .progressive-image {
@@ -499,8 +516,10 @@
     transform: none;
   }
 
-  .hero__bg-slide > .progressive-image {
-    transform: scale(1.02);
+  /* No Ken Burns: frame and bitmap both sit at rest, image still fills */
+  .hero__bg-slide > .progressive-image,
+  .hero__bg-slide > .progressive-image .progressive-image__full {
+    transform: none;
   }
 
   .char-reveal__item,
