@@ -53,7 +53,7 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
       '막연한 추정이 아닌 정확한 분석을 통해 합리적인 결과를 확보합니다',
     ],
     nextLabel: 'Communicate',
-    image: asset('assets/classic/hero-03.jpg'),
+    image: asset('assets/hero-03.webp'),
     nextImage: asset('assets/classic/hero-03-next.jpg'),
   },
   {

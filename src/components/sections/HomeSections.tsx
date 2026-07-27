@@ -329,16 +329,20 @@ export function ProfessionalsSection() {
             />
           </Reveal>
         </div>
-        <div className="pro-grid" data-parallax data-parallax-strength="12">
+        <div className="pro-grid">
           {professionals.map((person, index) => {
             const isActive = hovered === index
             const isDimmed = hasHover && !isActive
             return (
               <a
                 key={person.name}
-                className="pro-card-link"
+                className="pro-card-link reveal"
                 href={resolveNavHref(`/about/lawyers/${person.id}`)}
                 aria-label={`${person.name} 변호사 프로필 보기`}
+                data-reveal
+                data-reveal-delay={index * 120}
+                data-parallax
+                data-parallax-strength={12 + index * 2}
               >
                 <article
                   className={`pro-card${isActive ? ' is-active' : ''}${

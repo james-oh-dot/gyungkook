@@ -8,6 +8,7 @@ For each source photo:
 
 Usage (from repo root):
   python3 scripts/generate-progressive-images.py
+  python3 scripts/generate-progressive-images.py hero-03.png  # selected assets only
 
 Requires: Pillow (`pip install Pillow`)
 See: docs/progressive-images.md
@@ -15,6 +16,7 @@ See: docs/progressive-images.md
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 from PIL import Image
@@ -26,7 +28,7 @@ TARGETS: list[tuple[str, int]] = [
     # Home hero slides
     ("hero-01.png", 1600),
     ("hero-02.png", 1374),
-    ("hero-03.jpg", 2432),
+    ("hero-03.png", 982),
     ("hero-04.png", 1920),
     ("hero-05.jpg", 1024),
     # Home hero swipe thumbs
@@ -132,7 +134,10 @@ def load_image(path: Path) -> Image.Image:
 
 
 def main() -> None:
+    requested = set(sys.argv[1:])
     for rel, max_w in TARGETS:
+        if requested and rel not in requested:
+            continue
         src = ROOT / rel
         if not src.exists():
             print(f"MISSING {src}")
