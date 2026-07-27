@@ -81,33 +81,51 @@ export function HeroClassic() {
   }, [jumpTo])
 
   /*
-    Publish the swipe block's top edge (offset from the hero's top) as
-    `--hero-swipe-top`, so the image frame can end exactly 20px above it.
-    Measured rather than derived: the block is `zoom`-scaled and its meta text
-    reflows per breakpoint, and anchoring off the measured top (instead of
-    `100% - height`) keeps the gap exact regardless of sub-pixel rounding.
+    Publish layout pins on `.hero`:
+    - `--hero-swipe-top`: swipe top (image frame + copy Y)
+    - `--hero-maincopy-top`: prefer 50svh, but never overlap copy —
+      cap so maincopy bottom stays ≥60px above copy top. When the
+      viewport grows again, the pin returns to mid fluidly.
   */
   useEffect(() => {
     const hero = heroRef.current
     const swipe = swipeRef.current
     if (!hero || !swipe) return
 
+    const MAINCOPY_COPY_GAP = 60
+
     const sync = () => {
-      const top = swipe.getBoundingClientRect().top - hero.getBoundingClientRect().top
-      if (top > 0) hero.style.setProperty('--hero-swipe-top', `${top}px`)
+      const heroTop = hero.getBoundingClientRect().top
+      const swipeTop = swipe.getBoundingClientRect().top - heroTop
+      if (swipeTop > 0) hero.style.setProperty('--hero-swipe-top', `${swipeTop}px`)
+
+      const maincopy = hero.querySelector<HTMLElement>('.hero__maincopy')
+      if (!maincopy || swipeTop <= 0) return
+
+      const mainH = maincopy.getBoundingClientRect().height
+      /* Same length CSS uses for `top: 50svh` (offset from copy-col / hero top). */
+      const midOffset =
+        (window.visualViewport?.height ?? window.innerHeight) * 0.5
+      const maxTop = swipeTop - MAINCOPY_COPY_GAP - mainH
+      const top = Math.min(midOffset, maxTop)
+      hero.style.setProperty('--hero-maincopy-top', `${top}px`)
     }
 
     sync()
     const ro = new ResizeObserver(sync)
     ro.observe(swipe)
     ro.observe(hero)
+    const maincopy = hero.querySelector('.hero__maincopy')
+    if (maincopy) ro.observe(maincopy)
     window.addEventListener('resize', sync)
+    window.visualViewport?.addEventListener('resize', sync)
     void document.fonts?.ready.then(sync)
     return () => {
       ro.disconnect()
       window.removeEventListener('resize', sync)
+      window.visualViewport?.removeEventListener('resize', sync)
     }
-  }, [])
+  }, [animKey])
 
   const titleBlocks = useMemo(
     () =>
