@@ -98,7 +98,7 @@ export function AboutSection() {
   const leadActive = useReversibleInView(leadRef, 0.3, '0px 0px -12% 0px')
 
   return (
-    <section id="about" className="section section--gray section--about" aria-labelledby="about-title">
+    <section id="about" className="section section--about" aria-labelledby="about-title">
       <div className="about">
         <Reveal className="about__copy">
           <div>
@@ -164,7 +164,7 @@ export function PracticeSection() {
   const hasHover = hovered !== null
 
   return (
-    <section id="practice" className="section" aria-labelledby="practice-title">
+    <section id="practice" className="section section--tint" aria-labelledby="practice-title">
       <div className="practice-head">
         <Reveal>
           <p className="eyebrow">PRACTICE AREAS</p>
@@ -229,7 +229,7 @@ export function PracticeSection() {
 
 export function AchievementsSection() {
   return (
-    <section className="section section--gray" id="achievements" aria-labelledby="achieve-title">
+    <section className="section" id="achievements" aria-labelledby="achieve-title">
       <Reveal className="section-head__copy" style={{ marginBottom: 40 }}>
         <p className="eyebrow">ACHIEVEMENTS</p>
         <h2 id="achieve-title" className="section-title">
