@@ -5,7 +5,7 @@ export function useScrollReveal() {
     const nodes = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal]'))
     const parallaxNodes = Array.from(
       document.querySelectorAll<HTMLElement>(
-        '.media-card__img, .hero__bg-slide img, [data-reveal], [data-parallax]',
+        '.media-card__img, .hero__bg-slide .progressive-image, [data-reveal], [data-parallax]',
       ),
     )
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -75,7 +75,7 @@ export function useScrollReveal() {
           const rect = node.getBoundingClientRect()
           if (rect.bottom < 0 || rect.top > vh) continue
           const progress = (vh - rect.top) / (vh + rect.height)
-          const isMedia = node.matches('.media-card__img, .hero__bg-slide img')
+          const isMedia = node.matches('.media-card__img, .hero__bg-slide .progressive-image')
           const strength = Number(node.dataset.parallaxStrength || (isMedia ? 28 : 12))
           const offset = (progress - 0.5) * strength
           node.style.setProperty('--parallax-y', `${offset.toFixed(2)}px`)

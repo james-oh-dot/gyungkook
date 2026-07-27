@@ -1,4 +1,5 @@
 import { asset } from '../utils/asset'
+import { progressiveAsset } from '../utils/progressiveImage'
 
 export type ClassicHeroSlide = {
   id: number
@@ -8,13 +9,20 @@ export type ClassicHeroSlide = {
   description: string[]
   nextLabel: string
   image: string
+  imagePreview: string
   nextImage: string
 }
 
 /** Auto-advance + swipe_gage fill duration. Button jumps must reset immediately. */
 export const HERO_DURATION_MS = 10000
 
-/** Dark hero (pre AI-hero-change) — assets under public/assets/classic/ */
+const CLASSIC_HERO_01 = progressiveAsset('assets/classic/hero-01')
+const FIGMA_HERO_02 = progressiveAsset('assets/hero-02')
+const FIGMA_HERO_03 = progressiveAsset('assets/hero-03')
+const CLASSIC_HERO_04 = progressiveAsset('assets/classic/hero-04')
+const CLASSIC_HERO_05 = progressiveAsset('assets/classic/hero-05')
+
+/** Dark hero shell; slides 02/03 use the current high-resolution Figma visuals. */
 export const classicHeroSlides: ClassicHeroSlide[] = [
   {
     id: 1,
@@ -26,7 +34,8 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
       '신중한 판단과 신속한 Performance를 수행합니다.',
     ],
     nextLabel: 'Rebuild',
-    image: asset('assets/classic/hero-01.jpg'),
+    image: CLASSIC_HERO_01.src,
+    imagePreview: CLASSIC_HERO_01.preview,
     nextImage: asset('assets/classic/hero-01-next.jpg'),
   },
   {
@@ -40,7 +49,8 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
       '고객 가치를 정확히 평가하여 최상으로 끌어올리고 있습니다',
     ],
     nextLabel: 'FAIR',
-    image: asset('assets/classic/hero-02.jpg'),
+    image: FIGMA_HERO_02.src,
+    imagePreview: FIGMA_HERO_02.preview,
     nextImage: asset('assets/classic/hero-02-next.jpg'),
   },
   {
@@ -53,7 +63,8 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
       '막연한 추정이 아닌 정확한 분석을 통해 합리적인 결과를 확보합니다',
     ],
     nextLabel: 'Communicate',
-    image: asset('assets/hero-03.webp'),
+    image: FIGMA_HERO_03.src,
+    imagePreview: FIGMA_HERO_03.preview,
     nextImage: asset('assets/classic/hero-03-next.jpg'),
   },
   {
@@ -66,7 +77,8 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
       '적극적인 접근과 경청으로 만들어가는 법무법인경국입니다',
     ],
     nextLabel: 'SPEED',
-    image: asset('assets/classic/hero-04.jpg'),
+    image: CLASSIC_HERO_04.src,
+    imagePreview: CLASSIC_HERO_04.preview,
     nextImage: asset('assets/classic/hero-04-next.jpg'),
   },
   {
@@ -79,7 +91,8 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
       '온오프라인 빠른 대응이 가능한 경쟁력',
     ],
     nextLabel: 'VALUE',
-    image: asset('assets/classic/hero-05.jpg'),
+    image: CLASSIC_HERO_05.src,
+    imagePreview: CLASSIC_HERO_05.preview,
     nextImage: asset('assets/classic/hero-05-next.jpg'),
   },
 ]

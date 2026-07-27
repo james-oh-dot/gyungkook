@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import { CharReveal } from './CharReveal'
 import { LineReveal } from './LineReveal'
+import { ProgressiveImage } from './ProgressiveImage'
 import { HERO_DURATION_MS, classicHeroSlides } from '../data/slidesClassic'
 import { asset } from '../utils/asset'
 import './HeroClassic.css'
@@ -105,10 +106,11 @@ export function HeroClassic() {
             key={item.id}
             className={`hero__bg-slide${i === index ? ' is-active' : ''}`}
           >
-            <img
+            <ProgressiveImage
               src={item.image}
+              preview={item.imagePreview}
               alt=""
-              decoding="async"
+              priority={i === 0}
               style={
                 i === index
                   ? ({ '--hero-zoom': progress } as CSSProperties)
@@ -174,7 +176,13 @@ export function HeroClassic() {
               <span>{slide.nextLabel}</span>
             </div>
             <div className="hero__swipe-thumb">
-              <img key={nextSlide.id} src={nextSlide.image} alt="" decoding="sync" draggable={false} />
+              <ProgressiveImage
+                key={nextSlide.id}
+                src={nextSlide.image}
+                preview={nextSlide.imagePreview}
+                alt=""
+                decoding="sync"
+              />
             </div>
           </button>
           <div className="hero__gage-btns hero__gage-btns--next">

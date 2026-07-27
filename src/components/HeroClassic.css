@@ -63,7 +63,7 @@
   z-index: 0;
 }
 
-.hero__bg-slide img {
+.hero__bg-slide > .progressive-image {
   position: absolute;
   left: auto;
   right: 0;
@@ -80,12 +80,20 @@
   will-change: transform;
 }
 
-.hero__bg-slide.is-active img {
+.hero__bg-slide > .progressive-image .progressive-image__preview,
+.hero__bg-slide > .progressive-image .progressive-image__full {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+.hero__bg-slide.is-active > .progressive-image {
   /* Driven by rAF progress over 10s — no CSS transition */
   transition: none;
 }
 
-.hero__bg-slide:not(.is-active) img {
+.hero__bg-slide:not(.is-active) > .progressive-image {
   /* Reset zoom instantly when inactive; do not animate next image in */
   --hero-zoom: 0;
   transition: none;
@@ -114,7 +122,7 @@
   CRITICAL QA RULE — DO NOT REINTRODUCE:
   Thumbnail hover must NEVER fade / peek the next slide onto .hero__bg.
   No .is-preview / opacity on inactive slides from swipe hover.
-  Hover effects belong only on .hero__swipe-thumb img.
+  Hover effects belong only on the .hero__swipe-thumb image layers.
 */
 
 .hero__content {
@@ -284,7 +292,13 @@
   box-sizing: border-box;
 }
 
-.hero__swipe-thumb img {
+.hero__swipe-thumb .progressive-image {
+  width: 100%;
+  height: 100%;
+}
+
+.hero__swipe-thumb .progressive-image__preview,
+.hero__swipe-thumb .progressive-image__full {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -294,8 +308,10 @@
 }
 
 /* ONLY thumbnail image effect on hover — never the full hero background */
-.hero__swipe-preview:hover .hero__swipe-thumb img,
-.hero__swipe-preview:focus-visible .hero__swipe-thumb img {
+.hero__swipe-preview:hover .hero__swipe-thumb .progressive-image__preview,
+.hero__swipe-preview:hover .hero__swipe-thumb .progressive-image__full,
+.hero__swipe-preview:focus-visible .hero__swipe-thumb .progressive-image__preview,
+.hero__swipe-preview:focus-visible .hero__swipe-thumb .progressive-image__full {
   transform: scale(1.06);
 }
 
@@ -464,12 +480,13 @@
 
 @media (prefers-reduced-motion: reduce) {
   .hero__bg-slide,
-  .hero__bg-slide img,
+  .hero__bg-slide > .progressive-image,
   .hero__swipe,
   .hero__swipe-controls,
   .hero__swipe-preview,
   .hero__swipe-thumb,
-  .hero__swipe-thumb img,
+  .hero__swipe-thumb .progressive-image__preview,
+  .hero__swipe-thumb .progressive-image__full,
   .hero__swipe-meta,
   .hero__gage-btns button,
   .char-reveal__item,
@@ -482,7 +499,7 @@
     transform: none;
   }
 
-  .hero__bg-slide img {
+  .hero__bg-slide > .progressive-image {
     transform: scale(1.02);
   }
 
@@ -505,7 +522,7 @@
     --hero-thumb-h: 138px;
   }
 
-  .hero__bg-slide img {
+  .hero__bg-slide > .progressive-image {
     width: 100%;
     height: 58%;
     right: 0;
