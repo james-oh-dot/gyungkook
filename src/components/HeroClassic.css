@@ -6,6 +6,8 @@
   */
   --hero-pad-x: clamp(20px, 10.42vw, 200px);
   --hero-pad-top: clamp(120px, 18vh, 200px);
+  /* Gutter between where the copy starts and the image frame's left edge */
+  --hero-frame-gap: 200px;
   --hero-swipe-scale: 1;
   --hero-swipe-w: 460px;
   --hero-swipe-reserve: 320px;
@@ -71,13 +73,25 @@
   back onto this wrapper — that grows the whole panel instead of the image.
   Only the scroll parallax translate lives here.
 */
+/*
+  Frame geometry — fluid, never a fixed px cap:
+  - left  = copy's start (hero__content inset + its pad-x) + `--hero-frame-gap`
+            so the gutter to the headline stays constant at every width
+  - right = 0 (always flush to the viewport edge)
+  → width is whatever remains, so it keeps growing on wide screens.
+  Height grows with the viewport but is capped at 90vh.
+*/
 .hero__bg-slide > .progressive-image {
   position: absolute;
-  left: auto;
+  /* hero__content is `width: min(100%, 1920px); margin: 0 auto` */
+  --hero-content-inset: max(0px, (100% - 1920px) / 2);
+  left: calc(
+    var(--hero-content-inset) + var(--hero-pad-x) + var(--hero-frame-gap)
+  );
   right: 0;
   top: 0;
-  width: min(78.125vw, 1500px);
-  height: min(74.07vh, 800px);
+  width: auto;
+  height: min(90vh, 100%);
   --parallax-y: 0px;
   --hero-zoom: 0;
   transform: translate3d(0, var(--parallax-y), 0);

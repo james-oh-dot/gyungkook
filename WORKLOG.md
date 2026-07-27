@@ -1,5 +1,38 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-27 — 히어로 프레임 유동화 (좌 고정 · 우 밀착 · 높이 90vh)
+
+> Branch: `claude/o-boinida-98drdm` (최신 main a9ca44c에서 재시작)
+
+### 요구
+브라우저가 넓어지면 프레임 width도 %/vw로 가변 대응. 단 height는 **최대 90vh**까지만,
+width는 **hero__content 카피 시작점 +200px**에 좌측 고정, 우측은 **항상 화면 끝 밀착**.
+
+> 기준점 확인: "hero__content 좌측 끝"이 (a) 카피가 시작하는 패딩 안쪽인지 (b) 요소 박스
+> 좌단인지 모호해 사용자에게 확인 → **(a) 카피 시작점 기준**으로 확정.
+
+### 구현 (HeroClassic.css)
+프레임을 "크기 지정"에서 **"위치 앵커"** 방식으로 전환:
+- `--hero-frame-gap: 200px` 토큰 신설(간격 튜닝 지점).
+- `--hero-content-inset: max(0px, (100% - 1920px) / 2)` — `hero__content`가
+  `width: min(100%,1920px); margin:0 auto`라 넓은 화면에서 생기는 좌측 여백.
+- `left: calc(inset + var(--hero-pad-x) + var(--hero-frame-gap))`, `right: 0`,
+  `width: auto` → 폭은 남는 공간 전부라 뷰포트에 따라 자동으로 커진다.
+- `height: min(90vh, 100%)` — 기존 `min(74.07vh, 800px)` px 상한 제거.
+- ≤1024 오버라이드(`left:0; width:100%; height:58%`)는 그대로 두어 태블릿/모바일 유지.
+
+### 검증 (실측)
+| 뷰포트 | left | width | height | 우측밀착 | 카피~프레임 간격 |
+|---|---|---|---|---|---|
+| 1280×800 | 333.4 | 946.6 | 720 (90vh) | ✓ | **200** |
+| 1440×900 | 350 | 1090 | 810 (90vh) | ✓ | **200** |
+| 1920×1080 | 400 | 1520 | 972 (90vh) | ✓ | **200** |
+| 2560×1440 | 720 | 1840 | 1296 (90vh) | ✓ | **200** |
+| 1024×768 | 0 | 1024 | 58% | ✓ | (기존 풀블리드 유지) |
+| 390×844 | 0 | 390 | 58% | ✓ | (기존 풀블리드 유지) |
+
+lint/build clean.
+
 ## 2026-07-27 — 히어로 Ken Burns: 프레임 고정 + 내부 이미지만 확대
 
 > Branch: `claude/o-boinida-98drdm` (최신 main aa7a948에서 재시작)
