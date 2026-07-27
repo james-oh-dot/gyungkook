@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { useDoubleRafReveal } from '../hooks/useDoubleRafReveal'
+import { useReversibleInView } from '../hooks/useReversibleInView'
 
 type WordRevealProps = {
   lines: string[]
@@ -17,28 +18,12 @@ export function WordReveal({
   active = true,
 }: WordRevealProps) {
   const rootRef = useRef<HTMLDivElement>(null)
-  const [inView, setInView] = useState(false)
+  const inView = useReversibleInView(rootRef)
   const contentKey = lines.join('\n')
   const show = useDoubleRafReveal(contentKey, active && inView)
 
-  useEffect(() => {
-    const node = rootRef.current
-    if (!node || !active) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return
-        setInView(true)
-        observer.disconnect()
-      },
-      { threshold: 0.3, rootMargin: '0px 0px -10% 0px' },
-    )
-
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [active])
-
   let wordIndex = 0
+  const wordCount = lines.reduce((count, line) => count + line.split(/\s+/).length, 0)
 
   return (
     <div
@@ -55,7 +40,13 @@ export function WordReveal({
               <span key={`${currentIndex}-${word}`}>
                 <span
                   className={`word-reveal__word${show ? ' is-active' : ''}`}
-                  style={{ transitionDelay: `${baseDelay + currentIndex * step}ms` }}
+                  style={{
+                    transitionDelay: `${
+                      show
+                        ? baseDelay + currentIndex * step
+                        : (wordCount - currentIndex - 1) * Math.min(step, 55)
+                    }ms`,
+                  }}
                 >
                   {word}
                 </span>

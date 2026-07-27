@@ -12,6 +12,7 @@ import { LineReveal } from '../LineReveal'
 import { WordReveal } from '../WordReveal'
 import { asset } from '../../utils/asset'
 import { useScrollGage } from '../../hooks/useScrollGage'
+import { useReversibleInView } from '../../hooks/useReversibleInView'
 import { resolveNavHref } from '../../utils/path'
 import {
   HOME_ABOUT_IMAGE,
@@ -60,7 +61,7 @@ function TextBtn({
 
 export function NoticeSection() {
   return (
-    <section id="notice" className="section" aria-labelledby="notice-title">
+    <section id="notice" className="section notice-section" aria-labelledby="notice-title">
       <div className="section-head">
         <Reveal className="section-head__copy">
           <p className="eyebrow">NOTICE</p>
@@ -68,8 +69,7 @@ export function NoticeSection() {
             소식·공지
           </h2>
           <p className="section-desc">
-            법무법인경국의 가치는 다양한 수상, 위촉, 인증 경력에서 더욱 빛을
-            발합니다.
+            법무법인경국의 새로운 소식을 전합니다.
           </p>
         </Reveal>
         <Reveal delay={120}>
@@ -78,19 +78,12 @@ export function NoticeSection() {
       </div>
       <div className="notice-grid">
         {notices.map((item, index) => (
-          <Reveal key={item.title} delay={index * 120} className="notice-card media-card">
-            <div className="notice-card__media media-card">
-              <ProgressiveImage
-                className="media-card__img"
-                src={item.image.src}
-                preview={item.image.preview}
-                alt=""
-              />
-            </div>
-            <img className="notice-card__icon" src={asset('assets/icon-link.svg')} alt="" />
-            <div className="notice-card__overlay">
+          <Reveal key={item.title} delay={index * 120} className="notice-card">
+            <div className="notice-card__body">
               <h3 className="notice-card__title">{item.title}</h3>
               <p className="notice-card__desc">{item.desc}</p>
+            </div>
+            <div className="notice-card__footer">
               <p className="notice-card__date">{item.date}</p>
             </div>
           </Reveal>
@@ -102,24 +95,7 @@ export function NoticeSection() {
 
 export function AboutSection() {
   const leadRef = useRef<HTMLDivElement>(null)
-  const [leadActive, setLeadActive] = useState(false)
-
-  useEffect(() => {
-    const node = leadRef.current
-    if (!node) return
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry?.isIntersecting) return
-        setLeadActive(true)
-        observer.disconnect()
-      },
-      { threshold: 0.3, rootMargin: '0px 0px -12% 0px' },
-    )
-
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [])
+  const leadActive = useReversibleInView(leadRef, 0.3, '0px 0px -12% 0px')
 
   return (
     <section id="about" className="section section--gray section--about" aria-labelledby="about-title">
@@ -475,11 +451,10 @@ export function PressSection() {
           {items.map((item) => (
             <article key={`${item.title}-${item.desc}`} className="press-card">
               <div className="press-card__body">
-                <div className="press-card__title">
-                  <span className="press-card__chip">{item.chip}</span>
-                  <span>{item.title}</span>
-                </div>
+                <span className="press-card__chip">{item.chip}</span>
+                <h3 className="press-card__title">{item.title}</h3>
                 <p className="press-card__desc">{item.desc}</p>
+                <time className="press-card__date">{item.date}</time>
               </div>
             </article>
           ))}

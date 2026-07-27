@@ -224,58 +224,60 @@ p {
 .notice-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  /* Figma HOME: 3-up cards with a 10px gutter */
-  gap: 10px;
+  gap: 2px;
+}
+
+.notice-section {
+  background: #f7f7fb;
 }
 
 .notice-card {
-  position: relative;
-  /* Figma card 500×700 → 5:7 portrait (desktop + mobile overlay variants) */
-  aspect-ratio: 5 / 7;
-  color: #fff;
-  cursor: pointer;
+  min-width: 0;
+  min-height: 304px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  color: var(--color-black);
 }
 
-.notice-card__media {
-  position: absolute;
-  inset: 0;
-}
-
-.notice-card__overlay {
-  position: absolute;
-  inset: auto 0 0;
+.notice-card__body {
+  min-height: 236px;
   padding: 24px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.6) 58%);
+}
+
+.notice-card__footer {
+  margin-top: auto;
+  min-height: 68px;
+  padding: 24px;
 }
 
 .notice-card__title {
-  font-size: clamp(22px, 1.67vw, 32px);
+  margin: 0;
+  height: 84px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-size: 32px;
   font-weight: 400;
   line-height: 1.3;
   letter-spacing: -0.025em;
-  max-width: 90%;
 }
 
 .notice-card__desc {
-  color: #eee;
+  color: var(--color-black);
   font-size: 16px;
   line-height: 1.4;
+  letter-spacing: -0.025em;
 }
 
 .notice-card__date {
   font-size: 14px;
-}
-
-.notice-card__icon {
-  position: absolute;
-  top: 40px;
-  right: 40px;
-  width: 28px;
-  height: 28px;
-  z-index: 2;
+  line-height: 1.45;
+  letter-spacing: -0.025em;
 }
 
 .section--about {
@@ -846,7 +848,6 @@ p {
   padding: 32px;
   background: #fff;
   border: 1px solid #f1f1f5;
-  border-top: 2px solid #111;
   box-shadow: 0 18px 42px rgba(35, 48, 59, 0.12);
   scroll-snap-align: start;
   min-width: 0;
@@ -870,12 +871,11 @@ p {
   color: #fff;
   font-size: 11px;
   font-weight: 500;
+  align-self: flex-start;
 }
 
 .press-card__title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  margin: 0;
   font-size: clamp(20px, 1.35vw, 26px);
   font-weight: 600;
   letter-spacing: -0.025em;
@@ -885,6 +885,14 @@ p {
   color: #767676;
   font-size: 18px;
   line-height: 1.45;
+}
+
+.press-card__date {
+  margin-top: 8px;
+  color: #8a8f94;
+  font-size: 14px;
+  line-height: 1.45;
+  letter-spacing: -0.025em;
 }
 
 .press-gage {
@@ -1259,9 +1267,8 @@ p {
 }
 
 @media (max-width: 1024px) {
-  /* Tablet + mobile: Figma stacks 소식·공지 cards into a single column */
   .notice-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .press-track {
@@ -1326,65 +1333,23 @@ p {
   }
 }
 
-/*
-  Tablet only (Figma HOME_TABLET_768 · Home Section / 소식 · 공지 / auto):
-  cards become a horizontal list row — 250×250 image on the left, text on a
-  light (#F7F7FB) panel to the right with dark type + dark arrow. This is a
-  DIFFERENT component from the desktop/mobile overlay card, so it is bounded
-  to 768–1024 and mobile (≤767) falls back to the base overlay card.
-*/
 @media (min-width: 768px) and (max-width: 1024px) {
-  .notice-grid {
-    gap: 16px;
+  #notice .section-title {
+    font-size: 48px;
   }
 
   .notice-card {
-    aspect-ratio: auto;
-    display: grid;
-    grid-template-columns: 250px minmax(0, 1fr);
-    background: #f7f7fb;
-    color: var(--color-ink);
+    min-height: 308px;
   }
 
-  /* Image: square left column (was absolute inset:0 overlay) */
-  .notice-card__media {
-    position: relative;
-    inset: auto;
-    aspect-ratio: 1 / 1;
-  }
-
-  /* Text: right panel, light bg, dark type, vertically centered */
-  .notice-card__overlay {
-    position: relative;
-    inset: auto;
-    background: none;
-    justify-content: center;
-    gap: 12px;
-    padding: 24px;
+  .notice-card__body {
+    min-height: 240px;
   }
 
   .notice-card__title {
-    color: var(--color-ink);
-    font-size: 24px;
+    height: 84px;
   }
 
-  .notice-card__desc {
-    color: var(--color-body);
-  }
-
-  .notice-card__date {
-    color: var(--color-muted);
-  }
-
-  /* Dark arrow (source svg is white → knock to black) at Figma inset 20px */
-  .notice-card__icon {
-    top: 20px;
-    right: 20px;
-    filter: brightness(0);
-  }
-
-  /* Figma tablet keeps the section 전체보기 button on the header row (right).
-     Overrides the shared ≤1024 `.section-head { column }` for 소식·공지 only. */
   #notice .section-head {
     flex-direction: row;
     align-items: flex-end;
@@ -1402,28 +1367,28 @@ p {
     font-size: 32px;
   }
 
-  /* Mobile (Figma HOME_MOBILE_390): overlay portrait cards, 8px gutter */
   .notice-grid {
     grid-template-columns: 1fr;
-    gap: 8px;
+    gap: 2px;
   }
 
-  .notice-card__overlay {
-    gap: 8px;
-    padding: 20px;
+  #notice .section-head {
+    gap: 40px;
+    margin-bottom: 24px;
   }
 
-  .notice-card__title {
-    font-size: 24px;
+  .notice-card {
+    min-height: 286px;
   }
 
-  .notice-card__desc {
-    font-size: 14px;
+  .notice-card__body {
+    min-height: 218px;
+    padding: 24px;
   }
 
-  .notice-card__icon {
-    top: 16px;
-    right: 16px;
+  .notice-card__footer {
+    min-height: 68px;
+    padding: 24px;
   }
 
   .press-track {

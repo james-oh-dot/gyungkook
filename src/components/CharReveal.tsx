@@ -29,7 +29,11 @@ export function CharReveal({
         <span
           key={`${index}-${char}`}
           className={`char-reveal__item${show ? ' is-active' : ''}`}
-          style={{ transitionDelay: `${baseDelay + index * step}ms` }}
+          style={{
+            transitionDelay: `${
+              show ? baseDelay + index * step : (chars.length - index - 1) * Math.min(step, 18)
+            }ms`,
+          }}
           aria-hidden="true"
         >
           {char === ' ' ? '\u00A0' : char}

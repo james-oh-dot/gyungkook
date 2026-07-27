@@ -28,7 +28,9 @@ export function LineReveal({
     <div className={`line-reveal ${className}`.trim()} aria-label={lines.join(' ')}>
       {lines.map((line, index) => {
         const style = {
-          transitionDelay: `${baseDelay + index * step}ms`,
+          transitionDelay: `${
+            show ? baseDelay + index * step : (lines.length - index - 1) * Math.min(step, 90)
+          }ms`,
           '--line-parallax': `${22 + index * 12}px`,
         } as CSSProperties
 
