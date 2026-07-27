@@ -16,6 +16,8 @@ export function HeroClassic() {
   const pauseElapsedRef = useRef(0)
   const progressRef = useRef(0)
   const lastJumpAtRef = useRef(0)
+  const heroRef = useRef<HTMLElement>(null)
+  const swipeRef = useRef<HTMLDivElement>(null)
 
   const slide = classicHeroSlides[index]
   const nextSlide = classicHeroSlides[(index + 1) % classicHeroSlides.length]
@@ -78,6 +80,35 @@ export function HeroClassic() {
     }
   }, [jumpTo])
 
+  /*
+    Publish the swipe block's top edge (offset from the hero's top) as
+    `--hero-swipe-top`, so the image frame can end exactly 20px above it.
+    Measured rather than derived: the block is `zoom`-scaled and its meta text
+    reflows per breakpoint, and anchoring off the measured top (instead of
+    `100% - height`) keeps the gap exact regardless of sub-pixel rounding.
+  */
+  useEffect(() => {
+    const hero = heroRef.current
+    const swipe = swipeRef.current
+    if (!hero || !swipe) return
+
+    const sync = () => {
+      const top = swipe.getBoundingClientRect().top - hero.getBoundingClientRect().top
+      if (top > 0) hero.style.setProperty('--hero-swipe-top', `${top}px`)
+    }
+
+    sync()
+    const ro = new ResizeObserver(sync)
+    ro.observe(swipe)
+    ro.observe(hero)
+    window.addEventListener('resize', sync)
+    void document.fonts?.ready.then(sync)
+    return () => {
+      ro.disconnect()
+      window.removeEventListener('resize', sync)
+    }
+  }, [])
+
   const titleBlocks = useMemo(
     () =>
       slide.titleLines.map((line, lineIndex) => {
@@ -99,7 +130,12 @@ export function HeroClassic() {
   )
 
   return (
-    <section className="hero" aria-label="메인 비주얼" data-header-theme="dark">
+    <section
+      ref={heroRef}
+      className="hero"
+      aria-label="메인 비주얼"
+      data-header-theme="dark"
+    >
       <div className="hero__bg">
         {classicHeroSlides.map((item, i) => (
           <div
@@ -150,7 +186,7 @@ export function HeroClassic() {
         </div>
       </div>
 
-      <div className="hero__swipe" data-name="hero_swipe">
+      <div ref={swipeRef} className="hero__swipe" data-name="hero_swipe">
         <div className="hero__swipe-controls">
           <div className="hero__gage-btns hero__gage-btns--prev">
             <button type="button" onClick={prev} aria-label="이전 화면">

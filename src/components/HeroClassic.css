@@ -8,6 +8,8 @@
   --hero-pad-top: clamp(120px, 18vh, 200px);
   /* Gutter between where the copy starts and the image frame's left edge */
   --hero-frame-gap: 200px;
+  /* Vertical gap between the image frame's bottom and the swipe block */
+  --hero-frame-swipe-gap: 20px;
   --hero-swipe-scale: 1;
   --hero-swipe-w: 460px;
   --hero-swipe-reserve: 320px;
@@ -71,15 +73,14 @@
   .css) so the artwork is edge-to-edge from the first paint; `--hero-zoom`
   then scales the inner layers, which the frame clips. Do not move `scale()`
   back onto this wrapper — that grows the whole panel instead of the image.
-  Only the scroll parallax translate lives here.
-*/
-/*
+  The scroll parallax rides on the inner layers too, so the frame's box is
+  completely static and its gap to the swipe never drifts.
+
   Frame geometry — fluid, never a fixed px cap:
-  - left  = copy's start (hero__content inset + its pad-x) + `--hero-frame-gap`
-            so the gutter to the headline stays constant at every width
-  - right = 0 (always flush to the viewport edge)
-  → width is whatever remains, so it keeps growing on wide screens.
-  Height grows with the viewport but is capped at 90vh.
+  - left   = copy's start (hero__content inset + its pad-x) + `--hero-frame-gap`
+             so the gutter to the headline stays constant at every width
+  - right  = 0 (always flush to the viewport edge)
+  - height = stops `--hero-frame-swipe-gap` above the swipe block
 */
 .hero__bg-slide > .progressive-image {
   position: absolute;
@@ -91,12 +92,25 @@
   right: 0;
   top: 0;
   width: auto;
-  height: min(90vh, 100%);
+  /*
+    Height is driven by the swipe block, not a vh cap: the frame stops
+    `--hero-frame-swipe-gap` above it. `--hero-swipe-top` is measured in
+    HeroClassic.tsx (the block is `zoom`-scaled, so it can't be derived in
+    CSS); the fallback keeps a sane box for the first paint.
+  */
+  height: calc(
+    var(--hero-swipe-top, 80vh) - var(--hero-frame-swipe-gap)
+  );
+  /*
+    No scroll parallax on the hero frame. `useScrollReveal` still writes
+    `--parallax-y` here (its selector covers hero slides), but consuming it
+    would slide the box and make the 20px gap to the swipe drift with scroll —
+    and translating the inner bitmap instead would expose the frame edge,
+    since the full layer sits at exactly scale(1). Motion comes from Ken Burns.
+  */
   --parallax-y: 0px;
   --hero-zoom: 0;
-  transform: translate3d(0, var(--parallax-y), 0);
-  transform-origin: center center;
-  will-change: transform;
+  transform: none;
 }
 
 .hero__bg-slide > .progressive-image .progressive-image__preview,
@@ -163,10 +177,17 @@
   margin: 0 auto;
   min-height: 100vh;
   min-height: 100svh;
+  /*
+    Bottom padding matches the swipe block's own inner bottom padding (40px,
+    `zoom`-scaled) instead of reserving its full height — that drops
+    `.hero__copy` onto the same line as `.hero__swipe` (copy left, swipe
+    right) rather than stacking it above. ≤1024 restores the reserve, where
+    the swipe is an inset card over the copy.
+  */
   padding:
     var(--hero-pad-top)
     var(--hero-pad-x)
-    var(--hero-swipe-reserve);
+    calc(40px * var(--hero-swipe-scale));
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -564,6 +585,8 @@
 
   .hero__content {
     gap: 28px;
+    /* Swipe is an inset card over the copy here — keep reserving its height */
+    padding-bottom: var(--hero-swipe-reserve);
   }
 
   .hero__copy {
