@@ -135,6 +135,7 @@
 - Build: `npm run build`
 - Progressive assets: `python3 scripts/generate-progressive-images.py` (needs Pillow)
 - Live: https://james-oh-dot.github.io/gyungkook/ (GitHub Pages, deploys on `main` via `.github/workflows/deploy-pages.yml`)
+- **SEO / social meta** lives in the `<head>` of **both** `index.html` and `classic.html` (keep them in sync): `description` + `keywords` + Open Graph + Twitter Card. `og:image` = `public/og-image.png` (**1200×630** brand card), referenced by **absolute** URL (`https://james-oh-dot.github.io/gyungkook/og-image.png`) — social crawlers can't resolve relative paths. `canonical` / `og:url` point at the Pages root. **If a custom domain (CNAME) is ever added, update these absolute URLs** in both HTML files. Icons: `favicon.svg` (vector) + `logo-192.png` (PNG fallback + `apple-touch-icon`). Root-relative icon `href`s are Vite-rewritten with the Pages `base`; the OG/canonical absolute URLs are left untouched (verified in `dist/`).
 
 ### Non-obvious notes
 - Styling is plain CSS (no Tailwind). Design tokens live in `src/styles/global.css`.
