@@ -1,5 +1,30 @@
 # WORKLOG — Hero motion / icons / assets (handoff)
 
+## 2026-07-27 — SEO / 소셜 공유 메타태그 (description·keywords·OG·Twitter)
+
+> Branch: `claude/o-boinida-98drdm` (PR #107 머지 후 최신 main 1843c88에서 재시작)
+
+### 요구
+사용자 제공: 사이트명 `법무법인 경국`, `description`/`keywords` 메타 + 로고 마크(192)·
+OG 카드(1200×630) 이미지 2장. “이 메타태그 적용해줘.”
+
+### 구현
+- `index.html` + `classic.html` `<head>`에 SEO/소셜 메타 세트 추가(둘 다 동기화):
+  `description`(제공 문구 그대로) · `keywords`(제공 문자열 그대로) · `author` ·
+  `canonical` · Open Graph(type/site_name/title/description/url/image+width/height/alt/
+  locale=ko_KR) · Twitter Card(summary_large_image).
+- **OG 이미지**: 사용자 제공 1200×630 카드를 트랜스크립트 JSONL에서 base64 추출 →
+  `public/og-image.png`. 192 로고 → `public/logo-192.png`(PNG 파비콘 폴백 +
+  `apple-touch-icon`). favicon.svg는 유지.
+- **절대경로**: `og:image`/`og:url`/`canonical`은 소셜 크롤러가 상대경로를 못 풀므로
+  `https://james-oh-dot.github.io/gyungkook/...` 하드코딩(커스텀 도메인 생기면 갱신).
+  루트-상대 아이콘 href는 Vite가 Pages `base`로 재작성됨(확인).
+
+### 검증
+- `GITHUB_PAGES=true` 빌드: 아이콘 href → `/gyungkook/...` 재작성, OG 절대 URL 유지,
+  `og-image.png`/`logo-192.png` dist 복사 확인. description·keywords 빌드 산출물에
+  원문 그대로 존재. preview에서 index/og-image/logo-192/favicon 모두 200.
+
 ## 2026-07-23 — GNB 리퀴드글라스 + 스크롤 자동 글자색 대비
 
 > Branch: `claude/o-boinida-98drdm` (최신 main 7f81e42에서 재시작)
