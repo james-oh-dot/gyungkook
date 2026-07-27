@@ -197,6 +197,33 @@
   max-width: 100%;
 }
 
+/*
+  Desktop (≥1025): pin independently (matches annotated QA).
+  - `.hero__maincopy` top → browser vertical center (50svh)
+  - `.hero__copy` top → `.hero__swipe` top (`--hero-swipe-top` measured)
+*/
+@media (min-width: 1025px) {
+  .hero__content {
+    display: block;
+    padding: 0 var(--hero-pad-x);
+  }
+
+  .hero__maincopy {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    top: 50svh;
+    z-index: 3;
+  }
+
+  .hero__copy {
+    position: absolute;
+    left: 0;
+    top: var(--hero-swipe-top, 72%);
+    z-index: 3;
+  }
+}
+
 .hero__maincopy {
   max-width: min(640px, 100%);
   display: flex;
@@ -584,9 +611,20 @@
   }
 
   .hero__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
     gap: 28px;
+    padding-top: var(--hero-pad-top);
     /* Swipe is an inset card over the copy here — keep reserving its height */
     padding-bottom: var(--hero-swipe-reserve);
+  }
+
+  .hero__maincopy,
+  .hero__copy {
+    position: static;
+    top: auto;
+    left: auto;
   }
 
   .hero__copy {

@@ -16,8 +16,6 @@ export function Hero() {
   const pauseElapsedRef = useRef(0)
   const progressRef = useRef(0)
   const lastJumpAtRef = useRef(0)
-  const heroRef = useRef<HTMLElement>(null)
-  const swipeRef = useRef<HTMLDivElement>(null)
 
   const slide = heroSlides[index]
   const nextSlide = heroSlides[(index + 1) % heroSlides.length]
@@ -93,34 +91,6 @@ export function Hero() {
     }
   }, [jumpTo])
 
-  /*
-    Publish `.hero__swipe` top (offset from hero top) as `--hero-swipe-top`
-    so `.hero__copy` shares that horizontal line on desktop. Measured: swipe
-    uses `zoom` + breakpoint reflow, so CSS-only math drifts.
-  */
-  useEffect(() => {
-    const hero = heroRef.current
-    const swipe = swipeRef.current
-    if (!hero || !swipe) return
-
-    const sync = () => {
-      const top =
-        swipe.getBoundingClientRect().top - hero.getBoundingClientRect().top
-      if (top > 0) hero.style.setProperty('--hero-swipe-top', `${top}px`)
-    }
-
-    sync()
-    const ro = new ResizeObserver(sync)
-    ro.observe(hero)
-    ro.observe(swipe)
-    window.addEventListener('resize', sync)
-    void document.fonts?.ready?.then(sync)
-    return () => {
-      ro.disconnect()
-      window.removeEventListener('resize', sync)
-    }
-  }, [])
-
   const wordCharCount = Array.from(slide.word).length
   const titleBlocks = useMemo(
     () =>
@@ -143,12 +113,7 @@ export function Hero() {
   )
 
   return (
-    <section
-      ref={heroRef}
-      className="hero"
-      aria-label="메인 비주얼"
-      data-header-theme="dark"
-    >
+    <section className="hero" aria-label="메인 비주얼" data-header-theme="dark">
       <div className="hero__stage" aria-hidden="true">
         {heroSlides.map((item, i) => (
           <div
@@ -185,8 +150,6 @@ export function Hero() {
           {/*
             Desktop: artboard sizes + zoom scale (side-by-side maincopy).
             ≤768 (HOME_TABLET2 / MOBILE2): native stacked sizes — see Hero.css.
-            DOM: hero_copy (desc) + hero_maincopy are siblings so desktop can
-            pin maincopy top to 50vh and copy top to swipe top.
           */}
           <div
             className={`hero__copy-scale${slide.wordSize === 'md' ? ' is-compact' : ''}`}
@@ -200,70 +163,68 @@ export function Hero() {
                   step={120}
                 />
               </div>
-            </div>
 
-            <div className="hero__maincopy" data-name="hero_maincopy">
-              <p
-                className={`hero__word${slide.wordSize === 'md' ? ' is-md' : ''}`}
-              >
-                <CharReveal
-                  key={`${animKey}-word`}
-                  text={slide.word}
-                  baseDelay={220}
-                  step={32}
-                />
-              </p>
-              <div className="hero__title">{titleBlocks}</div>
+              <div className="hero__maincopy" data-name="hero_maincopy">
+                <p
+                  className={`hero__word${slide.wordSize === 'md' ? ' is-md' : ''}`}
+                >
+                  <CharReveal
+                    key={`${animKey}-word`}
+                    text={slide.word}
+                    baseDelay={220}
+                    step={32}
+                  />
+                </p>
+                <div className="hero__title">{titleBlocks}</div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div ref={swipeRef} className="hero__swipe" data-name="hero_swipe">
-          <div className="hero__swipe-controls">
-            <button
-              type="button"
-              className="hero__swipe-preview"
-              onMouseEnter={() => {
-                pausedRef.current = true
-                /* Use ref — render-closure `progress` can be a frame behind. */
-                pauseElapsedRef.current = progressRef.current * HERO_DURATION_MS
-              }}
-              onMouseLeave={() => {
-                startRef.current = performance.now() - pauseElapsedRef.current
-                pausedRef.current = false
-              }}
-              onClick={(e) => {
-                e.preventDefault()
-                next()
-              }}
-              aria-label={`다음 화면 ${nextSlide.index} ${nextSlide.word}로 이동`}
-            >
-              <div className="hero__swipe-thumb">
-                {/*
-                  Remount on every slide change so the thumb never sticks on a
-                  stale composited bitmap (src-only swap + transform hover).
-                */}
-                <ProgressiveImage
-                  key={nextSlide.id}
-                  className="hero__swipe-thumb-progressive"
-                  src={thumbSrc}
-                  preview={thumbPreview}
-                  alt=""
-                />
-              </div>
-              <div className="hero__swipe-meta">
-                {/* Desktop: index + nextLabel row. Card (≤1024): 3-line stack. */}
-                <span className="hero__swipe-meta-row">
-                  <span className="hero__swipe-meta-index">{nextSlide.index}</span>
-                  <span className="hero__swipe-meta-name">{nextSlide.word}</span>
-                </span>
-                <span className="hero__swipe-meta-title">{slide.nextSwipeTitle}</span>
-                <span className="hero__swipe-meta-count">
-                  {slide.index} / {String(heroSlides.length).padStart(2, '0')}
-                </span>
-              </div>
-            </button>
-          </div>
+        <div className="hero__swipe" data-name="hero_swipe">
+          <button
+            type="button"
+            className="hero__swipe-preview"
+            onMouseEnter={() => {
+              pausedRef.current = true
+              /* Use ref — render-closure `progress` can be a frame behind. */
+              pauseElapsedRef.current = progressRef.current * HERO_DURATION_MS
+            }}
+            onMouseLeave={() => {
+              startRef.current = performance.now() - pauseElapsedRef.current
+              pausedRef.current = false
+            }}
+            onClick={(e) => {
+              e.preventDefault()
+              next()
+            }}
+            aria-label={`다음 화면 ${nextSlide.index} ${nextSlide.word}로 이동`}
+          >
+            <div className="hero__swipe-thumb">
+              {/*
+                Remount on every slide change so the thumb never sticks on a
+                stale composited bitmap (src-only swap + transform hover).
+              */}
+              <ProgressiveImage
+                key={nextSlide.id}
+                className="hero__swipe-thumb-progressive"
+                src={thumbSrc}
+                preview={thumbPreview}
+                alt=""
+              />
+            </div>
+            <div className="hero__swipe-meta">
+              {/* Desktop: index + nextLabel row. Card (≤1024): 3-line stack. */}
+              <span className="hero__swipe-meta-row">
+                <span className="hero__swipe-meta-index">{nextSlide.index}</span>
+                <span className="hero__swipe-meta-name">{nextSlide.word}</span>
+              </span>
+              <span className="hero__swipe-meta-title">{slide.nextSwipeTitle}</span>
+              <span className="hero__swipe-meta-count">
+                {slide.index} / {String(heroSlides.length).padStart(2, '0')}
+              </span>
+            </div>
+          </button>
 
           <div className="hero__gage" data-name="swipe_gage">
             <div className="hero__gage-track">
