@@ -7,6 +7,7 @@ import {
   type FormEvent,
   type KeyboardEvent,
 } from 'react'
+import { createPortal } from 'react-dom'
 import { searchDocs } from '../data/searchIndex'
 import { asset } from '../utils/asset'
 import { resolveNavHref } from '../utils/path'
@@ -93,7 +94,15 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
 
   if (!open) return null
 
-  return (
+  /*
+    Portal to <body>. The overlay is `position: fixed; inset: 0`, but the GNB
+    it lives in gets `backdrop-filter` in its scrolled glass state — and
+    backdrop-filter establishes a containing block for fixed descendants, so
+    the overlay was being clipped to the header box on tablet/mobile (desktop
+    escaped it only because hovering the bar switches it to the non-blurred
+    solid state). Rendering outside the header makes it viewport-sized always.
+  */
+  return createPortal(
     <div
       ref={rootRef}
       className="search-overlay"
@@ -193,6 +202,7 @@ export function SearchOverlay({ open, onClose }: SearchOverlayProps) {
           ) : null}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }

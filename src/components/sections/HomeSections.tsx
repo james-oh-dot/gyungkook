@@ -27,6 +27,9 @@ import {
   professionals,
 } from '../../data/content'
 
+/** 오시는길 액션 칩 — 전부 버튼, 민트 스타일은 hover/press 상태 */
+const OFFICE_CHIPS = ['네이버 예약', 'SMS 약도 전송', '카카오내비', '티맵 연결']
+
 /** Home press-card chips → matching list routes (mock cards have no post ids). */
 function pressCardHref(chip: string): string {
   if (chip === '컬럼') return '/press/column-media/column'
@@ -727,10 +730,11 @@ export function OfficeSection() {
             </div>
           </div>
           <div className="office__chips">
-            <span className="office__chip">네이버 예약</span>
-            <span className="office__chip is-active">SMS 약도 전송</span>
-            <span className="office__chip">카카오내비</span>
-            <span className="office__chip">티맵 연결</span>
+            {OFFICE_CHIPS.map((label) => (
+              <button key={label} type="button" className="office__chip">
+                {label}
+              </button>
+            ))}
           </div>
         </Reveal>
 
