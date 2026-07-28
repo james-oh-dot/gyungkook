@@ -16,7 +16,7 @@ const SNS = [
   { name: 'Naver', href: '#', icon: 'assets/footer/sns-naver.svg' },
   { name: 'Blog', href: '#', icon: 'assets/footer/sns-blog.svg' },
   { name: 'Instagram', href: '#', icon: 'assets/footer/sns-instagram.svg' },
-  { name: 'Facebook', href: '#', icon: 'assets/footer/sns-facebook.svg' },
+  { name: 'Facebook', href: '#', icon: 'assets/footer/Facebook.svg' },
 ] as const
 
 export function Footer() {
