@@ -1,5 +1,7 @@
 # AGENTS.md
 
+> 사람이 보는 개요(스택 · 실행법 · 폴더 구조 · IA/라우트 맵)는 [`README.md`](./README.md) 참고. 이 파일은 AI 에이전트(Claude/Cursor)가 코드 작성 시 지켜야 할 컴포넌트별 하드룰 · 회귀 방지 노트입니다.
+
 ## Cursor Cloud specific instructions
 
 ### Product
