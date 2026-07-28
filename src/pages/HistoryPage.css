@@ -20,6 +20,7 @@
 .history-timeline__year {
   z-index: 1;
   grid-column: 2;
+  grid-row: 1;
   align-self: start;
   /* Raise so the year glyph lines up with the first timeline item */
   margin-top: calc(8px + (18px * 1.72 - 80px) / 2);
@@ -36,7 +37,7 @@
   line-height: 1.4;
   letter-spacing: -0.025em;
 }
-.history-timeline__copy { align-self: start; padding: 8px; color: #505050; font-size: 18px; line-height: 1.72; letter-spacing: -0.025em; word-break: keep-all; }
+.history-timeline__copy { grid-row: 1; align-self: start; padding: 8px; color: #505050; font-size: 18px; line-height: 1.72; letter-spacing: -0.025em; word-break: keep-all; }
 .history-timeline__copy p { margin: 0; }
 .history-timeline__entry--left .history-timeline__copy { grid-column: 1; text-align: right; }
 .history-timeline__entry--right .history-timeline__copy { grid-column: 3; text-align: left; }
