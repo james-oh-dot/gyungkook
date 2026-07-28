@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate progressive (blur-up) image pairs for the Gyungkook site.
+Generate progressive (blur-up) image pairs for the Gyunggook site.
 
 For each source photo:
   - `{stem}.preview.webp`  — ~64px wide, low quality (paints instantly)

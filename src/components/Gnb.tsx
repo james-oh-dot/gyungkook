@@ -421,7 +421,7 @@ export function Gnb() {
                   ? 'assets/logo-wordmark-dark.svg'
                   : 'assets/logo-wordmark-light.svg',
               )}
-              alt="법무법인 경국 LAW FIRM GYUNGKOOK"
+              alt="법무법인 경국 LAW FIRM GYUNGGOOK"
             />
           </a>
         )}
