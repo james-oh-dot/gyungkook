@@ -26,11 +26,15 @@
 /**
  * Horizontal scroll host for overflowing tabs (tablet / mobile).
  * Indicator lives inside the list so it scrolls with the tabs.
+ * Extra padding-bottom keeps the under-tab bar inside the scrollport
+ * (overflow-x:auto forces overflow-y to clip; negative margins reclaim layout).
  */
 .local-tabs__viewport {
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
+  padding-bottom: 21px;
+  margin-bottom: -21px;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-x: contain;
   touch-action: pan-x;
@@ -135,6 +139,11 @@
 @media (max-width: 767px) {
   .local-tabs {
     padding: 16px var(--page-pad);
+  }
+
+  .local-tabs__viewport {
+    padding-bottom: 17px;
+    margin-bottom: -17px;
   }
 
   .local-tabs__item + .local-tabs__item {
