@@ -1341,16 +1341,26 @@ p {
   gap: 2px;
 }
 
+/* Every chip is a button — the mint treatment is the hover/press state,
+   not a permanently selected one. */
 .office__chip {
   padding: 8px 16px;
   border: 1px solid #dbe0e5;
+  border-radius: 0;
   background: #fff;
   color: #454f57;
   font-size: 14px;
   font-weight: 500;
+  cursor: pointer;
+  transition:
+    border-color 0.2s var(--ease-premium, ease),
+    background 0.2s var(--ease-premium, ease),
+    color 0.2s var(--ease-premium, ease);
 }
 
-.office__chip.is-active {
+.office__chip:hover,
+.office__chip:focus-visible,
+.office__chip:active {
   border-color: #39deaf;
   background: #e3faf7;
   color: #00665e;

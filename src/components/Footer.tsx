@@ -64,31 +64,30 @@ export function Footer() {
               </div>
             ))}
           </div>
-        </div>
-
-        <div className="site-footer__contact">
-          <p className="site-footer__meta">
-            <span className="site-footer__meta-label">팩스</span>
-            <span className="site-footer__meta-value">02-598-0870</span>
-          </p>
-          <p className="site-footer__meta">
-            <span className="site-footer__meta-label">메일</span>
-            <a className="site-footer__meta-value" href="mailto:support@gyungook.com">
-              support@gyungook.com
-            </a>
-          </p>
-
-          <div className="site-footer__sns" aria-label="소셜 미디어">
-            {SNS.map((item) => (
-              <a
-                key={item.name}
-                className="site-footer__sns-link"
-                href={item.href}
-                aria-label={item.name}
-              >
-                <img src={asset(item.icon)} alt="" />
+          <div className="site-footer__contact">
+            <p className="site-footer__meta">
+              <span className="site-footer__meta-label">팩스</span>
+              <span className="site-footer__meta-value">02-598-0870</span>
+            </p>
+            <p className="site-footer__meta">
+              <span className="site-footer__meta-label">메일</span>
+              <a className="site-footer__meta-value" href="mailto:support@gyungook.com">
+                support@gyungook.com
               </a>
-            ))}
+            </p>
+
+            <div className="site-footer__sns" aria-label="소셜 미디어">
+              {SNS.map((item) => (
+                <a
+                  key={item.name}
+                  className="site-footer__sns-link"
+                  href={item.href}
+                  aria-label={item.name}
+                >
+                  <img src={asset(item.icon)} alt="" />
+                </a>
+              ))}
+            </div>
           </div>
         </div>
 
