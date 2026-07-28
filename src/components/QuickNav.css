@@ -175,8 +175,19 @@
     max-height 0.42s var(--quicknav-ease);
 }
 
-.quicknav__item--expand {
-  display: none;
+/*
+  Toggle stays visible in BOTH modes — expanding must always be reversible by
+  the same control the user pressed. Open state rotates it 45° so `+` reads
+  as `×` (close). Outside tap / Escape / a long scroll also close it.
+*/
+.quicknav__item--expand .quicknav__icon {
+  transition:
+    background-color 0.2s var(--quicknav-ease),
+    transform 0.32s var(--quicknav-ease);
+}
+
+.quicknav--expanded .quicknav__item--expand .quicknav__icon {
+  transform: rotate(45deg);
 }
 
 /* ---------- Mode: compact (forward scroll) + hidden ---------- */
@@ -195,9 +206,12 @@
   visibility: hidden;
 }
 
-.quicknav--compact .quicknav__item--expand,
-.quicknav--hidden .quicknav__item--expand {
-  display: flex;
+/* Figma compact (120:6350) hides the 위로 caption — icons only */
+.quicknav--compact .quicknav__label,
+.quicknav--hidden .quicknav__label {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
 }
 
 @media (prefers-reduced-motion: reduce) {
