@@ -1,0 +1,211 @@
+/*
+  quick-left-floating-Navigation (Figma AI-quick 120:1025 / compact 120:6350)
+
+  Tablet + mobile only. Desktop (>1024) never renders it.
+  Tokens from Figma: panel BG/Black #111 · shadow ↓/5
+  · Icon/04_info #81818D · Font/04_info #767676 · Caption C2 12/1.45/-0.3px
+  · Font/01_White #FFF for the 무료법률상담 highlight.
+
+  Brand chrome rule: **sharp rect only** — no border-radius anywhere in here.
+*/
+.quicknav {
+  /* Widest label is 6 Korean glyphs (진행사건문의 / 무료법률상담). The rail is
+     sized from that text, never the other way round, so it can't clip. */
+  --quicknav-pad-x: 8px;
+  --quicknav-w: 92px;
+  --quicknav-w-compact: 48px;
+  --quicknav-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 880; /* under the GNB (900), over page content */
+  display: none;
+  pointer-events: none;
+}
+
+@media (max-width: 1024px) {
+  .quicknav {
+    display: block;
+  }
+}
+
+.quicknav__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 24px var(--quicknav-pad-x);
+  width: var(--quicknav-w);
+  box-sizing: border-box;
+  background: #111;
+  border-radius: 0;
+  box-shadow: 0 12px 16px -1px rgba(35, 48, 59, 0.1);
+  pointer-events: auto;
+  /* Slide-in from off-screen; width/padding morph between the two modes */
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+  transition:
+    transform 0.42s var(--quicknav-ease),
+    opacity 0.28s var(--quicknav-ease),
+    width 0.42s var(--quicknav-ease),
+    padding 0.42s var(--quicknav-ease),
+    gap 0.42s var(--quicknav-ease);
+}
+
+/* Off-screen (initial + back at the top) */
+.quicknav--hidden .quicknav__panel {
+  transform: translate3d(calc(-100% - 20px), 0, 0);
+  opacity: 0;
+}
+
+/* ---------- Items ---------- */
+.quicknav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: #81818d;
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s var(--quicknav-ease);
+}
+
+/*
+  Icon = uploaded SVG used as a mask, so `currentColor` drives all four states
+  (the files ship hard-coded fills that `<img>` could not recolour).
+  Standard `mask-*` only — lightningcss adds the -webkit- alias at build (same
+  HARD RULE as backdrop-filter; hand-writing both drops the standard one).
+*/
+.quicknav__icon {
+  display: block;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  border-radius: 0;
+  background-color: currentColor;
+  mask-image: var(--quicknav-icon);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 24px 24px;
+  transition: background-color 0.2s var(--quicknav-ease);
+}
+
+.quicknav__label {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.3px;
+  color: #767676;
+  /* Never wrap or clip Korean labels */
+  white-space: nowrap;
+  overflow: visible;
+  transition:
+    color 0.2s var(--quicknav-ease),
+    opacity 0.24s var(--quicknav-ease);
+}
+
+/* Figma `호버` — glyph + label brighten to white */
+@media (hover: hover) {
+  .quicknav__item:hover .quicknav__icon,
+  .quicknav__item:focus-visible .quicknav__icon {
+    background-color: #fff;
+  }
+
+  .quicknav__item:hover .quicknav__label,
+  .quicknav__item:focus-visible .quicknav__label {
+    color: #fff;
+  }
+}
+
+.quicknav__item:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Figma `터치및클릭시` — pressed glyph goes teal */
+.quicknav__item:active .quicknav__icon {
+  background-color: var(--color-teal, #008075);
+}
+
+.quicknav__item:active .quicknav__label {
+  color: #fff;
+}
+
+/*
+  Figma `무료법률상담만하이라이트상태` — this one item reads white at rest
+  (not the muted info grey), so the primary CTA stays prominent.
+*/
+.quicknav__item--highlight {
+  color: #fff;
+}
+
+.quicknav__item--highlight .quicknav__label {
+  color: #fff;
+}
+
+.quicknav__divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* ---------- Mode: full rail (reverse scroll) ---------- */
+.quicknav__full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-height: 280px;
+  opacity: 1;
+  /*
+    Stays `visible` while expanded — `overflow: hidden` would clip the
+    6-glyph labels horizontally. Clipping is only applied while collapsed.
+  */
+  overflow: visible;
+  transition:
+    opacity 0.26s var(--quicknav-ease),
+    max-height 0.42s var(--quicknav-ease);
+}
+
+.quicknav__item--expand {
+  display: none;
+}
+
+/* ---------- Mode: compact (forward scroll) + hidden ---------- */
+.quicknav--compact .quicknav__panel,
+.quicknav--hidden .quicknav__panel {
+  width: var(--quicknav-w-compact);
+  padding: 8px;
+  gap: 4px;
+}
+
+.quicknav--compact .quicknav__full,
+.quicknav--hidden .quicknav__full {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.quicknav--compact .quicknav__item--expand,
+.quicknav--hidden .quicknav__item--expand {
+  display: flex;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quicknav__panel,
+  .quicknav__full,
+  .quicknav__item,
+  .quicknav__icon,
+  .quicknav__label {
+    transition-duration: 0.01ms !important;
+  }
+}
