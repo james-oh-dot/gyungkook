@@ -623,7 +623,9 @@ export function AwardsSection() {
 
       <div
         ref={previewRef}
-        className={`awards__preview media-card${visible ? ' is-visible' : ''}`}
+        className={`awards__preview media-card${visible ? ' is-visible' : ''}${
+          activeAward.fit === 'contain' ? ' awards__preview--contain' : ''
+        }`}
         aria-hidden={!visible}
       >
         <ProgressiveImage
@@ -631,6 +633,7 @@ export function AwardsSection() {
           className="media-card__img"
           src={activeAward.image.src}
           preview={activeAward.image.preview}
+          objectFit={activeAward.fit ?? 'cover'}
           alt=""
         />
       </div>

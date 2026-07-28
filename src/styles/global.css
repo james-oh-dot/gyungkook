@@ -1122,6 +1122,18 @@ p {
   animation: awards-img-in 0.55s var(--ease-premium);
 }
 
+/* Certificate / plaque scans from /about/history — keep full document visible. */
+.awards__preview--contain {
+  background: #fff;
+}
+
+.awards__preview--contain img,
+.awards__preview--contain .progressive-image,
+.awards__preview--contain .progressive-image__full,
+.awards__preview--contain .progressive-image__preview {
+  object-fit: contain;
+}
+
 @keyframes awards-img-in {
   from {
     opacity: 0;
