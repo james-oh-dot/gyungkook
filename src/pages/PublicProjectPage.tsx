@@ -234,11 +234,13 @@ function ProcedureColumns({ columns }: { columns: ProcedureColumn[] }) {
                 <StepCard step={step} />
                 {step.sideNote?.length ? (
                   <div className="pp-procedure__side" aria-label="병행 진행 절차">
-                    <ul className="pp-list pp-list--sm">
-                      {step.sideNote.map((n) => (
-                        <li key={n}>{n}</li>
-                      ))}
-                    </ul>
+                    <div className="pp-procedure__side-card">
+                      <ul className="pp-list pp-list--sm">
+                        {step.sideNote.map((n) => (
+                          <li key={n}>{n}</li>
+                        ))}
+                      </ul>
+                    </div>
                   </div>
                 ) : null}
               </div>
