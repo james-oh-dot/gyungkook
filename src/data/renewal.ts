@@ -506,7 +506,7 @@ export const RENEWAL_ADVISORY = {
 } as const
 
 export const RENEWAL_TRACK_RECORD = {
-  enLabel: 'STRENGTH',
+  enLabel: 'Specialized Services',
   titleLines: ['법무법인 경국의', '정비사업 전문 서비스'],
   intro: [
     '정비사업은 단순히 건물을 허물고 새로 짓는 과정이 아닙니다. 수년, 길게는 10년 이상 걸리는 장기 프로젝트로서, 수많은 이해관계자와 복잡한 법률 절차가 얽혀 있으며, 그중에서도 조합이 가장 어려움을 겪는 단계는 바로 기존 건물의 인도, 세입자·점유자와의 분쟁 해결, 사업 지연 요소 제거, 제반 사항에 관한 정확한 법적 검토 및 리스크 최소화 가 쟁점입니다. 이 단계에서 적절하고 신속한 법률 대응이 없으면, 사업은 기한을 넘기고 비용은 눈덩이처럼 불어날 수 있습니다. 저희는 그동안 흔히 알려진 재개발로펌들과는 비교할 수 없는 다량의 숨은 실적으로 보유하고 있으며, 수많은 구역에 자문해 온 실무 경험에 입각하여 조합의 고민을 누구보다 깊이 이해하고 있습니다. 특히 집단 인도 절차, 점유이전금지 가처분, 명도소송 분야에서 다수의 성공 사례를 보유하고 있습니다.',
@@ -517,7 +517,7 @@ export const RENEWAL_TRACK_RECORD = {
     '사업의 신속한 추진과 불필요한 분쟁 및 비용의 최소화를 위하여\n각 단계별 최적의 전략을 수립하고,\n법률적 위험을 사전에 차단하는 데 최선을 다하겠습니다.',
     '조합설립부터 사업시행, 관리처분, 이전고시, 청산에 이르기까지\n단순한 소송대리인을 넘어, 성공적인 사업 완수를 함께하는\n든든한 동반자로 끝까지 함께하겠습니다.',
   ],
-  resultsLabel: 'STRENGTH',
+  resultsLabel: 'Rearrangement Project Track Record',
   resultsTitle: '정비사업 실적',
   initialVisible: 15,
   total: RENEWAL_PERFORMANCE_RECORDS.length,
