@@ -10,38 +10,65 @@ export function HeroClassic() {
   const [index, setIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const [animKey, setAnimKey] = useState(0)
+  const [userPaused, setUserPaused] = useState(false)
   const indexRef = useRef(0)
   const startRef = useRef(performance.now())
   const pausedRef = useRef(false)
+  const userPausedRef = useRef(false)
+  const hoverPausedRef = useRef(false)
   const pauseElapsedRef = useRef(0)
   const progressRef = useRef(0)
   const lastJumpAtRef = useRef(0)
   const heroRef = useRef<HTMLElement>(null)
   const swipeRef = useRef<HTMLDivElement>(null)
 
+  const slideCount = classicHeroSlides.length
   const slide = classicHeroSlides[index]
-  const nextSlide = classicHeroSlides[(index + 1) % classicHeroSlides.length]
+  const nextSlide = classicHeroSlides[(index + 1) % slideCount]
+  const totalLabel = String(slideCount).padStart(2, '0')
 
-  const jumpTo = useCallback((next: number) => {
-    const now = performance.now()
-    // Guard against double-advance (Strict Mode / stacked pointer events / rAF race)
-    if (now - lastJumpAtRef.current < 180) return
-    lastJumpAtRef.current = now
-
-    const total = classicHeroSlides.length
-    const resolved = ((next % total) + total) % total
-    indexRef.current = resolved
-    setIndex(resolved)
-    progressRef.current = 0
-    setProgress(0)
-    setAnimKey((k) => k + 1)
-    startRef.current = now
-    pauseElapsedRef.current = 0
-    pausedRef.current = false
+  const syncPaused = useCallback((now = performance.now()) => {
+    const nextPaused = userPausedRef.current || hoverPausedRef.current
+    if (nextPaused && !pausedRef.current) {
+      pauseElapsedRef.current = progressRef.current * HERO_DURATION_MS
+    } else if (!nextPaused && pausedRef.current) {
+      startRef.current = now - pauseElapsedRef.current
+    }
+    pausedRef.current = nextPaused
   }, [])
+
+  const jumpTo = useCallback(
+    (next: number) => {
+      const now = performance.now()
+      // Guard against double-advance (Strict Mode / stacked pointer events / rAF race)
+      if (now - lastJumpAtRef.current < 180) return
+      lastJumpAtRef.current = now
+
+      const total = classicHeroSlides.length
+      const resolved = ((next % total) + total) % total
+      indexRef.current = resolved
+      setIndex(resolved)
+      progressRef.current = 0
+      setProgress(0)
+      setAnimKey((k) => k + 1)
+      startRef.current = now
+      pauseElapsedRef.current = 0
+      // Keep user pause; only clear hover-pause from a jump
+      hoverPausedRef.current = false
+      pausedRef.current = userPausedRef.current
+    },
+    [],
+  )
 
   const next = useCallback(() => jumpTo(indexRef.current + 1), [jumpTo])
   const prev = useCallback(() => jumpTo(indexRef.current - 1), [jumpTo])
+
+  const togglePause = useCallback(() => {
+    const now = performance.now()
+    userPausedRef.current = !userPausedRef.current
+    setUserPaused(userPausedRef.current)
+    syncPaused(now)
+  }, [syncPaused])
 
   useEffect(() => {
     // Preload all slide images so advance never flashes empty/black
@@ -217,16 +244,30 @@ export function HeroClassic() {
               <img src={asset('assets/icon-arrow.svg')} alt="" className="is-flip" draggable={false} />
             </button>
           </div>
+          <div className="hero__gage-btns hero__gage-btns--pause">
+            <button
+              type="button"
+              onClick={togglePause}
+              aria-label={userPaused ? '자동 재생 시작' : '자동 재생 일시정지'}
+              aria-pressed={userPaused}
+            >
+              <img
+                src={asset(userPaused ? 'assets/icon-play.svg' : 'assets/icon-pause.svg')}
+                alt=""
+                draggable={false}
+              />
+            </button>
+          </div>
           <button
             type="button"
             className="hero__swipe-preview"
             onMouseEnter={() => {
-              pausedRef.current = true
-              pauseElapsedRef.current = progressRef.current * HERO_DURATION_MS
+              hoverPausedRef.current = true
+              syncPaused()
             }}
             onMouseLeave={() => {
-              startRef.current = performance.now() - pauseElapsedRef.current
-              pausedRef.current = false
+              hoverPausedRef.current = false
+              syncPaused()
             }}
             onClick={next}
             aria-label={`다음 화면 ${nextSlide.index} ${slide.nextLabel}로 이동`}
@@ -251,12 +292,16 @@ export function HeroClassic() {
             </button>
           </div>
         </div>
-        <div className="hero__gage-track" data-name="swipe_gage">
-          <span className="hero__gage-no">01</span>
+        <div
+          className="hero__gage-track"
+          data-name="swipe_gage"
+          aria-label={`슬라이드 ${slide.index} / ${totalLabel}`}
+        >
+          <span className="hero__gage-no">{slide.index}</span>
           <div className="hero__gage-bar" aria-hidden="true">
             <div className="hero__gage-fill" style={{ transform: `scaleX(${progress})` }} />
           </div>
-          <span className="hero__gage-no">05</span>
+          <span className="hero__gage-no">{totalLabel}</span>
         </div>
       </div>
     </section>
