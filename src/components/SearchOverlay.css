@@ -32,7 +32,7 @@
      Standard property only — lightningcss emits the -webkit- alias at build.
      Do NOT hand-write -webkit-backdrop-filter here: pairing both makes the
      minifier keep only -webkit-, which drops the blur in Firefox. */
-  background: rgba(255, 255, 255, 0.55);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(28px) saturate(180%);
   cursor: pointer;
   transition:
@@ -43,7 +43,7 @@
 /* Fallback: no backdrop-filter support → keep legibility with a denser veil. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .search-overlay__dim {
-    background: rgba(255, 255, 255, 0.85);
+    background: rgba(255, 255, 255, 0.92);
   }
 }
 
