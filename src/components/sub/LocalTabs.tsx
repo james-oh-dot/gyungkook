@@ -56,7 +56,8 @@ function readGnbBarH(): number {
 /**
  * Local menu under a sub-page visual.
  * - Hover: teal underline follows the hovered tab
- * - Click / route: brand bar springs from the first tab to the active tab
+ * - Scroll-mode (in-page sections): bar slides from the current tab to the next
+ * - Route-mode (page switch): bar springs from the first tab to the active tab
  * - Sticky under fixed GNB while the page scrolls
  * - Tablet/mobile: horizontal scroll when tabs overflow
  */
@@ -64,6 +65,7 @@ export function LocalTabs(props: LocalTabsProps) {
   const { tabs, activeTab, ariaLabel = '로컬 메뉴' } = props
   const toTab = 'toTab' in props ? props.toTab : undefined
   const onTabSelect = 'onTabSelect' in props ? props.onTabSelect : undefined
+  const isScrollMode = Boolean(onTabSelect)
   const routeState =
     'routeState' in props && props.routeState !== undefined
       ? props.routeState
@@ -111,7 +113,11 @@ export function LocalTabs(props: LocalTabsProps) {
     [readMetric],
   )
 
-  /* Active / route change: jump to first tab, then spring to the selection. */
+  /*
+   * Route mode: on page change, snap to the first tab then spring to the
+   * selection. Scroll mode (in-page sections): slide from the current tab
+   * straight to the destination — never rewind to the front.
+   */
   useLayoutEffect(() => {
     if (hoverIndex !== null) {
       measure(hoverIndex)
@@ -121,10 +127,9 @@ export function LocalTabs(props: LocalTabsProps) {
     }
 
     const changed = prevActiveKey.current !== null && prevActiveKey.current !== activeKey
-    const firstMount = prevActiveKey.current === null
     prevActiveKey.current = activeKey
 
-    if (changed && selectedIndex > 0) {
+    if (!isScrollMode && changed && selectedIndex > 0) {
       const from = readMetric(0)
       const to = readMetric(selectedIndex)
       if (from && to) {
@@ -149,10 +154,7 @@ export function LocalTabs(props: LocalTabsProps) {
     measure(selectedIndex)
     setJumping(false)
     setReady(true)
-    if (firstMount) {
-      /* keep ready for first paint */
-    }
-  }, [activeKey, hoverIndex, measure, readMetric, selectedIndex])
+  }, [activeKey, hoverIndex, isScrollMode, measure, readMetric, selectedIndex])
 
   useEffect(() => {
     const onResize = () => measure(focusIndex)
