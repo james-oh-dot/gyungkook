@@ -200,6 +200,14 @@
   display: flex;
 }
 
+/* Figma compact (120:6350) hides the 위로 caption — icons only */
+.quicknav--compact .quicknav__label,
+.quicknav--hidden .quicknav__label {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .quicknav__panel,
   .quicknav__full,

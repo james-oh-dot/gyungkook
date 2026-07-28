@@ -28,10 +28,16 @@ const SHOW_AFTER = 120
 const KAKAO_PC = 'http://pf.kakao.com/_twVnn'
 const KAKAO_MOBILE = 'http://pf.kakao.com/_twVnn/chat'
 
-/** Korean filenames must be percent-encoded before they reach CSS `url()`. */
+/*
+  ASCII copies of the uploaded `public/assets/{버튼명}.svg` files live in
+  `public/assets/quick/`. Reference those, never the Korean originals: one of
+  them (`펼쳐보기.svg`) is stored NFD-decomposed while the rest are NFC, so a
+  composed `encodeURIComponent()` URL 404s and the icon silently disappears.
+  Re-run the copy step (see AGENTS.md) whenever an icon is re-uploaded.
+*/
 function iconVar(name: string): CSSProperties {
   return {
-    '--quicknav-icon': `url("${asset(`assets/${encodeURIComponent(name)}.svg`)}")`,
+    '--quicknav-icon': `url("${asset(`assets/quick/quick-${name}.svg`)}")`,
   } as CSSProperties
 }
 
@@ -90,7 +96,7 @@ export function QuickNav() {
       <div className="quicknav__panel">
         <div className="quicknav__full">
           <a className="quicknav__item" href={resolveNavHref('/about/location')}>
-            <span className="quicknav__icon" style={iconVar('오시는길')} aria-hidden="true" />
+            <span className="quicknav__icon" style={iconVar('location')} aria-hidden="true" />
             <span className="quicknav__label">오시는길</span>
           </a>
 
@@ -100,12 +106,12 @@ export function QuickNav() {
             target="_blank"
             rel="noreferrer noopener"
           >
-            <span className="quicknav__icon" style={iconVar('카톡문의')} aria-hidden="true" />
+            <span className="quicknav__icon" style={iconVar('kakao')} aria-hidden="true" />
             <span className="quicknav__label">카톡문의</span>
           </a>
 
           <a className="quicknav__item" href={resolveNavHref('/news/consult')}>
-            <span className="quicknav__icon" style={iconVar('진행사건문의')} aria-hidden="true" />
+            <span className="quicknav__icon" style={iconVar('case')} aria-hidden="true" />
             <span className="quicknav__label">진행사건문의</span>
           </a>
 
@@ -114,7 +120,7 @@ export function QuickNav() {
             className="quicknav__item quicknav__item--highlight"
             href={resolveNavHref('/news/consult')}
           >
-            <span className="quicknav__icon" style={iconVar('무료법률상담')} aria-hidden="true" />
+            <span className="quicknav__icon" style={iconVar('consult')} aria-hidden="true" />
             <span className="quicknav__label">무료법률상담</span>
           </a>
         </div>
@@ -126,13 +132,13 @@ export function QuickNav() {
           onClick={expand}
           aria-label="빠른 메뉴 펼치기"
         >
-          <span className="quicknav__icon" style={iconVar('펼쳐보기')} aria-hidden="true" />
+          <span className="quicknav__icon" style={iconVar('expand')} aria-hidden="true" />
         </button>
 
         <span className="quicknav__divider" aria-hidden="true" />
 
         <button type="button" className="quicknav__item" onClick={scrollTop}>
-          <span className="quicknav__icon" style={iconVar('위로')} aria-hidden="true" />
+          <span className="quicknav__icon" style={iconVar('top')} aria-hidden="true" />
           <span className="quicknav__label">위로</span>
         </button>
       </div>
