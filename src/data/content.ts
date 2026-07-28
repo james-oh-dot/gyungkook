@@ -186,34 +186,44 @@ export const pressItems = [
   },
 ]
 
+/**
+ * Hover preview images reuse the same progressive stems as `/about/history`
+ * (`HISTORY_AWARDS` / `HISTORY_CERTIFICATIONS` in `src/data/history.ts`).
+ * Prefer `fit: 'contain'` for certificate / plaque scans so edges aren't cropped.
+ */
 export const awards = [
   {
     title: '2025 한경비즈니스 브랜드대상',
-    image: progressiveAsset('assets/award-hover'),
+    image: progressiveAsset('assets/lawyers/gongdaeho-award-brand-index'),
+    fit: 'contain' as const,
   },
   {
     title: '철거현장 인권지킴이단',
-    image: progressiveAsset('assets/award-hover'),
+    image: progressiveAsset('assets/lawyers/gongdaeho-award-human-rights'),
   },
   {
     title: '관악경찰서장 표창',
-    image: progressiveAsset('assets/award-hover'),
+    image: progressiveAsset('assets/lawyers/gongdaeho-award-police'),
   },
   {
     title: '정비사업지원기구 전문가 자문위원회',
-    image: progressiveAsset('assets/award-hover'),
+    image: progressiveAsset('assets/lawyers/gongdaeho-apt-lh'),
+    fit: 'contain' as const,
   },
   {
     title: '북한인권 특별위원회 위원',
-    image: progressiveAsset('assets/award-hover'),
+    image: progressiveAsset('assets/lawyers/gongdaeho-apt-nk-human-rights'),
+    fit: 'contain' as const,
   },
   {
     title: '전문분야 등록증서 - 행정법',
-    image: progressiveAsset('assets/award-hover'),
+    image: progressiveAsset('assets/lawyers/gongdaeho-cert-admin'),
+    fit: 'contain' as const,
   },
   {
     title: '한국청소년육성회 법률자문위촉',
-    image: progressiveAsset('assets/award-hover'),
+    image: progressiveAsset('assets/lawyers/gongdaeho-apt-youth-legal'),
+    fit: 'contain' as const,
   },
 ]
 
