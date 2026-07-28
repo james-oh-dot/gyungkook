@@ -499,8 +499,12 @@
   backdrop-filter: blur(18px) saturate(1.55);
 }
 
-.hero__gage-btns--prev {
+.hero__gage-btns--pause {
   right: 36px;
+}
+
+.hero__gage-btns--prev {
+  right: 72px;
 }
 
 .hero__gage-btns button {
@@ -522,9 +526,8 @@
   transform: translateY(-1px);
 }
 
-.hero__gage-btns button:active {
-  transform: scale(0.94);
-  transition-duration: 0.12s;
+.hero__gage-btns button[aria-pressed='true'] {
+  opacity: 1;
 }
 
 .hero__gage-btns img {
@@ -737,8 +740,12 @@
     height: 48px;
   }
 
-  .hero__gage-btns--prev {
+  .hero__gage-btns--pause {
     right: 48px;
+  }
+
+  .hero__gage-btns--prev {
+    right: 96px;
   }
 
   .hero__gage-btns button,
@@ -816,8 +823,12 @@
     height: 44px;
   }
 
-  .hero__gage-btns--prev {
+  .hero__gage-btns--pause {
     right: 44px;
+  }
+
+  .hero__gage-btns--prev {
+    right: 88px;
   }
 
   .hero__gage-btns button,
