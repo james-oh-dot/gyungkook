@@ -105,7 +105,7 @@
   position: absolute;
   left: 0;
   bottom: -21px; /* sit on nav border: item + nav padding-bottom */
-  height: 6px;
+  height: 4px;
   background: #58bdc2;
   pointer-events: none;
   opacity: 0;
@@ -114,9 +114,14 @@
 
 .local-tabs__indicator.is-ready {
   transition:
-    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
-    width 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.55s cubic-bezier(0.22, 1, 0.36, 1),
     opacity 0.2s ease;
+}
+
+/* Snap to first tab without easing before the from-front spring */
+.local-tabs__indicator.is-jumping {
+  transition: none;
 }
 
 /* Chrome / columns axis — overflow tabs start from the left for easier swipe */
@@ -150,6 +155,5 @@
 
   .local-tabs__indicator {
     bottom: -17px; /* 16px pad + 1px border */
-    height: 4px;
   }
 }

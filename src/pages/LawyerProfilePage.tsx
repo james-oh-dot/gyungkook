@@ -1,4 +1,4 @@
-import { Navigate, useParams } from 'react-router-dom'
+import { Link, Navigate, useParams } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { LocalTabs } from '../components/sub/LocalTabs'
 import { ProgressiveImage } from '../components/ProgressiveImage'
@@ -16,7 +16,7 @@ import { progressiveAsset } from '../utils/progressiveImage'
 import './LawyerProfile.css'
 
 const BULLET_SRC = asset('assets/icon-bullet.svg')
-const ARROW_SRC = asset('assets/icon-arrow.svg')
+const MORE_ICON_SRC = asset('assets/icon-lawyer-more.svg')
 const SHARE_SRC = asset('assets/icon-share.svg')
 const DOWNLOAD_SRC = asset('assets/icon-download.svg')
 const HERO = progressiveAsset('assets/sub/sub-01-03')
@@ -70,20 +70,22 @@ function ResultBlock({
   label,
   items,
   moreLabel,
+  moreTo,
 }: {
   label: string
   items: string[]
   moreLabel: string
+  moreTo: string
 }) {
   if (!items.length) return null
   return (
     <Block label={label}>
       <div className="lawyer-result">
         <Bullets items={items} />
-        <button type="button" className="lawyer-more">
+        <Link to={moreTo} className="lawyer-more">
           {moreLabel}
-          <img className="lawyer-more__icon" src={ARROW_SRC} alt="" />
-        </button>
+          <img className="lawyer-more__icon" src={MORE_ICON_SRC} alt="" />
+        </Link>
       </div>
     </Block>
   )
@@ -259,11 +261,13 @@ export function LawyerProfilePage() {
             label="실적(정비사업 등)"
             items={lawyer.renewalResults}
             moreLabel="정비사업 실적 더보기"
+            moreTo="/practice/renewal#trackRecord"
           />
           <ResultBlock
             label="실적(공익사업 등)"
             items={lawyer.publicResults}
             moreLabel="공익사업 실적 더보기"
+            moreTo="/practice/public#record1"
           />
 
           <CertGrid label="전문 인증서" items={lawyer.certificates} />

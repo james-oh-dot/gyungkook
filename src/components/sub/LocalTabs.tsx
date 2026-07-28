@@ -56,7 +56,7 @@ function readGnbBarH(): number {
 /**
  * Local menu under a sub-page visual.
  * - Hover: teal underline follows the hovered tab
- * - Click: route (`toTab`) or scroll callback (`onTabSelect`)
+ * - Click / route: brand bar springs from the first tab to the active tab
  * - Sticky under fixed GNB while the page scrolls
  * - Tablet/mobile: horizontal scroll when tabs overflow
  */
@@ -77,32 +77,82 @@ export function LocalTabs(props: LocalTabsProps) {
   const itemRefs = useRef<(HTMLLIElement | null)[]>([])
   const [indicator, setIndicator] = useState<Indicator | null>(null)
   const [ready, setReady] = useState(false)
+  const [jumping, setJumping] = useState(false)
   const [hoverIndex, setHoverIndex] = useState<number | null>(null)
   const [stuck, setStuck] = useState(false)
+  const prevActiveKey = useRef<string | null>(null)
+  const routeKey = `${location.pathname}${location.hash}`
 
   const selectedIndex = Math.max(
     0,
     tabs.findIndex((t) => t.id === activeTab),
   )
   const focusIndex = hoverIndex ?? selectedIndex
+  const activeKey = `${activeTab}::${routeKey}`
 
-  const measure = useCallback((index: number) => {
+  const readMetric = useCallback((index: number): Indicator | null => {
     const list = listRef.current
     const item = itemRefs.current[index]
-    if (!list || !item) return
+    if (!list || !item) return null
     const listBox = list.getBoundingClientRect()
     const link = item.querySelector('a, button.local-tabs__link')
     const target = (link ?? item).getBoundingClientRect()
-    setIndicator({
+    return {
       x: target.left - listBox.left,
       w: target.width,
-    })
+    }
   }, [])
 
+  const measure = useCallback(
+    (index: number) => {
+      const next = readMetric(index)
+      if (next) setIndicator(next)
+    },
+    [readMetric],
+  )
+
+  /* Active / route change: jump to first tab, then spring to the selection. */
   useLayoutEffect(() => {
-    measure(focusIndex)
+    if (hoverIndex !== null) {
+      measure(hoverIndex)
+      setReady(true)
+      setJumping(false)
+      return
+    }
+
+    const changed = prevActiveKey.current !== null && prevActiveKey.current !== activeKey
+    const firstMount = prevActiveKey.current === null
+    prevActiveKey.current = activeKey
+
+    if (changed && selectedIndex > 0) {
+      const from = readMetric(0)
+      const to = readMetric(selectedIndex)
+      if (from && to) {
+        setJumping(true)
+        setReady(false)
+        setIndicator(from)
+        let raf2 = 0
+        const raf1 = requestAnimationFrame(() => {
+          raf2 = requestAnimationFrame(() => {
+            setJumping(false)
+            setReady(true)
+            setIndicator(to)
+          })
+        })
+        return () => {
+          cancelAnimationFrame(raf1)
+          cancelAnimationFrame(raf2)
+        }
+      }
+    }
+
+    measure(selectedIndex)
+    setJumping(false)
     setReady(true)
-  }, [focusIndex, measure, location.pathname, activeTab])
+    if (firstMount) {
+      /* keep ready for first paint */
+    }
+  }, [activeKey, hoverIndex, measure, readMetric, selectedIndex])
 
   useEffect(() => {
     const onResize = () => measure(focusIndex)
@@ -175,7 +225,7 @@ export function LocalTabs(props: LocalTabsProps) {
     ? {
         transform: `translate3d(${indicator.x}px, 0, 0)`,
         width: indicator.w,
-        opacity: ready ? 1 : 0,
+        opacity: ready || jumping ? 1 : 0,
       }
     : undefined
 
@@ -229,7 +279,7 @@ export function LocalTabs(props: LocalTabsProps) {
               </li>
             ))}
             <span
-              className={`local-tabs__indicator${ready ? ' is-ready' : ''}`}
+              className={`local-tabs__indicator${ready ? ' is-ready' : ''}${jumping ? ' is-jumping' : ''}`}
               style={style}
               aria-hidden="true"
             />

@@ -1,4 +1,4 @@
-# 법무법인 경국 (GYUNGKOOK) Homepage
+# 법무법인 경국 (GYUNGGOOK) Homepage
 
 Figma `HOME` / `HOME_TABLET_768_RESPONSIVE_AUTO` / `HOME_MOBILE_390_RESPONSIVE_AUTO` 기준 반응형 퍼블리싱.
 

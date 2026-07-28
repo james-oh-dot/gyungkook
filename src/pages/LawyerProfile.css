@@ -192,7 +192,8 @@
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  padding: 24px clamp(24px, 3vw, 40px);
+  /* Keep top inset; flush bottom + right against the content edge */
+  padding: 24px 0 0;
 }
 
 /* Figma Button_Default — mint #58BDC2 square, 56×56, 24px white icon, sharp */
@@ -310,24 +311,33 @@
   flex: 1;
   min-width: 0;
 }
+/* Figma Button_Default (89:3083) — mint #58BDC2, 16 Semibold, circle+↗ */
 .lawyer-more {
   flex-shrink: 0;
   align-self: flex-end;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--color-teal, #58bdc2);
+  background: #58bdc2;
   color: #fff;
   font-size: 16px;
   font-weight: 600;
+  line-height: 1.4;
   letter-spacing: -0.025em;
+  text-decoration: none;
   padding: 16px;
   border: 0;
   cursor: pointer;
+  transition: background 0.2s var(--ease-premium, ease);
+}
+.lawyer-more:hover {
+  background: #45aab0;
+  color: #fff;
 }
 .lawyer-more__icon {
-  width: 22px;
-  height: 22px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 }
 
 /* —— certificate / appointment / award grids —— */
@@ -477,6 +487,6 @@
     font-size: 16px;
   }
   .lawyer-toolbar {
-    padding: 20px var(--page-pad);
+    padding: 20px 0 0;
   }
 }

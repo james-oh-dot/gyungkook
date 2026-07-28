@@ -122,7 +122,7 @@ export function HistoryPage() {
                   </article>
                 ))}
               </div>
-              <p className="history-timeline__caption">A journey through the key milestones that shaped a</p>
+              <p className="history-timeline__caption">경국은 끊임없는 도전과 혁신으로 새로운 길을 개척해 나가고 있습니다.</p>
             </div>
           </section>
 

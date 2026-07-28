@@ -198,7 +198,7 @@ function AdvisorDrawer({
             </aside>
             <div className="ld-drawer__meta">
               <div className="ld-drawer__identity">
-                <p className="ld-drawer__kicker">GYUNGKOOK ADVISOR</p>
+                <p className="ld-drawer__kicker">GYUNGGOOK ADVISOR</p>
                 <h2 id={titleId} className="ld-drawer__name">
                   {advisor.name}
                 </h2>
