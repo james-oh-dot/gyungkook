@@ -54,7 +54,11 @@ export function LocationPage() {
                 </div>
               </div>
               <div className="location-page__chips" aria-label="오시는 길 서비스">
-                <span>네이버 예약</span><span className="is-accent">SMS 약도 전송</span><span>카카오내비</span><span>티맵 연결</span>
+                {['네이버 예약', 'SMS 약도 전송', '카카오내비', '티맵 연결'].map((label) => (
+                  <button key={label} type="button" className="location-page__chip">
+                    {label}
+                  </button>
+                ))}
               </div>
             </div>
 
