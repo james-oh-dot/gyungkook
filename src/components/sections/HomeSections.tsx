@@ -72,12 +72,20 @@ function TextBtn({
   )
 }
 
+/** `icon-arrow.svg` ships a hard-coded `stroke="white"` — fine over the hero's
+ *  photo, invisible on these light card sections. Same mask-image +
+ *  `background-color: currentColor` recolor QuickNav uses for its icons. */
+const ARROW_ICON_VAR = {
+  '--card-track-nav-icon': `url("${asset('assets/icon-arrow.svg')}")`,
+} as CSSProperties
+
 /**
  * Mobile-only prev/next pair for the Notice/Press home carousels (hidden via
  * CSS ≥768px — those breakpoints keep the multi-column grid, nothing to page
- * through). Same glass chrome + `icon-arrow.svg` + butted-seam layout as
- * HeroClassic's mobile prev/next (`.hero__gage-btns`, ≤767) — reused as-is
- * rather than re-derived, down to the `.is-flip` rotate for prev.
+ * through). Same glyph and butted-seam layout as HeroClassic's mobile
+ * prev/next (`.hero__gage-btns`, ≤767), but borderless: on a photo, a glass
+ * box reads as chrome; on a plain white/tint section it read as a second
+ * frame nested inside the button's own — just the icon, recoloured dark.
  */
 function CardTrackNav({
   prev,
@@ -101,7 +109,7 @@ function CardTrackNav({
         disabled={!canPrev}
         aria-label={`이전 ${label}`}
       >
-        <img src={asset('assets/icon-arrow.svg')} alt="" className="is-flip" draggable={false} />
+        <span className="card-track-nav__icon is-flip" style={ARROW_ICON_VAR} aria-hidden="true" />
       </button>
       <button
         type="button"
@@ -110,7 +118,7 @@ function CardTrackNav({
         disabled={!canNext}
         aria-label={`다음 ${label}`}
       >
-        <img src={asset('assets/icon-arrow.svg')} alt="" draggable={false} />
+        <span className="card-track-nav__icon" style={ARROW_ICON_VAR} aria-hidden="true" />
       </button>
     </div>
   )
