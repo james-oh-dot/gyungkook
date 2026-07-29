@@ -190,6 +190,38 @@ p {
   height: 32px;
 }
 
+/* Notice/Press mobile carousel controls — hidden by default; ≤767 owns display:flex */
+.card-track-nav {
+  display: none;
+}
+
+.card-track-nav__btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.card-track-nav__btn img {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+
+.card-track-nav__btn.is-prev img {
+  transform: scaleX(-1);
+}
+
+.card-track-nav__btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
 .reveal {
   opacity: 0;
   transform: translate3d(0, calc(84px + var(--parallax-y, 0px)), 0);
@@ -1514,9 +1546,35 @@ p {
     font-size: 32px;
   }
 
+  .card-track-nav {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  /*
+    Vertically-stacked 3 cards → single-card carousel, paged by CardTrackNav
+    (HomeSections.tsx). `grid-auto-columns: 100%` keeps one card per screen;
+    `scroll-snap-type` also gives free touch-swipe alongside the buttons.
+  */
   .notice-grid {
-    grid-template-columns: 1fr;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    grid-template-columns: none;
     gap: 2px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .notice-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .notice-card {
+    scroll-snap-align: start;
   }
 
   #notice .section-head {

@@ -1504,3 +1504,38 @@ CDP 터치 스와이프 회귀 전부 통과. lint/tsc/build 통과.
 
 베일도 68% 지점에서 solid로 떨어지도록 재조정(`…0.72 66%, #000 72%`)해서 사진이
 카피 밴드로 자연스럽게 녹아들게 했다 — 안 하면 이미지 하단에 하드 심이 생긴다.
+
+## 2026-07-29 — 홈 소식·공지 / 활동·보도 모바일 카드 캐러셀
+
+3개(소식) / 5개(활동보도) 카드를 세로로 쌓던 모바일(≤767) 레이아웃을, 우측 상단
+이전/다음 버튼으로 넘기는 1-카드 스와이프 캐러셀로 전환.
+
+### 공용 훅 `useCardTrackNav(trackRef)`
+스크롤 컨테이너 ref 하나만 받아 `canPrev`/`canNext`/`prev`/`next`를 돌려준다.
+버튼 클릭은 `el.scrollBy({ left: dir * el.clientWidth, behavior:'smooth' })` —
+이 훅이 쓰이는 두 캐러셀 모두 모바일 전용(카드 1장 = 트랙 전체 너비)이라 카드별
+실측 없이 트랙 너비 자체가 1스텝이다. `scroll` 이벤트로 `scrollLeft`를 읽어 양끝
+버튼을 비활성화(터치 스와이프로 직접 넘겨도 동기화됨).
+
+### NoticeSection
+기존엔 스크롤 인프라가 없어 `.notice-grid`에 직접 `ref`를 달고, 모바일 블록에서
+`grid-template-columns:1fr`(세로 스택) → `grid-auto-flow:column; grid-auto-columns:100%;
+overflow-x:auto; scroll-snap-type:x mandatory`로 교체. 카드 간 2px 간격(데스크톱과
+동일한 "이음매" 정체성)은 유지.
+
+### PressSection
+이미 `.press-list-wrap`(`useScrollGage`의 trackRef)가 `overflow-x:auto` 스크롤
+컨테이너였다 — 같은 ref를 `useCardTrackNav`에도 넘겨 버튼만 추가. 기존 드래그
+게이지(`.press-gage`)는 그대로 두어 진행률 표시 겸용으로 공존.
+
+### 버튼 UI `CardTrackNav`
+`TextBtn`의 "전체보기" 아이콘(`assets/icon-btn.svg`, 라이트 배경용 다크 화살표)을
+재사용 — prev는 `scaleX(-1)` 미러링만으로 새 에셋 없이 해결. 44px 히트 영역 안에
+32px 아이콘(`TextBtn` 아이콘과 동일 크기로 시각 언어 통일). `.card-track-nav`는
+데스크톱/태블릿에서 `display:none`, ≤767에서만 노출 — "모바일에서"라는 요청 범위를
+넘지 않는다.
+
+### 검증
+Playwright: 소식 3카드 → next 2회 클릭 시 next 비활성화, prev로 되감으면 시작점에서
+prev 비활성화. 활동보도 5카드 → next 5회 클릭 후 next 비활성화 확인. 768/1440에서
+`.card-track-nav` 비가시 확인. lint/tsc/build 통과.
