@@ -75,8 +75,9 @@ function TextBtn({
 /**
  * Mobile-only prev/next pair for the Notice/Press home carousels (hidden via
  * CSS ≥768px — those breakpoints keep the multi-column grid, nothing to page
- * through). Reuses `icon-btn.svg`, the same forward-arrow glyph as `TextBtn`'s
- * "전체보기" link, mirrored for prev so no new asset is needed.
+ * through). Same glass chrome + `icon-arrow.svg` + butted-seam layout as
+ * HeroClassic's mobile prev/next (`.hero__gage-btns`, ≤767) — reused as-is
+ * rather than re-derived, down to the `.is-flip` rotate for prev.
  */
 function CardTrackNav({
   prev,
@@ -100,7 +101,7 @@ function CardTrackNav({
         disabled={!canPrev}
         aria-label={`이전 ${label}`}
       >
-        <img src={asset('assets/icon-btn.svg')} alt="" draggable={false} />
+        <img src={asset('assets/icon-arrow.svg')} alt="" className="is-flip" draggable={false} />
       </button>
       <button
         type="button"
@@ -109,7 +110,7 @@ function CardTrackNav({
         disabled={!canNext}
         aria-label={`다음 ${label}`}
       >
-        <img src={asset('assets/icon-btn.svg')} alt="" draggable={false} />
+        <img src={asset('assets/icon-arrow.svg')} alt="" draggable={false} />
       </button>
     </div>
   )

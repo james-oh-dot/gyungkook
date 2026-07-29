@@ -190,15 +190,25 @@ p {
   height: 32px;
 }
 
-/* Notice/Press mobile carousel controls — hidden by default; ≤767 owns display:flex */
+/*
+  Notice/Press mobile carousel controls — hidden by default; ≤767 owns
+  display:flex. `gap: 0` + `.is-next { margin-left: -1px }` below butt the
+  pair onto a single shared 1px seam, same as HeroClassic's mobile prev/next.
+*/
 .card-track-nav {
   display: none;
+  gap: 0;
+}
+
+.card-track-nav .is-next {
+  margin-left: -1px;
 }
 
 /*
-  52px square frame — same footprint as HeroClassic's mobile prev/next
-  (`.hero__gage-btns`, ≤767), just re-themed for a light card section: solid
-  border instead of glass-on-photo, square corners (border-radius unset = 0).
+  Same glass chrome as HeroClassic's mobile prev/next (`.hero__gage-btns`,
+  ≤767) reused verbatim, not just size-matched — dark frosted square, white
+  hairline border. It sits on flat white/tint here instead of photo, but the
+  identical rgba values keep it reading as the same button everywhere.
 */
 .card-track-nav__btn {
   display: flex;
@@ -207,27 +217,31 @@ p {
   width: 52px;
   height: 52px;
   padding: 0;
-  border: 1px solid var(--color-gray-100);
-  background: var(--color-white);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(10, 18, 20, 0.34);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(18px) saturate(1.55);
   cursor: pointer;
+  opacity: 0.85;
   transition:
-    border-color 0.35s var(--ease-premium),
+    opacity 0.35s var(--ease-premium),
     transform 0.35s var(--ease-premium);
 }
 
 .card-track-nav__btn:hover:not(:disabled),
 .card-track-nav__btn:focus-visible:not(:disabled) {
-  border-color: rgba(0, 128, 117, 0.4);
+  opacity: 1;
+  transform: translateY(-1px);
 }
 
 .card-track-nav__btn img {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   display: block;
 }
 
-.card-track-nav__btn.is-prev img {
-  transform: scaleX(-1);
+.card-track-nav__btn img.is-flip {
+  transform: rotate(180deg);
 }
 
 .card-track-nav__btn:disabled {
@@ -1568,7 +1582,6 @@ p {
   .card-track-nav {
     display: flex;
     justify-content: flex-end;
-    gap: 8px;
     margin-bottom: 16px;
   }
 

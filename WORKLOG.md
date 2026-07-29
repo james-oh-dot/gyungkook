@@ -1563,3 +1563,23 @@ prev/next(`.hero__gage-btns`, ≤767, 52px 정사각)와 같은 크기·직각(b
 Playwright: 버튼 실측 52×52, border-radius 0px, 클릭 후 상태 동기화 정상.
 768/1440에서 캐러셀 UI 비가시 확인. 타이틀 폰트: 모바일/데스크탑에서 소식 22px,
 활동보도 18~19.44px(항상 desc 18px 이상). lint/tsc/build 통과.
+
+## 2026-07-29 — 캐러셀 이전/다음 버튼을 히어로 섹션 버튼으로 교체
+
+앞서 만든 라이트 테마(흰 배경 + 회색 테두리) 대신, HeroClassic 모바일 prev/next
+(`.hero__gage-btns`, ≤767)를 그대로 재사용 — 크기만 맞춘 게 아니라 크롬 자체를
+그대로 가져왔다.
+- `border: 1px solid rgba(255,255,255,.24)` + `background: rgba(10,18,20,.34)` +
+  `box-shadow: 0 10px 24px rgba(0,0,0,.22)` + `backdrop-filter: blur(18px) saturate(1.55)`.
+  사진이 아닌 흰/틴트 배경 위라 블러가 블러할 대상이 없지만, 같은 rgba 값이라
+  반투명 다크 글래스로 그대로 읽힌다.
+- 아이콘을 `icon-btn.svg`(라이트용, scaleX 미러) → `icon-arrow.svg`(화이트 스트로크
+  화살표, 24px) + `.is-flip { rotate(180deg) }`로 교체 — 히어로와 완전히 동일한
+  마크업 패턴.
+- 버튼 간격도 히어로처럼 `gap:0` + `.is-next { margin-left:-1px }`로 밀착시켜
+  단일 1px 심으로 통일(이전엔 8px 간격으로 떨어져 있었음).
+
+### 검증
+버튼 실측 52×52 유지, border-radius 0 유지, 스크린샷으로 다크 글래스+흰 화살표+
+밀착 심 확인. 소식 3카드/활동보도 5카드 버튼 활성화·비활성화 전환 회귀 재통과.
+768/1440 비가시 확인. lint/tsc/build 통과.
