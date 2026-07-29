@@ -1414,3 +1414,34 @@ GNB 소식·공지 fullmenu에서 상담신청 hover 시 sub-05-01 노출, href 
 ### 검증
 5개 탭 렌더(부동산 9 / 상속 6+CTA / 민사·형사 4+4 / 행정 11 / 기업 7카드 + 파트너 2),
 데스크탑/모바일 overflow 0, 콘솔 에러 0, lint/build 통과.
+
+## 2026-07-29 — 모바일 히어로 풀블리드 + 손가락 스와이프 내비게이션
+
+### 이미지 풀블리드 (≤767)
+`.hero__bg-slide > .progressive-image`가 태블릿에서는 `height: 58%`(아래 검은 띠 위에
+카피가 앉는 구조)였는데, 모바일에서는 `inset: 0` + `width/height: auto`로 화면을 꽉
+채운다. 베이스 규칙의 `left`/`height: calc(--hero-swipe-top …)`를 오프셋 4개가 이기도록
+width/height는 auto 유지. 켄 번즈는 그대로 안쪽 레이어에서만 동작.
+
+### 스와이프 블록 제거 (≤767)
+`.hero__swipe { display: none }` — 썸네일 카드 + 게이지가 폰 뷰포트의 1/3을 먹었다.
+자동 전환 rAF 타이머(10s)는 이 블록과 무관하게 계속 동작.
+- `.hero__content` 하단 패딩을 `--hero-swipe-reserve`(288px) → `56px`로 교체.
+- `.hero__bg-veil`을 모바일에서만 상/하 스크림(180deg)으로 교체. 베이스 베일은
+  데스크탑 좌측 컬럼용 좌→우 그라디언트라 풀폭 헤드라인이 밝은 프레임 위에서 날아갔다.
+- `HeroClassic.tsx`의 `--hero-swipe-top` 측정에 가드 추가: `display:none`이면 rect가
+  0이라 스크롤 후 `-heroTop`이 핀으로 발행됐다. 모바일은 두 커스텀 프로퍼티를 읽지
+  않으므로 그냥 스킵.
+
+### 손가락 스와이프 (버튼 대체)
+`.hero`에 pointerdown/up/cancel 핸들러. 왼쪽 드래그 = 다음, 오른쪽 = 이전.
+- `pointerType === 'mouse'`는 무시 — 데스크탑 마우스 드래그는 텍스트 선택이다.
+- 임계값: 이동 ≥48px, `|dx| ≥ |dy| × 1.5`(대각선 스크롤 오작동 방지), ≤800ms.
+- `.hero { touch-action: pan-y pinch-zoom }` — x축을 우리가 가져와 제스처 도중
+  `pointercancel`이 뜨지 않게 하되, 세로 스크롤과 핀치 줌은 네이티브 유지.
+
+### 검증 (Playwright, CDP `Input.dispatchTouchEvent`)
+390×844에서 좌 스와이프 01→02→03, 우 스와이프 03→02→01→05(랩) 정상.
+30px 짧은 드래그 무시, 세로 드래그는 슬라이드 유지 + scrollY 365 스크롤.
+이미지 390×844 풀블리드(5슬라이드 전부), 768/1024/1440은 이미지 58%·스와이프 버튼·
+마우스 드래그 무반응까지 기존 그대로. lint/tsc/build 통과.

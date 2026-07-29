@@ -1,10 +1,31 @@
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  /* Aliased so it never shadows the DOM `PointerEvent` global */
+  type PointerEvent as ReactPointerEvent,
+} from 'react'
 import { CharReveal } from './CharReveal'
 import { LineReveal } from './LineReveal'
 import { ProgressiveImage } from './ProgressiveImage'
 import { HERO_DURATION_MS, classicHeroSlides } from '../data/slidesClassic'
 import { asset } from '../utils/asset'
 import './HeroClassic.css'
+
+/*
+  Touch swipe thresholds. Mobile (≤767) hides `.hero__swipe`, so a finger drag
+  is the only manual navigation there — but the hero is also the top of a
+  vertically scrolling page, so the gesture has to be clearly horizontal before
+  it counts as a slide jump.
+*/
+const SWIPE_MIN_PX = 48
+/** |dx| must beat |dy| by this much — a diagonal drag while scrolling is not a swipe */
+const SWIPE_AXIS_RATIO = 1.5
+/** A slow drag is a hold/scroll correction, not a flick */
+const SWIPE_MAX_MS = 800
 
 export function HeroClassic() {
   const [index, setIndex] = useState(0)
@@ -21,6 +42,7 @@ export function HeroClassic() {
   const lastJumpAtRef = useRef(0)
   const heroRef = useRef<HTMLElement>(null)
   const swipeRef = useRef<HTMLDivElement>(null)
+  const swipeStartRef = useRef<{ id: number; x: number; y: number; t: number } | null>(null)
 
   const slideCount = classicHeroSlides.length
   const slide = classicHeroSlides[index]
@@ -62,6 +84,45 @@ export function HeroClassic() {
 
   const next = useCallback(() => jumpTo(indexRef.current + 1), [jumpTo])
   const prev = useCallback(() => jumpTo(indexRef.current - 1), [jumpTo])
+
+  /*
+    Touch/pen only — a mouse drag over the hero is text selection, not a swipe.
+    Touch pointers get implicit capture from `pointerdown`, so `pointerup`
+    lands back here even if the finger drifts off the section.
+  */
+  const onPointerDown = useCallback((e: ReactPointerEvent) => {
+    if (e.pointerType === 'mouse') return
+    swipeStartRef.current = {
+      id: e.pointerId,
+      x: e.clientX,
+      y: e.clientY,
+      t: performance.now(),
+    }
+  }, [])
+
+  const onPointerUp = useCallback(
+    (e: ReactPointerEvent) => {
+      const start = swipeStartRef.current
+      if (!start || start.id !== e.pointerId) return
+      swipeStartRef.current = null
+
+      const dx = e.clientX - start.x
+      const dy = e.clientY - start.y
+      if (Math.abs(dx) < SWIPE_MIN_PX) return
+      if (Math.abs(dx) < Math.abs(dy) * SWIPE_AXIS_RATIO) return
+      if (performance.now() - start.t > SWIPE_MAX_MS) return
+
+      // Drag left = pull the next slide in; drag right = go back
+      if (dx < 0) next()
+      else prev()
+    },
+    [next, prev],
+  )
+
+  /* Browser took over the gesture (vertical scroll won) — abandon it */
+  const onPointerCancel = useCallback(() => {
+    swipeStartRef.current = null
+  }, [])
 
   const togglePause = useCallback(() => {
     const now = performance.now()
@@ -122,8 +183,17 @@ export function HeroClassic() {
     const MAINCOPY_COPY_GAP = 60
 
     const sync = () => {
+      const swipeRect = swipe.getBoundingClientRect()
+      /*
+        ≤767 hides the swipe block (`display: none`), where a zero rect would
+        otherwise read as `top: 0` and publish `-heroTop` as the pin once the
+        page is scrolled. Mobile doesn't consume either custom property, so
+        just leave the last desktop values alone.
+      */
+      if (swipeRect.width === 0 && swipeRect.height === 0) return
+
       const heroTop = hero.getBoundingClientRect().top
-      const swipeTop = swipe.getBoundingClientRect().top - heroTop
+      const swipeTop = swipeRect.top - heroTop
       if (swipeTop > 0) hero.style.setProperty('--hero-swipe-top', `${swipeTop}px`)
 
       const maincopy = hero.querySelector<HTMLElement>('.hero__maincopy')
@@ -180,6 +250,9 @@ export function HeroClassic() {
       className="hero"
       aria-label="메인 비주얼"
       data-header-theme="dark"
+      onPointerDown={onPointerDown}
+      onPointerUp={onPointerUp}
+      onPointerCancel={onPointerCancel}
     >
       <div className="hero__bg">
         {classicHeroSlides.map((item, i) => (
