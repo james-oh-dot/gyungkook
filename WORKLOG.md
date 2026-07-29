@@ -1539,3 +1539,27 @@ overflow-x:auto; scroll-snap-type:x mandatory`로 교체. 카드 간 2px 간격(
 Playwright: 소식 3카드 → next 2회 클릭 시 next 비활성화, prev로 되감으면 시작점에서
 prev 비활성화. 활동보도 5카드 → next 5회 클릭 후 next 비활성화 확인. 768/1440에서
 `.card-track-nav` 비가시 확인. lint/tsc/build 통과.
+
+## 2026-07-29 — 소식·공지/활동·보도 카드 타이틀 -10px, 캐러셀 버튼 52px 직각 프레임
+
+### 타이틀 폰트 -10px
+- 소식·공지: 32px → 22px. 2줄 클램프 높이 박스(`.notice-card__title`)도 84px →
+  58px로 같이 줄여, 작아진 폰트 아래 빈 공간이 남지 않게 했다.
+- 활동·보도: `clamp(20px, 1.35vw, 26px)` — 실사용 뷰포트(~1480px 미만)에서는
+  거의 항상 하한 20px가 그대로 렌더되므로, 문자 그대로 -10 적용 시
+  `clamp(10px, 1.35vw, 16px)`가 되어 대부분 화면에서 10px. 스크린샷으로 확인하니
+  타이틀이 `.press-card__desc`(18px)보다 작아져 위계가 뒤집혔다. 사용자 확인 후
+  `clamp(18px, 1.35vw, 20px)`로 조정 — 축소 의도는 살리되 설명글보다는 항상 크게.
+
+### 캐러셀 이전/다음 버튼 — 52px 직각 프레임
+기존 버튼은 44px 히트박스에 테두리 없이 아이콘만 떠 있었다. HeroClassic 모바일
+prev/next(`.hero__gage-btns`, ≤767, 52px 정사각)와 같은 크기·직각(border-radius:0)
+프레임으로 통일. 히어로는 사진 위 다크 글래스였지만 이 버튼은 흰/틴트 배경 카드
+섹션 위라 라이트 테마로 재해석: `border: 1px solid var(--color-gray-100)` +
+`background: var(--color-white)`(`.press-card`의 테두리 언어와 동일), hover/focus는
+`.press-card:hover`와 같은 teal 40% 보더.
+
+### 검증
+Playwright: 버튼 실측 52×52, border-radius 0px, 클릭 후 상태 동기화 정상.
+768/1440에서 캐러셀 UI 비가시 확인. 타이틀 폰트: 모바일/데스크탑에서 소식 22px,
+활동보도 18~19.44px(항상 desc 18px 이상). lint/tsc/build 통과.
