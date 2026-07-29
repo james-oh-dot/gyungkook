@@ -869,25 +869,57 @@
     margin-left: -1px;
   }
 
-  /* Out of the thumb-card corner stack, into a plain centred row */
+  /*
+    Outline instead of filled glass. This row sits at bottom:24px, past the
+    veil's #000 72% stop below, so it's already on solid black — a translucent
+    fill/blur had nothing left to add, and the box-shadow had no elevation to
+    sell against a flat backdrop. A brighter border carries the visibility
+    the fill used to.
+  */
   .hero__gage-btns {
     position: static;
     width: 52px;
     height: 52px;
+    border-color: rgba(255, 255, 255, 0.7);
+    background: none;
+    box-shadow: none;
+    backdrop-filter: none;
   }
 
-  /* The button — not its wrapper — has to be the 52px tap target */
+  /*
+    The button — not its wrapper — has to be the 52px tap target. Full
+    opacity at rest: the base 0.85 was tuned to sit on top of the glass fill,
+    which is gone now.
+  */
   .hero__gage-btns button {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 1;
   }
 
   .hero__gage-btns img {
     width: 24px;
     height: 24px;
+  }
+
+  /*
+    Touch-only feedback. Mobile browsers fire a synthetic `:hover` on tap that
+    can stay latched afterward, so hover is neutralized back to the resting
+    look and `:active` (the real touch) carries the state change instead.
+    `:focus-visible` is left alone — keyboard/screen-reader feedback shouldn't
+    depend on a pointer being present.
+  */
+  .hero__gage-btns button:hover {
+    opacity: 1;
+    transform: none;
+  }
+
+  .hero__gage-btns button:active {
+    opacity: 0.55;
+    transform: scale(0.92);
   }
 
   /*
