@@ -12,6 +12,7 @@ import { LineReveal } from '../LineReveal'
 import { WordReveal } from '../WordReveal'
 import { asset } from '../../utils/asset'
 import { useScrollGage } from '../../hooks/useScrollGage'
+import { useCardTrackNav } from '../../hooks/useCardTrackNav'
 import { useReversibleInView } from '../../hooks/useReversibleInView'
 import { resolveNavHref } from '../../utils/path'
 import {
@@ -71,7 +72,54 @@ function TextBtn({
   )
 }
 
+/**
+ * Mobile-only prev/next pair for the Notice/Press home carousels (hidden via
+ * CSS ≥768px — those breakpoints keep the multi-column grid, nothing to page
+ * through). Same glass chrome + `icon-arrow.svg` + butted-seam layout as
+ * HeroClassic's mobile prev/next (`.hero__gage-btns`, ≤767) — reused as-is
+ * rather than re-derived, down to the `.is-flip` rotate for prev.
+ */
+function CardTrackNav({
+  prev,
+  next,
+  canPrev,
+  canNext,
+  label,
+}: {
+  prev: () => void
+  next: () => void
+  canPrev: boolean
+  canNext: boolean
+  label: string
+}) {
+  return (
+    <div className="card-track-nav">
+      <button
+        type="button"
+        className="card-track-nav__btn is-prev"
+        onClick={prev}
+        disabled={!canPrev}
+        aria-label={`이전 ${label}`}
+      >
+        <img src={asset('assets/icon-arrow.svg')} alt="" className="is-flip" draggable={false} />
+      </button>
+      <button
+        type="button"
+        className="card-track-nav__btn is-next"
+        onClick={next}
+        disabled={!canNext}
+        aria-label={`다음 ${label}`}
+      >
+        <img src={asset('assets/icon-arrow.svg')} alt="" draggable={false} />
+      </button>
+    </div>
+  )
+}
+
 export function NoticeSection() {
+  const trackRef = useRef<HTMLDivElement>(null)
+  const nav = useCardTrackNav(trackRef)
+
   return (
     <section id="notice" className="section notice-section" aria-labelledby="notice-title">
       <div className="section-head">
@@ -88,7 +136,8 @@ export function NoticeSection() {
           <TextBtn label="전체보기" to="/news/notice" />
         </Reveal>
       </div>
-      <div className="notice-grid">
+      <CardTrackNav {...nav} label="소식·공지" />
+      <div className="notice-grid" ref={trackRef}>
         {notices.map((item, index) => (
           <Reveal key={item.title} delay={index * 120}>
             <a
@@ -442,6 +491,7 @@ export function PressSection() {
     setGageHover,
     onGagePointerDown,
   } = useScrollGage({ activeHeight: 20 })
+  const nav = useCardTrackNav(trackRef)
 
   const items = pressItems.slice(0, 5)
 
@@ -462,6 +512,7 @@ export function PressSection() {
           <TextBtn label="전체보기" to="/press/coverage/tv" />
         </Reveal>
       </div>
+      <CardTrackNav {...nav} label="활동·보도" />
 
       <div
         className="press-list-wrap"

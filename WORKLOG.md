@@ -1504,3 +1504,82 @@ CDP 터치 스와이프 회귀 전부 통과. lint/tsc/build 통과.
 
 베일도 68% 지점에서 solid로 떨어지도록 재조정(`…0.72 66%, #000 72%`)해서 사진이
 카피 밴드로 자연스럽게 녹아들게 했다 — 안 하면 이미지 하단에 하드 심이 생긴다.
+
+## 2026-07-29 — 홈 소식·공지 / 활동·보도 모바일 카드 캐러셀
+
+3개(소식) / 5개(활동보도) 카드를 세로로 쌓던 모바일(≤767) 레이아웃을, 우측 상단
+이전/다음 버튼으로 넘기는 1-카드 스와이프 캐러셀로 전환.
+
+### 공용 훅 `useCardTrackNav(trackRef)`
+스크롤 컨테이너 ref 하나만 받아 `canPrev`/`canNext`/`prev`/`next`를 돌려준다.
+버튼 클릭은 `el.scrollBy({ left: dir * el.clientWidth, behavior:'smooth' })` —
+이 훅이 쓰이는 두 캐러셀 모두 모바일 전용(카드 1장 = 트랙 전체 너비)이라 카드별
+실측 없이 트랙 너비 자체가 1스텝이다. `scroll` 이벤트로 `scrollLeft`를 읽어 양끝
+버튼을 비활성화(터치 스와이프로 직접 넘겨도 동기화됨).
+
+### NoticeSection
+기존엔 스크롤 인프라가 없어 `.notice-grid`에 직접 `ref`를 달고, 모바일 블록에서
+`grid-template-columns:1fr`(세로 스택) → `grid-auto-flow:column; grid-auto-columns:100%;
+overflow-x:auto; scroll-snap-type:x mandatory`로 교체. 카드 간 2px 간격(데스크톱과
+동일한 "이음매" 정체성)은 유지.
+
+### PressSection
+이미 `.press-list-wrap`(`useScrollGage`의 trackRef)가 `overflow-x:auto` 스크롤
+컨테이너였다 — 같은 ref를 `useCardTrackNav`에도 넘겨 버튼만 추가. 기존 드래그
+게이지(`.press-gage`)는 그대로 두어 진행률 표시 겸용으로 공존.
+
+### 버튼 UI `CardTrackNav`
+`TextBtn`의 "전체보기" 아이콘(`assets/icon-btn.svg`, 라이트 배경용 다크 화살표)을
+재사용 — prev는 `scaleX(-1)` 미러링만으로 새 에셋 없이 해결. 44px 히트 영역 안에
+32px 아이콘(`TextBtn` 아이콘과 동일 크기로 시각 언어 통일). `.card-track-nav`는
+데스크톱/태블릿에서 `display:none`, ≤767에서만 노출 — "모바일에서"라는 요청 범위를
+넘지 않는다.
+
+### 검증
+Playwright: 소식 3카드 → next 2회 클릭 시 next 비활성화, prev로 되감으면 시작점에서
+prev 비활성화. 활동보도 5카드 → next 5회 클릭 후 next 비활성화 확인. 768/1440에서
+`.card-track-nav` 비가시 확인. lint/tsc/build 통과.
+
+## 2026-07-29 — 소식·공지/활동·보도 카드 타이틀 -10px, 캐러셀 버튼 52px 직각 프레임
+
+### 타이틀 폰트 -10px
+- 소식·공지: 32px → 22px. 2줄 클램프 높이 박스(`.notice-card__title`)도 84px →
+  58px로 같이 줄여, 작아진 폰트 아래 빈 공간이 남지 않게 했다.
+- 활동·보도: `clamp(20px, 1.35vw, 26px)` — 실사용 뷰포트(~1480px 미만)에서는
+  거의 항상 하한 20px가 그대로 렌더되므로, 문자 그대로 -10 적용 시
+  `clamp(10px, 1.35vw, 16px)`가 되어 대부분 화면에서 10px. 스크린샷으로 확인하니
+  타이틀이 `.press-card__desc`(18px)보다 작아져 위계가 뒤집혔다. 사용자 확인 후
+  `clamp(18px, 1.35vw, 20px)`로 조정 — 축소 의도는 살리되 설명글보다는 항상 크게.
+
+### 캐러셀 이전/다음 버튼 — 52px 직각 프레임
+기존 버튼은 44px 히트박스에 테두리 없이 아이콘만 떠 있었다. HeroClassic 모바일
+prev/next(`.hero__gage-btns`, ≤767, 52px 정사각)와 같은 크기·직각(border-radius:0)
+프레임으로 통일. 히어로는 사진 위 다크 글래스였지만 이 버튼은 흰/틴트 배경 카드
+섹션 위라 라이트 테마로 재해석: `border: 1px solid var(--color-gray-100)` +
+`background: var(--color-white)`(`.press-card`의 테두리 언어와 동일), hover/focus는
+`.press-card:hover`와 같은 teal 40% 보더.
+
+### 검증
+Playwright: 버튼 실측 52×52, border-radius 0px, 클릭 후 상태 동기화 정상.
+768/1440에서 캐러셀 UI 비가시 확인. 타이틀 폰트: 모바일/데스크탑에서 소식 22px,
+활동보도 18~19.44px(항상 desc 18px 이상). lint/tsc/build 통과.
+
+## 2026-07-29 — 캐러셀 이전/다음 버튼을 히어로 섹션 버튼으로 교체
+
+앞서 만든 라이트 테마(흰 배경 + 회색 테두리) 대신, HeroClassic 모바일 prev/next
+(`.hero__gage-btns`, ≤767)를 그대로 재사용 — 크기만 맞춘 게 아니라 크롬 자체를
+그대로 가져왔다.
+- `border: 1px solid rgba(255,255,255,.24)` + `background: rgba(10,18,20,.34)` +
+  `box-shadow: 0 10px 24px rgba(0,0,0,.22)` + `backdrop-filter: blur(18px) saturate(1.55)`.
+  사진이 아닌 흰/틴트 배경 위라 블러가 블러할 대상이 없지만, 같은 rgba 값이라
+  반투명 다크 글래스로 그대로 읽힌다.
+- 아이콘을 `icon-btn.svg`(라이트용, scaleX 미러) → `icon-arrow.svg`(화이트 스트로크
+  화살표, 24px) + `.is-flip { rotate(180deg) }`로 교체 — 히어로와 완전히 동일한
+  마크업 패턴.
+- 버튼 간격도 히어로처럼 `gap:0` + `.is-next { margin-left:-1px }`로 밀착시켜
+  단일 1px 심으로 통일(이전엔 8px 간격으로 떨어져 있었음).
+
+### 검증
+버튼 실측 52×52 유지, border-radius 0 유지, 스크린샷으로 다크 글래스+흰 화살표+
+밀착 심 확인. 소식 3카드/활동보도 5카드 버튼 활성화·비활성화 전환 회귀 재통과.
+768/1440 비가시 확인. lint/tsc/build 통과.
