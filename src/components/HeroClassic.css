@@ -27,6 +27,13 @@
   background: #000;
   color: #fff;
   overflow: hidden;
+  /*
+    Horizontal drags belong to the slide swipe (HeroClassic.tsx pointer
+    handlers) — claiming the x-axis stops the browser firing `pointercancel`
+    mid-gesture. `pan-y` keeps page scroll native; `pinch-zoom` must stay in
+    the list so the hero never blocks zoom.
+  */
+  touch-action: pan-y pinch-zoom;
 }
 
 /* Desktop → mid-width scale ramp (same steps as teal Hero) */
@@ -772,13 +779,48 @@
   .hero {
     --hero-pad-x: 20px;
     --hero-pad-top: 100px;
-    /*
-      Swipe card was 100×100 — too small for thumb + gage hit targets.
-      ~2× width / ~1.5× height; reserve grows with the taller card.
-    */
-    --hero-swipe-reserve: 288px;
-    --hero-thumb-w: 200px;
-    --hero-thumb-h: 150px;
+  }
+
+  /*
+    Mobile drops the swipe block entirely, so the frame has nothing to stop
+    above: the artwork goes full-bleed behind the copy. `inset` must beat the
+    base rule's `left`/`height` — keep width/height `auto` so the four offsets
+    are what size the box. Ken Burns still runs on the inner layers.
+  */
+  .hero__bg-slide > .progressive-image {
+    inset: 0;
+    width: auto;
+    height: auto;
+  }
+
+  /*
+    Manual slide controls are removed here — the thumb card + gage ate a third
+    of the viewport on a phone. Slides keep rotating on the 10s rAF timer in
+    HeroClassic.tsx, which does not depend on this block being rendered.
+  */
+  .hero__swipe {
+    display: none;
+  }
+
+  /*
+    Copy now sits on the artwork instead of the black band that used to be
+    below it. The base veil ramps left→right for the desktop left column, so a
+    full-width mobile headline washes out over bright frames — swap in a
+    top/bottom scrim that tracks where the copy actually is.
+  */
+  .hero__bg-veil {
+    background: linear-gradient(
+      180deg,
+      rgba(0, 0, 0, 0.45) 0%,
+      rgba(0, 0, 0, 0.15) 28%,
+      rgba(0, 0, 0, 0.45) 55%,
+      rgba(0, 0, 0, 0.88) 100%
+    );
+  }
+
+  .hero__content {
+    /* No swipe card to clear — copy just sits above the bottom edge */
+    padding-bottom: 56px;
   }
 
   .hero__title {
@@ -788,53 +830,6 @@
 
   .hero__desc {
     line-height: 1.7;
-  }
-
-  .hero__swipe-preview {
-    width: var(--hero-thumb-w);
-  }
-
-  .hero__swipe-thumb {
-    border-width: 3px;
-  }
-
-  .hero__swipe-meta {
-    top: 0;
-    left: 0;
-    right: 0;
-    min-height: 48px;
-    padding: 8px 12px;
-    font-size: 14px;
-  }
-
-  .hero__gage-track {
-    width: var(--hero-thumb-w);
-    gap: 10px;
-  }
-
-  .hero__gage-no {
-    font-size: 14px;
-  }
-
-  .hero__gage-btns {
-    right: 0;
-    bottom: 0;
-    width: 44px;
-    height: 44px;
-  }
-
-  .hero__gage-btns--pause {
-    right: 44px;
-  }
-
-  .hero__gage-btns--prev {
-    right: 88px;
-  }
-
-  .hero__gage-btns button,
-  .hero__gage-btns img {
-    width: 28px;
-    height: 28px;
   }
 }
 
