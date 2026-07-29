@@ -190,25 +190,18 @@ p {
   height: 32px;
 }
 
-/*
-  Notice/Press mobile carousel controls — hidden by default; ≤767 owns
-  display:flex. `gap: 0` + `.is-next { margin-left: -1px }` below butt the
-  pair onto a single shared 1px seam, same as HeroClassic's mobile prev/next.
-*/
+/* Notice/Press mobile carousel controls — hidden by default; ≤767 owns display:flex */
 .card-track-nav {
   display: none;
-  gap: 0;
-}
-
-.card-track-nav .is-next {
-  margin-left: -1px;
+  gap: 4px;
 }
 
 /*
-  Same glass chrome as HeroClassic's mobile prev/next (`.hero__gage-btns`,
-  ≤767) reused verbatim, not just size-matched — dark frosted square, white
-  hairline border. It sits on flat white/tint here instead of photo, but the
-  identical rgba values keep it reading as the same button everywhere.
+  Same 52px tap target and glyph as HeroClassic's mobile prev/next
+  (`.hero__gage-btns`, ≤767), but no glass box. That chrome (border + dark
+  fill + blur) was designed to sit on a photo; on a plain white/tint section
+  it had nothing to blur and read as a frame nested inside the button's own
+  bounds. Borderless keeps the same icon, size, and hit area without it.
 */
 .card-track-nav__btn {
   display: flex;
@@ -217,30 +210,36 @@ p {
   width: 52px;
   height: 52px;
   padding: 0;
-  border: 1px solid rgba(255, 255, 255, 0.24);
-  background: rgba(10, 18, 20, 0.34);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.22);
-  backdrop-filter: blur(18px) saturate(1.55);
+  border: 0;
+  background: none;
+  color: var(--color-black);
   cursor: pointer;
-  opacity: 0.85;
-  transition:
-    opacity 0.35s var(--ease-premium),
-    transform 0.35s var(--ease-premium);
+  transition: color 0.35s var(--ease-premium);
 }
 
 .card-track-nav__btn:hover:not(:disabled),
 .card-track-nav__btn:focus-visible:not(:disabled) {
-  opacity: 1;
-  transform: translateY(-1px);
+  color: var(--color-teal);
 }
 
-.card-track-nav__btn img {
+/*
+  `icon-arrow.svg` ships a hard-coded `stroke="white"` (fine over the hero's
+  photo, invisible here) — used as a mask instead so `currentColor` recolors
+  it, same technique as `.quicknav__icon`. Standard `mask-*` only — lightningcss
+  adds the -webkit- alias at build; hand-writing both drops the standard one.
+*/
+.card-track-nav__icon {
+  display: block;
   width: 24px;
   height: 24px;
-  display: block;
+  background-color: currentColor;
+  mask-image: var(--card-track-nav-icon);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 24px 24px;
 }
 
-.card-track-nav__btn img.is-flip {
+.card-track-nav__icon.is-flip {
   transform: rotate(180deg);
 }
 
