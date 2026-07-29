@@ -11,6 +11,16 @@ export type ClassicHeroSlide = {
   image: string
   imagePreview: string
   nextImage: string
+  /**
+   * Mobile-only framing hint (≤767, where the hero goes full-bleed portrait).
+   * A 390×844 cover crop keeps only ~26% of a 1600×900 source, so slides whose
+   * subject sits off-centre get sliced in half at the default centre anchor.
+   * Rendering lives in HeroClassic.css — `.hero__bg-slide--frame-*`.
+   * - `right`: anchor the source's right edge
+   * - `flip-right`: mirror the layer and anchor so the subject sits on the
+   *   right of the frame, leaving the darker half under the copy
+   */
+  mobileFrame?: 'right' | 'flip-right'
 }
 
 /** Auto-advance + swipe_gage fill duration. Button jumps must reset immediately. */
@@ -80,6 +90,9 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
     image: CLASSIC_HERO_04.src,
     imagePreview: CLASSIC_HERO_04.preview,
     nextImage: asset('assets/classic/hero-04-next.jpg'),
+    /* Lit lamp + bird sit on the source's left; unmirrored, a right crop is
+       almost entirely black sky. */
+    mobileFrame: 'flip-right',
   },
   {
     id: 5,
@@ -94,5 +107,7 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
     image: CLASSIC_HERO_05.src,
     imagePreview: CLASSIC_HERO_05.preview,
     nextImage: asset('assets/classic/hero-05-next.jpg'),
+    /* Courthouse is the right third of the panorama */
+    mobileFrame: 'right',
   },
 ]

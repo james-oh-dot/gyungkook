@@ -258,7 +258,9 @@ export function HeroClassic() {
         {classicHeroSlides.map((item, i) => (
           <div
             key={item.id}
-            className={`hero__bg-slide${i === index ? ' is-active' : ''}`}
+            className={`hero__bg-slide${i === index ? ' is-active' : ''}${
+              item.mobileFrame ? ` hero__bg-slide--frame-${item.mobileFrame}` : ''
+            }`}
           >
             <ProgressiveImage
               src={item.image}
