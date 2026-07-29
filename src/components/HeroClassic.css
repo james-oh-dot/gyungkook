@@ -791,15 +791,19 @@
   }
 
   /*
-    The frame has nothing to stop above here, so the artwork goes full-bleed
-    behind the copy. `inset` must beat the base rule's `left`/`height` — keep
-    width/height `auto` so the four offsets are what size the box. Ken Burns
-    still runs on the inner layers.
+    Full-width, but stopping at 68% height — NOT full-bleed, and that is the
+    whole point. A 390×844 box crops a 1600×900 source to 26% of its width,
+    which is narrower than the subject on slides 04/05 (the courthouse alone
+    spans ~40%), so at full height they can only ever show a fragment. 68%
+    widens the visible strip to ~38% of the source, which is the shallowest
+    box the courthouse fits in. Do not raise this back toward 100% without
+    re-checking slide 05.
+    `inset` overrides the base rule's `left`; `height` then wins over `bottom`.
   */
   .hero__bg-slide > .progressive-image {
-    inset: 0;
+    inset: 0 0 auto 0;
     width: auto;
-    height: auto;
+    height: 68%;
   }
 
   /*
@@ -887,18 +891,19 @@
   }
 
   /*
-    Copy now sits on the artwork instead of the black band that used to be
-    below it. The base veil ramps left→right for the desktop left column, so a
-    full-width mobile headline washes out over bright frames — swap in a
-    top/bottom scrim that tracks where the copy actually is.
+    The base veil ramps left→right for the desktop left column, which washes
+    out a full-width mobile headline. Swap in a vertical scrim that stays light
+    across the artwork and goes solid right where the image ends (68%), so the
+    photo dissolves into the copy band instead of cutting off at a hard seam.
   */
   .hero__bg-veil {
     background: linear-gradient(
       180deg,
       rgba(0, 0, 0, 0.45) 0%,
-      rgba(0, 0, 0, 0.15) 28%,
-      rgba(0, 0, 0, 0.45) 55%,
-      rgba(0, 0, 0, 0.88) 100%
+      rgba(0, 0, 0, 0.08) 26%,
+      rgba(0, 0, 0, 0.18) 50%,
+      rgba(0, 0, 0, 0.72) 66%,
+      #000 72%
     );
   }
 
