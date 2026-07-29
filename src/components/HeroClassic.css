@@ -130,14 +130,19 @@
   will-change: transform;
 }
 
-/* Full layer: fills the frame at rest (1), grows to 1.08 across the 10s slide */
+/*
+  Full layer: fills the frame at rest (1), grows to 1.08 across the 10s slide.
+  `--hero-flip-x` is the per-slide mirror (-1) used by the mobile framing rules
+  below; it multiplies into the same transform so Ken Burns keeps running on a
+  flipped slide.
+*/
 .hero__bg-slide > .progressive-image .progressive-image__full {
-  transform: scale(calc(1 + var(--hero-zoom) * 0.08));
+  transform: scaleX(var(--hero-flip-x, 1)) scale(calc(1 + var(--hero-zoom) * 0.08));
 }
 
 /* Preview keeps its 1.08 blur-fringe base so no transparent edge shows */
 .hero__bg-slide > .progressive-image .progressive-image__preview {
-  transform: scale(calc(1.08 + var(--hero-zoom) * 0.08));
+  transform: scaleX(var(--hero-flip-x, 1)) scale(calc(1.08 + var(--hero-zoom) * 0.08));
 }
 
 .hero__bg-slide.is-active > .progressive-image {
@@ -616,9 +621,13 @@
   }
 
   /* No Ken Burns: frame and bitmap both sit at rest, image still fills */
-  .hero__bg-slide > .progressive-image,
-  .hero__bg-slide > .progressive-image .progressive-image__full {
+  .hero__bg-slide > .progressive-image {
     transform: none;
+  }
+
+  /* Zoom drops out, but the per-slide mirror is framing — it has to survive */
+  .hero__bg-slide > .progressive-image .progressive-image__full {
+    transform: scaleX(var(--hero-flip-x, 1));
   }
 
   .char-reveal__item,
@@ -782,10 +791,10 @@
   }
 
   /*
-    Mobile drops the swipe block entirely, so the frame has nothing to stop
-    above: the artwork goes full-bleed behind the copy. `inset` must beat the
-    base rule's `left`/`height` — keep width/height `auto` so the four offsets
-    are what size the box. Ken Burns still runs on the inner layers.
+    The frame has nothing to stop above here, so the artwork goes full-bleed
+    behind the copy. `inset` must beat the base rule's `left`/`height` — keep
+    width/height `auto` so the four offsets are what size the box. Ken Burns
+    still runs on the inner layers.
   */
   .hero__bg-slide > .progressive-image {
     inset: 0;
@@ -794,12 +803,80 @@
   }
 
   /*
-    Manual slide controls are removed here — the thumb card + gage ate a third
-    of the viewport on a phone. Slides keep rotating on the 10s rAF timer in
-    HeroClassic.tsx, which does not depend on this block being rendered.
+    Portrait cover crop keeps only ~26% of a 1600×900 source, so a slide whose
+    subject sits off-centre gets sliced in half at the default centre anchor.
+    Which slides need an anchor is data — `mobileFrame` in slidesClassic.ts.
+  */
+  /* `> .progressive-image` is load-bearing: the base `object-position` rule is
+     3 classes deep, so a 2-class selector here would silently lose. */
+  .hero__bg-slide--frame-right > .progressive-image .progressive-image__preview,
+  .hero__bg-slide--frame-right > .progressive-image .progressive-image__full {
+    object-position: right center;
+  }
+
+  /*
+    Mirrored, with the subject weighted to the right so the copy keeps the
+    darker left half. The percentage reads inverted on purpose: it anchors in
+    the source's own axis, which `scaleX(-1)` then flips — 30% from the
+    source's left is the ~70% mark of the flipped image, which is where slide
+    04's lit lamp lands. A plain `right` here would anchor past the lamp and
+    leave bare night sky.
+  */
+  .hero__bg-slide--frame-flip-right > .progressive-image .progressive-image__preview,
+  .hero__bg-slide--frame-flip-right > .progressive-image .progressive-image__full {
+    object-position: 30% center;
+    --hero-flip-x: -1;
+  }
+
+  /*
+    Only the prev/next arrows survive — the thumb card, gage and pause button
+    are what ate a third of the viewport. They sit centred at the very bottom
+    as 52px touch targets, driving the same `next`/`prev` as the finger swipe.
   */
   .hero__swipe {
+    left: 0;
+    right: 0;
+    bottom: 24px;
+    width: 100%;
+    max-width: none;
+    padding: 0;
+    gap: 0;
+    zoom: 1;
+    transform: none;
+    align-items: center;
+  }
+
+  .hero__swipe-preview,
+  .hero__gage-track,
+  .hero__gage-btns--pause {
     display: none;
+  }
+
+  .hero__swipe-controls {
+    width: auto;
+    height: auto;
+    gap: 20px;
+  }
+
+  /* Out of the thumb-card corner stack, into a plain centred row */
+  .hero__gage-btns {
+    position: static;
+    width: 52px;
+    height: 52px;
+  }
+
+  /* The button — not its wrapper — has to be the 52px tap target */
+  .hero__gage-btns button {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero__gage-btns img {
+    width: 24px;
+    height: 24px;
   }
 
   /*
@@ -819,8 +896,8 @@
   }
 
   .hero__content {
-    /* No swipe card to clear — copy just sits above the bottom edge */
-    padding-bottom: 56px;
+    /* Clear the 52px arrow row plus its 24px bottom offset */
+    padding-bottom: 96px;
   }
 
   .hero__title {
