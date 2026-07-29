@@ -27,6 +27,15 @@
 
 ## Cursor Cloud specific instructions
 
+### Sync / handoff (2026-07-29)
+- **Live == `origin/main`.** Latest includes Claude Code merges **#133–#138** (branch `claude/o-boinida-98drdm`). Pages deploys on `main` via `.github/workflows/deploy-pages.yml`.
+- Claude recent UI stack already on `main` (see `WORKLOG.md` 2026-07-29):
+  - Mobile hero: full-bleed + touch swipe + per-slide crop anchors + bottom prev/next (≤767 outline / touch-only states, no glass fill)
+  - Home Notice / Press: mobile **card carousels** via `src/hooks/useCardTrackNav.ts` + `.card-track-nav` (hero-arrow chrome, no glass box)
+- Claude also added the top-of-file **백엔드 전달용 소스 추출** trigger (`handoff/backend-source` orphan branch) — keep that section; do not remove it when editing this file.
+- Before new work: `git checkout main && git pull origin main`, then `cursor/<name>-129f`. Prefer fresh tips off `main`; do not stack on stale `claude/o-boinida-98drdm` unless asked.
+- Dev readiness: `npm install` → `npm run dev` (`:5173`). Lint/build: `npm run lint` / `npm run build`. Frontend-only (no backend services).
+
 ### Product
 법무법인 경국 홈페이지 퍼블리싱 (Vite + React + TypeScript). Figma 소스: `AI_dev` 파일의 `HOME` / tablet / mobile 프레임.
 
@@ -86,7 +95,7 @@
   - 갤러리 section: **masonry** (`.gallery-grid`, Figma `94:3781`) — 3 cols × 5 rows, `grid-template-areas` with two 2×2 "big" tiles anchoring TL + BR; `aspect-ratio: 953/1233`. **Mobile (≤767)** drops the mosaic → uniform 2-col `aspect-ratio: 4/3` tiles. Tiles are **placeholder gradients** until real 경국인 photos arrive.
   - Data: `src/data/gallery.ts`; GNB `about-gallery` → `/about/gallery`, visual `sub-01-04` (`nav.ts` `GNB_SUB_VISUAL_ABOUT_GALLERY`). Replaced the old PlaceholderPage route.
   - **sub-01-04 hero (2026-07-21):** metallic-pyramid photo, extracted from Figma (node 94:3371) via `get_screenshot`; baked "경국인 · 갤러리" title painted out (cv2 inpaint) so `SubVisual` overlays its own live title. A faint inpaint residue on the regular grid pattern sits under the scrim + live title and is not visible in practice.
-- **연혁수상인증 / 오시는길** (법무법인경국 5th–6th): still `PlaceholderPage` (“곧 업데이트예정”) but heroes + GNB visuals use progressive pairs `sub-01-05` / `sub-01-06` (`placeholderPages.ts` per-page `visual` override; `nav.ts` `GNB_SUB_VISUAL_ABOUT_HISTORY` / `_LOCATION`). Do not point these stubs back at shared `sub-01-01`.
+- **연혁수상인증 / 오시는길** (법무법인경국 5th–6th): real pages — `/about/history` → `HistoryPage`, `/about/location` → `LocationPage` (progressive heroes `sub-01-05` / `sub-01-06`). Not placeholders.
 - **변호사 · 자문단** (법무법인경국 3rd / Figma `sub-01-03`):
   - **Entry** `/about/lawyers` → `LawyersDirectoryPage` (Figma `105:1229`) — SubVisual title **변호사 · 자문단** + **변호사단** 4 cards + **자문단** 5 cards. GNB label / hover visual = same (`nav.ts` `about-lawyers` → `sub-01-03`).
   - **변호사단 card** → SPA profile `/about/lawyers/:lawyerId` (공대호 등). **자문단 card** → **no route** — in-page **drawer** (desktop/tablet: right slide-in, max-width 900px / 90%, height 100%; mobile ≤767: bottom sheet width 100% / max-height 80%). Sharp-rect, rich hover/focus motion.
