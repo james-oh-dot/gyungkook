@@ -839,11 +839,12 @@
     bottom: 24px;
     width: 100%;
     max-width: none;
-    padding: 0;
+    /* Line the arrows up with the copy's left edge */
+    padding: 0 var(--hero-pad-x);
     gap: 0;
     zoom: 1;
     transform: none;
-    align-items: center;
+    align-items: flex-start;
   }
 
   .hero__swipe-preview,
@@ -855,7 +856,13 @@
   .hero__swipe-controls {
     width: auto;
     height: auto;
-    gap: 20px;
+    gap: 0;
+    justify-content: flex-start;
+  }
+
+  /* Butt the pair together on a single shared 1px seam, not a double border */
+  .hero__gage-btns--next {
+    margin-left: -1px;
   }
 
   /* Out of the thumb-card corner stack, into a plain centred row */
