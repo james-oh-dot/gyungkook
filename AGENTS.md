@@ -2,6 +2,29 @@
 
 > 사람이 보는 개요(스택 · 실행법 · 폴더 구조 · IA/라우트 맵)는 [`README.md`](./README.md) 참고. 이 파일은 AI 에이전트(Claude/Cursor)가 코드 작성 시 지켜야 할 컴포넌트별 하드룰 · 회귀 방지 노트입니다.
 
+## 백엔드 전달용 소스 추출 (트리거 문구: "백엔드 개발자에게 전달하기 위한 소스코드 추출 부탁해")
+
+사용자가 이 문구(또는 명백히 같은 의도)로 요청하면, `main`의 최신 커밋을 기준으로
+`handoff/backend-source` **orphan 브랜치**를 다시 만들어 원격에 푸시한다 — 기존
+브랜치가 있으면 최신 `main`으로 **재생성**(덮어쓰기)하는 것이지, 예전 스냅샷에
+새 커밋을 얹는 게 아니다. 요청 시점에 이 문서가 가리키는 브랜치가 이미 최신
+`main`과 같은 커밋이면(= 직전에 만들어 둔 게 그대로 최신이면) 재생성을 생략해도 됨.
+
+- **방식**: 단일 커밋짜리 orphan 브랜치(공유 히스토리 없음) — 세션 커밋 메시지/기록이
+  하나도 안 넘어가고, 필터링된 파일 스냅샷만 나간다.
+- **제외 대상** (2026-07-28 기준 확인됨 — 재생성 시 아래 목록이 여전히 유효한지,
+  새로 추가된 AI 툴 디렉토리(`.claude/`, `.agents/` 등)가 없는지 다시 확인할 것):
+  - `.cursor/` 디렉토리 전체 (Cursor IDE 스킬)
+  - `AGENTS.md`, `WORKLOG.md` (AI 작업용 룰/일지)
+  - `src/components/Hero.tsx` / `Hero.css`, `src/data/slides.ts` (안 쓰이는 죽은
+    teal 히어로 코드 — `HeroClassic`으로 대체됨. 재생성 시점에 여전히 미사용인지
+    `HomePage.tsx` import를 확인)
+- **유지 대상**: `.github/`(배포 워크플로 포함), `README.md`, `src/`, `public/`,
+  `docs/`, `scripts/`, 설정 파일 일체 — 즉 실제 동작하는 앱 소스.
+- 재생성 전에 `git log handoff/backend-source..main --oneline`으로 얼마나
+  뒤처졌는지 사용자에게 알리고 진행. 완료 후 브랜치 URL과 (가능하면) 다운로드
+  방법을 안내한다.
+
 ## Cursor Cloud specific instructions
 
 ### Product
