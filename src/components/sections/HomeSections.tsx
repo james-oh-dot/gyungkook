@@ -128,12 +128,15 @@ function GalleryCard({
   date,
   href,
   label,
+  chip,
 }: {
   title: string
   desc: string
   date: string
   href: string
   label: string
+  /** Category chip — used on 활동·보도 cards (TV방송, 컬럼, …). */
+  chip?: string
 }) {
   return (
     <a
@@ -146,6 +149,7 @@ function GalleryCard({
         <img src={asset('assets/icon-link-white.svg')} alt="" />
       </span>
       <div className="gallery-card__body">
+        {chip ? <span className="gallery-card__chip">{chip}</span> : null}
         <h3 className="gallery-card__title">{title}</h3>
         <p className="gallery-card__desc">{desc}</p>
         <time className="gallery-card__date" dateTime={date.replaceAll('.', '-')}>
@@ -566,6 +570,7 @@ export function PressSection() {
                 date={item.date}
                 href={href}
                 label={`${item.chip} 활동·보도`}
+                chip={item.chip}
               />
             </Reveal>
           )
