@@ -64,22 +64,11 @@
   position: relative;
   display: flex;
   align-items: center;
-  gap: 24px;
   flex: 0 0 auto;
 }
 
 .local-tabs__item + .local-tabs__item {
   margin-left: 24px;
-}
-
-.local-tabs__sep {
-  position: absolute;
-  left: -24px;
-  top: 50%;
-  width: 1px;
-  height: 11px;
-  background: #e5e5ec;
-  transform: translateY(-50%);
 }
 
 .local-tabs__link {
@@ -148,14 +137,6 @@
 
   .local-tabs__item + .local-tabs__item {
     margin-left: 16px;
-  }
-
-  .local-tabs__item {
-    gap: 16px;
-  }
-
-  .local-tabs__sep {
-    left: -16px;
   }
 
   .local-tabs__link {

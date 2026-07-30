@@ -254,9 +254,6 @@ export function LocalTabs(props: LocalTabsProps) {
                 onMouseEnter={() => setHoverIndex(index)}
                 onFocus={() => setHoverIndex(index)}
               >
-                {index > 0 ? (
-                  <span className="local-tabs__sep" aria-hidden="true" />
-                ) : null}
                 {toTab ? (
                   <NavLink
                     to={toTab(tab.id)}
