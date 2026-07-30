@@ -74,6 +74,8 @@ TARGETS: list[tuple[str, int]] = [
     ("sub/sub-01-01.jpg", 1920),
     ("sub/sub-01-02.jpg", 1920),
     ("sub/sub-01-03.jpg", 1920),
+    # Lawyer profile hero — pre-이미지교체 bright sub-01-03 (directory keeps sub-01-03)
+    ("sub/sub-01-03-profile.jpg", 1920),
     # 변호사 · 자문단 — card (3× ~897) + profile hero PNG (3× ~1467) + advisors
     ("lawyers/parkhyoyoung-card.jpg", 1200),
     ("lawyers/gongdaeho-card.jpg", 1200),
