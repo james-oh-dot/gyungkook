@@ -2,13 +2,13 @@
   Desktop-only quick consult strip above the footer.
   Hidden ≤1024 (tablet/mobile keep QuickNav / other contact paths).
   Brand chrome: sharp rect only — no border-radius.
+  Layout matches other home sections: `--section-y` / `--page-pad`, left copy + right form.
 */
 
 .quick-consult {
   --qc-ease: cubic-bezier(0.22, 1, 0.36, 1);
   --qc-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
   --qc-bg: #111;
-  --qc-panel: #171717;
   --qc-line: rgba(255, 255, 255, 0.14);
   --qc-muted: rgba(255, 255, 255, 0.58);
   --qc-fg: #fff;
@@ -16,6 +16,7 @@
   --qc-teal-deep: var(--color-teal-deep, #086b66);
 
   display: none;
+  /* `.section` already supplies pad; keep dark fill + dark GNB theme */
   background: var(--qc-bg);
   color: var(--qc-fg);
   position: relative;
@@ -32,11 +33,11 @@
 .quick-consult::before {
   content: '';
   position: absolute;
-  inset: auto -10% -40% 40%;
+  inset: auto -10% -40% 35%;
   height: 70%;
   background: radial-gradient(
     ellipse at center,
-    rgba(0, 128, 117, 0.22) 0%,
+    rgba(0, 128, 117, 0.2) 0%,
     rgba(0, 128, 117, 0) 68%
   );
   pointer-events: none;
@@ -45,19 +46,22 @@
 .quick-consult__inner {
   position: relative;
   z-index: 1;
+  /* Same left/right split language as `.office` */
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-  gap: 56px;
-  align-items: start;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 96px var(--page-pad, 32px) 88px;
+  grid-template-columns: minmax(240px, 0.85fr) minmax(0, 1.55fr);
+  gap: clamp(40px, 5vw, 88px);
+  align-items: center;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
 
 /* ---------- Intro (stagger on inview) ---------- */
 .quick-consult__intro {
-  padding-top: 8px;
+  padding-top: 0;
+  min-width: 0;
 }
 
 .quick-consult__eyebrow,
@@ -96,53 +100,67 @@
 }
 
 .quick-consult__eyebrow {
-  margin: 0 0 12px;
+  margin: 0;
   color: var(--qc-teal);
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.14em;
-  line-height: 1.4;
+  letter-spacing: -0.025em;
+  line-height: 1.45;
 }
 
 .quick-consult__title {
-  margin: 0 0 16px;
-  font-family: var(--font-serif, 'Nanum Myeongjo', Georgia, serif);
-  font-size: clamp(36px, 3.2vw, 48px);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.25;
+  margin: 8px 0 0;
+  /* Match other section titles — Pretendard, not serif */
+  font-family: var(--font);
+  font-size: clamp(36px, 3.33vw, 64px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+  color: #fff;
 }
 
 .quick-consult__desc {
-  margin: 0;
-  max-width: 34ch;
-  color: var(--qc-muted);
+  margin: 8px 0 0;
+  max-width: 28ch;
+  color: rgba(255, 255, 255, 0.62);
   font-size: 16px;
-  line-height: 1.65;
-  letter-spacing: -0.02em;
+  line-height: 1.45;
+  letter-spacing: -0.025em;
 }
 
-/* ---------- Form panel ---------- */
+/* ---------- Form panel (unboxed — sits in the section like office right) ---------- */
 .quick-consult__panel {
-  background: var(--qc-panel);
-  border: 1px solid var(--qc-line);
-  box-shadow:
-    0 28px 60px -20px rgba(0, 0, 0, 0.55),
-    inset 0 1px 0 rgba(255, 255, 255, 0.04);
-  padding: 36px 36px 32px;
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
   box-sizing: border-box;
 }
 
 .quick-consult__form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 28px;
+  width: 100%;
 }
 
-.quick-consult__fields {
+.quick-consult__row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 20px;
+  align-items: end;
+  width: 100%;
+}
+
+/* Name | Phone | Message — stretched horizontal */
+.quick-consult__row--inputs {
+  grid-template-columns: minmax(120px, 0.7fr) minmax(150px, 0.85fr) minmax(0, 1.6fr);
+}
+
+.quick-consult__row--meta {
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 24px;
 }
 
 .quick-consult__field {
@@ -151,6 +169,7 @@
   flex-direction: column;
   gap: 8px;
   margin: 0;
+  min-width: 0;
 }
 
 .quick-consult__label {
@@ -166,8 +185,7 @@
   color: #fff;
 }
 
-.quick-consult__input,
-.quick-consult__textarea {
+.quick-consult__input {
   width: 100%;
   box-sizing: border-box;
   margin: 0;
@@ -181,17 +199,10 @@
   font-size: 16px;
   letter-spacing: -0.02em;
   outline: none;
-  resize: vertical;
   transition: border-color 0.28s var(--qc-ease);
 }
 
-.quick-consult__textarea {
-  min-height: 112px;
-  line-height: 1.55;
-}
-
-.quick-consult__input::placeholder,
-.quick-consult__textarea::placeholder {
+.quick-consult__input::placeholder {
   color: rgba(255, 255, 255, 0.28);
 }
 
@@ -212,8 +223,7 @@
   transform: scaleX(1);
 }
 
-.quick-consult__field.is-invalid .quick-consult__input,
-.quick-consult__field.is-invalid .quick-consult__textarea {
+.quick-consult__field.is-invalid .quick-consult__input {
   border-bottom-color: #e05a5a;
 }
 
@@ -224,14 +234,15 @@
 
 /* ---------- Mode radios ---------- */
 .quick-consult__modes {
-  margin: 4px 0 0;
+  margin: 0;
   padding: 0;
   border: 0;
   min-inline-size: 0;
+  min-width: 0;
 }
 
 .quick-consult__legend {
-  margin: 0 0 12px;
+  margin: 0 0 10px;
   padding: 0;
   color: var(--qc-muted);
   font-size: 13px;
@@ -252,7 +263,7 @@
   justify-content: center;
   gap: 8px;
   min-height: 48px;
-  padding: 0 12px;
+  padding: 0 10px;
   border: 1px solid var(--qc-line);
   background: rgba(255, 255, 255, 0.02);
   cursor: pointer;
@@ -287,6 +298,7 @@
   letter-spacing: -0.02em;
   color: rgba(255, 255, 255, 0.72);
   transition: color 0.28s var(--qc-ease);
+  white-space: nowrap;
 }
 
 .quick-consult__mode:hover {
@@ -317,7 +329,9 @@
 
 /* ---------- Consent ---------- */
 .quick-consult__consent {
-  margin-top: 4px;
+  margin: 0;
+  padding-bottom: 10px;
+  min-width: 0;
 }
 
 .quick-consult__check {
@@ -381,8 +395,8 @@
 
 .quick-consult__check-text {
   color: rgba(255, 255, 255, 0.72);
-  font-size: 14px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.45;
   letter-spacing: -0.02em;
 }
 
@@ -441,9 +455,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  align-self: stretch;
-  min-height: 56px;
-  margin-top: 8px;
+  align-self: end;
+  min-width: 160px;
+  min-height: 52px;
+  margin: 0;
   padding: 0 28px;
   border: 0;
   border-radius: 0;
@@ -455,6 +470,7 @@
   letter-spacing: -0.02em;
   cursor: pointer;
   overflow: hidden;
+  white-space: nowrap;
   transition:
     background 0.3s var(--qc-ease),
     transform 0.3s var(--qc-spring),
@@ -507,7 +523,7 @@
   flex-direction: column;
   align-items: flex-start;
   gap: 14px;
-  min-height: 280px;
+  min-height: 140px;
   justify-content: center;
   animation: qc-success-in 0.55s var(--qc-ease) both;
 }
