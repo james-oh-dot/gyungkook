@@ -181,7 +181,7 @@ export function NoticeSection() {
             소식·공지
           </h2>
           <p className="section-desc">
-            법무법인경국의 가치는 다양한 수상, 위촉, 인증 경력에서 더욱 빛을 발합니다.
+            법무법인경국의 새로운 소식을 전합니다.
           </p>
         </Reveal>
         <Reveal delay={120}>
