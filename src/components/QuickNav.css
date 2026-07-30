@@ -97,8 +97,11 @@
   border: 0;
   border-radius: 0;
   background: none;
-  /* Brighter than Figma #81818D — dense glass still needs readable glyphs. */
-  color: rgba(255, 255, 255, 0.78);
+  /*
+    Readable on dense glass, but clearly below the white highlight CTA
+    (무료법률상담). Do not push these to near-white or the CTA vanishes.
+  */
+  color: #c8c8d0;
   cursor: pointer;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
@@ -130,7 +133,7 @@
   font-weight: 400;
   line-height: 1.45;
   letter-spacing: -0.3px;
-  color: rgba(255, 255, 255, 0.72);
+  color: #b4b4bc;
   /* Never wrap or clip Korean labels */
   white-space: nowrap;
   overflow: visible;
