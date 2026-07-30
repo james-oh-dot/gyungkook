@@ -1,0 +1,770 @@
+/*
+  Home-only + desktop-only quick consult strip above the footer.
+  Mounted only on `/` (and classic.html) via SiteLayout.
+  Hidden ≤1024 (tablet/mobile keep QuickNav / other contact paths).
+  Brand chrome: sharp rect only — no border-radius.
+  Layout matches other home sections: `--section-y` / `--page-pad`, left copy + right form.
+*/
+
+.quick-consult {
+  --qc-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --qc-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --qc-bg: #111;
+  --qc-line: rgba(255, 255, 255, 0.14);
+  --qc-muted: rgba(255, 255, 255, 0.58);
+  --qc-fg: #fff;
+  --qc-teal: var(--color-teal, #008075);
+  --qc-teal-deep: var(--color-teal-deep, #086b66);
+
+  display: none;
+  /* `.section` already supplies pad; keep dark fill + dark GNB theme */
+  background: var(--qc-bg);
+  color: var(--qc-fg);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 1025px) {
+  .quick-consult {
+    display: block;
+  }
+}
+
+/* Soft teal glow — atmosphere, not a card */
+.quick-consult::before {
+  content: '';
+  position: absolute;
+  inset: auto -10% -40% 35%;
+  height: 70%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 128, 117, 0.2) 0%,
+    rgba(0, 128, 117, 0) 68%
+  );
+  pointer-events: none;
+}
+
+.quick-consult__inner {
+  position: relative;
+  z-index: 1;
+  /* Same left/right split language as `.office` */
+  display: grid;
+  grid-template-columns: minmax(240px, 0.85fr) minmax(0, 1.55fr);
+  gap: clamp(40px, 5vw, 88px);
+  align-items: center;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ---------- Intro (stagger on inview) ---------- */
+.quick-consult__intro {
+  padding-top: 0;
+  min-width: 0;
+}
+
+.quick-consult__eyebrow,
+.quick-consult__title,
+.quick-consult__desc,
+.quick-consult__panel {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 0.85s var(--qc-ease),
+    transform 0.95s var(--qc-ease);
+}
+
+.quick-consult.is-inview .quick-consult__eyebrow {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.05s;
+}
+
+.quick-consult.is-inview .quick-consult__title {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.14s;
+}
+
+.quick-consult.is-inview .quick-consult__desc {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.24s;
+}
+
+.quick-consult.is-inview .quick-consult__panel {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.2s;
+}
+
+.quick-consult__eyebrow {
+  margin: 0;
+  color: var(--qc-teal);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.45;
+}
+
+.quick-consult__title {
+  margin: 8px 0 0;
+  /* Match other section titles — Pretendard, not serif */
+  font-family: var(--font);
+  font-size: clamp(36px, 3.33vw, 64px);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+  color: #fff;
+}
+
+.quick-consult__desc {
+  margin: 8px 0 0;
+  max-width: 28ch;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 16px;
+  line-height: 1.45;
+  letter-spacing: -0.025em;
+}
+
+/* ---------- Form panel (unboxed — sits in the section like office right) ---------- */
+.quick-consult__panel {
+  min-width: 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.quick-consult__form {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  width: 100%;
+}
+
+.quick-consult__row {
+  display: grid;
+  gap: 20px;
+  align-items: end;
+  width: 100%;
+}
+
+/* Name | Phone | Message — stretched horizontal */
+.quick-consult__row--inputs {
+  grid-template-columns: minmax(120px, 0.7fr) minmax(150px, 0.85fr) minmax(0, 1.6fr);
+}
+
+.quick-consult__row--meta {
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 24px;
+}
+
+.quick-consult__field {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  min-width: 0;
+}
+
+.quick-consult__label {
+  color: var(--qc-muted);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  transition: color 0.28s var(--qc-ease);
+}
+
+.quick-consult__field:focus-within .quick-consult__label,
+.quick-consult__field.has-value .quick-consult__label {
+  color: #fff;
+}
+
+.quick-consult__input {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 14px 0 12px;
+  border: 0;
+  border-bottom: 1px solid var(--qc-line);
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+  outline: none;
+  transition: border-color 0.28s var(--qc-ease);
+}
+
+.quick-consult__input::placeholder {
+  color: rgba(255, 255, 255, 0.28);
+}
+
+.quick-consult__focus {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--qc-teal);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s var(--qc-ease);
+  pointer-events: none;
+}
+
+.quick-consult__field:focus-within .quick-consult__focus {
+  transform: scaleX(1);
+}
+
+.quick-consult__field.is-invalid .quick-consult__input {
+  border-bottom-color: #e05a5a;
+}
+
+.quick-consult__field.is-invalid .quick-consult__focus {
+  background: #e05a5a;
+  transform: scaleX(1);
+}
+
+/* ---------- Mode radios ---------- */
+.quick-consult__modes {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+  min-width: 0;
+}
+
+.quick-consult__legend {
+  margin: 0 0 10px;
+  padding: 0;
+  color: var(--qc-muted);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.quick-consult__mode-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.quick-consult__mode {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 10px;
+  border: 1px solid var(--qc-line);
+  background: rgba(255, 255, 255, 0.02);
+  cursor: pointer;
+  transition:
+    border-color 0.28s var(--qc-ease),
+    background 0.28s var(--qc-ease),
+    color 0.28s var(--qc-ease),
+    transform 0.28s var(--qc-spring);
+}
+
+.quick-consult__mode input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.quick-consult__mode-dot {
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  transition:
+    background 0.28s var(--qc-ease),
+    border-color 0.28s var(--qc-ease),
+    box-shadow 0.28s var(--qc-ease),
+    transform 0.28s var(--qc-spring);
+}
+
+.quick-consult__mode-label {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: rgba(255, 255, 255, 0.72);
+  transition: color 0.28s var(--qc-ease);
+  white-space: nowrap;
+}
+
+.quick-consult__mode:hover {
+  border-color: rgba(255, 255, 255, 0.32);
+  transform: translateY(-1px);
+}
+
+.quick-consult__mode.is-selected {
+  border-color: var(--qc-teal);
+  background: rgba(0, 128, 117, 0.18);
+}
+
+.quick-consult__mode.is-selected .quick-consult__mode-dot {
+  background: var(--qc-teal);
+  border-color: var(--qc-teal);
+  box-shadow: 0 0 0 4px rgba(0, 128, 117, 0.22);
+  transform: scale(1.08);
+}
+
+.quick-consult__mode.is-selected .quick-consult__mode-label {
+  color: #fff;
+}
+
+.quick-consult__mode:focus-within {
+  outline: 2px solid rgba(0, 128, 117, 0.65);
+  outline-offset: 2px;
+}
+
+/* ---------- Consent ---------- */
+.quick-consult__consent {
+  margin: 0;
+  padding-bottom: 10px;
+  min-width: 0;
+}
+
+.quick-consult__check {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.quick-consult__check input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.quick-consult__check-box {
+  position: relative;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: transparent;
+  transition:
+    border-color 0.25s var(--qc-ease),
+    background 0.25s var(--qc-ease),
+    box-shadow 0.25s var(--qc-ease);
+}
+
+.quick-consult__check-mark {
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 6px;
+  height: 11px;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(45deg) scale(0.4);
+  opacity: 0;
+  transition:
+    opacity 0.2s var(--qc-ease),
+    transform 0.35s var(--qc-spring);
+}
+
+.quick-consult__check input:checked + .quick-consult__check-box {
+  background: var(--qc-teal);
+  border-color: var(--qc-teal);
+  box-shadow: 0 0 0 4px rgba(0, 128, 117, 0.2);
+}
+
+.quick-consult__check input:checked + .quick-consult__check-box .quick-consult__check-mark {
+  opacity: 1;
+  transform: rotate(45deg) scale(1);
+}
+
+.quick-consult__check:focus-within .quick-consult__check-box {
+  outline: 2px solid rgba(0, 128, 117, 0.65);
+  outline-offset: 2px;
+}
+
+.quick-consult__check-text {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 13px;
+  line-height: 1.45;
+  letter-spacing: -0.02em;
+}
+
+.quick-consult__privacy-link {
+  margin-left: 6px;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.45);
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  transition:
+    color 0.25s var(--qc-ease),
+    border-color 0.25s var(--qc-ease);
+}
+
+.quick-consult__privacy-link:hover,
+.quick-consult__privacy-link:focus-visible {
+  color: var(--qc-teal);
+  border-bottom-color: var(--qc-teal);
+}
+
+.quick-consult__consent.is-invalid .quick-consult__check-box {
+  border-color: #e05a5a;
+}
+
+.quick-consult__consent.is-shake {
+  animation: qc-shake 0.5s var(--qc-ease);
+}
+
+@keyframes qc-shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(6px);
+  }
+  60% {
+    transform: translateX(-4px);
+  }
+  80% {
+    transform: translateX(3px);
+  }
+}
+
+/* ---------- Submit ---------- */
+.quick-consult__submit {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: end;
+  min-width: 160px;
+  min-height: 52px;
+  margin: 0;
+  padding: 0 28px;
+  border: 0;
+  border-radius: 0;
+  background: var(--qc-teal);
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  transition:
+    background 0.3s var(--qc-ease),
+    transform 0.3s var(--qc-spring),
+    box-shadow 0.3s var(--qc-ease);
+}
+
+.quick-consult__submit:hover,
+.quick-consult__submit:focus-visible {
+  background: var(--qc-teal-deep);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px -12px rgba(0, 128, 117, 0.55);
+}
+
+.quick-consult__submit:active {
+  transform: translateY(0);
+}
+
+.quick-consult__submit.is-busy {
+  pointer-events: none;
+  opacity: 0.82;
+}
+
+.quick-consult__submit-label {
+  position: relative;
+  z-index: 1;
+}
+
+.quick-consult__submit-shine {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.22) 48%,
+    transparent 66%
+  );
+  transform: translateX(-120%);
+  transition: transform 0.7s var(--qc-ease);
+  pointer-events: none;
+}
+
+.quick-consult__submit:hover .quick-consult__submit-shine,
+.quick-consult__submit:focus-visible .quick-consult__submit-shine {
+  transform: translateX(120%);
+}
+
+/* ---------- Success ---------- */
+.quick-consult__success {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  min-height: 140px;
+  justify-content: center;
+  animation: qc-success-in 0.55s var(--qc-ease) both;
+}
+
+@keyframes qc-success-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.quick-consult__success-mark {
+  position: relative;
+  display: block;
+  width: 48px;
+  height: 48px;
+  border: 2px solid var(--qc-teal);
+  background: rgba(0, 128, 117, 0.12);
+  animation: qc-mark-pop 0.55s var(--qc-spring) both;
+}
+
+.quick-consult__success-mark::after {
+  content: '';
+  position: absolute;
+  left: 16px;
+  top: 10px;
+  width: 10px;
+  height: 18px;
+  border-right: 2.5px solid var(--qc-teal);
+  border-bottom: 2.5px solid var(--qc-teal);
+  transform: rotate(45deg);
+}
+
+@keyframes qc-mark-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.quick-consult__success-title {
+  margin: 8px 0 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.35;
+}
+
+.quick-consult__success-body {
+  margin: 0;
+  color: var(--qc-muted);
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.quick-consult__again {
+  margin-top: 8px;
+  padding: 12px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 0;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  transition:
+    border-color 0.25s var(--qc-ease),
+    background 0.25s var(--qc-ease),
+    transform 0.25s var(--qc-spring);
+}
+
+.quick-consult__again:hover,
+.quick-consult__again:focus-visible {
+  border-color: var(--qc-teal);
+  background: rgba(0, 128, 117, 0.16);
+  transform: translateY(-1px);
+}
+
+/* ---------- Privacy drawer ---------- */
+.qc-privacy {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.qc-privacy.is-open {
+  pointer-events: auto;
+  visibility: visible;
+}
+
+.qc-privacy__scrim {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  background: rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity 0.35s var(--qc-ease);
+  /* Standard backdrop-filter only — lightningcss adds -webkit- */
+  backdrop-filter: blur(6px);
+}
+
+.qc-privacy.is-open .qc-privacy__scrim {
+  opacity: 1;
+}
+
+.qc-privacy__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: min(480px, 92vw);
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  color: #111;
+  box-shadow: -24px 0 60px rgba(0, 0, 0, 0.28);
+  transform: translate3d(105%, 0, 0);
+  transition: transform 0.45s var(--qc-ease);
+}
+
+.qc-privacy.is-open .qc-privacy__panel {
+  transform: translate3d(0, 0, 0);
+}
+
+.qc-privacy__bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px 28px 20px;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+.qc-privacy__eyebrow {
+  margin: 0 0 6px;
+  color: var(--qc-teal);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+}
+
+.qc-privacy__title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.35;
+}
+
+.qc-privacy__close {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  border-radius: 0;
+  background: #f7f7fb;
+  cursor: pointer;
+  transition:
+    background 0.25s var(--qc-ease),
+    transform 0.25s var(--qc-spring);
+}
+
+.qc-privacy__close:hover,
+.qc-privacy__close:focus-visible {
+  background: #ececf2;
+  transform: translateY(-1px);
+}
+
+.qc-privacy__close img {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.qc-privacy__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 24px 28px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.qc-privacy__heading {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.qc-privacy__text {
+  margin: 0;
+  color: #5a5a5a;
+  font-size: 14px;
+  line-height: 1.65;
+  letter-spacing: -0.02em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quick-consult__eyebrow,
+  .quick-consult__title,
+  .quick-consult__desc,
+  .quick-consult__panel,
+  .quick-consult__focus,
+  .quick-consult__mode,
+  .quick-consult__mode-dot,
+  .quick-consult__submit,
+  .quick-consult__submit-shine,
+  .quick-consult__success,
+  .quick-consult__success-mark,
+  .qc-privacy__scrim,
+  .qc-privacy__panel {
+    transition-duration: 0.01ms !important;
+    animation: none !important;
+  }
+
+  .quick-consult.is-inview .quick-consult__eyebrow,
+  .quick-consult.is-inview .quick-consult__title,
+  .quick-consult.is-inview .quick-consult__desc,
+  .quick-consult.is-inview .quick-consult__panel {
+    opacity: 1;
+    transform: none;
+  }
+}

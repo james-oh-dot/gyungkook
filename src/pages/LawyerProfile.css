@@ -1,0 +1,503 @@
+/*
+ * 변호사 · 자문단 프로필 (sub-01-03) — lawyer profile page.
+ * Dark hero cover (name + contact + intro + portrait) → route-mode local tabs
+ * (each tab = a lawyer) → label/content profile rows (alternating tint) →
+ * captioned certificate/appointment/award image grids.
+ *
+ * Responsive covers (Figma):
+ *   desktop 89:2963 — 2-col grid, portrait in right column
+ *   tablet  22:3251 — 860px cover, portrait absolute bottom-right (~451×581)
+ *   mobile  22:3879 — 860px cover, portrait absolute bottom-right (~328×422)
+ */
+
+.lawyer {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================ Hero cover ============================ */
+.lawyer-hero {
+  position: relative;
+  min-height: 620px;
+  background: #141922;
+  overflow: hidden;
+  color: #fff;
+}
+
+.lawyer-hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Figma cover overlay — 247deg, dark toward the right (portrait side) */
+.lawyer-hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: linear-gradient(
+    247deg,
+    rgba(0, 0, 0, 0.88) 25.51%,
+    rgba(102, 102, 102, 0.88) 78.432%
+  );
+}
+
+.lawyer-hero__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  /* content stays 1280 on wide screens — box = 1280 + 2×page-pad (plain
+     max-width:1280 + page-pad would cap the hero content at 880) */
+  max-width: calc(1280px + 2 * var(--page-pad));
+  min-height: 620px;
+  margin: 0 auto;
+  padding: calc(var(--gnb-bar-h, 100px) + 56px) var(--page-pad) 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 40px;
+  align-items: end;
+}
+
+.lawyer-hero__info {
+  position: relative;
+  /* Below portrait so the overflowing divider paints behind the head */
+  z-index: 1;
+  padding-bottom: 64px;
+  align-self: center;
+  overflow: visible;
+}
+
+.lawyer-hero__name-row {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+/* Parent-menu label (대메뉴) — matches the shared SubVisual chip so every
+   subpage hero signals which top menu the visitor came through. */
+.lawyer-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  padding: 6px 20px;
+  background: #00838f;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.45px;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .lawyer-hero__eyebrow {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .lawyer-hero__eyebrow {
+    margin-bottom: 12px;
+    padding: 5px 14px;
+    font-size: 14px;
+  }
+}
+
+.lawyer-hero__name {
+  margin: 0;
+  font-size: clamp(36px, 4vw, 48px);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.lawyer-hero__title {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 18px;
+  letter-spacing: -0.025em;
+}
+
+.lawyer-hero__contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 44px;
+  margin: 26px 0 0;
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 16px;
+  letter-spacing: -0.025em;
+}
+
+/* Figma Line 6 — from text-left through the gap and behind the portrait.
+   Info is wider than Figma's 623px text block, so use calc(info + gap + photo)
+   rather than a fixed 1004px cap that stopped short of the photo.
+   Portrait must stack ABOVE this line (see .lawyer-hero__photo z-index) so
+   the stroke never cuts through the head; it only shows in transparent PNG
+   margins around the silhouette. */
+.lawyer-hero__divider {
+  display: block;
+  position: relative;
+  z-index: 0;
+  width: calc(100% + 40px + 340px);
+  max-width: none;
+  height: 1px;
+  margin: 22px 0 0;
+  background: rgba(255, 255, 255, 0.32);
+  pointer-events: none;
+}
+
+.lawyer-hero__intro {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 16px;
+  line-height: 1.5;
+  letter-spacing: -0.025em;
+}
+
+.lawyer-hero__photo {
+  position: relative;
+  /* Above info/divider — opaque head pixels hide the line */
+  z-index: 2;
+  align-self: end;
+  height: 86%;
+  min-height: 420px;
+}
+.lawyer-hero__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.lawyer-hero__photo-progressive {
+  width: 100%;
+  height: 100%;
+}
+
+/* ============================ Main / toolbar ============================ */
+.lawyer-main {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding-bottom: clamp(96px, 12vw, 160px);
+}
+
+.lawyer-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  /* Keep top inset; flush bottom + right against the content edge */
+  padding: 24px 0 0;
+}
+
+/* Figma Button_Default — mint #58BDC2 square, 56×56, 24px white icon, sharp */
+.lawyer-action {
+  width: 56px;
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background: #58bdc2;
+  border: 0;
+  cursor: pointer;
+  transition: background 0.2s var(--ease-premium, ease);
+}
+.lawyer-action:hover {
+  background: #45aab0;
+}
+.lawyer-action img {
+  width: 24px;
+  height: 24px;
+}
+
+/* ============================ Profile blocks ============================ */
+.lawyer-blocks {
+  display: flex;
+  flex-direction: column;
+}
+
+.lawyer-block {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 33px;
+  align-items: start;
+  padding: 56px clamp(24px, 3vw, 40px);
+}
+.lawyer-block:nth-child(odd) {
+  background: #f9f9f9;
+}
+.lawyer-block:nth-child(even) {
+  background: #fff;
+}
+
+.lawyer-block__label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.lawyer-block__icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+.lawyer-block__title {
+  margin: 0;
+  color: #505050;
+  font-size: clamp(20px, 2vw, 24px);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+/* —— chips —— */
+.lawyer-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.lawyer-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 8px;
+  border-radius: 2px;
+  background: #fff;
+  color: #111;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.025em;
+}
+.lawyer-block:nth-child(even) .lawyer-chip {
+  background: #f1f1f5;
+}
+
+/* —— bullets —— */
+.lawyer-bullets {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #505050;
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+.lawyer-bullets li {
+  list-style: disc;
+}
+
+.lawyer-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: start;
+}
+
+/* —— results + more button —— */
+.lawyer-result {
+  display: flex;
+  gap: 24px;
+  align-items: flex-end;
+}
+.lawyer-result .lawyer-bullets {
+  flex: 1;
+  min-width: 0;
+}
+/* Figma Button_Default (89:3083) — mint #58BDC2, 16 Semibold, circle+↗ */
+.lawyer-more {
+  flex-shrink: 0;
+  align-self: flex-end;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #58bdc2;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  text-decoration: none;
+  padding: 16px;
+  border: 0;
+  cursor: pointer;
+  transition: background 0.2s var(--ease-premium, ease);
+}
+.lawyer-more:hover {
+  background: #45aab0;
+  color: #fff;
+}
+.lawyer-more__icon {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* —— certificate / appointment / award grids —— */
+.lawyer-cert-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+.lawyer-cert {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+.lawyer-cert__frame {
+  width: 100%;
+  aspect-ratio: 543 / 768;
+  border: 1px solid #e5e5ec;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      #f4f4f7 0,
+      #f4f4f7 10px,
+      #f9f9f9 10px,
+      #f9f9f9 20px
+    );
+  overflow: hidden;
+}
+.lawyer-cert__frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Square badges (brand-index) — use 1:1 frame so the circular mark isn't cropped */
+.lawyer-cert__frame--contain {
+  aspect-ratio: 1 / 1;
+  background: #fff;
+  padding: 12px;
+  box-sizing: border-box;
+}
+.lawyer-cert__frame--contain img {
+  object-fit: contain;
+  object-position: center;
+}
+
+/* ============================ Responsive ============================ */
+/*
+ * Tablet (Figma 22:3251) + Mobile (Figma 22:3879):
+ * Cover is a tall absolute stage — copy top-left, portrait bottom-right.
+ * Do NOT hide the portrait on phones (that was wrong vs Figma).
+ */
+@media (max-width: 1024px) {
+  .lawyer-hero {
+    min-height: 860px;
+  }
+  .lawyer-hero__scrim {
+    background: linear-gradient(
+      219deg,
+      rgba(0, 0, 0, 0.9) 16.144%,
+      rgba(102, 102, 102, 0.9) 83.7%
+    );
+  }
+  .lawyer-hero__inner {
+    display: block;
+    position: relative;
+    min-height: 860px;
+    max-width: none;
+    padding: calc(var(--gnb-bar-h, 100px) + 48px) var(--page-pad) 0;
+  }
+  .lawyer-hero__info {
+    position: relative;
+    /* Must stay below portrait — divider lives in info and must not cut the head */
+    z-index: 1;
+    max-width: 624px;
+    /* keep copy clear of the bottom-right portrait */
+    padding-bottom: 220px;
+    align-self: unset;
+  }
+  .lawyer-hero__contact {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .lawyer-hero__divider {
+    /* Figma Line still runs wide behind the portrait */
+    width: min(1200px, 250vw);
+    max-width: none;
+  }
+  .lawyer-hero__photo {
+    display: block;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    /* Figma tablet portrait ≈ 451×581 */
+    width: min(451px, 58.7%);
+    height: 581px;
+    min-height: 0;
+    align-self: unset;
+  }
+
+  /* Label stacks above content */
+  .lawyer-block {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 40px clamp(24px, 4vw, 40px);
+  }
+}
+
+@media (max-width: 767px) {
+  .lawyer-hero__scrim {
+    background: linear-gradient(
+      204deg,
+      rgba(0, 0, 0, 0.9) 16.638%,
+      rgba(102, 102, 102, 0.9) 93.101%
+    );
+  }
+  .lawyer-hero__inner {
+    min-height: 860px;
+    padding-top: calc(var(--gnb-bar-h, 100px) + 24px);
+  }
+  .lawyer-hero__info {
+    max-width: none;
+    width: min(322px, 100%);
+    padding-bottom: 280px;
+  }
+  .lawyer-hero__contact {
+    font-size: 16px;
+  }
+  .lawyer-hero__intro {
+    font-size: 16px;
+  }
+  .lawyer-hero__photo {
+    /* Figma mobile portrait ≈ 328×422, bottom-right */
+    width: min(328px, 84%);
+    height: 422px;
+  }
+
+  .lawyer-cols {
+    grid-template-columns: 1fr;
+  }
+  .lawyer-result {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .lawyer-more {
+    align-self: flex-start;
+  }
+  .lawyer-cert-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .lawyer-block {
+    padding: 32px var(--page-pad);
+  }
+  .lawyer-bullets {
+    font-size: 16px;
+  }
+  .lawyer-toolbar {
+    padding: 20px 0 0;
+  }
+}

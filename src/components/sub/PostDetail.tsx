@@ -1,0 +1,93 @@
+import { Link } from 'react-router-dom'
+import type { BoardPost, BoardTabDef } from '../../data/board'
+import './PostDetail.css'
+
+type PostDetailProps = {
+  post: BoardPost
+  tabDef: BoardTabDef
+  prev?: BoardPost
+  next?: BoardPost
+  /** Path back to the active tab list */
+  listPath: string
+  /** Build detail path for adjacent posts */
+  detailPath: (tab: string, postId: string) => string
+}
+
+/**
+ * Shared post detail layout (Figma: SUB_게시글_상세_*).
+ * Used by 컬럼미디어 / 언론보도 (and future boards) — keep props generic.
+ */
+export function PostDetail({
+  post,
+  tabDef,
+  prev,
+  next,
+  listPath,
+  detailPath,
+}: PostDetailProps) {
+  const image = post.detailImage ?? post.thumbnail
+
+  return (
+    <div className="post-detail" data-name="SUB_게시글_상세">
+      <article className="post-detail__card" data-name="list">
+        <header className="post-detail__header">
+          <div className="post-detail__title-row">
+            <span className="post-detail__chip">{tabDef.chip}</span>
+            <h1 className="post-detail__title">{post.title}</h1>
+          </div>
+          <p className="post-detail__meta">
+            <span>{post.publishedAt}</span>
+            <span className="post-detail__dot" aria-hidden="true">
+              ·
+            </span>
+            <span>조회 {post.views}</span>
+          </p>
+        </header>
+
+        <div className="post-detail__body" data-name="object_frame">
+          {image ? (
+            <figure className="post-detail__figure">
+              <img src={image} alt="" />
+            </figure>
+          ) : null}
+          <div className="post-detail__prose">
+            {post.body.map((paragraph, i) => (
+              <p key={i}>{paragraph}</p>
+            ))}
+            <p className="post-detail__copyright">
+              저작권자 © 법무법인 경국 / 무단전재 및 재배포, AI학습 및 활용 금지
+            </p>
+          </div>
+        </div>
+      </article>
+
+      <div className="post-detail__nav" data-name="btn">
+        {next ? (
+          <Link className="post-detail__adj" to={detailPath(next.tab, next.id)}>
+            <span className="post-detail__adj-icon" aria-hidden="true">
+              ↑
+            </span>
+            <span className="post-detail__adj-label">다음</span>
+            <span className="post-detail__adj-title">{next.title}</span>
+          </Link>
+        ) : null}
+        {prev ? (
+          <Link className="post-detail__adj" to={detailPath(prev.tab, prev.id)}>
+            <span className="post-detail__adj-icon" aria-hidden="true">
+              ↓
+            </span>
+            <span className="post-detail__adj-label">이전</span>
+            <span className="post-detail__adj-title">{prev.title}</span>
+          </Link>
+        ) : null}
+        <Link
+          className="post-detail__list-btn"
+          to={listPath}
+          state={{ scrollToLocalTabs: true }}
+        >
+          목록으로
+        </Link>
+      </div>
+    </div>
+  )
+}

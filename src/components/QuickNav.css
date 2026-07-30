@@ -1,0 +1,257 @@
+/*
+  quick-left-floating-Navigation (Figma AI-quick 120:1025 / compact 120:6350)
+
+  Tablet + mobile only. Desktop (>1024) never renders it.
+  Panel = **black liquid glass** (translucent #111 + blur) with a deep drop
+  shadow — not the solid #111 slab. Compact mode pins flush to `left: 0`;
+  expanded keeps the 20px inset.
+
+  Brand chrome rule: **sharp rect only** — no border-radius anywhere in here.
+*/
+.quicknav {
+  /* Widest label is 6 Korean glyphs (진행사건문의 / 무료법률상담). The rail is
+     sized from that text, never the other way round, so it can't clip. */
+  --quicknav-pad-x: 8px;
+  --quicknav-w: 92px;
+  --quicknav-w-compact: 48px;
+  --quicknav-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  z-index: 880; /* under the GNB (900), over page content */
+  display: none;
+  pointer-events: none;
+  transition: left 0.42s var(--quicknav-ease);
+}
+
+/* Compact (and the matching hide slide) hugs the left edge. */
+.quicknav--compact,
+.quicknav--hidden {
+  left: 0;
+}
+
+@media (max-width: 1024px) {
+  .quicknav {
+    display: block;
+  }
+}
+
+.quicknav__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 24px var(--quicknav-pad-x);
+  width: var(--quicknav-w);
+  box-sizing: border-box;
+  /*
+    Dense black liquid glass — earlier 0.62 read as foggy over bright photos.
+    Keep blur for glass, but the fill must stay near-#111 so glyphs contrast.
+  */
+  background: rgba(10, 10, 12, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 0;
+  /* Deep stacked shadow so the rail lifts off light page content. */
+  box-shadow:
+    0 28px 56px -8px rgba(0, 0, 0, 0.62),
+    0 12px 24px -6px rgba(0, 0, 0, 0.48),
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  /* Standard property only — lightningcss adds -webkit- at build. */
+  backdrop-filter: blur(18px) saturate(1.35);
+  pointer-events: auto;
+  /* Slide-in from off-screen; width/padding morph between the two modes */
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+  transition:
+    transform 0.42s var(--quicknav-ease),
+    opacity 0.28s var(--quicknav-ease),
+    width 0.42s var(--quicknav-ease),
+    padding 0.42s var(--quicknav-ease),
+    gap 0.42s var(--quicknav-ease);
+}
+
+/* No backdrop-filter → near-opaque black so icons stay legible. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .quicknav__panel {
+    background: rgba(10, 10, 12, 0.96);
+  }
+}
+
+/* Off-screen (initial + back at the top). Compact/hidden sit at left:0, so
+   -100% is enough — the old -20px offset was for the expanded inset. */
+.quicknav--hidden .quicknav__panel {
+  transform: translate3d(calc(-100% - 8px), 0, 0);
+  opacity: 0;
+}
+
+/* ---------- Items ---------- */
+.quicknav__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  /*
+    Readable on dense glass, but clearly below the white highlight CTA
+    (무료법률상담). Do not push these to near-white or the CTA vanishes.
+  */
+  color: #c8c8d0;
+  cursor: pointer;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.2s var(--quicknav-ease);
+}
+
+/*
+  Icon = uploaded SVG used as a mask, so `currentColor` drives all four states
+  (the files ship hard-coded fills that `<img>` could not recolour).
+  Standard `mask-*` only — lightningcss adds the -webkit- alias at build (same
+  HARD RULE as backdrop-filter; hand-writing both drops the standard one).
+*/
+.quicknav__icon {
+  display: block;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  border-radius: 0;
+  background-color: currentColor;
+  mask-image: var(--quicknav-icon);
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: 24px 24px;
+  transition: background-color 0.2s var(--quicknav-ease);
+}
+
+.quicknav__label {
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.3px;
+  color: #b4b4bc;
+  /* Never wrap or clip Korean labels */
+  white-space: nowrap;
+  overflow: visible;
+  transition:
+    color 0.2s var(--quicknav-ease),
+    opacity 0.24s var(--quicknav-ease);
+}
+
+/* Figma `호버` — glyph + label brighten to white */
+@media (hover: hover) {
+  .quicknav__item:hover .quicknav__icon,
+  .quicknav__item:focus-visible .quicknav__icon {
+    background-color: #fff;
+  }
+
+  .quicknav__item:hover .quicknav__label,
+  .quicknav__item:focus-visible .quicknav__label {
+    color: #fff;
+  }
+}
+
+.quicknav__item:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* Figma `터치및클릭시` — pressed glyph goes teal */
+.quicknav__item:active .quicknav__icon {
+  background-color: var(--color-teal, #008075);
+}
+
+.quicknav__item:active .quicknav__label {
+  color: #fff;
+}
+
+/*
+  Figma `무료법률상담만하이라이트상태` — full white + slightly heavier label
+  so it still pops against the brighter muted siblings.
+*/
+.quicknav__item--highlight {
+  color: #fff;
+}
+
+.quicknav__item--highlight .quicknav__label {
+  color: #fff;
+  font-weight: 600;
+}
+
+.quicknav__divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* ---------- Mode: full rail (reverse scroll) ---------- */
+.quicknav__full {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+  max-height: 280px;
+  opacity: 1;
+  /*
+    Stays `visible` while expanded — `overflow: hidden` would clip the
+    6-glyph labels horizontally. Clipping is only applied while collapsed.
+  */
+  overflow: visible;
+  transition:
+    opacity 0.26s var(--quicknav-ease),
+    max-height 0.42s var(--quicknav-ease);
+}
+
+/*
+  Toggle stays visible in BOTH modes — expanding must always be reversible by
+  the same control the user pressed. Open state rotates it 45° so `+` reads
+  as `×` (close). Outside tap / Escape / a long scroll also close it.
+*/
+.quicknav__item--expand .quicknav__icon {
+  transition:
+    background-color 0.2s var(--quicknav-ease),
+    transform 0.32s var(--quicknav-ease);
+}
+
+.quicknav--expanded .quicknav__item--expand .quicknav__icon {
+  transform: rotate(45deg);
+}
+
+/* ---------- Mode: compact (forward scroll) + hidden ---------- */
+.quicknav--compact .quicknav__panel,
+.quicknav--hidden .quicknav__panel {
+  width: var(--quicknav-w-compact);
+  padding: 8px;
+  gap: 4px;
+}
+
+.quicknav--compact .quicknav__full,
+.quicknav--hidden .quicknav__full {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+/* Figma compact (120:6350) hides the 위로 caption — icons only */
+.quicknav--compact .quicknav__label,
+.quicknav--hidden .quicknav__label {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quicknav__panel,
+  .quicknav__full,
+  .quicknav__item,
+  .quicknav__icon,
+  .quicknav__label {
+    transition-duration: 0.01ms !important;
+  }
+}

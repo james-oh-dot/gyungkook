@@ -1,0 +1,593 @@
+/*
+ * 공익사업 (sub-02-02) — net-new components on top of Renewal.css.
+ *
+ * Figma Brand/Main_Color for these frames is #58BDC2 (mint) — NOT global
+ * `--color-teal` (#008075). Use `--pp-brand` locally so colors match Figma.
+ *
+ * 손실보상절차: two vertical columns of step cards (92:1746). Desktop + tablet
+ * stay 2-col; mobile (≤767) stacks full-width. (Earlier flowchart UI retired.)
+ */
+
+.public-project {
+  /* Brand mint from Figma — NOT global --color-teal (#008075) */
+  --pp-brand: #58bdc2;
+  --pp-brand-soft: #e0f7fa;
+  --pp-bg-light: #f7f7fb;
+  --pp-line: #e5e5ec;
+  --pp-ink-sub: #505050;
+  --pp-ink-body: #29303b;
+  --pp-danger: #e53935;
+  --pp-note-bg: #f1f1f5;
+  --pp-note: #767676;
+  /* 손실보상절차 흐름도 라인 */
+  --pp-flow: #c9c9d2;
+  /* Inline SVG so GH Pages base (`/gyungkook/`) never breaks list bullets */
+  --pp-bullet: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none'%3E%3Crect width='24' height='24' fill='%2358BDC2'/%3E%3Cpath d='M9 6.5v11L18 12 9 6.5Z' fill='%23111111'/%3E%3C/svg%3E");
+}
+
+/* 공익사업: 주요 업무 + 주요 대상 사업 side by side */
+.pp-two-col {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 48px;
+}
+
+/* ============================ Shared list (teal ▶ bullet) ============================ */
+.pp-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--pp-ink-sub);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  word-break: keep-all;
+}
+
+.pp-list li {
+  position: relative;
+  padding-left: 28px;
+}
+
+.pp-list li + li {
+  margin-top: 0;
+}
+
+.pp-list li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.2em;
+  width: 16px;
+  height: 16px;
+  background: var(--pp-bullet) center / contain no-repeat;
+}
+
+.pp-list--sm {
+  font-size: 14px;
+}
+
+.pp-list--sm li {
+  padding-left: 24px;
+}
+
+.pp-list--sm li::before {
+  width: 14px;
+  height: 14px;
+  top: 0.25em;
+}
+
+.pp-em {
+  color: var(--pp-danger);
+}
+
+/* ============================ Strengths box (역할및경쟁력) ============================ */
+.pp-strengths {
+  width: 100%;
+  background: var(--pp-bg-light);
+  padding: clamp(32px, 5vw, 64px) clamp(24px, 5.6vw, 72px);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.pp-strengths__head {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.pp-strengths__eyebrow {
+  margin: 0;
+  color: var(--pp-ink-sub);
+  font-size: 16px;
+  letter-spacing: -0.025em;
+}
+
+.pp-strengths__title {
+  margin: 0;
+  font-size: clamp(28px, 3vw, 40px);
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.025em;
+}
+
+.pp-strengths__title .is-teal {
+  color: var(--pp-brand);
+}
+
+.pp-strengths__title .is-ink {
+  color: #111;
+}
+
+.pp-strengths__summary {
+  margin: 0;
+  min-height: 104px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: var(--pp-brand);
+  color: #fff;
+  font-size: clamp(16px, 1.6vw, 20px);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  padding: 24px;
+}
+
+.pp-strengths__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.pp-strength-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 244px;
+  background: #fff;
+  border: 1px solid var(--pp-line);
+  padding: 28px;
+}
+
+.pp-strength-card__head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pp-strength-card__no {
+  flex-shrink: 0;
+  width: 40px;
+  height: 39px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--pp-brand);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.pp-strength-card__title {
+  margin: 0;
+  color: var(--pp-ink-sub);
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+.pp-strength-card__desc {
+  margin: 0;
+  flex: 1;
+  color: var(--pp-ink-body);
+  font-size: 18px;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+.pp-strength-card__benefit {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  background: var(--pp-brand-soft);
+  color: var(--pp-brand);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  padding: 12px 16px;
+}
+
+.pp-strength-card__mark {
+  flex-shrink: 0;
+  width: 4px;
+  height: 20px;
+  background: var(--pp-brand);
+}
+
+/* ============================ Procedure columns (손실보상절차) ============================ */
+.pp-procedures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  width: 100%;
+}
+
+.pp-procedure {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.pp-procedure .renewal-bullet-title {
+  margin-bottom: 4px;
+}
+
+.pp-procedure .renewal-bullet-title__text {
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 400;
+  color: #111;
+}
+
+.pp-procedure__steps {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  overflow: visible;
+}
+
+/* Figma 흐름도: 카드 뒤로 이어지는 세로 라인. 카드(불투명 흰색)가 덮어
+   카드 사이 간격에서만 보인다 → 흐름도 커넥터처럼 읽힌다. */
+.pp-procedure__steps::before {
+  content: '';
+  position: absolute;
+  left: 54px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #111;
+  z-index: 0;
+}
+
+.pp-procedure__block {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
+}
+
+/* Extra air when a side branch sits between 수용재결 → 이의재결 */
+.pp-procedure__block:has(.pp-procedure__side) {
+  gap: 20px;
+  margin-bottom: 16px;
+}
+
+.pp-step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 166px;
+  min-height: 166px;
+  background: #fff;
+  border: 1px solid var(--pp-line);
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.pp-step:has(.pp-step__note),
+.pp-procedure__block:last-child .pp-step {
+  height: 176px;
+  min-height: 176px;
+}
+
+.pp-step__head {
+  display: flex;
+  align-items: center;
+}
+
+.pp-step__title {
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px;
+  color: var(--pp-ink-sub);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+.pp-step__sub {
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  color: var(--pp-ink-sub);
+}
+
+.pp-step__note {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  background: var(--pp-note-bg);
+  color: var(--pp-note);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: -0.025em;
+  padding: 4px 10px;
+  box-sizing: border-box;
+  word-break: keep-all;
+}
+
+.pp-step__note .pp-em {
+  font-size: inherit;
+}
+
+.pp-step:has(.pp-em) .pp-step__note {
+  font-size: 14px;
+}
+
+/*
+ * Figma side branch (92:1741 / Line 17): in-flow full-width row between
+ * 수용재결 and 이의재결. Horizontal line runs from the vertical spine
+ * (left: 54px) to the right-aligned card — never absolute-overlap the next step.
+ */
+.pp-procedure__side {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  align-self: stretch;
+  width: 100%;
+  min-height: 56px;
+  padding: 4px 0;
+  box-sizing: border-box;
+  z-index: 2;
+  background: transparent;
+}
+
+/* Spine → side-card connector (Figma Line 17 ≈ 300px) */
+.pp-procedure__side::before {
+  content: '';
+  position: absolute;
+  left: 54px;
+  right: 0;
+  top: 50%;
+  height: 2px;
+  background: #111;
+  transform: translateY(-50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+.pp-procedure__side-card {
+  position: relative;
+  z-index: 1;
+  width: min(210px, 75%);
+  max-width: 280px;
+  background: var(--pp-note-bg);
+  border: 1px solid #111;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+/* 절차 카드 불릿: Figma는 teal 플래그가 아니라 기본 회색 도트 */
+.pp-procedure .pp-list li {
+  padding-left: 15px;
+}
+
+.pp-procedure .pp-list li::before {
+  top: 0.55em;
+  left: 3px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #6b6b73;
+}
+
+.pp-procedure .pp-list--sm li {
+  padding-left: 13px;
+}
+
+.pp-procedure .pp-list--sm li::before {
+  top: 0.5em;
+}
+
+/* ============================ Rights (반드시확인해야할권리) ============================ */
+.pp-rights-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.pp-rights-wrap .renewal-bullet-title__text {
+  font-size: clamp(20px, 2vw, 28px);
+  font-weight: 400;
+  color: #111;
+}
+
+.pp-rights {
+  display: grid;
+  grid-template-columns: minmax(0, 306px) minmax(0, 1fr);
+  gap: 48px;
+  align-items: stretch;
+}
+
+.pp-right-card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0;
+  min-width: 0;
+}
+
+/* 영업손실 spans full width under the 2-up row */
+.pp-right-card:last-child {
+  grid-column: 1 / -1;
+}
+
+.pp-right-card__banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  background: var(--pp-brand);
+  min-height: 54px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+}
+
+.pp-right-card__title {
+  margin: 0;
+  color: #fff;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  text-align: center;
+}
+
+.pp-right-card__subtitle {
+  margin: 0;
+  color: var(--pp-ink-sub);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+.pp-right-card .pp-list {
+  font-size: 20px;
+}
+
+.pp-right-card .pp-list li {
+  padding-left: 30px;
+}
+
+.pp-right-card .pp-list li::before {
+  width: 18px;
+  height: 18px;
+}
+
+.pp-right-card .pp-step__note {
+  font-size: 16px;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+.pp-right-card__groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 48px;
+  width: 100%;
+}
+
+.pp-right-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.pp-right-group__label {
+  margin: 0;
+  color: var(--pp-ink-sub);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+}
+
+/* ============================ Responsive ============================ */
+/*
+  Tablet (768–1024): same as desktop for procedure + rights + strengths
+  (user: 태블릿은 데스크탑과 동일).
+  Mobile (≤767): stack procedure columns + rights + strengths to full width.
+*/
+@media (max-width: 767px) {
+  .pp-two-col,
+  .pp-strengths__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .pp-strengths__summary {
+    min-height: 0;
+  }
+
+  .pp-strength-card {
+    min-height: 0;
+  }
+
+  .pp-procedures {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .pp-procedure {
+    width: 100%;
+  }
+
+  .pp-rights {
+    grid-template-columns: 1fr;
+  }
+
+  .pp-right-card:last-child {
+    grid-column: auto;
+  }
+
+  .pp-right-card__groups {
+    grid-template-columns: 1fr;
+  }
+
+  .pp-procedure__side {
+    min-height: 52px;
+    padding: 2px 0;
+  }
+
+  .pp-procedure__side-card {
+    width: min(210px, 72%);
+  }
+
+  .pp-procedure__block:has(.pp-procedure__side) {
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .pp-right-card__title {
+    font-size: 22px;
+  }
+
+  .pp-right-card__subtitle,
+  .pp-right-group__label {
+    font-size: 20px;
+  }
+
+  .pp-right-card .pp-list {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .pp-two-col {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+}

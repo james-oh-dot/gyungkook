@@ -1,0 +1,52 @@
+/* Stub subpages — shared shell until real content ships */
+.placeholder-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #fff;
+}
+
+.placeholder-page__visual {
+  width: 100%;
+}
+
+.placeholder-page__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 40vh;
+  padding: 140px var(--page-pad) 160px;
+  background: #f7f7fb;
+}
+
+.placeholder-page__message {
+  margin: 0;
+  max-width: 1280px;
+  width: 100%;
+  color: #1a1a1a;
+  font-family: Pretendard, sans-serif;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.6;
+  text-align: center;
+  text-wrap: balance;
+}
+
+@media (max-width: 768px) {
+  .placeholder-page__main {
+    padding: 80px var(--page-pad) 120px;
+  }
+
+  .placeholder-page__message {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .placeholder-page__main {
+    padding: 56px var(--page-pad) 96px;
+  }
+}

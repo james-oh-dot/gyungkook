@@ -1,0 +1,84 @@
+.version-switch {
+  position: fixed;
+  z-index: 850; /* below GNB (900) so Fullmenu / drawer cover the switcher */
+  /* Bottom-left — clear of GNB and bottom-right hero swipe */
+  top: auto;
+  right: auto;
+  bottom: 16px;
+  left: 16px;
+  transform: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background: rgba(17, 17, 17, 0.78);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(10px);
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+  transition:
+    background 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.version-switch__label {
+  margin: 0;
+  opacity: 0.7;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.version-switch__links {
+  display: flex;
+  gap: 4px;
+}
+
+.version-switch__link {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  color: rgba(255, 255, 255, 0.78);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.version-switch__link:hover,
+.version-switch__link:focus-visible {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.version-switch__link.is-active {
+  color: #111;
+  background: #fff;
+  font-weight: 600;
+}
+
+@media (max-width: 767px) {
+  .version-switch {
+    bottom: 12px;
+    left: 10px;
+    right: auto;
+    max-width: calc(100vw - 20px);
+    gap: 8px;
+    padding: 8px;
+    font-size: 12px;
+  }
+
+  .version-switch__label {
+    display: none;
+  }
+
+  .version-switch__links {
+    width: auto;
+  }
+
+  .version-switch__link {
+    justify-content: center;
+  }
+}

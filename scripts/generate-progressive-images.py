@@ -1,0 +1,189 @@
+#!/usr/bin/env python3
+"""
+Generate progressive (blur-up) image pairs for the Gyunggook site.
+
+For each source photo:
+  - `{stem}.preview.webp`  — ~64px wide, low quality (paints instantly)
+  - `{stem}.webp`          — display-sized, high quality q=90 (final sharp)
+
+Usage (from repo root):
+  python3 scripts/generate-progressive-images.py
+  python3 scripts/generate-progressive-images.py hero-03.png  # selected assets only
+
+Requires: Pillow (`pip install Pillow`)
+See: docs/progressive-images.md
+"""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parents[1] / "public" / "assets"
+
+# (relative path under public/assets, max full width)
+TARGETS: list[tuple[str, int]] = [
+    # Home hero slides
+    ("hero-01.png", 1600),
+    # 02/03 are full-bleed 1920×1080 scenes (Figma AI-hero `hero-02` / `hero-03`)
+    ("hero-02.png", 1920),
+    ("hero-03.png", 1920),
+    ("hero-04.png", 1920),
+    ("hero-05.jpg", 1024),
+    # Default dark home hero (slides 02/03 reuse the Figma assets above)
+    ("classic/hero-01.jpg", 1920),
+    ("classic/hero-04.jpg", 1600),
+    ("classic/hero-05.jpg", 1600),
+    # Mobile portrait hero arts (≤767) — 1560×3200 RGBA → ~3×390 CSS px
+    ("hero-M-01.png", 1170),
+    ("hero-M-02.png", 1170),
+    ("hero-M-03.png", 1170),
+    ("hero-M-04.png", 1170),
+    ("hero-M-05.png", 1170),
+    # Home hero swipe thumbs
+    ("hero-01-next.jpg", 300),
+    ("hero-02-next.jpg", 300),
+    ("hero-03-next.jpg", 300),
+    ("hero-04-next.jpg", 300),
+    ("hero-05-next.jpg", 300),
+    # Home section photos
+    ("notice-1.jpg", 900),
+    ("notice-2.jpg", 900),
+    ("notice-3.jpg", 900),
+    ("about.jpg", 1920),
+    ("practice-1.jpg", 1920),
+    ("practice-2.jpg", 1920),
+    ("practice-3.jpg", 1920),
+    ("achieve-1.jpg", 1920),
+    ("achieve-2.jpg", 1920),
+    ("achieve-3.jpg", 1920),
+    ("professionals-bg.jpg", 1920),
+    ("profile-1.jpg", 1104),
+    ("profile-2.jpg", 1104),
+    ("profile-3.jpg", 1104),
+    ("profile-4.jpg", 1104),
+    ("press-1.jpg", 1280),
+    ("press-2.jpg", 600),
+    ("press-3.jpg", 1920),
+    ("award-hover.jpg", 1000),
+    ("social-bg.jpg", 1920),
+    ("office-map.jpg", 1091),
+    # Sub visuals
+    ("sub/sub-01-01.jpg", 1920),
+    ("sub/sub-01-02.jpg", 1920),
+    ("sub/sub-01-03.jpg", 1920),
+    # Lawyer profile hero — pre-이미지교체 bright sub-01-03 (directory keeps sub-01-03)
+    ("sub/sub-01-03-profile.jpg", 1920),
+    # 변호사 · 자문단 — card (3× ~897) + profile hero PNG (3× ~1467) + advisors
+    ("lawyers/parkhyoyoung-card.jpg", 1200),
+    ("lawyers/gongdaeho-card.jpg", 1200),
+    ("lawyers/gongseongjun-card.jpg", 1200),
+    ("lawyers/sinjiho-card.jpg", 1200),
+    ("lawyers/parkhyoyoung.png", 1600),
+    ("lawyers/gongseongjun.png", 1600),
+    ("lawyers/sinjiho.png", 1600),
+    ("advisors/leeseokwoo.jpg", 1200),
+    ("advisors/yoonkyuhee.jpg", 1200),
+    ("advisors/junghyun.jpg", 1200),
+    ("advisors/joara.jpg", 1200),
+    ("advisors/baekjinki.jpg", 1200),
+    ("sub/sub-01-04.jpg", 1920),
+    ("sub/sub-01-05.jpg", 1920),
+    ("sub/sub-01-06.jpg", 1920),
+    ("sub/sub-02-01.jpg", 1920),
+    ("sub/sub-02-02.jpg", 1920),
+    ("sub/sub-03-01.jpg", 1920),
+    ("sub/sub-04-01.jpg", 1920),
+    ("sub/sub-04-02.jpg", 1920),
+    ("sub/sub-04-03.jpg", 1920),
+    ("sub/sub-04-04.jpg", 1920),
+    ("sub/sub-05-01.jpg", 1920),
+    # Lawyer portraits
+    ("lawyers/gongdaeho.png", 900),
+    # 공대호 인증서 / 위촉장 / 수상 — preserve the higher-resolution Figma exports.
+    # These render at ~304px on desktop, so do not downscale them below a
+    # high-density display's required source width.
+    ("lawyers/gongdaeho-cert-redevelopment.png", 800),
+    ("lawyers/gongdaeho-cert-admin.png", 800),
+    ("lawyers/gongdaeho-apt-lh.png", 800),
+    ("lawyers/gongdaeho-apt-seoul-human-rights.png", 800),
+    ("lawyers/gongdaeho-apt-medical-volunteer.png", 800),
+    ("lawyers/gongdaeho-apt-youth-legal.png", 800),
+    ("lawyers/gongdaeho-apt-nk-human-rights.png", 800),
+    ("lawyers/gongdaeho-apt-village-lawyer.png", 800),
+    ("lawyers/gongdaeho-award-human-rights.png", 800),
+    ("lawyers/gongdaeho-award-police.png", 800),
+    ("lawyers/gongdaeho-award-brand-index.png", 800),
+    ("lawyers/parkhyoyoung-apt-sinwol.png", 900),
+    ("lawyers/parkhyoyoung-apt-medical.png", 900),
+    ("lawyers/parkhyoyoung-apt-health.png", 900),
+    ("lawyers/parkhyoyoung-award-brand-index.png", 900),
+    # 대표인사말 (greeting)
+    ("greeting/ceo.jpg", 1280),
+    ("greeting/signature.png", 368),
+    # 경국인갤러리 (gallery) — brand pyramid diagram
+    ("gallery/pyramid.png", 564),
+    # About intro large photos
+    ("about/quote-city.png", 1920),
+    ("about/strength-01.png", 1600),
+    ("about/strength-02.png", 1600),
+    ("about/strength-03.png", 1600),
+    ("about/dark-seal.png", 512),
+]
+
+PREVIEW_W = 64
+PREVIEW_Q = 45
+FULL_Q = 90
+
+
+def stem_pair(src: Path) -> tuple[Path, Path]:
+    base = src.with_suffix("")
+    return base.with_suffix(".webp"), Path(str(base) + ".preview.webp")
+
+
+def load_image(path: Path) -> Image.Image:
+    im = Image.open(path)
+    if im.mode in ("RGBA", "LA") or (im.mode == "P" and "transparency" in im.info):
+        return im.convert("RGBA")
+    return im.convert("RGB")
+
+
+def main() -> None:
+    requested = set(sys.argv[1:])
+    for rel, max_w in TARGETS:
+        if requested and rel not in requested:
+            continue
+        src = ROOT / rel
+        if not src.exists():
+            print(f"MISSING {src}")
+            continue
+
+        full_path, preview_path = stem_pair(src)
+        im = load_image(src)
+        w, h = im.size
+
+        # Preview
+        pw = PREVIEW_W
+        ph = max(1, round(h * (pw / w)))
+        prev = im.resize((pw, ph), Image.Resampling.LANCZOS)
+        prev.save(preview_path, format="WEBP", quality=PREVIEW_Q, method=6)
+
+        # Full
+        if w > max_w:
+            nh = round(h * (max_w / w))
+            full = im.resize((max_w, nh), Image.Resampling.LANCZOS)
+        else:
+            full = im
+        full.save(full_path, format="WEBP", quality=FULL_Q, method=6)
+
+        print(
+            f"{rel}: {src.stat().st_size / 1024 / 1024:.2f}MB → "
+            f"full {full_path.stat().st_size / 1024:.0f}KB + "
+            f"preview {preview_path.stat().st_size / 1024:.1f}KB"
+        )
+
+
+if __name__ == "__main__":
+    main()
