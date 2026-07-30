@@ -45,18 +45,21 @@
   padding: 24px var(--quicknav-pad-x);
   width: var(--quicknav-w);
   box-sizing: border-box;
-  /* Black liquid glass — keep the #111 read, frost whatever sits behind. */
-  background: rgba(17, 17, 17, 0.62);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  /*
+    Dense black liquid glass — earlier 0.62 read as foggy over bright photos.
+    Keep blur for glass, but the fill must stay near-#111 so glyphs contrast.
+  */
+  background: rgba(10, 10, 12, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 0;
   /* Deep stacked shadow so the rail lifts off light page content. */
   box-shadow:
-    0 28px 56px -8px rgba(0, 0, 0, 0.55),
-    0 12px 24px -6px rgba(0, 0, 0, 0.4),
-    0 2px 6px rgba(0, 0, 0, 0.28),
-    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    0 28px 56px -8px rgba(0, 0, 0, 0.62),
+    0 12px 24px -6px rgba(0, 0, 0, 0.48),
+    0 2px 6px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
   /* Standard property only — lightningcss adds -webkit- at build. */
-  backdrop-filter: blur(22px) saturate(1.55);
+  backdrop-filter: blur(18px) saturate(1.35);
   pointer-events: auto;
   /* Slide-in from off-screen; width/padding morph between the two modes */
   transform: translate3d(0, 0, 0);
@@ -69,10 +72,10 @@
     gap 0.42s var(--quicknav-ease);
 }
 
-/* No backdrop-filter → denser black so icons stay legible. */
+/* No backdrop-filter → near-opaque black so icons stay legible. */
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .quicknav__panel {
-    background: rgba(17, 17, 17, 0.92);
+    background: rgba(10, 10, 12, 0.96);
   }
 }
 
@@ -94,7 +97,8 @@
   border: 0;
   border-radius: 0;
   background: none;
-  color: #81818d;
+  /* Brighter than Figma #81818D — dense glass still needs readable glyphs. */
+  color: rgba(255, 255, 255, 0.78);
   cursor: pointer;
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
@@ -126,7 +130,7 @@
   font-weight: 400;
   line-height: 1.45;
   letter-spacing: -0.3px;
-  color: #767676;
+  color: rgba(255, 255, 255, 0.72);
   /* Never wrap or clip Korean labels */
   white-space: nowrap;
   overflow: visible;
@@ -163,8 +167,8 @@
 }
 
 /*
-  Figma `무료법률상담만하이라이트상태` — this one item reads white at rest
-  (not the muted info grey), so the primary CTA stays prominent.
+  Figma `무료법률상담만하이라이트상태` — full white + slightly heavier label
+  so it still pops against the brighter muted siblings.
 */
 .quicknav__item--highlight {
   color: #fff;
@@ -172,12 +176,13 @@
 
 .quicknav__item--highlight .quicknav__label {
   color: #fff;
+  font-weight: 600;
 }
 
 .quicknav__divider {
   width: 100%;
   height: 1px;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.32);
 }
 
 /* ---------- Mode: full rail (reverse scroll) ---------- */
