@@ -22,8 +22,15 @@
 - **유지 대상**: `.github/`(배포 워크플로 포함), `README.md`, `src/`, `public/`,
   `docs/`, `scripts/`, 설정 파일 일체 — 즉 실제 동작하는 앱 소스.
 - 재생성 전에 `git log handoff/backend-source..main --oneline`으로 얼마나
-  뒤처졌는지 사용자에게 알리고 진행. 완료 후 브랜치 URL과 (가능하면) 다운로드
-  방법을 안내한다.
+  뒤처졌는지 사용자에게 알리고 진행.
+- **HARD RULE (2026-07-30, 사용자 지시) — 완료 후 반드시 zip 직다운로드 링크를
+  줄 것.** `git clone` 안내로 끝내지 말 것 — 사용자는 브라우저에서 바로 zip을
+  받는다. 링크 형식: `https://github.com/<owner>/<repo>/archive/refs/heads/<branch>.zip`
+  (이 저장소는 `https://github.com/james-oh-dot/gyungkook/archive/refs/heads/handoff/backend-source.zip`
+  — 브랜치명에 슬래시가 있어도 그대로 경로에 넣으면 됨). `codeload.github.com`으로
+  302 리다이렉트되어 파일명 `<repo>-<브랜치를 하이픈으로 치환>.zip`으로 받아진다.
+  링크를 주기 전에 `curl -sIL <url>`로 실제로 200이 나오는지 한 번 확인할 것
+  (추측으로 링크만 조립해서 주지 말 것).
 
 ## Cursor Cloud specific instructions
 
