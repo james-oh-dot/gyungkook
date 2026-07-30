@@ -12,10 +12,19 @@ export type ClassicHeroSlide = {
   imagePreview: string
   nextImage: string
   /**
-   * Mobile-only framing hint (≤767, where the hero goes full-bleed portrait).
+   * Optional ≤767 portrait art (`public/assets/hero-M-0N.*` progressive pair).
+   * When set, HeroClassic swaps to this pair on mobile and skips `mobileFrame`
+   * crop hacks (the portrait is already composed for the phone frame).
+   * Slide 03 has no `hero-M-03` upload — keep desktop `image` there.
+   */
+  mobileImage?: string
+  mobileImagePreview?: string
+  /**
+   * Mobile-only framing hint (≤767) when still using a landscape `image`.
    * A 390×844 cover crop keeps only ~26% of a 1600×900 source, so slides whose
    * subject sits off-centre get sliced in half at the default centre anchor.
    * Rendering lives in HeroClassic.css — `.hero__bg-slide--frame-*`.
+   * Ignored when `mobileImage` is active.
    * - `right`: anchor the source's right edge
    * - `flip-right`: mirror the layer and anchor so the subject sits on the
    *   right of the frame, leaving the darker half under the copy
@@ -32,6 +41,12 @@ const FIGMA_HERO_03 = progressiveAsset('assets/hero-03')
 const CLASSIC_HERO_04 = progressiveAsset('assets/classic/hero-04')
 const CLASSIC_HERO_05 = progressiveAsset('assets/classic/hero-05')
 
+/* Portrait mobile uploads (2026-07-30) — no hero-M-03; slide 03 keeps landscape. */
+const MOBILE_HERO_01 = progressiveAsset('assets/hero-M-01')
+const MOBILE_HERO_02 = progressiveAsset('assets/hero-M-02')
+const MOBILE_HERO_04 = progressiveAsset('assets/hero-M-04')
+const MOBILE_HERO_05 = progressiveAsset('assets/hero-M-05')
+
 /** Dark hero shell; slides 02/03 use the current high-resolution Figma visuals. */
 export const classicHeroSlides: ClassicHeroSlide[] = [
   {
@@ -47,6 +62,8 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
     image: CLASSIC_HERO_01.src,
     imagePreview: CLASSIC_HERO_01.preview,
     nextImage: asset('assets/classic/hero-01-next.jpg'),
+    mobileImage: MOBILE_HERO_01.src,
+    mobileImagePreview: MOBILE_HERO_01.preview,
   },
   {
     id: 2,
@@ -62,6 +79,8 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
     image: FIGMA_HERO_02.src,
     imagePreview: FIGMA_HERO_02.preview,
     nextImage: asset('assets/classic/hero-02-next.jpg'),
+    mobileImage: MOBILE_HERO_02.src,
+    mobileImagePreview: MOBILE_HERO_02.preview,
   },
   {
     id: 3,
@@ -90,8 +109,9 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
     image: CLASSIC_HERO_04.src,
     imagePreview: CLASSIC_HERO_04.preview,
     nextImage: asset('assets/classic/hero-04-next.jpg'),
-    /* Lit lamp + bird sit on the source's left; unmirrored, a right crop is
-       almost entirely black sky. */
+    mobileImage: MOBILE_HERO_04.src,
+    mobileImagePreview: MOBILE_HERO_04.preview,
+    /* Fallback only if mobileImage is removed — lit lamp sits on source left. */
     mobileFrame: 'flip-right',
   },
   {
@@ -107,7 +127,9 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
     image: CLASSIC_HERO_05.src,
     imagePreview: CLASSIC_HERO_05.preview,
     nextImage: asset('assets/classic/hero-05-next.jpg'),
-    /* Courthouse is the right third of the panorama */
+    mobileImage: MOBILE_HERO_05.src,
+    mobileImagePreview: MOBILE_HERO_05.preview,
+    /* Fallback only if mobileImage is removed — courthouse is right third. */
     mobileFrame: 'right',
   },
 ]

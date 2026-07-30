@@ -27,7 +27,27 @@ const SWIPE_AXIS_RATIO = 1.5
 /** A slow drag is a hold/scroll correction, not a flick */
 const SWIPE_MAX_MS = 800
 
+/** Matches HeroClassic.css mobile breakpoint — portrait `hero-M-*` arts swap here. */
+const MQ_MOBILE_HERO = '(max-width: 767px)'
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia(query).matches : false,
+  )
+
+  useEffect(() => {
+    const mql = window.matchMedia(query)
+    const onChange = () => setMatches(mql.matches)
+    onChange()
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
+  }, [query])
+
+  return matches
+}
+
 export function HeroClassic() {
+  const isMobile = useMediaQuery(MQ_MOBILE_HERO)
   const [index, setIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const [animKey, setAnimKey] = useState(0)
@@ -255,27 +275,39 @@ export function HeroClassic() {
       onPointerCancel={onPointerCancel}
     >
       <div className="hero__bg">
-        {classicHeroSlides.map((item, i) => (
-          <div
-            key={item.id}
-            className={`hero__bg-slide${i === index ? ' is-active' : ''}${
-              item.mobileFrame ? ` hero__bg-slide--frame-${item.mobileFrame}` : ''
-            }`}
-          >
-            <ProgressiveImage
-              src={item.image}
-              preview={item.imagePreview}
-              alt=""
-              priority={i === 0}
-              style={
-                i === index
-                  ? ({ '--hero-zoom': progress } as CSSProperties)
-                  : undefined
-              }
-            />
-            <div className="hero__bg-veil" />
-          </div>
-        ))}
+        {classicHeroSlides.map((item, i) => {
+          const useMobileArt = isMobile && !!item.mobileImage
+          const src = useMobileArt ? item.mobileImage! : item.image
+          const preview = useMobileArt
+            ? (item.mobileImagePreview ?? item.imagePreview)
+            : item.imagePreview
+          /* Portrait mobile arts are already composed — skip landscape crop hacks. */
+          const frameClass =
+            !useMobileArt && item.mobileFrame
+              ? ` hero__bg-slide--frame-${item.mobileFrame}`
+              : ''
+          const artClass = item.mobileImage ? ' hero__bg-slide--mobile-art' : ''
+
+          return (
+            <div
+              key={item.id}
+              className={`hero__bg-slide${i === index ? ' is-active' : ''}${frameClass}${artClass}`}
+            >
+              <ProgressiveImage
+                src={src}
+                preview={preview}
+                alt=""
+                priority={i === 0}
+                style={
+                  i === index
+                    ? ({ '--hero-zoom': progress } as CSSProperties)
+                    : undefined
+                }
+              />
+              <div className="hero__bg-veil" />
+            </div>
+          )
+        })}
       </div>
 
       <div className="hero__content" key={animKey}>
