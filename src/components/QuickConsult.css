@@ -1,5 +1,6 @@
 /*
-  Desktop-only quick consult strip above the footer.
+  Home-only + desktop-only quick consult strip above the footer.
+  Mounted only on `/` (and classic.html) via SiteLayout.
   Hidden ≤1024 (tablet/mobile keep QuickNav / other contact paths).
   Brand chrome: sharp rect only — no border-radius.
   Layout matches other home sections: `--section-y` / `--page-pad`, left copy + right form.

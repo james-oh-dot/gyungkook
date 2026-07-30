@@ -1,4 +1,4 @@
-/** Copy for the desktop-only 빠른문자상담 strip above the footer. */
+/** Copy for the home-only, desktop-only 빠른문자상담 strip above the footer. */
 
 export const QUICK_CONSULT = {
   eyebrow: 'CONTACT',
