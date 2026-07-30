@@ -111,7 +111,7 @@ export function QuickConsult() {
   return (
     <section
       ref={sectionRef}
-      className={`quick-consult${inView ? ' is-inview' : ''}`}
+      className={`section section--dark quick-consult${inView ? ' is-inview' : ''}`}
       data-header-theme="dark"
       aria-labelledby={`${formId}-title`}
     >
@@ -136,7 +136,7 @@ export function QuickConsult() {
             </div>
           ) : (
             <form className="quick-consult__form" onSubmit={onSubmit} noValidate>
-              <div className="quick-consult__fields">
+              <div className="quick-consult__row quick-consult__row--inputs">
                 <label
                   className={`quick-consult__field${errors.name ? ' is-invalid' : ''}${form.name ? ' has-value' : ''}`}
                 >
@@ -176,94 +176,96 @@ export function QuickConsult() {
                   />
                   <span className="quick-consult__focus" aria-hidden="true" />
                 </label>
-              </div>
 
-              <label
-                className={`quick-consult__field quick-consult__field--area${errors.message ? ' is-invalid' : ''}${form.message ? ' has-value' : ''}`}
-              >
-                <span className="quick-consult__label">{QUICK_CONSULT.fields.message.label}</span>
-                <textarea
-                  className="quick-consult__textarea"
-                  name="message"
-                  rows={4}
-                  placeholder={QUICK_CONSULT.fields.message.placeholder}
-                  value={form.message}
-                  onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
-                  onBlur={() => setTouched((t) => ({ ...t, message: true }))}
-                  required
-                  maxLength={1000}
-                />
-                <span className="quick-consult__focus" aria-hidden="true" />
-              </label>
-
-              <fieldset className="quick-consult__modes">
-                <legend className="quick-consult__legend">상담 방식</legend>
-                <div className="quick-consult__mode-list" role="radiogroup" aria-label="상담 방식">
-                  {QUICK_CONSULT.modes.map((mode) => {
-                    const selected = form.mode === mode.id
-                    return (
-                      <label
-                        key={mode.id}
-                        className={`quick-consult__mode${selected ? ' is-selected' : ''}`}
-                      >
-                        <input
-                          type="radio"
-                          name="consult-mode"
-                          value={mode.id}
-                          checked={selected}
-                          onChange={() => setForm((f) => ({ ...f, mode: mode.id }))}
-                        />
-                        <span className="quick-consult__mode-dot" aria-hidden="true" />
-                        <span className="quick-consult__mode-label">{mode.label}</span>
-                      </label>
-                    )
-                  })}
-                </div>
-              </fieldset>
-
-              <div
-                className={`quick-consult__consent${errors.consent ? ' is-invalid' : ''}${shakeConsent ? ' is-shake' : ''}`}
-              >
-                <label className="quick-consult__check">
+                <label
+                  className={`quick-consult__field quick-consult__field--message${errors.message ? ' is-invalid' : ''}${form.message ? ' has-value' : ''}`}
+                >
+                  <span className="quick-consult__label">{QUICK_CONSULT.fields.message.label}</span>
                   <input
-                    type="checkbox"
-                    checked={form.consent}
-                    onChange={(e) => {
-                      setForm((f) => ({ ...f, consent: e.target.checked }))
-                      setTouched((t) => ({ ...t, consent: true }))
-                    }}
+                    className="quick-consult__input"
+                    name="message"
+                    type="text"
+                    placeholder={QUICK_CONSULT.fields.message.placeholder}
+                    value={form.message}
+                    onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+                    onBlur={() => setTouched((t) => ({ ...t, message: true }))}
+                    required
+                    maxLength={1000}
                   />
-                  <span className="quick-consult__check-box" aria-hidden="true">
-                    <span className="quick-consult__check-mark" />
-                  </span>
-                  <span className="quick-consult__check-text">
-                    {QUICK_CONSULT.consent.label}
-                    <button
-                      type="button"
-                      className="quick-consult__privacy-link"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        e.stopPropagation()
-                        setPrivacyOpen(true)
-                      }}
-                    >
-                      {QUICK_CONSULT.consent.linkLabel}
-                    </button>
-                  </span>
+                  <span className="quick-consult__focus" aria-hidden="true" />
                 </label>
               </div>
 
-              <button
-                type="submit"
-                className={`quick-consult__submit${submitting ? ' is-busy' : ''}`}
-                disabled={submitting}
-                aria-disabled={!canSubmit && !submitting}
-              >
-                <span className="quick-consult__submit-label">
-                  {submitting ? QUICK_CONSULT.submitting : QUICK_CONSULT.submit}
-                </span>
-                <span className="quick-consult__submit-shine" aria-hidden="true" />
-              </button>
+              <div className="quick-consult__row quick-consult__row--meta">
+                <fieldset className="quick-consult__modes">
+                  <legend className="quick-consult__legend">상담 방식</legend>
+                  <div className="quick-consult__mode-list" role="radiogroup" aria-label="상담 방식">
+                    {QUICK_CONSULT.modes.map((mode) => {
+                      const selected = form.mode === mode.id
+                      return (
+                        <label
+                          key={mode.id}
+                          className={`quick-consult__mode${selected ? ' is-selected' : ''}`}
+                        >
+                          <input
+                            type="radio"
+                            name="consult-mode"
+                            value={mode.id}
+                            checked={selected}
+                            onChange={() => setForm((f) => ({ ...f, mode: mode.id }))}
+                          />
+                          <span className="quick-consult__mode-dot" aria-hidden="true" />
+                          <span className="quick-consult__mode-label">{mode.label}</span>
+                        </label>
+                      )
+                    })}
+                  </div>
+                </fieldset>
+
+                <div
+                  className={`quick-consult__consent${errors.consent ? ' is-invalid' : ''}${shakeConsent ? ' is-shake' : ''}`}
+                >
+                  <label className="quick-consult__check">
+                    <input
+                      type="checkbox"
+                      checked={form.consent}
+                      onChange={(e) => {
+                        setForm((f) => ({ ...f, consent: e.target.checked }))
+                        setTouched((t) => ({ ...t, consent: true }))
+                      }}
+                    />
+                    <span className="quick-consult__check-box" aria-hidden="true">
+                      <span className="quick-consult__check-mark" />
+                    </span>
+                    <span className="quick-consult__check-text">
+                      {QUICK_CONSULT.consent.label}
+                      <button
+                        type="button"
+                        className="quick-consult__privacy-link"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          e.stopPropagation()
+                          setPrivacyOpen(true)
+                        }}
+                      >
+                        {QUICK_CONSULT.consent.linkLabel}
+                      </button>
+                    </span>
+                  </label>
+                </div>
+
+                <button
+                  type="submit"
+                  className={`quick-consult__submit${submitting ? ' is-busy' : ''}`}
+                  disabled={submitting}
+                  aria-disabled={!canSubmit && !submitting}
+                >
+                  <span className="quick-consult__submit-label">
+                    {submitting ? QUICK_CONSULT.submitting : QUICK_CONSULT.submit}
+                  </span>
+                  <span className="quick-consult__submit-shine" aria-hidden="true" />
+                </button>
+              </div>
             </form>
           )}
         </div>
