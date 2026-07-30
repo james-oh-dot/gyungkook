@@ -27,8 +27,8 @@
  * supplied), so the profile mirrors those source mappings.
  *
  * 박효영 profile content + 위촉/수상 scans from PPT
- * `1_3 변호사·자문단_(2박효영변호사)` (2026-07-30). PPT 전문인증서 slides reused
- * 공대호 scans, so those tiles stay caption-only until real scans arrive.
+ * `1_3 변호사·자문단_(2박효영변호사)` (2026-07-30). PPT 전문인증서 slides currently
+ * reuse the 공대호 cert scans as temporary stand-ins until dedicated scans arrive.
  */
 
 import { progressiveAsset } from '../utils/progressiveImage'
@@ -319,7 +319,7 @@ const PARK_HYOYOUNG: Lawyer = {
   publicResultsLabel: '실적(기타 분야)',
   publicResultsMoreLabel: '기타분야 실적 더보기',
   publicResultsMoreTo: '/other/misc',
-  // PPT slide 8 temporarily reuses the available cert scans (names on scans may differ).
+  // PPT slide 8: temporarily reuse 공대호 cert scans until 박효영-specific scans arrive.
   certificates: [
     { label: '재개발·재건축', image: cert('gongdaeho-cert-redevelopment') },
     { label: '수용보상', image: cert('gongdaeho-cert-admin') },
