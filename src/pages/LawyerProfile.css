@@ -372,6 +372,17 @@
   height: 100%;
   object-fit: cover;
 }
+/* Square badges (brand-index) — use 1:1 frame so the circular mark isn't cropped */
+.lawyer-cert__frame--contain {
+  aspect-ratio: 1 / 1;
+  background: #fff;
+  padding: 12px;
+  box-sizing: border-box;
+}
+.lawyer-cert__frame--contain img {
+  object-fit: contain;
+  object-position: center;
+}
 
 /* ============================ Responsive ============================ */
 /*

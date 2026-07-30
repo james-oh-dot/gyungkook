@@ -27,8 +27,8 @@
  * supplied), so the profile mirrors those source mappings.
  *
  * 박효영 profile content + 위촉/수상 scans from PPT
- * `1_3 변호사·자문단_(2박효영변호사)` (2026-07-30). PPT 전문인증서 slides reused
- * 공대호 scans, so those tiles stay caption-only until real scans arrive.
+ * `1_3 변호사·자문단_(2박효영변호사)` (2026-07-30). PPT 전문인증서 slides currently
+ * reuse the 공대호 cert scans as temporary stand-ins until dedicated scans arrive.
  */
 
 import { progressiveAsset } from '../utils/progressiveImage'
@@ -75,6 +75,8 @@ export type CertItem = {
   label: string
   /** Optional real image; falls back to a captioned placeholder frame. */
   image?: string
+  /** Square badges (e.g. brand-index) need contain so edges aren't cropped. */
+  fit?: 'cover' | 'contain'
 }
 
 export type Lawyer = {
@@ -317,15 +319,22 @@ const PARK_HYOYOUNG: Lawyer = {
   publicResultsLabel: '실적(기타 분야)',
   publicResultsMoreLabel: '기타분야 실적 더보기',
   publicResultsMoreTo: '/other/misc',
-  // PPT slide 8 reused 공대호 scans — show captioned frames until real scans arrive
-  certificates: [{ label: '재개발·재건축' }, { label: '수용보상' }],
+  // PPT slide 8: temporarily reuse 공대호 cert scans until 박효영-specific scans arrive.
+  certificates: [
+    { label: '재개발·재건축', image: cert('gongdaeho-cert-redevelopment') },
+    { label: '수용보상', image: cert('gongdaeho-cert-admin') },
+  ],
   appointments: [
     { label: '신월종합사회복지관 법률자문', image: cert('parkhyoyoung-apt-sinwol') },
     { label: '대한중앙의료봉사회 자문위원', image: cert('parkhyoyoung-apt-medical') },
     { label: '보건의료통합봉사단 자문위원', image: cert('parkhyoyoung-apt-health') },
   ],
   awards: [
-    { label: '2025 한국브랜드만족지수 1위', image: cert('parkhyoyoung-award-brand-index') },
+    {
+      label: '2025 한국브랜드만족지수 1위',
+      image: cert('parkhyoyoung-award-brand-index'),
+      fit: 'contain',
+    },
   ],
 }
 
