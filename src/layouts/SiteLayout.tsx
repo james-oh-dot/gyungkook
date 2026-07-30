@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 import { Outlet } from 'react-router-dom'
 import { Footer } from '../components/Footer'
 import { Gnb } from '../components/Gnb'
+import { QuickConsult } from '../components/QuickConsult'
 import { QuickNav } from '../components/QuickNav'
 
 type SiteLayoutProps = {
@@ -21,6 +22,8 @@ export function SiteLayout({ children }: SiteLayoutProps) {
     <main className="page">
       <Gnb />
       {children ?? <Outlet />}
+      {/* Desktop-only (≥1025) — hidden on tablet/mobile via CSS */}
+      <QuickConsult />
       <Footer />
       {/* Tablet/mobile floating quick rail — hidden on desktop via CSS */}
       <QuickNav />
