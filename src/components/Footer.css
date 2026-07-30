@@ -33,6 +33,8 @@
   height: 32px;
   flex: 0 0 auto;
   object-fit: contain;
+  /* Colored PNG → solid white on the dark footer (pairs with light wordmark). */
+  filter: brightness(0) invert(1);
 }
 
 .site-footer__logo-word {
