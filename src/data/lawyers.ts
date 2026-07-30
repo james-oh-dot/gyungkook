@@ -25,6 +25,10 @@
  * appointments (서울시사회복지협의회봉사단 / 대한법률봉사회회장) reuse the LH / 서울시
  * scans in the Figma source itself (identical asset refs — no distinct scan was
  * supplied), so the profile mirrors those source mappings.
+ *
+ * 박효영 profile content + 위촉/수상 scans from PPT
+ * `1_3 변호사·자문단_(2박효영변호사)` (2026-07-30). PPT 전문인증서 slides reused
+ * 공대호 scans, so those tiles stay caption-only until real scans arrive.
  */
 
 import { progressiveAsset } from '../utils/progressiveImage'
@@ -97,6 +101,13 @@ export type Lawyer = {
   lectures: string[]
   renewalResults: string[]
   publicResults: string[]
+  /**
+   * Second results block labels/link — defaults to 공익사업.
+   * 박효영 PPT uses 실적(기타 분야) → `/other/misc`.
+   */
+  publicResultsLabel?: string
+  publicResultsMoreLabel?: string
+  publicResultsMoreTo?: string
   certificates: CertItem[]
   appointments: CertItem[]
   awards: CertItem[]
@@ -225,6 +236,99 @@ const GONG_DAEHO: Lawyer = {
   ],
 }
 
+/** 박효영 — PPT `1_3 변호사·자문단_(2박효영변호사)` */
+const PARK_HYOYOUNG: Lawyer = {
+  id: 'parkhyoyoung',
+  tabLabel: '박효영변호사',
+  name: '박효영',
+  title: '변호사',
+  phone: 'T.02-598-0350',
+  fax: 'F.02-598-0370',
+  email: 'E.phy@gyunggook.com',
+  intro: [
+    '대한변호사협회 재개발·재건축, 수용보상 전문변호사',
+    '대한법률봉사회 자문',
+    '대한중앙의료봉사회 자문',
+  ],
+  photo: PARKHYOYOUNG_PHOTO.src,
+  photoPreview: PARKHYOYOUNG_PHOTO.preview,
+  practiceAreas: ['재개발·재건축', '행정', '부동산', '수용보상', '이혼', '기업법무'],
+  specialties: [
+    '대한변호사협회 재개발·재건축 전문변호사',
+    '대한변호사협회 수용보상 전문변호사',
+  ],
+  education: [
+    '데레사여자고등학교',
+    '인하대학교 법과대학',
+    '영남대학교 법학전문대학원',
+  ],
+  careers: [
+    [
+      '전) 법무법인 한마루',
+      '전) 법률사무소 진평',
+      '대한중앙의료봉사회 자문',
+      '신월종합사회복지관 자문변호사',
+      '용산구쪽방상담소 자문변호사',
+    ],
+    [
+      '김포농협 자문변호사',
+      '김포시산림조합 자문변호사',
+      '고촌농협 자문변호사',
+      '대한법률봉사회 자문',
+      '대한변호사협회 재개발재건축, 수용보상 전문변호사',
+    ],
+  ],
+  books: ['보상수탁이야기', '공익사업과 정비사업에서의 건물인도'],
+  lectures: [],
+  renewalResults: [
+    '서울 잠실5단지아파트 주택재건축정비사업',
+    '서울 방배6구역 주택재건축정비사업',
+    '서울 용답동주택재개발사업',
+    '서울 개봉5구역 주택재건축정비사업',
+    '서울 세운6-2-24구역도시환경정비사업',
+    '서울 도곡동547-1일원 가로주택정비사업',
+    '서울 역삼목화연립가로주택정비사업',
+    '용인8구역재개발정비사업',
+    '인천 용현3구역가로주택정비사업',
+    '대전 선화재정비촉진구역주택재개발정비사업',
+    '인천 숭의3구역주택재개발정비사업',
+    '울산B-04구역재개발정비사업',
+    '부산 부전역소규모재개발사업',
+  ],
+  publicResults: [
+    '부동산 근저당권 말소',
+    '투자금 반환 및 손해배상',
+    '연인 간 금전 대여금 반환',
+    '공동 소유 부동산 공유물분할 청구',
+    '상가 분양계약 해제',
+    '아파트 소유권이전등기 지연에 따른 손해배상',
+    '대여금 보증채무에서 이자제한법상 간주이자 범위 다툼 사건',
+    '예탁유가증권 특별현금화 매각명령에 대한 채무자 항고 사건',
+    '양도소득세 부과 착오로 인한 부동산 매매계약 취소 및 손해배상 청구 사건',
+    '상속재산분할 및 유류분 반환 청구 소송',
+    '홈페이지 이미지 무단 게시로 인한 저작권 침해 손해배상 사건',
+    '부동산 중개인의 중개행위 책임에 따른 손해배상 사건',
+    'P2P 투자 사기로 인한 손해배상 청구 사건',
+    '호텔 인테리어 공사대금 및 지연손해금 청구 사건',
+    '피해자 주거침입 강제추행 혐의 항소심 사건',
+    '시스템 개발 계약 위약금 및 개발 비용 청구 사건',
+    '지자체의 도로 점유에 대한 부당이득 반환 청구',
+  ],
+  publicResultsLabel: '실적(기타 분야)',
+  publicResultsMoreLabel: '기타분야 실적 더보기',
+  publicResultsMoreTo: '/other/misc',
+  // PPT slide 8 reused 공대호 scans — show captioned frames until real scans arrive
+  certificates: [{ label: '재개발·재건축' }, { label: '수용보상' }],
+  appointments: [
+    { label: '신월종합사회복지관 법률자문', image: cert('parkhyoyoung-apt-sinwol') },
+    { label: '대한중앙의료봉사회 자문위원', image: cert('parkhyoyoung-apt-medical') },
+    { label: '보건의료통합봉사단 자문위원', image: cert('parkhyoyoung-apt-health') },
+  ],
+  awards: [
+    { label: '2025 한국브랜드만족지수 1위', image: cert('parkhyoyoung-award-brand-index') },
+  ],
+}
+
 /** Placeholder lawyers — tabs route here but content is pending design. */
 function placeholderLawyer(
   id: string,
@@ -254,20 +358,7 @@ function placeholderLawyer(
 
 export const LAWYERS: Lawyer[] = [
   GONG_DAEHO,
-  {
-    ...placeholderLawyer(
-      'parkhyoyoung',
-      '박효영',
-      PARKHYOYOUNG_PHOTO.src,
-    ),
-    photoPreview: PARKHYOYOUNG_PHOTO.preview,
-    intro: [
-      'LH 정비사업 자문위원',
-      '감정평가사 자격보유, 법원감정인 경력',
-      '대한변호사협회 재개발·재건축, 행정전문변호사',
-      '대한법률봉사회 회장',
-    ],
-  },
+  PARK_HYOYOUNG,
   {
     ...placeholderLawyer(
       'gongseongjun',
@@ -303,12 +394,7 @@ export const LAWYER_CARDS: LawyerCard[] = [
     id: 'parkhyoyoung',
     name: '박효영',
     title: '변호사',
-    highlights: [
-      'LH 정비사업 자문위원',
-      '감정평가사 자격보유, 법원감정인 경력',
-      '대한변호사협회 재개발·재건축, 행정전문변호사',
-      '대한법률봉사회 회장',
-    ],
+    highlights: PARK_HYOYOUNG.intro,
     photo: PARKHYOYOUNG_CARD.src,
     photoPreview: PARKHYOYOUNG_CARD.preview,
     href: lawyerPath('parkhyoyoung'),

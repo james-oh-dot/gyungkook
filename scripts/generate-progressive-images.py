@@ -116,6 +116,10 @@ TARGETS: list[tuple[str, int]] = [
     ("lawyers/gongdaeho-award-human-rights.png", 800),
     ("lawyers/gongdaeho-award-police.png", 800),
     ("lawyers/gongdaeho-award-brand-index.png", 800),
+    ("lawyers/parkhyoyoung-apt-sinwol.png", 900),
+    ("lawyers/parkhyoyoung-apt-medical.png", 900),
+    ("lawyers/parkhyoyoung-apt-health.png", 900),
+    ("lawyers/parkhyoyoung-award-brand-index.png", 900),
     # 대표인사말 (greeting)
     ("greeting/ceo.jpg", 1280),
     ("greeting/signature.png", 368),
