@@ -156,6 +156,10 @@ export function HeroClassic() {
     classicHeroSlides.forEach((item) => {
       const img = new Image()
       img.src = item.image
+      if (item.mobileImage) {
+        const mobile = new Image()
+        mobile.src = item.mobileImage
+      }
     })
   }, [])
 
