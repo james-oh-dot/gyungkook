@@ -475,6 +475,28 @@
   padding-block: 16px;
 }
 
+/* Symbol mark sits left of the hamburger (+ tablet "메뉴" label). */
+.gnb__compact-lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.gnb__logo--symbol {
+  min-width: 0;
+  width: 32px;
+  height: 32px;
+  gap: 0;
+  justify-content: center;
+}
+
+.gnb__logo--symbol .gnb__logo-mark {
+  width: 32px;
+  height: 32px;
+}
+
 .gnb--compact .gnb__action {
   width: 50px;
   min-height: 50px;
@@ -596,6 +618,16 @@
 
 .gnb__logo--drawer {
   color: #111;
+}
+
+.gnb__logo--drawer.gnb__logo--symbol {
+  width: 36px;
+  height: 36px;
+}
+
+.gnb__logo--drawer.gnb__logo--symbol .gnb__logo-mark {
+  width: 36px;
+  height: 36px;
 }
 
 .gnb__drawer-close {
@@ -738,10 +770,12 @@
   min-height: 52px;
   padding: 14px 20px;
   border-radius: 0;
+  /* Brand teal fill — keep sharp-rect; white type + inverted call icon */
   background: var(--color-teal, #008075);
   color: #fff;
   font-weight: 600;
   letter-spacing: -0.02em;
+  text-decoration: none;
   transition:
     background var(--gnb-duration) var(--gnb-ease),
     transform var(--gnb-duration) var(--gnb-ease),
