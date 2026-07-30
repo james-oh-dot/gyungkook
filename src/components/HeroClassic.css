@@ -925,20 +925,13 @@
   }
 
   /*
-    The base veil ramps left→right for the desktop left column, which washes
-    out a full-width mobile headline. Swap in a vertical scrim that stays light
-    across the artwork and goes solid right where the image ends (68%), so the
-    photo dissolves into the copy band instead of cutting off at a hard seam.
+    Mobile portrait arts (`hero-M-*`) are already composed with their own
+    atmosphere — the old vertical scrim (light mid → solid black at ~72%,
+    tuned for the 68% landscape crop) left a muddy band over the lower third.
+    No bottom darkening. Keep the veil node for desktop, but clear it here.
   */
   .hero__bg-veil {
-    background: linear-gradient(
-      180deg,
-      rgba(0, 0, 0, 0.45) 0%,
-      rgba(0, 0, 0, 0.08) 26%,
-      rgba(0, 0, 0, 0.18) 50%,
-      rgba(0, 0, 0, 0.72) 66%,
-      #000 72%
-    );
+    background: none;
   }
 
   .hero__content {
