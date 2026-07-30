@@ -92,6 +92,7 @@ GNB fullmenu 스왑은 최적화된 **full WebP** (`PAGE.visual`)를 사용한�
 
 - **홈 전체 사진** (`HomePage` / `HomeSections` / `Hero`):
   - 히어로 슬라이드 `hero-01` … `hero-05` (+ Ken Burns on `.progressive-image`)
+  - 모바일 전용 초상 `hero-M-01` / `02` / `04` / `05` (≤767; **no `hero-M-03`** — slide 03 keeps landscape)
   - 히어로 swipe thumb `hero-01-next` … `hero-05-next`
   - Notice / About / Practice / Achievements / Professionals(BG+초상) / Press / Awards preview / Social BG / Office map
 - 모든 서브비주얼: `sub-01-01`, `sub-02-01`, `sub-04-01` … `sub-04-04`

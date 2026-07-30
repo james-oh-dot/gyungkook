@@ -36,6 +36,12 @@ TARGETS: list[tuple[str, int]] = [
     ("classic/hero-01.jpg", 1920),
     ("classic/hero-04.jpg", 1600),
     ("classic/hero-05.jpg", 1600),
+    # Mobile portrait hero arts (≤767) — no hero-M-03; slide 03 keeps landscape
+    # ~3×390 CSS px wide; sources are 1560×3200 RGBA PNGs
+    ("hero-M-01.png", 1170),
+    ("hero-M-02.png", 1170),
+    ("hero-M-04.png", 1170),
+    ("hero-M-05.png", 1170),
     # Home hero swipe thumbs
     ("hero-01-next.jpg", 300),
     ("hero-02-next.jpg", 300),

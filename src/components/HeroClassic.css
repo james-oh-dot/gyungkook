@@ -791,13 +791,10 @@
   }
 
   /*
-    Full-width, but stopping at 68% height — NOT full-bleed, and that is the
-    whole point. A 390×844 box crops a 1600×900 source to 26% of its width,
-    which is narrower than the subject on slides 04/05 (the courthouse alone
-    spans ~40%), so at full height they can only ever show a fragment. 68%
-    widens the visible strip to ~38% of the source, which is the shallowest
-    box the courthouse fits in. Do not raise this back toward 100% without
-    re-checking slide 05.
+    Landscape fallback (slide 03, or any slide without `hero-M-*`): stop at 68%
+    height so a 1600×900 cover crop keeps a usable strip. Dedicated portrait
+    arts (`.hero__bg-slide--mobile-art`, from `mobileImage` in slidesClassic)
+    go full-bleed — they are already composed for ~390×844.
     `inset` overrides the base rule's `left`; `height` then wins over `bottom`.
   */
   .hero__bg-slide > .progressive-image {
@@ -806,9 +803,14 @@
     height: 68%;
   }
 
+  .hero__bg-slide--mobile-art > .progressive-image {
+    inset: 0;
+    width: auto;
+    height: 100%;
+  }
+
   /*
-    Portrait cover crop keeps only ~26% of a 1600×900 source, so a slide whose
-    subject sits off-centre gets sliced in half at the default centre anchor.
+    Landscape-only crop anchors. Skipped in JS when `mobileImage` is active.
     Which slides need an anchor is data — `mobileFrame` in slidesClassic.ts.
   */
   /* `> .progressive-image` is load-bearing: the base `object-position` rule is
