@@ -270,10 +270,10 @@ export function LawyerProfilePage() {
             moreTo="/practice/renewal#trackRecord"
           />
           <ResultBlock
-            label="실적(공익사업 등)"
+            label={lawyer.publicResultsLabel ?? '실적(공익사업 등)'}
             items={lawyer.publicResults}
-            moreLabel="공익사업 실적 더보기"
-            moreTo="/practice/public#record1"
+            moreLabel={lawyer.publicResultsMoreLabel ?? '공익사업 실적 더보기'}
+            moreTo={lawyer.publicResultsMoreTo ?? '/practice/public#record1'}
           />
 
           <CertGrid label="전문 인증서" items={lawyer.certificates} />
