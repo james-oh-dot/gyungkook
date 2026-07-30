@@ -372,6 +372,21 @@
   height: 100%;
   object-fit: cover;
 }
+/* Square badges (brand-index) — show full mark inside the portrait frame */
+.lawyer-cert__frame--contain {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  padding: 16px;
+}
+.lawyer-cert__frame--contain img {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
 
 /* ============================ Responsive ============================ */
 /*

@@ -102,7 +102,9 @@ function CertGrid({ label, items }: { label: string; items: CertItem[] }) {
       <div className="lawyer-cert-grid">
         {items.map((item) => (
           <figure key={item.label} className="lawyer-cert">
-            <div className="lawyer-cert__frame">
+            <div
+              className={`lawyer-cert__frame${item.fit === 'contain' ? ' lawyer-cert__frame--contain' : ''}`}
+            >
               {item.image ? <img src={item.image} alt={item.label} /> : null}
             </div>
             <figcaption className="lawyer-chip">{item.label}</figcaption>
