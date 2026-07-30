@@ -15,7 +15,6 @@ export type ClassicHeroSlide = {
    * Optional ≤767 portrait art (`public/assets/hero-M-0N.*` progressive pair).
    * When set, HeroClassic swaps to this pair on mobile and skips `mobileFrame`
    * crop hacks (the portrait is already composed for the phone frame).
-   * Slide 03 has no `hero-M-03` upload — keep desktop `image` there.
    */
   mobileImage?: string
   mobileImagePreview?: string
@@ -41,9 +40,10 @@ const FIGMA_HERO_03 = progressiveAsset('assets/hero-03')
 const CLASSIC_HERO_04 = progressiveAsset('assets/classic/hero-04')
 const CLASSIC_HERO_05 = progressiveAsset('assets/classic/hero-05')
 
-/* Portrait mobile uploads (2026-07-30) — no hero-M-03; slide 03 keeps landscape. */
+/* Portrait mobile uploads (2026-07-30) — hero-M-01…05. */
 const MOBILE_HERO_01 = progressiveAsset('assets/hero-M-01')
 const MOBILE_HERO_02 = progressiveAsset('assets/hero-M-02')
+const MOBILE_HERO_03 = progressiveAsset('assets/hero-M-03')
 const MOBILE_HERO_04 = progressiveAsset('assets/hero-M-04')
 const MOBILE_HERO_05 = progressiveAsset('assets/hero-M-05')
 
@@ -95,6 +95,8 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
     image: FIGMA_HERO_03.src,
     imagePreview: FIGMA_HERO_03.preview,
     nextImage: asset('assets/classic/hero-03-next.jpg'),
+    mobileImage: MOBILE_HERO_03.src,
+    mobileImagePreview: MOBILE_HERO_03.preview,
   },
   {
     id: 4,
