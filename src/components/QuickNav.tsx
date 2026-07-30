@@ -6,7 +6,8 @@ import './QuickNav.css'
 /**
  * quick-left-floating-Navigation (Figma `AI-quick` 120:974 / 120:1025).
  *
- * Tablet + mobile only (≤1024), pinned bottom-left (20/20).
+ * Tablet + mobile only (≤1024). Expanded pins bottom-left (20/20); compact
+ * hugs `left: 0`. Panel is black liquid glass (not solid #111).
  *
  * Interaction contract — **scroll decides presence, the user decides size**:
  * - Presence is positional, not directional. Past `SHOW_AFTER` the rail slides
