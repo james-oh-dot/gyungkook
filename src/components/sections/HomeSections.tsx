@@ -11,12 +11,12 @@ import { CharReveal } from '../CharReveal'
 import { LineReveal } from '../LineReveal'
 import { WordReveal } from '../WordReveal'
 import { asset } from '../../utils/asset'
-import { useScrollGage } from '../../hooks/useScrollGage'
 import { useCardTrackNav } from '../../hooks/useCardTrackNav'
 import { useReversibleInView } from '../../hooks/useReversibleInView'
 import { resolveNavHref } from '../../utils/path'
 import {
   HOME_ABOUT_IMAGE,
+  HOME_NOTICE_BG,
   HOME_OFFICE_MAP,
   HOME_PROFESSIONALS_BG,
   HOME_SOCIAL_BG,
@@ -80,12 +80,9 @@ const ARROW_ICON_VAR = {
 } as CSSProperties
 
 /**
- * Mobile-only prev/next pair for the Notice/Press home carousels (hidden via
- * CSS ≥768px — those breakpoints keep the multi-column grid, nothing to page
- * through). Same glyph and butted-seam layout as HeroClassic's mobile
- * prev/next (`.hero__gage-btns`, ≤767), but borderless: on a photo, a glass
- * box reads as chrome; on a plain white/tint section it read as a second
- * frame nested inside the button's own — just the icon, recoloured dark.
+ * Prev/next for Notice/Press feature-card galleries.
+ * Mobile: sits above the rail (CSS order). Desktop/tablet: below the rail,
+ * right-aligned — buttons disable at the scroll ends (Apple-style stop).
  */
 function CardTrackNav({
   prev,
@@ -124,12 +121,55 @@ function CardTrackNav({
   )
 }
 
+/** Shared Figma gallery card shell (소식공지 / 활동보도 list cards). */
+function GalleryCard({
+  title,
+  desc,
+  date,
+  href,
+  label,
+}: {
+  title: string
+  desc: string
+  date: string
+  href: string
+  label: string
+}) {
+  return (
+    <a
+      className="gallery-card"
+      data-gallery-card
+      href={resolveNavHref(href)}
+      aria-label={`${title} ${label} 보기`}
+    >
+      <span className="gallery-card__accent" aria-hidden="true">
+        <img src={asset('assets/icon-link-white.svg')} alt="" />
+      </span>
+      <div className="gallery-card__body">
+        <h3 className="gallery-card__title">{title}</h3>
+        <p className="gallery-card__desc">{desc}</p>
+        <time className="gallery-card__date" dateTime={date.replaceAll('.', '-')}>
+          {date}
+        </time>
+      </div>
+    </a>
+  )
+}
+
 export function NoticeSection() {
   const trackRef = useRef<HTMLDivElement>(null)
   const nav = useCardTrackNav(trackRef)
 
   return (
     <section id="notice" className="section notice-section" aria-labelledby="notice-title">
+      <div className="notice-section__bg" aria-hidden="true">
+        <ProgressiveImage
+          className="progressive-image--fill"
+          src={HOME_NOTICE_BG.src}
+          preview={HOME_NOTICE_BG.preview}
+          alt=""
+        />
+      </div>
       <div className="section-head">
         <Reveal className="section-head__copy">
           <p className="eyebrow">NOTICE</p>
@@ -137,30 +177,28 @@ export function NoticeSection() {
             소식·공지
           </h2>
           <p className="section-desc">
-            법무법인경국의 새로운 소식을 전합니다.
+            법무법인경국의 가치는 다양한 수상, 위촉, 인증 경력에서 더욱 빛을 발합니다.
           </p>
         </Reveal>
         <Reveal delay={120}>
-          <TextBtn label="전체보기" to="/news/notice" />
+          <TextBtn
+            label="전체보기"
+            icon={asset('assets/icon-btn-white.svg')}
+            to="/news/notice"
+          />
         </Reveal>
       </div>
       <CardTrackNav {...nav} label="소식·공지" />
-      <div className="notice-grid" ref={trackRef}>
+      <div className="feature-gallery" ref={trackRef}>
         {notices.map((item, index) => (
-          <Reveal key={item.title} delay={index * 120}>
-            <a
-              className="notice-card"
-              href={resolveNavHref('/news/notice')}
-              aria-label={`${item.title} 소식·공지 보기`}
-            >
-              <div className="notice-card__body">
-                <h3 className="notice-card__title">{item.title}</h3>
-                <p className="notice-card__desc">{item.desc}</p>
-              </div>
-              <div className="notice-card__footer">
-                <p className="notice-card__date">{item.date}</p>
-              </div>
-            </a>
+          <Reveal key={`${item.title}-${index}`} className="feature-gallery__item" delay={index * 80}>
+            <GalleryCard
+              title={item.title}
+              desc={item.desc}
+              date={item.date}
+              href="/news/notice"
+              label="소식·공지"
+            />
           </Reveal>
         ))}
       </div>
@@ -489,16 +527,7 @@ export function ProfessionalsSection() {
 }
 
 export function PressSection() {
-  const {
-    trackRef,
-    gageRef,
-    ratio,
-    offset,
-    active,
-    activeHeight,
-    setGageHover,
-    onGagePointerDown,
-  } = useScrollGage({ activeHeight: 20 })
+  const trackRef = useRef<HTMLDivElement>(null)
   const nav = useCardTrackNav(trackRef)
 
   const items = pressItems.slice(0, 5)
@@ -522,57 +551,25 @@ export function PressSection() {
       </div>
       <CardTrackNav {...nav} label="활동·보도" />
 
-      <div
-        className="press-list-wrap"
-        ref={trackRef}
-        data-parallax
-        data-parallax-strength="16"
-      >
-        <div className="press-track">
-          {items.map((item) => {
-            const href = pressCardHref(item.chip)
-            return (
-              <a
-                key={`${item.title}-${item.desc}`}
-                className="press-card-link"
-                href={resolveNavHref(href)}
-                aria-label={`${item.chip} ${item.title} 자세히 보기`}
-              >
-                <article className="press-card">
-                  <div className="press-card__body">
-                    <span className="press-card__chip">{item.chip}</span>
-                    <h3 className="press-card__title">{item.title}</h3>
-                    <p className="press-card__desc">{item.desc}</p>
-                    <time className="press-card__date">{item.date}</time>
-                  </div>
-                </article>
-              </a>
-            )
-          })}
-        </div>
-      </div>
-
-      <div
-        ref={gageRef}
-        className={`press-gage${active ? ' is-active' : ''}`}
-        style={{ '--gage-h': `${active ? activeHeight : 2}px` } as CSSProperties}
-        onMouseEnter={() => setGageHover(true)}
-        onMouseLeave={() => setGageHover(false)}
-        onPointerDown={onGagePointerDown}
-        role="scrollbar"
-        aria-orientation="horizontal"
-        aria-controls="press-title"
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-valuenow={Math.round(offset * 100)}
-        tabIndex={0}
-      >
-        <span
-          style={{
-            width: `${Math.max(8, ratio * 100)}%`,
-            transform: `translate3d(${offset * ((1 - ratio) / Math.max(ratio, 0.001)) * 100}%, 0, 0)`,
-          }}
-        />
+      <div className="feature-gallery" ref={trackRef}>
+        {items.map((item, index) => {
+          const href = pressCardHref(item.chip)
+          return (
+            <Reveal
+              key={`${item.title}-${item.desc}`}
+              className="feature-gallery__item"
+              delay={index * 80}
+            >
+              <GalleryCard
+                title={item.title}
+                desc={item.desc}
+                date={item.date}
+                href={href}
+                label={`${item.chip} 활동·보도`}
+              />
+            </Reveal>
+          )
+        })}
       </div>
     </section>
   )

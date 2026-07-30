@@ -21,6 +21,12 @@ export const notices = [
     date: '2023.10.10',
     image: progressiveAsset('assets/notice-3'),
   },
+  {
+    title: '온라인 법률 상담 FAQ 업데이트',
+    desc: '자주 묻는 질문과 상담 전 준비사항을 정리해 더 빠른 상담 연결을 돕습니다.',
+    date: '2023.10.10',
+    image: progressiveAsset('assets/notice-1'),
+  },
 ]
 
 export const practices = [
@@ -231,4 +237,6 @@ export const awards = [
 export const HOME_ABOUT_IMAGE = progressiveAsset('assets/about')
 export const HOME_PROFESSIONALS_BG = progressiveAsset('assets/professionals-bg')
 export const HOME_SOCIAL_BG = progressiveAsset('assets/social-bg')
+/** Home 소식·공지 section full-bleed photo (Figma HomeSection-소식공지). */
+export const HOME_NOTICE_BG = progressiveAsset('assets/notice-section-bg')
 export const HOME_OFFICE_MAP = progressiveAsset('assets/office-map')

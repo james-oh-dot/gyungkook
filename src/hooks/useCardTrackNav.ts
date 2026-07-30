@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState, type RefObject } from 'react'
 
 /**
- * Drives a horizontally-scrolling, scroll-snapped card track from a pair of
- * prev/next buttons (mobile carousels — HomeSections NoticeSection/PressSection).
- * `trackRef` must point at the scrollable element itself (`overflow-x: auto`).
+ * Prev/next for a horizontally scrolling card rail (Notice / Press galleries).
+ * Steps by measured card width + gap (Apple feature-card-gallery style).
+ * Falls back to the track's clientWidth when no card is measurable (e.g. mobile
+ * single-column snap where the item fills the viewport).
  */
 export function useCardTrackNav(trackRef: RefObject<HTMLElement | null>) {
   const [canPrev, setCanPrev] = useState(false)
@@ -23,19 +24,37 @@ export function useCardTrackNav(trackRef: RefObject<HTMLElement | null>) {
     sync()
     el.addEventListener('scroll', sync, { passive: true })
     window.addEventListener('resize', sync)
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(sync) : null
+    ro?.observe(el)
     return () => {
       el.removeEventListener('scroll', sync)
       window.removeEventListener('resize', sync)
+      ro?.disconnect()
     }
   }, [sync, trackRef])
 
-  /* One card = the track's own width at every breakpoint this is used on
-     (mobile-only carousels, single card per view) — no per-card measurement needed. */
   const scrollByCard = useCallback(
     (dir: 1 | -1) => {
       const el = trackRef.current
       if (!el) return
-      el.scrollBy({ left: dir * el.clientWidth, behavior: 'smooth' })
+
+      const item =
+        el.querySelector<HTMLElement>('[data-gallery-card]') ??
+        (el.firstElementChild as HTMLElement | null)
+
+      let step = el.clientWidth
+      if (item) {
+        const styles = getComputedStyle(el)
+        const gap =
+          parseFloat(styles.columnGap || styles.gap || '0') ||
+          parseFloat(styles.rowGap || '0') ||
+          0
+        step = item.getBoundingClientRect().width + gap
+      }
+
+      const max = Math.max(0, el.scrollWidth - el.clientWidth)
+      const next = Math.min(max, Math.max(0, el.scrollLeft + dir * step))
+      el.scrollTo({ left: next, behavior: 'smooth' })
     },
     [trackRef],
   )
