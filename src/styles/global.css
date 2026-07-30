@@ -198,10 +198,9 @@ p {
 
 /*
   Same 52px tap target and glyph as HeroClassic's mobile prev/next
-  (`.hero__gage-btns`, ≤767), but no glass box. That chrome (border + dark
-  fill + blur) was designed to sit on a photo; on a plain white/tint section
-  it had nothing to blur and read as a frame nested inside the button's own
-  bounds. Borderless keeps the same icon, size, and hit area without it.
+  (`.hero__gage-btns`, ≤767). No filled glass (that chrome was designed to
+  sit on a photo and read as a nested frame on white sections) — just a
+  sharp outline so the frame reads on light Notice / Press backgrounds.
 */
 .card-track-nav__btn {
   display: flex;
@@ -210,16 +209,20 @@ p {
   width: 52px;
   height: 52px;
   padding: 0;
-  border: 0;
+  box-sizing: border-box;
+  border: 1px solid rgba(17, 17, 17, 0.55);
   background: none;
   color: var(--color-black);
   cursor: pointer;
-  transition: color 0.35s var(--ease-premium);
+  transition:
+    color 0.35s var(--ease-premium),
+    border-color 0.35s var(--ease-premium);
 }
 
 .card-track-nav__btn:hover:not(:disabled),
 .card-track-nav__btn:focus-visible:not(:disabled) {
   color: var(--color-teal);
+  border-color: var(--color-teal);
 }
 
 /*
@@ -243,8 +246,11 @@ p {
   transform: rotate(180deg);
 }
 
+/* Fade icon + border together — do not opacity the whole control or the
+   frame vanishes on the first (disabled) slide. */
 .card-track-nav__btn:disabled {
-  opacity: 0.35;
+  color: rgba(17, 17, 17, 0.28);
+  border-color: rgba(17, 17, 17, 0.22);
   cursor: default;
 }
 

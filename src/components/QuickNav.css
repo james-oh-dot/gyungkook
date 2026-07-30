@@ -2,9 +2,9 @@
   quick-left-floating-Navigation (Figma AI-quick 120:1025 / compact 120:6350)
 
   Tablet + mobile only. Desktop (>1024) never renders it.
-  Tokens from Figma: panel BG/Black #111 · shadow ↓/5
-  · Icon/04_info #81818D · Font/04_info #767676 · Caption C2 12/1.45/-0.3px
-  · Font/01_White #FFF for the 무료법률상담 highlight.
+  Panel = **black liquid glass** (translucent #111 + blur) with a deep drop
+  shadow — not the solid #111 slab. Compact mode pins flush to `left: 0`;
+  expanded keeps the 20px inset.
 
   Brand chrome rule: **sharp rect only** — no border-radius anywhere in here.
 */
@@ -22,6 +22,13 @@
   z-index: 880; /* under the GNB (900), over page content */
   display: none;
   pointer-events: none;
+  transition: left 0.42s var(--quicknav-ease);
+}
+
+/* Compact (and the matching hide slide) hugs the left edge. */
+.quicknav--compact,
+.quicknav--hidden {
+  left: 0;
 }
 
 @media (max-width: 1024px) {
@@ -38,9 +45,18 @@
   padding: 24px var(--quicknav-pad-x);
   width: var(--quicknav-w);
   box-sizing: border-box;
-  background: #111;
+  /* Black liquid glass — keep the #111 read, frost whatever sits behind. */
+  background: rgba(17, 17, 17, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 0;
-  box-shadow: 0 12px 16px -1px rgba(35, 48, 59, 0.1);
+  /* Deep stacked shadow so the rail lifts off light page content. */
+  box-shadow:
+    0 28px 56px -8px rgba(0, 0, 0, 0.55),
+    0 12px 24px -6px rgba(0, 0, 0, 0.4),
+    0 2px 6px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  /* Standard property only — lightningcss adds -webkit- at build. */
+  backdrop-filter: blur(22px) saturate(1.55);
   pointer-events: auto;
   /* Slide-in from off-screen; width/padding morph between the two modes */
   transform: translate3d(0, 0, 0);
@@ -53,9 +69,17 @@
     gap 0.42s var(--quicknav-ease);
 }
 
-/* Off-screen (initial + back at the top) */
+/* No backdrop-filter → denser black so icons stay legible. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .quicknav__panel {
+    background: rgba(17, 17, 17, 0.92);
+  }
+}
+
+/* Off-screen (initial + back at the top). Compact/hidden sit at left:0, so
+   -100% is enough — the old -20px offset was for the expanded inset. */
 .quicknav--hidden .quicknav__panel {
-  transform: translate3d(calc(-100% - 20px), 0, 0);
+  transform: translate3d(calc(-100% - 8px), 0, 0);
   opacity: 0;
 }
 
