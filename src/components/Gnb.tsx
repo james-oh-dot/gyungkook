@@ -396,21 +396,31 @@ export function Gnb() {
     >
       <div className="gnb__bar">
         {isCompact ? (
-          <button
-            ref={menuBtnRef}
-            type="button"
-            className="gnb__glass gnb__menu-btn"
-            aria-expanded={menuOpen}
-            aria-controls={`${reactId}-drawer`}
-            onClick={() => (menuOpen ? closeDrawer() : openDrawer())}
-          >
-            <img
-              src={asset(menuOpen ? 'assets/icon-close.svg' : 'assets/icon-menu.svg')}
-              alt=""
-              className="gnb__icon"
-            />
-            <span className="gnb__menu-label">메뉴</span>
-          </button>
+          <div className="gnb__compact-lead">
+            {/* Tablet/mobile: symbol mark only — wordmark stays desktop. */}
+            <a
+              className="gnb__logo gnb__logo--symbol"
+              href={resolveNavHref('/')}
+              aria-label="법무법인 경국 홈"
+            >
+              <img className="gnb__logo-mark" src={asset('assets/logo-mark.png')} alt="" />
+            </a>
+            <button
+              ref={menuBtnRef}
+              type="button"
+              className="gnb__glass gnb__menu-btn"
+              aria-expanded={menuOpen}
+              aria-controls={`${reactId}-drawer`}
+              onClick={() => (menuOpen ? closeDrawer() : openDrawer())}
+            >
+              <img
+                src={asset(menuOpen ? 'assets/icon-close.svg' : 'assets/icon-menu.svg')}
+                alt=""
+                className="gnb__icon"
+              />
+              <span className="gnb__menu-label">메뉴</span>
+            </button>
+          </div>
         ) : (
           <a className="gnb__logo" href={resolveNavHref("/")} aria-label="법무법인 경국 홈">
             <img className="gnb__logo-mark" src={asset('assets/logo-mark.png')} alt="" />
@@ -581,13 +591,13 @@ export function Gnb() {
             onKeyDown={onDrawerKeyDown}
           >
             <div className="gnb__drawer-head">
-              <a className="gnb__logo gnb__logo--drawer" href={resolveNavHref("/")} onClick={closeDrawer}>
+              <a
+                className="gnb__logo gnb__logo--drawer gnb__logo--symbol"
+                href={resolveNavHref('/')}
+                aria-label="법무법인 경국 홈"
+                onClick={closeDrawer}
+              >
                 <img className="gnb__logo-mark" src={asset('assets/logo-mark.png')} alt="" />
-                <img
-                  className="gnb__logo-word"
-                  src={asset('assets/logo-wordmark-dark.svg')}
-                  alt="법무법인 경국"
-                />
               </a>
               <button
                 ref={closeBtnRef}
