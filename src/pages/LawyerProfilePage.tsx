@@ -19,7 +19,11 @@ const BULLET_SRC = asset('assets/icon-bullet.svg')
 const MORE_ICON_SRC = asset('assets/icon-lawyer-more.svg')
 const SHARE_SRC = asset('assets/icon-share.svg')
 const DOWNLOAD_SRC = asset('assets/icon-download.svg')
-const HERO = progressiveAsset('assets/sub/sub-01-03')
+/**
+ * Profile hero bg — pre-「이미지교체」 sub-01-03 (bright street scene).
+ * Directory `/about/lawyers` keeps the current dark `sub-01-03` via LAWYERS_PAGE.
+ */
+const HERO = progressiveAsset('assets/sub/sub-01-03-profile')
 
 /** Share the current lawyer page (native share sheet, else copy the link). */
 function shareLawyer(name: string) {
@@ -168,10 +172,12 @@ function LawyerHero({ lawyer }: { lawyer: Lawyer }) {
 }
 
 /**
- * 법무법인 경국 > 변호사 · 자문단 프로필 (sub-01-03).
+ * 법무법인 경국 > 변호사 · 자문단 프로필.
  * Route-mode local tabs (each tab = a lawyer). GNB/menu entry lands on the
  * directory (`/about/lawyers`); profile routes keep local tabs for switching.
  * reveal the new hero at the top (routeState={null} → ScrollToTop).
+ * Hero bg uses `sub-01-03-profile` (previous bright visual); directory SubVisual
+ * stays on current `sub-01-03`.
  */
 export function LawyerProfilePage() {
   const { lawyerId } = useParams<{ lawyerId: string }>()
