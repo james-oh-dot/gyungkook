@@ -28,7 +28,8 @@ const PUBLIC_VISUAL = progressiveAsset('assets/sub/sub-02-02')
 
 export const PUBLIC_PROJECT_PAGE = {
   parentLabel: '재개발 · 보상업무',
-  title: '공익사업',
+  /* Matches the GNB label — the in-page overview section stays plain 공익사업 */
+  title: '공익사업 · 실적',
   /** Figma layer sub-02-02 — progressive WebP pair */
   visual: PUBLIC_VISUAL.src,
   visualPreview: PUBLIC_VISUAL.preview,

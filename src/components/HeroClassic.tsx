@@ -30,6 +30,15 @@ const SWIPE_MAX_MS = 800
 /** Matches HeroClassic.css mobile breakpoint — portrait `hero-M-*` arts swap here. */
 const MQ_MOBILE_HERO = '(max-width: 767px)'
 
+/**
+ * Entrance pacing multiplier for the hero copy. Every stagger delay/step below
+ * is written at its original value and scaled by this, so the whole sequence
+ * slows together. The matching transition durations live in HeroClassic.css
+ * (`.hero .char-reveal__item` / `.hero .line-reveal__item`) — change both or
+ * the glyphs finish early and only the stagger stretches.
+ */
+const REVEAL_PACE = 2
+
 function useMediaQuery(query: string) {
   const [matches, setMatches] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia(query).matches : false,
@@ -51,33 +60,14 @@ export function HeroClassic() {
   const [index, setIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const [animKey, setAnimKey] = useState(0)
-  const [userPaused, setUserPaused] = useState(false)
   const indexRef = useRef(0)
   const startRef = useRef(performance.now())
-  const pausedRef = useRef(false)
-  const userPausedRef = useRef(false)
-  const hoverPausedRef = useRef(false)
-  const pauseElapsedRef = useRef(0)
   const progressRef = useRef(0)
   const lastJumpAtRef = useRef(0)
   const heroRef = useRef<HTMLElement>(null)
-  const swipeRef = useRef<HTMLDivElement>(null)
   const swipeStartRef = useRef<{ id: number; x: number; y: number; t: number } | null>(null)
 
-  const slideCount = classicHeroSlides.length
   const slide = classicHeroSlides[index]
-  const nextSlide = classicHeroSlides[(index + 1) % slideCount]
-  const totalLabel = String(slideCount).padStart(2, '0')
-
-  const syncPaused = useCallback((now = performance.now()) => {
-    const nextPaused = userPausedRef.current || hoverPausedRef.current
-    if (nextPaused && !pausedRef.current) {
-      pauseElapsedRef.current = progressRef.current * HERO_DURATION_MS
-    } else if (!nextPaused && pausedRef.current) {
-      startRef.current = now - pauseElapsedRef.current
-    }
-    pausedRef.current = nextPaused
-  }, [])
 
   const jumpTo = useCallback(
     (next: number) => {
@@ -94,10 +84,6 @@ export function HeroClassic() {
       setProgress(0)
       setAnimKey((k) => k + 1)
       startRef.current = now
-      pauseElapsedRef.current = 0
-      // Keep user pause; only clear hover-pause from a jump
-      hoverPausedRef.current = false
-      pausedRef.current = userPausedRef.current
     },
     [],
   )
@@ -144,13 +130,6 @@ export function HeroClassic() {
     swipeStartRef.current = null
   }, [])
 
-  const togglePause = useCallback(() => {
-    const now = performance.now()
-    userPausedRef.current = !userPausedRef.current
-    setUserPaused(userPausedRef.current)
-    syncPaused(now)
-  }, [syncPaused])
-
   useEffect(() => {
     // Preload all slide images so advance never flashes empty/black
     classicHeroSlides.forEach((item) => {
@@ -170,16 +149,14 @@ export function HeroClassic() {
     const tick = (now: number) => {
       if (!alive) return
 
-      if (!pausedRef.current) {
-        const elapsed = now - startRef.current
-        if (elapsed >= HERO_DURATION_MS) {
-          // Advance exactly one slide; jumpTo debounce blocks double fire
-          jumpTo(indexRef.current + 1)
-        } else {
-          const p = Math.min(1, elapsed / HERO_DURATION_MS)
-          progressRef.current = p
-          setProgress(p)
-        }
+      const elapsed = now - startRef.current
+      if (elapsed >= HERO_DURATION_MS) {
+        // Advance exactly one slide; jumpTo debounce blocks double fire
+        jumpTo(indexRef.current + 1)
+      } else {
+        const p = Math.min(1, elapsed / HERO_DURATION_MS)
+        progressRef.current = p
+        setProgress(p)
       }
 
       raf = requestAnimationFrame(tick)
@@ -193,51 +170,48 @@ export function HeroClassic() {
   }, [jumpTo])
 
   /*
-    Publish layout pins on `.hero`:
-    - `--hero-swipe-top`: swipe top (image frame + copy Y)
-    - `--hero-maincopy-top`: prefer 50svh, but never overlap copy —
-      cap so maincopy bottom stays ≥60px above copy top. When the
-      viewport grows again, the pin returns to mid fluidly.
+    Publishes `--hero-maincopy-top` on `.hero`: prefer mid-viewport, but never
+    let the maincopy collide with the copy block below it — cap so its bottom
+    stays ≥60px clear. When the viewport grows again the pin returns to mid.
+
+    This used to hang off the swipe block's measured top; with the swipe gone,
+    `.hero__copy` is bottom-anchored in CSS and is measured directly instead.
+    Desktop (≥1025) is the only breakpoint that reads the property — below
+    that the copy column is a plain flex stack.
   */
   useEffect(() => {
     const hero = heroRef.current
-    const swipe = swipeRef.current
-    if (!hero || !swipe) return
+    if (!hero) return
 
     const MAINCOPY_COPY_GAP = 60
 
     const sync = () => {
-      const swipeRect = swipe.getBoundingClientRect()
-      /*
-        ≤767 hides the swipe block (`display: none`), where a zero rect would
-        otherwise read as `top: 0` and publish `-heroTop` as the pin once the
-        page is scrolled. Mobile doesn't consume either custom property, so
-        just leave the last desktop values alone.
-      */
-      if (swipeRect.width === 0 && swipeRect.height === 0) return
+      const maincopy = hero.querySelector<HTMLElement>('.hero__maincopy')
+      const copy = hero.querySelector<HTMLElement>('.hero__copy')
+      if (!maincopy || !copy) return
 
       const heroTop = hero.getBoundingClientRect().top
-      const swipeTop = swipeRect.top - heroTop
-      if (swipeTop > 0) hero.style.setProperty('--hero-swipe-top', `${swipeTop}px`)
-
-      const maincopy = hero.querySelector<HTMLElement>('.hero__maincopy')
-      if (!maincopy || swipeTop <= 0) return
+      const copyTop = copy.getBoundingClientRect().top - heroTop
+      if (copyTop <= 0) return
 
       const mainH = maincopy.getBoundingClientRect().height
       /* Same length CSS uses for `top: 50svh` (offset from copy-col / hero top). */
       const midOffset =
         (window.visualViewport?.height ?? window.innerHeight) * 0.5
-      const maxTop = swipeTop - MAINCOPY_COPY_GAP - mainH
-      const top = Math.min(midOffset, maxTop)
-      hero.style.setProperty('--hero-maincopy-top', `${top}px`)
+      const maxTop = copyTop - MAINCOPY_COPY_GAP - mainH
+      hero.style.setProperty(
+        '--hero-maincopy-top',
+        `${Math.min(midOffset, maxTop)}px`,
+      )
     }
 
     sync()
     const ro = new ResizeObserver(sync)
-    ro.observe(swipe)
     ro.observe(hero)
     const maincopy = hero.querySelector('.hero__maincopy')
     if (maincopy) ro.observe(maincopy)
+    const copy = hero.querySelector('.hero__copy')
+    if (copy) ro.observe(copy)
     window.addEventListener('resize', sync)
     window.visualViewport?.addEventListener('resize', sync)
     void document.fonts?.ready.then(sync)
@@ -259,8 +233,8 @@ export function HeroClassic() {
             <CharReveal
               key={`${animKey}-char-${lineIndex}`}
               text={line}
-              baseDelay={120 + previous * 30 + lineIndex * 80}
-              step={30}
+              baseDelay={(120 + previous * 30 + lineIndex * 80) * REVEAL_PACE}
+              step={30 * REVEAL_PACE}
             />
           </p>
         )
@@ -325,8 +299,8 @@ export function HeroClassic() {
               <CharReveal
                 key={`${animKey}-index`}
                 text={slide.index}
-                baseDelay={60}
-                step={34}
+                baseDelay={60 * REVEAL_PACE}
+                step={34 * REVEAL_PACE}
               />
             </p>
             <div className="hero__title">{titleBlocks}</div>
@@ -334,87 +308,46 @@ export function HeroClassic() {
 
           <div className="hero__copy" data-name="hero_copy">
             <div className="hero__label">
-              <LineReveal key={`${animKey}-label`} lines={[slide.label]} baseDelay={420} step={0} />
+              <LineReveal
+                key={`${animKey}-label`}
+                lines={[slide.label]}
+                baseDelay={420 * REVEAL_PACE}
+                step={0}
+              />
             </div>
             <div className="hero__desc">
               <LineReveal
                 key={`${animKey}-desc`}
                 lines={slide.description}
-                baseDelay={520}
-                step={160}
+                baseDelay={520 * REVEAL_PACE}
+                step={160 * REVEAL_PACE}
               />
             </div>
           </div>
         </div>
       </div>
 
-      <div ref={swipeRef} className="hero__swipe" data-name="hero_swipe">
-        <div className="hero__swipe-controls">
-          <div className="hero__gage-btns hero__gage-btns--prev">
-            <button type="button" onClick={prev} aria-label="이전 화면">
-              <img src={asset('assets/icon-arrow.svg')} alt="" className="is-flip" draggable={false} />
-            </button>
-          </div>
-          <div className="hero__gage-btns hero__gage-btns--pause">
-            <button
-              type="button"
-              onClick={togglePause}
-              aria-label={userPaused ? '자동 재생 시작' : '자동 재생 일시정지'}
-              aria-pressed={userPaused}
-            >
-              <img
-                src={asset(userPaused ? 'assets/icon-play.svg' : 'assets/icon-pause.svg')}
-                alt=""
-                draggable={false}
-              />
-            </button>
-          </div>
-          <button
-            type="button"
-            className="hero__swipe-preview"
-            onMouseEnter={() => {
-              hoverPausedRef.current = true
-              syncPaused()
-            }}
-            onMouseLeave={() => {
-              hoverPausedRef.current = false
-              syncPaused()
-            }}
-            onClick={next}
-            aria-label={`다음 화면 ${nextSlide.index} ${slide.nextLabel}로 이동`}
-          >
-            <div className="hero__swipe-meta">
-              <span>{nextSlide.index}</span>
-              <span>{slide.nextLabel}</span>
-            </div>
-            <div className="hero__swipe-thumb">
-              <ProgressiveImage
-                key={nextSlide.id}
-                src={nextSlide.image}
-                preview={nextSlide.imagePreview}
-                alt=""
-                decoding="sync"
-              />
-            </div>
-          </button>
-          <div className="hero__gage-btns hero__gage-btns--next">
-            <button type="button" onClick={next} aria-label="다음 화면">
-              <img src={asset('assets/icon-arrow.svg')} alt="" draggable={false} />
-            </button>
-          </div>
-        </div>
-        <div
-          className="hero__gage-track"
-          data-name="swipe_gage"
-          aria-label={`슬라이드 ${slide.index} / ${totalLabel}`}
-        >
-          <span className="hero__gage-no">{slide.index}</span>
-          <div className="hero__gage-bar" aria-hidden="true">
-            <div className="hero__gage-fill" style={{ transform: `scaleX(${progress})` }} />
-          </div>
-          <span className="hero__gage-no">{totalLabel}</span>
-        </div>
-      </div>
+      {/*
+        Edge-anchored slide arrows. These replaced the whole swipe block
+        (thumb preview + meta + gage track + pause) — the only manual
+        navigation left, mirrored on both sides of the viewport.
+      */}
+      <button
+        type="button"
+        className="hero__nav hero__nav--prev"
+        onClick={prev}
+        aria-label="이전 화면"
+      >
+        <img src={asset('assets/icon-arrow.svg')} alt="" className="is-flip" draggable={false} />
+      </button>
+      <button
+        type="button"
+        className="hero__nav hero__nav--next"
+        onClick={next}
+        aria-label="다음 화면"
+      >
+        <img src={asset('assets/icon-arrow.svg')} alt="" draggable={false} />
+      </button>
     </section>
   )
 }

@@ -20,7 +20,8 @@ const RENEWAL_VISUAL = progressiveAsset('assets/sub/sub-02-01')
 
 export const RENEWAL_PAGE = {
   parentLabel: '재개발 · 보상업무',
-  title: '정비사업',
+  /* Matches the GNB label — the in-page overview section stays plain 정비사업 */
+  title: '정비사업 · 실적',
   /** Figma layer sub-02-01 — progressive WebP pair */
   visual: RENEWAL_VISUAL.src,
   visualPreview: RENEWAL_VISUAL.preview,

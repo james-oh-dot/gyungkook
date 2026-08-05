@@ -198,13 +198,13 @@ export const NAV_ITEMS: NavItem[] = [
     children: [
       {
         id: 'redev-renewal',
-        label: '정비사업',
+        label: '정비사업 · 실적',
         href: '/practice/renewal',
         visual: GNB_SUB_VISUAL_RENEWAL,
       },
       {
         id: 'redev-public',
-        label: '공익사업',
+        label: '공익사업 · 실적',
         href: '/practice/public',
         visual: GNB_SUB_VISUAL_PUBLIC,
       },
@@ -247,7 +247,7 @@ export const NAV_ITEMS: NavItem[] = [
       },
       {
         id: 'other-cases',
-        label: '업무사례',
+        label: '분야별 사례',
         href: '/other/cases',
         visual: GNB_SUB_VISUAL_OTHER_CASES,
       },
