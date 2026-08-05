@@ -232,7 +232,13 @@
   line-height: 1.4;
 }
 
+/*
+  Headline is set in Nanum Myeongjo — the serif the hero's English wordmark
+  already uses elsewhere on the site. `--font-serif` is the global token.
+  `.hero__index` above it and `.hero__copy` below stay on the UI sans.
+*/
 .hero__title {
+  font-family: var(--font-serif);
   font-size: clamp(32px, 3.75vw, 72px);
   font-weight: 600;
   letter-spacing: -0.025em;
@@ -248,17 +254,11 @@
   padding-bottom: 0.08em;
 }
 
-/*
-  hero_copy is set in Nanum Myeongjo — the serif that the hero's English
-  wordmark already uses elsewhere on the site. `--font-serif` is the global
-  token; `.hero__label` / `.hero__desc` inherit it rather than redeclaring.
-*/
 .hero__copy {
   display: flex;
   align-items: flex-start;
   gap: clamp(20px, 7.6vw, 147px);
   max-width: min(760px, 100%);
-  font-family: var(--font-serif);
 }
 
 .hero__label {
