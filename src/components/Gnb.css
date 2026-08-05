@@ -357,17 +357,26 @@
   max-height: 0;
   overflow: hidden;
   opacity: 0;
+  /* Held visible for the length of the close slide, then hidden in one step —
+     this is what keeps the panel out of the a11y tree once it is off screen. */
+  visibility: hidden;
   pointer-events: none;
   transition:
     max-height 0.45s var(--gnb-ease),
-    opacity 0.35s var(--gnb-ease);
+    opacity 0.3s var(--gnb-ease),
+    visibility 0s linear 0.45s;
 }
 
 /* Tallest column is 6 items x 44px + the panel's own padding. */
 .gnb__fullmenu.is-open {
   max-height: 340px;
   opacity: 1;
+  visibility: visible;
   pointer-events: auto;
+  transition:
+    max-height 0.45s var(--gnb-ease),
+    opacity 0.35s var(--gnb-ease),
+    visibility 0s;
 }
 
 .gnb__fullmenu-inner {
@@ -403,6 +412,53 @@
   /* Transparent — the glass panel behind is the surface now (was `#fff`). */
   background: none;
   min-height: 274px;
+  /* Slide-in: the submenu area drops in behind the bar as the panel opens, and
+     runs the same motion in reverse on mouse-out (the panel stays laid out
+     during the exit — see the `visibility` note on `.gnb__fullmenu`). */
+  opacity: 0;
+  transform: translateY(-16px);
+  transition:
+    opacity 0.28s var(--gnb-ease),
+    transform 0.4s var(--gnb-ease);
+}
+
+.gnb__fullmenu.is-open .gnb__columns {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.06s;
+}
+
+/* Per-item stagger on top of the area slide. Capped at 6 — the longest column. */
+.gnb__sublist > li {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition:
+    opacity 0.26s var(--gnb-ease),
+    transform 0.34s var(--gnb-ease);
+}
+
+.gnb__fullmenu.is-open .gnb__sublist > li {
+  opacity: 1;
+  transform: none;
+}
+
+.gnb__fullmenu.is-open .gnb__sublist > li:nth-child(1) {
+  transition-delay: 0.08s;
+}
+.gnb__fullmenu.is-open .gnb__sublist > li:nth-child(2) {
+  transition-delay: 0.12s;
+}
+.gnb__fullmenu.is-open .gnb__sublist > li:nth-child(3) {
+  transition-delay: 0.16s;
+}
+.gnb__fullmenu.is-open .gnb__sublist > li:nth-child(4) {
+  transition-delay: 0.2s;
+}
+.gnb__fullmenu.is-open .gnb__sublist > li:nth-child(5) {
+  transition-delay: 0.24s;
+}
+.gnb__fullmenu.is-open .gnb__sublist > li:nth-child(n + 6) {
+  transition-delay: 0.28s;
 }
 
 .gnb__fullmenu-inner.is-nav-aligned .gnb__columns {
@@ -805,6 +861,8 @@
   .gnb,
   .gnb__indicator,
   .gnb__fullmenu,
+  .gnb__columns,
+  .gnb__sublist > li,
   .gnb__drawer,
   .gnb__scrim,
   .gnb__glass,
@@ -818,6 +876,8 @@
   .gnb__drawer-cta,
   .gnb__logo {
     transition-duration: 0.01ms !important;
+    /* Stagger delays would otherwise survive the duration clamp. */
+    transition-delay: 0s !important;
     animation: none !important;
   }
 }

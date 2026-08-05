@@ -495,7 +495,11 @@ export function Gnb() {
         <div
           className={`gnb__fullmenu${menuOpen ? ' is-open' : ''}`}
           id={`${reactId}-fullmenu`}
-          hidden={!menuOpen}
+          /* `inert` rather than `hidden`: `hidden` is display:none, which cuts
+             the close transition dead. `inert` keeps the panel in the layout
+             (so it can slide back out) while removing it from focus order and
+             the a11y tree; CSS flips `visibility` once the slide finishes. */
+          inert={!menuOpen}
           onMouseLeave={(e) => {
             const next = e.relatedTarget
             if (next instanceof Node && rootRef.current?.contains(next)) return

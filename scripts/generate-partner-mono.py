@@ -11,10 +11,12 @@ marquee's dark band. For each source this writes
      has one; otherwise the plate colour is keyed out from the border inward)
   2. artwork → greyscale
   3. greyscale inverted when the art reads dark, so it lands light on the band
-  4. levels stretched to a common light range — raw inversion left the set
+  4. the bright 1px halo inversion leaves along the cut-out edge pulled back to
+     the body tone, so the logo doesn't read as a stair-stepped fringe
+  5. levels stretched to a common light range — raw inversion left the set
      spread over mean luminance 125…242, which reads as a row of randomly
      dim/bright logos rather than one monochrome family
-  5. trimmed to content + padded, so every logo is framed consistently
+  6. trimmed to content + padded, so every logo is framed consistently
 
 The originals are left untouched — the 협력사 grid still uses the colour set.
 
@@ -28,7 +30,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from PIL import Image
+from PIL import Image, ImageChops, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1] / "public" / "assets"
 SRC_DIR = ROOT / "about" / "partners"
@@ -49,6 +51,13 @@ LEVELS_HI = 255
 # A logo whose tonal spread is narrower than this is effectively flat art —
 # stretching it would just amplify compression noise, so it goes solid light.
 FLAT_SPREAD = 12
+# Halo shave. The outermost ring of a cut-out is the antialiased blend between
+# the artwork and its plate. Inverting turns those mid-tones into the *brightest*
+# pixels in the image, so the logo ends up ringed by a bright 1px outline that
+# reads as a stair-stepped fringe once the logo is scaled up (partner-09, -19).
+# When that ring runs this much brighter than the body it is a keying artefact
+# rather than real art, so its tone is pulled back to the body's.
+HALO_MARGIN = 24
 
 
 def plate_colour(im: Image.Image) -> tuple[int, int, int]:
@@ -98,6 +107,34 @@ def build_alpha(im: Image.Image) -> Image.Image:
     return alpha
 
 
+def shave_halo(grey: Image.Image, alpha: Image.Image) -> tuple[Image.Image, bool]:
+    """Pull the 1px edge ring down to its neighbouring body tone.
+
+    Returns the (possibly corrected) greyscale and whether the shave happened.
+
+    The tone is corrected rather than the mask eroded: eroding costs a pixel of
+    shape, which thin Korean strokes and small caption type cannot spare — they
+    break up or vanish outright. Replacing each ring pixel with the darkest of
+    its visible neighbours keeps every pixel of the logo and only takes the
+    brightness away from the fringe.
+    """
+    eroded = alpha.filter(ImageFilter.MinFilter(3))
+    ring = ImageChops.subtract(alpha, eroded)
+
+    ring_px = [g for g, r in zip(grey.getdata(), ring.getdata()) if r > 128]
+    body_px = [g for g, a in zip(grey.getdata(), eroded.getdata()) if a > 128]
+    if not ring_px or not body_px:
+        return grey, False
+
+    if sum(ring_px) / len(ring_px) - sum(body_px) / len(body_px) <= HALO_MARGIN:
+        return grey, False
+
+    # Transparent pixels are lifted to white first so they lose the 3x3 min and
+    # the ring samples real artwork instead of the keyed-out plate.
+    visible_only = Image.composite(grey, Image.new("L", grey.size, 255), alpha)
+    return Image.composite(visible_only.filter(ImageFilter.MinFilter(3)), grey, ring), True
+
+
 def normalise(grey: Image.Image, alpha: Image.Image) -> Image.Image:
     """Stretch the visible tonal range into [LEVELS_LO, LEVELS_HI]."""
     visible = sorted(g for g, a in zip(grey.getdata(), alpha.getdata()) if a > 128)
@@ -140,6 +177,7 @@ def main() -> int:
         if mean < DARK_MEAN:
             grey = Image.eval(grey, lambda v: 255 - v)
 
+        grey, shaved = shave_halo(grey, alpha)
         grey = normalise(grey, alpha)
         out = Image.merge("RGBA", (grey, grey, grey, alpha))
 
@@ -160,6 +198,7 @@ def main() -> int:
         print(
             f"{src.name:18} -> {dest.name:18} {padded.size}  "
             f"mean={mean:5.1f} {'inverted' if mean < DARK_MEAN else 'as-is'}"
+            f"{' halo-shaved' if shaved else ''}"
         )
 
     print(f"\n{len(sources)} logo(s) written to {OUT_DIR}")
