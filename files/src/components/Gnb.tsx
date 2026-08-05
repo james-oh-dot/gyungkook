@@ -1,0 +1,665 @@
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+  type FocusEvent,
+  type KeyboardEvent,
+  type MouseEvent,
+} from 'react'
+import { UNSAFE_LocationContext } from 'react-router-dom'
+import {
+  findActiveDrawerNav,
+  NAV_ITEMS,
+} from '../data/nav'
+import { asset } from '../utils/asset'
+import { resolveNavHref } from '../utils/path'
+import { SearchOverlay } from './SearchOverlay'
+import './Gnb.css'
+
+type Indicator = { x: number; y: number; w: number; h: number }
+
+/** Desktop fullmenu: column offsets from fullmenu-inner padding edge. */
+type ColumnLayout = {
+  lefts: number[]
+  widths: number[]
+  /** CSS `right` so the panel ends at the last top-nav indicator edge. */
+  panelRight: number
+}
+
+const MQ_COMPACT = '(max-width: 1024px)'
+
+/**
+ * Router pathname when under BrowserRouter; otherwise `/` (classic.html).
+ * Avoids calling `useLocation()` outside a Router (hooks throw).
+ */
+function useDrawerLocation(): { pathname: string; hash: string } {
+  const ctx = useContext(UNSAFE_LocationContext)
+  return {
+    pathname: ctx?.location.pathname ?? '/',
+    hash: ctx?.location.hash ?? '',
+  }
+}
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia(query).matches : false,
+  )
+
+  useEffect(() => {
+    const mql = window.matchMedia(query)
+    const onChange = () => setMatches(mql.matches)
+    onChange()
+    mql.addEventListener('change', onChange)
+    return () => mql.removeEventListener('change', onChange)
+  }, [query])
+
+  return matches
+}
+
+type GnbTheme = 'dark' | 'light'
+
+/** Bar height from the header's `--gnb-bar-h` var (100 desktop / 82 compact). */
+function readGnbBarH(el: HTMLElement | null): number {
+  if (!el) return 100
+  const raw = getComputedStyle(el).getPropertyValue('--gnb-bar-h').trim()
+  const n = Number.parseFloat(raw)
+  return Number.isFinite(n) && n > 0 ? n : 100
+}
+
+export function Gnb() {
+  const { pathname, hash } = useDrawerLocation()
+  const activeDrawerNav = findActiveDrawerNav(pathname, hash)
+  const isCompact = useMediaQuery(MQ_COMPACT)
+  const rootRef = useRef<HTMLElement>(null)
+  const navListRef = useRef<HTMLUListElement>(null)
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([])
+  const fullmenuInnerRef = useRef<HTMLDivElement>(null)
+  const drawerRef = useRef<HTMLDivElement>(null)
+  const menuBtnRef = useRef<HTMLButtonElement>(null)
+  const closeBtnRef = useRef<HTMLButtonElement>(null)
+  const reactId = useId()
+
+  const [scrolled, setScrolled] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  const [gnbTheme, setGnbTheme] = useState<GnbTheme>('dark')
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [activeTop, setActiveTop] = useState<number | null>(null)
+  const [activeSubId, setActiveSubId] = useState<string | null>(null)
+  const [indicator, setIndicator] = useState<Indicator | null>(null)
+  const [indicatorReady, setIndicatorReady] = useState(false)
+  const [columnLayout, setColumnLayout] = useState<ColumnLayout | null>(null)
+  const [drawerExpanded, setDrawerExpanded] = useState<string | null>(null)
+  const [searchOpen, setSearchOpen] = useState(false)
+
+  /*
+    3-state background:
+    - solid  (white)  → a menu is open, or the user hovers the scrolled bar
+    - glass  (frosted)→ scrolled but not hovered / open
+    - over-hero (clear)→ at the very top
+    Scroll alone no longer turns the bar white — hover does.
+  */
+  const solid = menuOpen || (scrolled && hovered)
+  const glass = scrolled && !solid
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  /*
+    Auto text-contrast: watch the labeled section (`data-header-theme`) that
+    sits directly under the GNB bar. Dark hero under the bar → light type;
+    once scrolled past into light body (no label) → dark type. Uses an
+    IntersectionObserver band 1px tall at the bar's bottom edge, so there is
+    no per-frame scroll math — only fires when a section crosses that line.
+  */
+  useEffect(() => {
+    const targets = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-header-theme]'),
+    )
+    if (!targets.length) {
+      setGnbTheme('light')
+      return
+    }
+    /* Every page opens on a dark hero — assume dark until the observer runs
+       (avoids a one-frame dark-on-dark flash on route change). */
+    setGnbTheme('dark')
+
+    const active = new Set<Element>()
+    let io: IntersectionObserver | null = null
+
+    const evaluate = () => {
+      const chosen = targets.find((t) => active.has(t))
+      const theme = chosen?.getAttribute('data-header-theme')
+      setGnbTheme(theme === 'dark' ? 'dark' : 'light')
+    }
+
+    const build = () => {
+      const barH = Math.round(readGnbBarH(rootRef.current))
+      const bottom = Math.max(0, Math.round(window.innerHeight - barH - 1))
+      io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) active.add(entry.target)
+            else active.delete(entry.target)
+          }
+          evaluate()
+        },
+        { root: null, rootMargin: `-${barH}px 0px -${bottom}px 0px`, threshold: 0 },
+      )
+      targets.forEach((t) => io!.observe(t))
+    }
+
+    build()
+    const onResize = () => {
+      io?.disconnect()
+      active.clear()
+      build()
+    }
+    window.addEventListener('resize', onResize)
+    return () => {
+      io?.disconnect()
+      window.removeEventListener('resize', onResize)
+    }
+  }, [pathname])
+
+  /* Close desktop mega when switching to compact (or vice versa). */
+  useEffect(() => {
+    setMenuOpen(false)
+    setActiveTop(null)
+    setActiveSubId(null)
+    setIndicator(null)
+    setIndicatorReady(false)
+    setDrawerExpanded(null)
+  }, [isCompact])
+
+  /* Body scroll lock + Escape while drawer open */
+  useEffect(() => {
+    if (!isCompact || !menuOpen) return
+    const prev = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKey = (e: globalThis.KeyboardEvent) => {
+      if (e.key !== 'Escape') return
+      setMenuOpen(false)
+      setDrawerExpanded(null)
+      menuBtnRef.current?.focus()
+    }
+    window.addEventListener('keydown', onKey)
+    closeBtnRef.current?.focus()
+    return () => {
+      document.body.style.overflow = prev
+      window.removeEventListener('keydown', onKey)
+    }
+  }, [isCompact, menuOpen])
+
+  const measureIndicator = useCallback((index: number) => {
+    const list = navListRef.current
+    const el = itemRefs.current[index]
+    if (!list || !el) return
+    const lr = list.getBoundingClientRect()
+    const er = el.getBoundingClientRect()
+    setIndicator({
+      x: er.left - lr.left,
+      y: er.top - lr.top,
+      w: er.width,
+      h: er.height,
+    })
+    requestAnimationFrame(() => setIndicatorReady(true))
+  }, [])
+
+  useLayoutEffect(() => {
+    if (activeTop == null || isCompact) return
+    measureIndicator(activeTop)
+  }, [activeTop, isCompact, measureIndicator, menuOpen])
+
+  useEffect(() => {
+    if (activeTop == null || isCompact) return
+    const onResize = () => measureIndicator(activeTop)
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [activeTop, isCompact, measureIndicator])
+
+  /* Align fullmenu columns to each top-nav item's left edge.
+   * Panel right edge matches the last top-nav item’s indicator box
+   * (li right) so the framed sub-visual still shows beyond it.
+   * Absolute children are positioned from the padding edge of
+   * `.gnb__fullmenu-inner`. */
+  const syncColumnLayout = useCallback(() => {
+    const inner = fullmenuInnerRef.current
+    if (!inner || isCompact || !menuOpen) return
+
+    const innerRect = inner.getBoundingClientRect()
+    /* Padding-edge origin matches CSS absolute `left: 0` / `right: 0`. */
+    const originLeft = innerRect.left
+
+    const lefts = NAV_ITEMS.map((_, index) => {
+      const el = itemRefs.current[index]
+      if (!el) return 0
+      return Math.max(0, Math.round(el.getBoundingClientRect().left - originLeft))
+    })
+
+    if (!lefts.length || lefts.every((v) => v === 0)) return
+
+    const lastEl = itemRefs.current[NAV_ITEMS.length - 1]
+    const styles = getComputedStyle(inner)
+    const padRight = parseFloat(styles.paddingRight) || 0
+    /* Fallback: content box right if the last nav item is missing. */
+    let panelEnd = innerRect.left + inner.clientWidth - padRight
+    if (lastEl) {
+      /* Same right edge as `.gnb__indicator` when that item is active. */
+      panelEnd = lastEl.getBoundingClientRect().right
+    }
+
+    const panelRight = Math.max(0, Math.round(innerRect.right - panelEnd))
+    const panelEndFromOrigin = Math.max(0, Math.round(panelEnd - originLeft))
+
+    const widths = lefts.map((left, index) => {
+      if (index < lefts.length - 1) return Math.max(0, lefts[index + 1] - left)
+      return Math.max(0, panelEndFromOrigin - left)
+    })
+
+    setColumnLayout({ lefts, widths, panelRight })
+  }, [isCompact, menuOpen])
+
+  useLayoutEffect(() => {
+    if (!menuOpen || isCompact) {
+      setColumnLayout(null)
+      return
+    }
+
+    syncColumnLayout()
+    const raf = requestAnimationFrame(syncColumnLayout)
+    let cancelled = false
+    void document.fonts?.ready.then(() => {
+      if (!cancelled) syncColumnLayout()
+    })
+    window.addEventListener('resize', syncColumnLayout)
+    return () => {
+      cancelled = true
+      cancelAnimationFrame(raf)
+      window.removeEventListener('resize', syncColumnLayout)
+    }
+  }, [menuOpen, isCompact, syncColumnLayout])
+
+  const openDesktopMenu = (index: number) => {
+    if (isCompact) return
+    setMenuOpen(true)
+    if (activeTop !== index) {
+      const first = NAV_ITEMS[index]?.children[0]
+      if (first) setActiveSubId(first.id)
+    }
+    setActiveTop(index)
+  }
+
+  const closeDesktopMenu = () => {
+    if (isCompact) return
+    setMenuOpen(false)
+    setActiveTop(null)
+    setActiveSubId(null)
+    setIndicatorReady(false)
+    setIndicator(null)
+  }
+
+  const onRootLeave = (e: MouseEvent<HTMLElement>) => {
+    if (isCompact) return
+    const next = e.relatedTarget
+    if (next instanceof Node && rootRef.current?.contains(next)) return
+    closeDesktopMenu()
+  }
+
+  const onRootBlur = (e: FocusEvent<HTMLElement>) => {
+    if (isCompact) return
+    const next = e.relatedTarget
+    if (next instanceof Node && rootRef.current?.contains(next)) return
+    closeDesktopMenu()
+  }
+
+  /* Highlight only — the per-menu background image the fullmenu used to swap
+     on hover is gone; the panel is a flat black glass sheet now. */
+  const highlightSub = (subId: string) => setActiveSubId(subId)
+
+  const openDrawer = () => {
+    setMenuOpen(true)
+    /* Home: all collapsed. Subpage: expand the section that owns this route. */
+    setDrawerExpanded(activeDrawerNav?.parentId ?? null)
+  }
+
+  const closeDrawer = () => {
+    setMenuOpen(false)
+    setDrawerExpanded(null)
+    menuBtnRef.current?.focus()
+  }
+
+  const onDrawerKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (e.key !== 'Tab' || !drawerRef.current) return
+    const focusables = drawerRef.current.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    )
+    if (!focusables.length) return
+    const first = focusables[0]
+    const last = focusables[focusables.length - 1]
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault()
+      last.focus()
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault()
+      first.focus()
+    }
+  }
+
+  const indicatorStyle: CSSProperties | undefined = indicator
+    ? {
+        transform: `translate3d(${indicator.x}px, ${indicator.y}px, 0)`,
+        width: indicator.w,
+        height: indicator.h,
+        opacity: indicatorReady ? 1 : 0,
+      }
+    : undefined
+
+  return (
+    <header
+      ref={rootRef}
+      className={[
+        'gnb',
+        solid ? 'gnb--solid' : glass ? 'gnb--glass' : 'gnb--over-hero',
+        menuOpen ? 'gnb--open' : '',
+        isCompact ? 'gnb--compact' : 'gnb--desktop',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      data-gnb-theme={gnbTheme}
+      onMouseEnter={() => {
+        if (!isCompact) setHovered(true)
+      }}
+      onMouseLeave={(e) => {
+        onRootLeave(e)
+        if (!isCompact) setHovered(false)
+      }}
+      onBlur={onRootBlur}
+    >
+      <div className="gnb__bar">
+        {isCompact ? (
+          <div className="gnb__compact-lead">
+            {/* Tablet/mobile: symbol mark only — wordmark stays desktop. */}
+            <a
+              className="gnb__logo gnb__logo--symbol"
+              href={resolveNavHref('/')}
+              aria-label="법무법인 경국 홈"
+            >
+              <img className="gnb__logo-mark" src={asset('assets/logo-mark.png')} alt="" />
+            </a>
+            <button
+              ref={menuBtnRef}
+              type="button"
+              className="gnb__glass gnb__menu-btn"
+              aria-expanded={menuOpen}
+              aria-controls={`${reactId}-drawer`}
+              onClick={() => (menuOpen ? closeDrawer() : openDrawer())}
+            >
+              <img
+                src={asset(menuOpen ? 'assets/icon-close.svg' : 'assets/icon-menu.svg')}
+                alt=""
+                className="gnb__icon"
+              />
+              <span className="gnb__menu-label">메뉴</span>
+            </button>
+          </div>
+        ) : (
+          <a className="gnb__logo" href={resolveNavHref("/")} aria-label="법무법인 경국 홈">
+            <img className="gnb__logo-mark" src={asset('assets/logo-mark.png')} alt="" />
+            <img
+              className="gnb__logo-word"
+              /*
+                `solid` includes `menuOpen`, but an open desktop menu now turns
+                the bar into black glass — it needs the LIGHT mark, so that case
+                is tested first. The remaining `solid` state (scrolled+hovered)
+                is still the white bar and keeps the dark mark.
+              */
+              src={asset(
+                menuOpen
+                  ? 'assets/logo-wordmark-light.svg'
+                  : solid || gnbTheme === 'light'
+                    ? 'assets/logo-wordmark-dark.svg'
+                    : 'assets/logo-wordmark-light.svg',
+              )}
+              alt="법무법인 경국 LAW FIRM GYUNGGOOK"
+            />
+          </a>
+        )}
+
+        {!isCompact && (
+          <nav className="gnb__nav" aria-label="주요 메뉴">
+            <ul ref={navListRef} className="gnb__nav-list" role="list">
+              <li
+                className={`gnb__indicator${indicatorReady ? ' is-ready' : ''}`}
+                style={indicatorStyle}
+                aria-hidden="true"
+              />
+              {NAV_ITEMS.map((item, index) => (
+                <li
+                  key={item.id}
+                  ref={(el) => {
+                    itemRefs.current[index] = el
+                  }}
+                  className={`gnb__nav-item${activeTop === index ? ' is-active' : ''}`}
+                  onMouseEnter={() => openDesktopMenu(index)}
+                  onFocus={() => openDesktopMenu(index)}
+                >
+                  <a
+                    className="gnb__nav-link"
+                    href={resolveNavHref(item.href)}
+                    onClick={() => closeDesktopMenu()}
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+
+        <div className="gnb__actions">
+          <a className="gnb__glass gnb__action" href={resolveNavHref("#office")}>
+            <img src={asset('assets/icon-call.svg')} alt="" className="gnb__icon" />
+            <span className="gnb__action-label">상담하기</span>
+          </a>
+          <button
+            type="button"
+            className="gnb__glass gnb__action"
+            aria-label="검색하기"
+            aria-expanded={searchOpen}
+            onClick={() => {
+              closeDesktopMenu()
+              setMenuOpen(false)
+              setDrawerExpanded(null)
+              setSearchOpen(true)
+            }}
+          >
+            <img src={asset('assets/icon-search.svg')} alt="" className="gnb__icon" />
+            <span className="gnb__action-label">검색하기</span>
+          </button>
+        </div>
+      </div>
+
+      <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />
+
+      {/* Desktop Fullmenu */}
+      {!isCompact && (
+        <div
+          className={`gnb__fullmenu${menuOpen ? ' is-open' : ''}`}
+          id={`${reactId}-fullmenu`}
+          /* `inert` rather than `hidden`: `hidden` is display:none, which cuts
+             the close transition dead. `inert` keeps the panel in the layout
+             (so it can slide back out) while removing it from focus order and
+             the a11y tree; CSS flips `visibility` once the slide finishes. */
+          inert={!menuOpen}
+          onMouseLeave={(e) => {
+            const next = e.relatedTarget
+            if (next instanceof Node && rootRef.current?.contains(next)) return
+            closeDesktopMenu()
+          }}
+        >
+          <div
+            ref={fullmenuInnerRef}
+            className={`gnb__fullmenu-inner${columnLayout ? ' is-nav-aligned' : ''}`}
+          >
+            <div
+              className="gnb__columns"
+              role="navigation"
+              aria-label="전체 메뉴"
+              style={
+                columnLayout
+                  ? {
+                      left: columnLayout.lefts[0] ?? 0,
+                      right: columnLayout.panelRight,
+                    }
+                  : undefined
+              }
+            >
+              {NAV_ITEMS.map((item, index) => {
+                const alignedStyle: CSSProperties | undefined = columnLayout
+                  ? {
+                      left: (columnLayout.lefts[index] ?? 0) - (columnLayout.lefts[0] ?? 0),
+                      width: columnLayout.widths[index],
+                    }
+                  : undefined
+                return (
+                  <div
+                    key={item.id}
+                    className={`gnb__column${activeTop === index ? ' is-active' : ''}`}
+                    style={alignedStyle}
+                    onMouseEnter={() => openDesktopMenu(index)}
+                  >
+                    <ul className="gnb__sublist" role="list">
+                      {item.children.map((sub) => (
+                        <li key={sub.id}>
+                          <a
+                            className={`gnb__sublink${activeSubId === sub.id ? ' is-active' : ''}`}
+                            href={resolveNavHref(sub.href)}
+                            onMouseEnter={() => highlightSub(sub.id)}
+                            onFocus={() => {
+                              openDesktopMenu(index)
+                              highlightSub(sub.id)
+                            }}
+                            onClick={() => closeDesktopMenu()}
+                          >
+                            {sub.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Compact left drawer */}
+      {isCompact && (
+        <>
+          <button
+            type="button"
+            className={`gnb__scrim${menuOpen ? ' is-open' : ''}`}
+            aria-label="메뉴 닫기"
+            tabIndex={menuOpen ? 0 : -1}
+            onClick={closeDrawer}
+          />
+          <div
+            ref={drawerRef}
+            id={`${reactId}-drawer`}
+            className={`gnb__drawer${menuOpen ? ' is-open' : ''}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label="전체 메뉴"
+            aria-hidden={!menuOpen}
+            onKeyDown={onDrawerKeyDown}
+          >
+            <div className="gnb__drawer-head">
+              <a
+                className="gnb__logo gnb__logo--drawer gnb__logo--symbol"
+                href={resolveNavHref('/')}
+                aria-label="법무법인 경국 홈"
+                onClick={closeDrawer}
+              >
+                <img className="gnb__logo-mark" src={asset('assets/logo-mark.png')} alt="" />
+              </a>
+              <button
+                ref={closeBtnRef}
+                type="button"
+                className="gnb__drawer-close"
+                aria-label="메뉴 닫기"
+                onClick={closeDrawer}
+              >
+                <img src={asset('assets/icon-close.svg')} alt="" className="gnb__icon" />
+              </button>
+            </div>
+
+            <nav className="gnb__drawer-nav" aria-label="모바일 메뉴">
+              <ul className="gnb__drawer-list" role="list">
+                {NAV_ITEMS.map((item) => {
+                  const expanded = drawerExpanded === item.id
+                  const panelId = `${reactId}-panel-${item.id}`
+                  return (
+                    <li key={item.id} className="gnb__drawer-item">
+                      <button
+                        type="button"
+                        className={`gnb__drawer-top${expanded ? ' is-expanded' : ''}`}
+                        aria-expanded={expanded}
+                        aria-controls={panelId}
+                        onClick={() =>
+                          setDrawerExpanded((cur) => (cur === item.id ? null : item.id))
+                        }
+                      >
+                        <span>{item.label}</span>
+                        <span className="gnb__drawer-chevron" aria-hidden="true" />
+                      </button>
+                      <div
+                        id={panelId}
+                        className={`gnb__drawer-panel${expanded ? ' is-open' : ''}`}
+                        hidden={!expanded}
+                      >
+                        <ul role="list">
+                          {item.children.map((sub) => {
+                            const selected = activeDrawerNav?.subId === sub.id
+                            return (
+                              <li key={sub.id}>
+                                <a
+                                  className={`gnb__drawer-sublink${selected ? ' is-selected' : ''}`}
+                                  href={resolveNavHref(sub.href)}
+                                  aria-current={selected ? 'page' : undefined}
+                                  onClick={closeDrawer}
+                                >
+                                  {sub.label}
+                                </a>
+                              </li>
+                            )
+                          })}
+                        </ul>
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            </nav>
+
+            <div className="gnb__drawer-foot">
+              <a className="gnb__drawer-cta" href={resolveNavHref("#office")} onClick={closeDrawer}>
+                <img src={asset('assets/icon-call.svg')} alt="" className="gnb__icon" />
+                상담 신청
+              </a>
+            </div>
+          </div>
+        </>
+      )}
+    </header>
+  )
+}
