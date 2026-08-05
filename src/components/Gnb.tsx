@@ -14,7 +14,6 @@ import {
 import { UNSAFE_LocationContext } from 'react-router-dom'
 import {
   findActiveDrawerNav,
-  GNB_SUB_VISUAL_PLACEHOLDER,
   NAV_ITEMS,
 } from '../data/nav'
 import { asset } from '../utils/asset'
@@ -91,8 +90,6 @@ export function Gnb() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [activeTop, setActiveTop] = useState<number | null>(null)
   const [activeSubId, setActiveSubId] = useState<string | null>(null)
-  const [visualSrc, setVisualSrc] = useState(GNB_SUB_VISUAL_PLACEHOLDER)
-  const [visualKey, setVisualKey] = useState(0)
   const [indicator, setIndicator] = useState<Indicator | null>(null)
   const [indicatorReady, setIndicatorReady] = useState(false)
   const [columnLayout, setColumnLayout] = useState<ColumnLayout | null>(null)
@@ -296,12 +293,7 @@ export function Gnb() {
     setMenuOpen(true)
     if (activeTop !== index) {
       const first = NAV_ITEMS[index]?.children[0]
-      if (first) {
-        setActiveSubId(first.id)
-        setVisualSrc(first.visual)
-        /* Same placeholder for now — key bump still plays swap motion. */
-        setVisualKey((k) => k + 1)
-      }
+      if (first) setActiveSubId(first.id)
     }
     setActiveTop(index)
   }
@@ -329,11 +321,9 @@ export function Gnb() {
     closeDesktopMenu()
   }
 
-  const swapVisual = (src: string, subId: string) => {
-    setActiveSubId(subId)
-    setVisualSrc(src)
-    setVisualKey((k) => k + 1)
-  }
+  /* Highlight only — the per-menu background image the fullmenu used to swap
+     on hover is gone; the panel is a flat black glass sheet now. */
+  const highlightSub = (subId: string) => setActiveSubId(subId)
 
   const openDrawer = () => {
     setMenuOpen(true)
@@ -426,10 +416,18 @@ export function Gnb() {
             <img className="gnb__logo-mark" src={asset('assets/logo-mark.png')} alt="" />
             <img
               className="gnb__logo-word"
+              /*
+                `solid` includes `menuOpen`, but an open desktop menu now turns
+                the bar into black glass — it needs the LIGHT mark, so that case
+                is tested first. The remaining `solid` state (scrolled+hovered)
+                is still the white bar and keeps the dark mark.
+              */
               src={asset(
-                solid || gnbTheme === 'light'
-                  ? 'assets/logo-wordmark-dark.svg'
-                  : 'assets/logo-wordmark-light.svg',
+                menuOpen
+                  ? 'assets/logo-wordmark-light.svg'
+                  : solid || gnbTheme === 'light'
+                    ? 'assets/logo-wordmark-dark.svg'
+                    : 'assets/logo-wordmark-light.svg',
               )}
               alt="법무법인 경국 LAW FIRM GYUNGGOOK"
             />
@@ -508,15 +506,6 @@ export function Gnb() {
             ref={fullmenuInnerRef}
             className={`gnb__fullmenu-inner${columnLayout ? ' is-nav-aligned' : ''}`}
           >
-            {/* Full-bleed sub-visual inside the 24px frame (see Gnb.css). */}
-            <div className="gnb__visual" aria-hidden="true">
-              <img
-                key={visualKey}
-                className="gnb__visual-img"
-                src={visualSrc}
-                alt=""
-              />
-            </div>
             <div
               className="gnb__columns"
               role="navigation"
@@ -550,10 +539,10 @@ export function Gnb() {
                           <a
                             className={`gnb__sublink${activeSubId === sub.id ? ' is-active' : ''}`}
                             href={resolveNavHref(sub.href)}
-                            onMouseEnter={() => swapVisual(sub.visual, sub.id)}
+                            onMouseEnter={() => highlightSub(sub.id)}
                             onFocus={() => {
                               openDesktopMenu(index)
-                              swapVisual(sub.visual, sub.id)
+                              highlightSub(sub.id)
                             }}
                             onClick={() => closeDesktopMenu()}
                           >
