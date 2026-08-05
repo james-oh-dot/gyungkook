@@ -27,3 +27,7 @@ dist-ssr
 .agents/
 .claude/
 .codex/
+
+# Python bytecode from scripts/
+__pycache__/
+*.pyc
