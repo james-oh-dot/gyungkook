@@ -9,14 +9,14 @@ marquee's dark band. For each source this writes
 
   1. background → transparent (existing alpha is kept when the file already
      has one; otherwise the plate colour is keyed out from the border inward)
-  2. artwork → greyscale
-  3. greyscale inverted when the art reads dark, so it lands light on the band
-  4. the bright 1px halo inversion leaves along the cut-out edge pulled back to
-     the body tone, so the logo doesn't read as a stair-stepped fringe
-  5. levels stretched to a common light range — raw inversion left the set
-     spread over mean luminance 125…242, which reads as a row of randomly
-     dim/bright logos rather than one monochrome family
-  6. trimmed to content + padded, so every logo is framed consistently
+  2. artwork → mono, toned by distance from the plate colour rather than by
+     luminance, so dark type and a light mark in the same logo both land light
+  3. any bright 1px ring left along the cut-out edge pulled back to the body
+     tone, so the logo doesn't read as a stair-stepped fringe
+  4. levels stretched to a common light range — untreated, the set spread over
+     mean tone 115…252, which reads as a row of randomly dim/bright logos
+     rather than one monochrome family
+  5. trimmed to content + padded, so every logo is framed consistently
 
 The originals are left untouched — the 협력사 grid still uses the colour set.
 
@@ -42,8 +42,6 @@ TARGET_H = 120
 PAD = 6
 # How far a pixel may drift from the plate colour and still count as background.
 KEY_TOLERANCE = 32
-# Below this mean luminance the artwork is "dark" and gets inverted.
-DARK_MEAN = 128
 # Levels target: the bulk of each logo's tone is stretched into this range so
 # the whole strip reads as one family. Floor stays well clear of the band.
 LEVELS_LO = 120
@@ -52,11 +50,11 @@ LEVELS_HI = 255
 # stretching it would just amplify compression noise, so it goes solid light.
 FLAT_SPREAD = 12
 # Halo shave. The outermost ring of a cut-out is the antialiased blend between
-# the artwork and its plate. Inverting turns those mid-tones into the *brightest*
-# pixels in the image, so the logo ends up ringed by a bright 1px outline that
-# reads as a stair-stepped fringe once the logo is scaled up (partner-09, -19).
-# When that ring runs this much brighter than the body it is a keying artefact
-# rather than real art, so its tone is pulled back to the body's.
+# the artwork and its plate, and on some sources it tones brighter than the body
+# it surrounds — the logo then reads as a bright 1px outline around a dimmer
+# fill, which turns into a stair-stepped fringe once the logo is scaled up.
+# When the ring runs this much brighter it is a keying artefact rather than real
+# art, so its tone is pulled back to the body's.
 HALO_MARGIN = 24
 
 
@@ -105,6 +103,27 @@ def build_alpha(im: Image.Image) -> Image.Image:
         ]
     )
     return alpha
+
+
+def plate_distance(im: Image.Image, plate: tuple[int, int, int]) -> Image.Image:
+    """Tone = how far each pixel departs from the plate it is printed on.
+
+    Not luminance. Luminance forces a single polarity per logo — invert it or
+    don't — which breaks any logo carrying both dark and light artwork: 의성군
+    pairs black type with a yellow mark, so whichever way it is flipped, half
+    the logo lands near the band's own tone. Distance is polarity-free: black
+    type and a yellow mark are both far from white, so both come out light.
+    """
+    rgb = im.convert("RGB")
+    pr, pg, pb = plate
+    tone = Image.new("L", rgb.size)
+    tone.putdata(
+        [
+            min(255, max(abs(r - pr), abs(g - pg), abs(b - pb)))
+            for r, g, b in rgb.getdata()
+        ]
+    )
+    return tone
 
 
 def shave_halo(grey: Image.Image, alpha: Image.Image) -> tuple[Image.Image, bool]:
@@ -169,13 +188,13 @@ def main() -> int:
     for src in sources:
         im = Image.open(src)
         alpha = build_alpha(im)
-        grey = im.convert("L")
+        # A cut-out file has no plate left to sample; white is what these logos
+        # were drawn against, and it is what the marquee is contrasting away from.
+        plate = (255, 255, 255) if has_real_alpha(im) else plate_colour(im)
+        grey = plate_distance(im, plate)
 
-        # Mean luminance over visible pixels only — the plate must not skew it.
         visible = [g for g, a in zip(grey.getdata(), alpha.getdata()) if a > 128]
         mean = sum(visible) / len(visible) if visible else 255
-        if mean < DARK_MEAN:
-            grey = Image.eval(grey, lambda v: 255 - v)
 
         grey, shaved = shave_halo(grey, alpha)
         grey = normalise(grey, alpha)
@@ -197,7 +216,7 @@ def main() -> int:
         padded.save(dest, optimize=True)
         print(
             f"{src.name:18} -> {dest.name:18} {padded.size}  "
-            f"mean={mean:5.1f} {'inverted' if mean < DARK_MEAN else 'as-is'}"
+            f"tone-mean={mean:5.1f}"
             f"{' halo-shaved' if shaved else ''}"
         )
 
