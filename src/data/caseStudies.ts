@@ -19,7 +19,7 @@ const CASE_STUDIES_VISUAL = progressiveAsset('assets/sub/sub-04-01')
 
 export const CASE_STUDIES_PAGE = {
   parentLabel: '기타업무',
-  title: '업무사례',
+  title: '분야별 사례',
   /** Figma layer sub-04-01 — also GNB fullmenu visual for other-cases */
   visual: CASE_STUDIES_VISUAL.src,
   visualPreview: CASE_STUDIES_VISUAL.preview,

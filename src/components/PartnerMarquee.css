@@ -1,0 +1,96 @@
+/*
+  Home footer partner strip — one continuously drifting row of monochrome logos.
+
+  Dark band on purpose: the logos are light greyscale cut-outs
+  (`scripts/generate-partner-mono.py`), so a light band would wash them out.
+*/
+.partner-marquee {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(28px, 3.4vw, 44px) 0;
+  background: #17191d;
+  /* Sits between the last section and the footer — hairlines keep it distinct
+     from the footer's own near-black without a hard seam. */
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/*
+  Fade the strip into the band at both ends so logos enter and leave instead of
+  being visibly clipped by the viewport edge.
+*/
+.partner-marquee::before,
+.partner-marquee::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 1;
+  width: clamp(48px, 8vw, 160px);
+  pointer-events: none;
+}
+
+.partner-marquee::before {
+  left: 0;
+  background: linear-gradient(90deg, #17191d, rgba(23, 25, 29, 0));
+}
+
+.partner-marquee::after {
+  right: 0;
+  background: linear-gradient(270deg, #17191d, rgba(23, 25, 29, 0));
+}
+
+/*
+  The track holds the logo list TWICE. Translating exactly -50% lands copy 2
+  where copy 1 started, so the loop has no seam.
+
+  Spacing therefore lives on the items (`margin-right`), never as `gap` on the
+  track: with `gap`, the track is `2 × content + (2n − 1) × gap`, so -50% stops
+  short of copy 2's first item and the loop visibly jumps every cycle.
+*/
+.partner-marquee__track {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  animation: partner-marquee-scroll var(--partner-marquee-duration, 60s) linear
+    infinite;
+}
+
+.partner-marquee__item {
+  flex: 0 0 auto;
+  margin-right: clamp(40px, 5vw, 88px);
+  display: flex;
+  align-items: center;
+}
+
+.partner-marquee__item img {
+  display: block;
+  width: auto;
+  height: clamp(28px, 3vw, 40px);
+  /* Assets are already greyscale; opacity is the only tone knob here. */
+  opacity: 0.72;
+  transition: opacity 0.4s var(--ease-premium, ease);
+}
+
+.partner-marquee:hover .partner-marquee__item img {
+  opacity: 0.92;
+}
+
+@keyframes partner-marquee-scroll {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/*
+  Endless motion with no way to stop it is exactly what this query exists for —
+  park the strip at the start and let it read as a static logo row.
+*/
+@media (prefers-reduced-motion: reduce) {
+  .partner-marquee__track {
+    animation: none;
+  }
+}

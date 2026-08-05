@@ -1,3 +1,4 @@
+import { asset } from '../utils/asset'
 import { progressiveAsset, type ProgressiveSrc } from '../utils/progressiveImage'
 
 export type ContentImage = ProgressiveSrc
@@ -231,6 +232,34 @@ export const awards = [
     image: progressiveAsset('assets/lawyers/gongdaeho-apt-youth-legal'),
     fit: 'contain' as const,
   },
+]
+
+/**
+ * Partner logos for the home footer marquee — the monochrome cut-outs from
+ * `scripts/generate-partner-mono.py`, not the colour originals the 법인소개
+ * 협력사 grid uses. Regenerate that script after adding a logo, then add the
+ * file here.
+ */
+export const HOME_PARTNER_LOGOS = [
+  asset('assets/partners-mono/partner-01.png'),
+  asset('assets/partners-mono/partner-02.png'),
+  asset('assets/partners-mono/partner-03.png'),
+  asset('assets/partners-mono/partner-04.png'),
+  asset('assets/partners-mono/partner-05.png'),
+  asset('assets/partners-mono/partner-06.png'),
+  asset('assets/partners-mono/partner-07.png'),
+  asset('assets/partners-mono/partner-08.png'),
+  asset('assets/partners-mono/partner-09.png'),
+  asset('assets/partners-mono/partner-10.png'),
+  asset('assets/partners-mono/partner-11.png'),
+  asset('assets/partners-mono/partner-12.png'),
+  asset('assets/partners-mono/partner-13.png'),
+  asset('assets/partners-mono/partner-14.png'),
+  asset('assets/partners-mono/partner-15.png'),
+  asset('assets/partners-mono/partner-16.png'),
+  asset('assets/partners-mono/partner-17.png'),
+  asset('assets/partners-mono/partner-18.png'),
+  asset('assets/partners-mono/partner-19.png'),
 ]
 
 /** Full-bleed / standalone home section photos (not card lists). */

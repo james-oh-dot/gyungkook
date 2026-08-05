@@ -2,6 +2,7 @@ import { useContext, type ReactNode } from 'react'
 import { Outlet, UNSAFE_LocationContext } from 'react-router-dom'
 import { Footer } from '../components/Footer'
 import { Gnb } from '../components/Gnb'
+import { PartnerMarquee } from '../components/PartnerMarquee'
 import { QuickConsult } from '../components/QuickConsult'
 import { QuickNav } from '../components/QuickNav'
 
@@ -39,6 +40,8 @@ export function SiteLayout({ children }: SiteLayoutProps) {
       {children ?? <Outlet />}
       {/* Desktop-only (≥1025) — hidden on tablet/mobile via CSS; home only */}
       {isHome ? <QuickConsult /> : null}
+      {/* Partner strip sits directly above the footer, home only */}
+      {isHome ? <PartnerMarquee /> : null}
       <Footer />
       {/* Tablet/mobile floating quick rail — hidden on desktop via CSS */}
       <QuickNav />
