@@ -240,8 +240,10 @@
 */
 .hero__title {
   font-family: var(--font-serif);
-  /* Halved from clamp(32px, 3.75vw, 72px) — the label carries the scale now. */
-  font-size: clamp(16px, 1.875vw, 36px);
+  /* Halved from clamp(32px, 3.75vw, 72px) — the label carries the scale now.
+     The floor is 20px, not the halved 16px: `.hero__desc` is 16px flat, and
+     the title has to stay larger than it at every width. */
+  font-size: clamp(20px, 1.875vw, 36px);
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.28;
@@ -275,7 +277,9 @@
   font-size: 72px;
   font-weight: 600;
   letter-spacing: -0.025em;
-  line-height: 1.4;
+  /* Halved from 1.4. The labels are uppercase Latin with no descenders, so
+     the lines close up without the glyphs touching. */
+  line-height: 0.7;
   color: #f1f1f5;
   text-transform: uppercase;
   /* Long labels (e.g. Fair Compensation…) must wrap, not clip */
@@ -646,7 +650,8 @@
   }
 
   .hero__title {
-    font-size: 16px;
+    /* Above the 16px desc — see the floor note on the base rule. */
+    font-size: 20px;
     line-height: 1.4;
   }
 
