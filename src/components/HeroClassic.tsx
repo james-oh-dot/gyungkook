@@ -170,20 +170,23 @@ export function HeroClassic() {
   }, [jumpTo])
 
   /*
-    Publishes `--hero-maincopy-top` on `.hero`: prefer mid-viewport, but never
-    let the maincopy collide with the copy block below it — cap so its bottom
-    stays ≥60px clear. When the viewport grows again the pin returns to mid.
+    Publishes `--hero-maincopy-top` on `.hero`: the maincopy hangs off the
+    bottom-anchored copy block, `MAINCOPY_COPY_GAP` above it.
 
-    This used to hang off the swipe block's measured top; with the swipe gone,
-    `.hero__copy` is bottom-anchored in CSS and is measured directly instead.
-    Desktop (≥1025) is the only breakpoint that reads the property — below
-    that the copy column is a plain flex stack.
+    This used to prefer mid-viewport and only fall back to the gap as a
+    collision cap, which left the space above the desc emergent — 84px at
+    1440x900, more on taller screens. Hanging off the copy makes it the one
+    number that sets that space.
+
+    `.hero__copy` is bottom-anchored in CSS and measured directly. Desktop
+    (≥1025) is the only breakpoint that reads the property — below that the
+    copy column is a plain flex stack.
   */
   useEffect(() => {
     const hero = heroRef.current
     if (!hero) return
 
-    const MAINCOPY_COPY_GAP = 60
+    const MAINCOPY_COPY_GAP = 30
 
     const sync = () => {
       const maincopy = hero.querySelector<HTMLElement>('.hero__maincopy')
@@ -195,14 +198,9 @@ export function HeroClassic() {
       if (copyTop <= 0) return
 
       const mainH = maincopy.getBoundingClientRect().height
-      /* Same length CSS uses for `top: 50svh` (offset from copy-col / hero top). */
-      const midOffset =
-        (window.visualViewport?.height ?? window.innerHeight) * 0.5
-      const maxTop = copyTop - MAINCOPY_COPY_GAP - mainH
-      hero.style.setProperty(
-        '--hero-maincopy-top',
-        `${Math.min(midOffset, maxTop)}px`,
-      )
+      const top = copyTop - MAINCOPY_COPY_GAP - mainH
+      /* Never let it ride up under the fixed header on a short viewport. */
+      hero.style.setProperty('--hero-maincopy-top', `${Math.max(0, top)}px`)
     }
 
     sync()
@@ -303,18 +301,18 @@ export function HeroClassic() {
                 step={34 * REVEAL_PACE}
               />
             </p>
-            <div className="hero__title">{titleBlocks}</div>
-          </div>
-
-          <div className="hero__copy" data-name="hero_copy">
             <div className="hero__label">
               <LineReveal
                 key={`${animKey}-label`}
                 lines={[slide.label]}
-                baseDelay={420 * REVEAL_PACE}
+                baseDelay={100 * REVEAL_PACE}
                 step={0}
               />
             </div>
+            <div className="hero__title">{titleBlocks}</div>
+          </div>
+
+          <div className="hero__copy" data-name="hero_copy">
             <div className="hero__desc">
               <LineReveal
                 key={`${animKey}-desc`}
