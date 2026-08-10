@@ -277,9 +277,10 @@
   font-size: 72px;
   font-weight: 600;
   letter-spacing: -0.025em;
-  /* Halved from 1.4. The labels are uppercase Latin with no descenders, so
-     the lines close up without the glyphs touching. */
-  line-height: 0.7;
+  /* Between the original 1.4 and the 0.7 halving: 0.7 set the lines solid,
+     with cap heights nearly touching. 0.95 keeps the tight display feel but
+     leaves a line of air to read across. */
+  line-height: 0.95;
   color: #f1f1f5;
   text-transform: uppercase;
   /* Long labels (e.g. Fair Compensation…) must wrap, not clip */
