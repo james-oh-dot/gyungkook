@@ -254,17 +254,23 @@
   padding-bottom: 0.08em;
 }
 
+/*
+  Desc-only now. The label moved up next to the title, so this is no longer a
+  two-column row — it is the bottom block of the single left-aligned stack
+  (index → label → title → desc), all sharing `.hero__copy-col`'s left edge.
+*/
 .hero__copy {
   display: flex;
+  flex-direction: column;
   align-items: flex-start;
-  gap: clamp(20px, 7.6vw, 147px);
   max-width: min(760px, 100%);
 }
 
 .hero__label {
   flex: 0 1 auto;
   max-width: 100%;
-  font-size: clamp(16px, 1.25vw, 24px);
+  /* The teal hero's largest copy size, applied flat rather than as a ramp. */
+  font-size: 24px;
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.4;
@@ -522,8 +528,6 @@
   }
 
   .hero__copy {
-    flex-direction: column;
-    gap: 12px;
     max-width: 100%;
   }
 

@@ -303,18 +303,18 @@ export function HeroClassic() {
                 step={34 * REVEAL_PACE}
               />
             </p>
-            <div className="hero__title">{titleBlocks}</div>
-          </div>
-
-          <div className="hero__copy" data-name="hero_copy">
             <div className="hero__label">
               <LineReveal
                 key={`${animKey}-label`}
                 lines={[slide.label]}
-                baseDelay={420 * REVEAL_PACE}
+                baseDelay={100 * REVEAL_PACE}
                 step={0}
               />
             </div>
+            <div className="hero__title">{titleBlocks}</div>
+          </div>
+
+          <div className="hero__copy" data-name="hero_copy">
             <div className="hero__desc">
               <LineReveal
                 key={`${animKey}-desc`}
