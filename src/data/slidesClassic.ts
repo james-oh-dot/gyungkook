@@ -86,7 +86,7 @@ export const classicHeroSlides: ClassicHeroSlide[] = [
     id: 3,
     index: '03',
     titleLines: ['합리적인 보상,', '청산, 그리고 배상'],
-    label: 'Fair Compensationand Damages',
+    label: 'Fair Compensation and Damages',
     description: [
       'AI 역량 총동원 -',
       '막연한 추정이 아닌 정확한 분석을 통해 합리적인 결과를 확보합니다',
