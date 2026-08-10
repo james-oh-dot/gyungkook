@@ -184,7 +184,8 @@
   content; pins use left:0 within the col — same left edge as before).
   - `.hero__copy` is bottom-anchored (it used to hang off the swipe block's
     measured top; the swipe is gone, so the viewport bottom is the anchor).
-  - `.hero__maincopy` top → `--hero-maincopy-top` (JS: min(50svh, copyTop - 60 - mainH))
+  - `.hero__maincopy` top → `--hero-maincopy-top` (JS: copyTop - 30 - mainH), so
+    it hangs 30px above the copy instead of floating at mid-viewport
 */
 @media (min-width: 1025px) {
   .hero__content {
@@ -206,7 +207,7 @@
   .hero__maincopy {
     position: absolute;
     left: 0;
-    /* Prefer mid; JS caps so it never collides with copy (60px gap). */
+    /* JS pins it 30px above the copy; 50svh is the pre-hydration fallback. */
     top: var(--hero-maincopy-top, 50svh);
     z-index: 3;
   }
@@ -239,7 +240,8 @@
 */
 .hero__title {
   font-family: var(--font-serif);
-  font-size: clamp(32px, 3.75vw, 72px);
+  /* Halved from clamp(32px, 3.75vw, 72px) — the label carries the scale now. */
+  font-size: clamp(16px, 1.875vw, 36px);
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.28;
@@ -269,8 +271,8 @@
 .hero__label {
   flex: 0 1 auto;
   max-width: 100%;
-  /* The teal hero's largest copy size, applied flat rather than as a ramp. */
-  font-size: 24px;
+  /* 3x the 24px it carried — the label now leads the block, not the title. */
+  font-size: 72px;
   font-weight: 600;
   letter-spacing: -0.025em;
   line-height: 1.4;
@@ -509,11 +511,12 @@
     padding-bottom: var(--hero-copy-bottom);
   }
 
+  /* 28px -> 14px: this gap is the space above the desc below 1025. */
   .hero__copy-col {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 28px;
+    gap: 14px;
     width: 100%;
     max-width: 100%;
     min-height: 0;
@@ -632,8 +635,18 @@
     padding-bottom: var(--hero-copy-bottom);
   }
 
+  /*
+    72px only fits a ~580px measure. The longest label (FAIR COMPENSATION AND
+    DAMAGES) has a 12-character word that runs off a 390px screen and gets
+    clipped — a word cannot wrap inside itself. Ramp down so the widest word
+    always fits; the cap keeps 72px wherever there is room for it.
+  */
+  .hero__label {
+    font-size: clamp(30px, 11vw, 72px);
+  }
+
   .hero__title {
-    font-size: 32px;
+    font-size: 16px;
     line-height: 1.4;
   }
 
