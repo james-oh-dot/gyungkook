@@ -1,0 +1,912 @@
+.gnb {
+  --gnb-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --gnb-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --gnb-duration: 0.35s;
+  --gnb-fg: #fff;
+  --gnb-muted: rgba(255, 255, 255, 0.72);
+  --gnb-glass: rgba(255, 255, 255, 0.1);
+  --gnb-glass-border: rgba(255, 255, 255, 0.22);
+  --gnb-bar-h: 100px;
+  --gnb-pad-x: 32px;
+  /* Black liquid glass shared by the open bar and the fullmenu panel */
+  --gnb-panel-bg: rgba(12, 13, 16, 0.72);
+  --gnb-panel-blur: blur(24px) saturate(1.5);
+  /* img SVG icons: force white over hero; invert → dark when menu open */
+  --gnb-icon-filter: brightness(0) invert(1);
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 900;
+  color: var(--gnb-fg);
+  transition:
+    color var(--gnb-duration) var(--gnb-ease),
+    background var(--gnb-duration) var(--gnb-ease),
+    box-shadow var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb--solid {
+  --gnb-fg: #111;
+  --gnb-muted: #767676;
+  --gnb-glass: rgba(17, 17, 17, 0.04);
+  --gnb-glass-border: rgba(17, 17, 17, 0.12);
+  /* Match dark label type (#111) — pure black glyphs, not washed “none” */
+  --gnb-icon-filter: brightness(0);
+  background: #fff;
+  box-shadow: 0 1px 0 rgba(17, 17, 17, 0.06);
+}
+
+.gnb--over-hero {
+  background: transparent;
+}
+
+/*
+  Scrolled but not hovered/open → liquid glass (strong frosted).
+  Standard `backdrop-filter` only — lightningcss adds the -webkit- prefix at
+  build; hand-writing both makes it drop the unprefixed one (breaks Firefox).
+*/
+.gnb--glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px) saturate(1.6);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.14);
+}
+
+/* Over light content the type flips dark — thicken the frost so it still
+   reads as glass on a near-white background. */
+.gnb--glass[data-gnb-theme='light'] {
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow:
+    inset 0 -1px 0 rgba(17, 17, 17, 0.06),
+    0 1px 0 rgba(17, 17, 17, 0.04);
+}
+
+/* No backdrop-filter support (older Firefox) → opaque-enough fallback. */
+@supports not (backdrop-filter: blur(1px)) {
+  .gnb--glass {
+    background: rgba(20, 20, 20, 0.6);
+  }
+  .gnb--glass[data-gnb-theme='light'] {
+    background: rgba(250, 250, 250, 0.9);
+  }
+}
+
+/*
+  Auto text-contrast: when the bar is transparent/glass and the content
+  scrolling under it is light, flip the type + icons to dark so they stay
+  legible. Dark content keeps the base white type.
+*/
+.gnb--over-hero[data-gnb-theme='light'],
+.gnb--glass[data-gnb-theme='light'] {
+  --gnb-fg: #111;
+  --gnb-muted: #5a5a5a;
+  --gnb-glass: rgba(17, 17, 17, 0.04);
+  --gnb-glass-border: rgba(17, 17, 17, 0.12);
+  --gnb-icon-filter: brightness(0);
+}
+
+/*
+  Open desktop menu = black liquid glass, bar and dropdown as one sheet.
+  The bar used to go white here (to sit above a light `#f7f7fb` fullmenu with
+  per-menu photos); the panel is dark glass now, so a white bar would read as
+  a separate strip stuck on top of it.
+
+  Standard `backdrop-filter` only — lightningcss adds the -webkit- alias at
+  build, and hand-writing both makes it drop the unprefixed one (Firefox).
+*/
+.gnb--open.gnb--desktop {
+  background: var(--gnb-panel-bg);
+  backdrop-filter: var(--gnb-panel-blur);
+  --gnb-fg: #fff;
+  --gnb-muted: rgba(255, 255, 255, 0.64);
+  --gnb-glass: rgba(255, 255, 255, 0.1);
+  --gnb-glass-border: rgba(255, 255, 255, 0.22);
+  --gnb-icon-filter: brightness(0) invert(1);
+}
+
+.gnb--open.gnb--compact {
+  --gnb-icon-filter: brightness(0);
+}
+
+.gnb__bar {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: var(--gnb-bar-h);
+  padding: 24px var(--gnb-pad-x);
+  transition: padding var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  min-width: 115px;
+  height: 32px;
+  color: inherit;
+  transition: opacity var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb__logo:hover,
+.gnb__logo:focus-visible {
+  opacity: 0.82;
+}
+
+.gnb__logo-mark {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  transition: opacity var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb__logo-word {
+  height: 22px;
+  width: auto;
+  aspect-ratio: 75.1678 / 22.1642;
+  max-width: none;
+  flex: 0 0 auto;
+  object-fit: contain;
+  transition: opacity var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb__nav {
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+  margin-right: 10px;
+}
+
+.gnb__nav-list {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+}
+
+.gnb__indicator {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  border-radius: 0;
+  background: rgba(17, 17, 17, 0.06);
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, width, height;
+  transition:
+    transform 0.45s var(--gnb-spring),
+    width 0.45s var(--gnb-spring),
+    height 0.35s var(--gnb-ease),
+    opacity 0.25s var(--gnb-ease),
+    background var(--gnb-duration) var(--gnb-ease);
+}
+
+/* White nav highlight over dark content (transparent or glass). */
+.gnb--over-hero:not(.gnb--open) .gnb__indicator,
+.gnb--glass .gnb__indicator {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+/* Light content underneath → dark highlight so it stays visible. */
+.gnb--over-hero[data-gnb-theme='light']:not(.gnb--open) .gnb__indicator,
+.gnb--glass[data-gnb-theme='light'] .gnb__indicator {
+  background: rgba(17, 17, 17, 0.06);
+}
+
+/*
+  Open desktop menu — the bar is black glass, so the highlight goes light.
+  Listed last and with `.gnb--open` so it beats the `[data-gnb-theme='light']`
+  rules above, which would otherwise leave a near-invisible dark chip on the
+  dark bar whenever the section under the header happens to be light.
+*/
+.gnb--open.gnb--desktop .gnb__indicator {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.gnb__indicator.is-ready {
+  opacity: 1;
+}
+
+.gnb__nav-item {
+  position: relative;
+  z-index: 1;
+  margin: 0;
+}
+
+.gnb__nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 16px;
+  border-radius: 0;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  white-space: nowrap;
+  color: inherit;
+  transition:
+    color var(--gnb-duration) var(--gnb-ease),
+    background var(--gnb-duration) var(--gnb-ease),
+    font-weight 0.2s var(--gnb-ease),
+    opacity var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb__nav-item.is-active .gnb__nav-link {
+  font-weight: 600;
+}
+
+.gnb__actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.gnb__glass {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 50px;
+  padding: 15px 20px;
+  border: 1px solid var(--gnb-glass-border);
+  border-radius: 0;
+  background: var(--gnb-glass);
+  color: inherit;
+  box-shadow: 1px 1px 2px rgba(17, 17, 17, 0.1);
+  /* Standard only — lightningcss adds the -webkit- prefix at build. Writing
+     both by hand makes it drop the unprefixed one (breaks Firefox). */
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.4;
+  position: relative;
+  flex: 0 0 auto;
+  transition:
+    background var(--gnb-duration) var(--gnb-ease),
+    border-color var(--gnb-duration) var(--gnb-ease),
+    color var(--gnb-duration) var(--gnb-ease),
+    box-shadow var(--gnb-duration) var(--gnb-ease),
+    transform var(--gnb-duration) var(--gnb-ease),
+    opacity var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb__glass:hover,
+.gnb__glass:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.gnb--solid .gnb__glass:hover,
+.gnb--solid .gnb__glass:focus-visible,
+.gnb--open.gnb--desktop .gnb__glass:hover,
+.gnb--open.gnb--desktop .gnb__glass:focus-visible {
+  background: rgba(17, 17, 17, 0.06);
+}
+
+.gnb__action {
+  width: auto;
+  min-width: 120px;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.gnb__action-label {
+  white-space: nowrap;
+  flex: 0 0 auto;
+}
+
+.gnb__icon {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+  display: block;
+  transition:
+    filter var(--gnb-duration) var(--gnb-ease),
+    opacity var(--gnb-duration) var(--gnb-ease),
+    transform var(--gnb-duration) var(--gnb-ease);
+}
+
+/* Call / Search (and menu) icons: white on hero, dark when menu open */
+.gnb__action .gnb__icon,
+.gnb__menu-btn .gnb__icon {
+  filter: var(--gnb-icon-filter);
+}
+
+.gnb__menu-btn {
+  border-radius: 0;
+  min-width: 94px;
+}
+
+.gnb__menu-label {
+  white-space: nowrap;
+  transition: opacity var(--gnb-duration) var(--gnb-ease);
+}
+
+/* ---------- Desktop Fullmenu ---------- */
+/*
+  Black liquid glass. This panel used to be a light `#f7f7fb` sheet framing a
+  per-menu photo that swapped on submenu hover; both the photo and its 24px
+  frame are gone, so the panel is now one translucent dark surface continuous
+  with the open bar above it (`.gnb--open.gnb--desktop`).
+
+  Standard `backdrop-filter` only — see the HARD RULE note on `.gnb--glass`.
+*/
+.gnb__fullmenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  background: var(--gnb-panel-bg);
+  backdrop-filter: var(--gnb-panel-blur);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  /* Held visible for the length of the close slide, then hidden in one step —
+     this is what keeps the panel out of the a11y tree once it is off screen. */
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    max-height 0.45s var(--gnb-ease),
+    opacity 0.3s var(--gnb-ease),
+    visibility 0s linear 0.45s;
+}
+
+/* Tallest column is 6 items x 44px + the panel's own padding. */
+.gnb__fullmenu.is-open {
+  max-height: 340px;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition:
+    max-height 0.45s var(--gnb-ease),
+    opacity 0.35s var(--gnb-ease),
+    visibility 0s;
+}
+
+.gnb__fullmenu-inner {
+  position: relative;
+  display: block;
+  min-height: 300px;
+  padding: 12px 0 28px;
+  box-sizing: border-box;
+}
+
+/* Columns snap to top-nav item left edges (measured in JS). */
+.gnb__fullmenu-inner.is-nav-aligned {
+  display: block;
+  gap: 0;
+}
+
+/* No backdrop-filter support (older Firefox) -> opaque-enough fallback. */
+@supports not (backdrop-filter: blur(1px)) {
+  .gnb__fullmenu,
+  .gnb--open.gnb--desktop {
+    background: rgba(12, 13, 16, 0.94);
+  }
+}
+
+.gnb__columns {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px 12px;
+  align-content: start;
+  padding: 12px 8px 12px 0;
+  /* Transparent — the glass panel behind is the surface now (was `#fff`). */
+  background: none;
+  min-height: 274px;
+  /* Slide-in: the submenu area drops in behind the bar as the panel opens, and
+     runs the same motion in reverse on mouse-out (the panel stays laid out
+     during the exit — see the `visibility` note on `.gnb__fullmenu`). */
+  opacity: 0;
+  transform: translateY(-16px);
+  transition:
+    opacity 0.28s var(--gnb-ease),
+    transform 0.4s var(--gnb-ease);
+}
+
+.gnb__fullmenu.is-open .gnb__columns {
+  opacity: 1;
+  transform: none;
+  transition-delay: 0.06s;
+}
+
+/* Per-item stagger on top of the area slide. Capped at 6 — the longest column. */
+.gnb__sublist > li {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition:
+    opacity 0.26s var(--gnb-ease),
+    transform 0.34s var(--gnb-ease);
+}
+
+.gnb__fullmenu.is-open .gnb__sublist > li {
+  opacity: 1;
+  transform: none;
+}
+
+.gnb__fullmenu.is-open .gnb__sublist > li:nth-child(1) {
+  transition-delay: 0.08s;
+}
+.gnb__fullmenu.is-open .gnb__sublist > li:nth-child(2) {
+  transition-delay: 0.12s;
+}
+.gnb__fullmenu.is-open .gnb__sublist > li:nth-child(3) {
+  transition-delay: 0.16s;
+}
+.gnb__fullmenu.is-open .gnb__sublist > li:nth-child(4) {
+  transition-delay: 0.2s;
+}
+.gnb__fullmenu.is-open .gnb__sublist > li:nth-child(5) {
+  transition-delay: 0.24s;
+}
+.gnb__fullmenu.is-open .gnb__sublist > li:nth-child(n + 6) {
+  transition-delay: 0.28s;
+}
+
+.gnb__fullmenu-inner.is-nav-aligned .gnb__columns {
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  /* `left` / `right` set inline — right ends at last top-nav indicator. */
+  gap: 0;
+  padding: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.gnb__column {
+  min-width: 0;
+}
+
+.gnb__fullmenu-inner.is-nav-aligned .gnb__column {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.gnb__sublist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+}
+
+/*
+  Light type on the glass. Rest is a dimmed white rather than a grey hex, so
+  the label keeps the panel's tint instead of muddying against it; hover/active
+  goes to full white on a faint white wash (was #767676 -> #111 on a white
+  panel).
+
+  0.7 is a contrast floor, not a taste call: the panel is translucent, so where
+  it overlaps light page content the backdrop measures rgb(80,80,83). White at
+  0.62 lands 4.24:1 there — under AA. 0.7 gives 4.91:1, which holds without
+  darkening the glass itself.
+*/
+.gnb__sublink {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 11px 16px;
+  border-radius: 0;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition:
+    color var(--gnb-duration) var(--gnb-ease),
+    background var(--gnb-duration) var(--gnb-ease),
+    font-weight 0.2s var(--gnb-ease),
+    transform var(--gnb-duration) var(--gnb-ease),
+    padding var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb__sublink:hover,
+.gnb__sublink:focus-visible,
+.gnb__sublink.is-active {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+}
+
+/* ---------- Compact bar / drawer ---------- */
+.gnb--compact {
+  --gnb-bar-h: 82px;
+  --gnb-pad-x: 24px;
+}
+
+.gnb--compact .gnb__bar {
+  padding-block: 16px;
+}
+
+/* Symbol mark sits left of the hamburger (+ tablet "메뉴" label). */
+.gnb__compact-lead {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.gnb__logo--symbol {
+  min-width: 0;
+  width: 32px;
+  height: 32px;
+  gap: 0;
+  justify-content: center;
+}
+
+.gnb__logo--symbol .gnb__logo-mark {
+  width: 32px;
+  height: 32px;
+}
+
+.gnb--compact .gnb__action {
+  width: 50px;
+  min-height: 50px;
+  padding: 15px;
+  border-radius: 0;
+}
+
+.gnb--compact .gnb__action-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.gnb--compact .gnb__menu-btn .gnb__menu-label {
+  display: none;
+}
+
+.gnb--compact .gnb__menu-btn {
+  width: 50px;
+  min-width: 50px;
+  padding: 15px;
+  border-radius: 0;
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .gnb--compact {
+    --gnb-bar-h: 100px;
+    --gnb-pad-x: 48px;
+  }
+
+  .gnb--compact .gnb__bar {
+    padding-block: 24px;
+  }
+
+  .gnb--compact .gnb__menu-btn {
+    width: auto;
+    min-width: 94px;
+    padding: 15px 20px;
+  }
+
+  .gnb--compact .gnb__menu-btn .gnb__menu-label {
+    display: inline;
+  }
+
+  .gnb--compact .gnb__action {
+    width: auto;
+    min-width: 121px;
+    padding: 15px 20px;
+  }
+
+  .gnb--compact .gnb__action-label {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: nowrap;
+  }
+}
+
+.gnb__scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  background: rgba(17, 17, 17, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  cursor: pointer;
+  transition: opacity 0.35s var(--gnb-ease);
+}
+
+.gnb__scrim.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.gnb__drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  width: min(86vw, 360px);
+  height: 100%;
+  height: 100dvh;
+  background: #fff;
+  color: #111;
+  border-radius: 0;
+  box-shadow: 16px 0 40px rgba(17, 17, 17, 0.18);
+  transform: translate3d(-105%, 0, 0);
+  transition: transform 0.42s var(--gnb-ease);
+  overscroll-behavior: contain;
+}
+
+.gnb__drawer.is-open {
+  transform: translate3d(0, 0, 0);
+}
+
+.gnb__drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 20px 12px;
+  border-bottom: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+.gnb__logo--drawer {
+  color: #111;
+}
+
+.gnb__logo--drawer.gnb__logo--symbol {
+  width: 36px;
+  height: 36px;
+}
+
+.gnb__logo--drawer.gnb__logo--symbol .gnb__logo-mark {
+  width: 36px;
+  height: 36px;
+}
+
+.gnb__drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgba(17, 17, 17, 0.12);
+  border-radius: 0;
+  background: #f7f7fb;
+  color: #111;
+  cursor: pointer;
+  transition:
+    background var(--gnb-duration) var(--gnb-ease),
+    border-color var(--gnb-duration) var(--gnb-ease),
+    transform var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb__drawer-close:hover,
+.gnb__drawer-close:focus-visible {
+  background: #ececf2;
+  transform: translateY(-1px);
+}
+
+.gnb__drawer-close .gnb__icon {
+  /* Close sits on light panel — keep dark */
+  filter: none;
+}
+
+.gnb__drawer-nav {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 8px 12px 24px;
+}
+
+.gnb__drawer-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gnb__drawer-item + .gnb__drawer-item {
+  border-top: 1px solid rgba(17, 17, 17, 0.06);
+}
+
+.gnb__drawer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 14px 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: #111;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--gnb-duration) var(--gnb-ease),
+    color var(--gnb-duration) var(--gnb-ease),
+    padding var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb__drawer-top:hover,
+.gnb__drawer-top:focus-visible {
+  background: #f7f7fb;
+}
+
+.gnb__drawer-chevron {
+  width: 10px;
+  height: 10px;
+  border-right: 1.5px solid #111;
+  border-bottom: 1.5px solid #111;
+  transform: rotate(45deg);
+  transition: transform 0.28s var(--gnb-ease), margin var(--gnb-duration) var(--gnb-ease);
+  flex: 0 0 auto;
+}
+
+.gnb__drawer-top.is-expanded .gnb__drawer-chevron {
+  transform: rotate(225deg);
+  margin-top: 4px;
+}
+
+.gnb__drawer-panel {
+  padding: 0 4px 10px 8px;
+  transition: opacity var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb__drawer-panel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.gnb__drawer-sublink {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 12px 16px;
+  border-radius: 0;
+  color: #616b75;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  transition:
+    color var(--gnb-duration) var(--gnb-ease),
+    background var(--gnb-duration) var(--gnb-ease),
+    padding var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb__drawer-sublink:active,
+.gnb__drawer-sublink:hover,
+.gnb__drawer-sublink:focus-visible,
+.gnb__drawer-sublink.is-selected {
+  color: #111;
+  background: #f7f7fb;
+}
+
+.gnb__drawer-sublink.is-selected {
+  font-weight: 600;
+}
+
+.gnb__drawer-foot {
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid rgba(17, 17, 17, 0.08);
+}
+
+.gnb__drawer-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 52px;
+  padding: 14px 20px;
+  border-radius: 0;
+  /* Brand teal fill — keep sharp-rect; white type + inverted call icon */
+  background: var(--color-teal, #008075);
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-decoration: none;
+  transition:
+    background var(--gnb-duration) var(--gnb-ease),
+    transform var(--gnb-duration) var(--gnb-ease),
+    opacity var(--gnb-duration) var(--gnb-ease);
+}
+
+.gnb__drawer-cta:hover,
+.gnb__drawer-cta:focus-visible {
+  background: var(--color-teal-deep, #086b66);
+  transform: translateY(-1px);
+}
+
+.gnb__drawer-cta .gnb__icon {
+  filter: brightness(0) invert(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gnb,
+  .gnb__indicator,
+  .gnb__fullmenu,
+  .gnb__columns,
+  .gnb__sublist > li,
+  .gnb__drawer,
+  .gnb__scrim,
+  .gnb__glass,
+  .gnb__sublink,
+  .gnb__nav-link,
+  .gnb__icon,
+  .gnb__drawer-chevron,
+  .gnb__drawer-top,
+  .gnb__drawer-sublink,
+  .gnb__drawer-close,
+  .gnb__drawer-cta,
+  .gnb__logo {
+    transition-duration: 0.01ms !important;
+    /* Stagger delays would otherwise survive the duration clamp. */
+    transition-delay: 0s !important;
+    animation: none !important;
+  }
+}
+
+@media (max-width: 1440px) {
+  .gnb__nav-list {
+    gap: 20px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .gnb__nav-list {
+    gap: 8px;
+  }
+
+  .gnb__nav-link {
+    padding-inline: 12px;
+    font-size: 15px;
+  }
+
+  /* Keep sublink text flush with top-nav text when nav padding tightens. */
+  .gnb__sublink {
+    padding-inline: 12px;
+    font-size: 15px;
+  }
+
+  .gnb__action {
+    width: auto;
+    min-width: 0;
+    padding-inline: 14px;
+  }
+}
