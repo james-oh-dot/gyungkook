@@ -288,13 +288,35 @@
   overflow: visible;
 }
 
-.hero__label .line-reveal__item {
-  margin: 0;
-  font: inherit;
-  color: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-  white-space: inherit;
+/*
+  One word per span so the per-character reveal cannot break a word apart —
+  see the `labelWords` note in HeroClassic.tsx. The right margin is the word
+  space the markup no longer carries (the spans sit side by side with no text
+  node between them).
+*/
+.hero__label-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.hero__label-word:not(:last-child) {
+  margin-right: 0.25em;
+}
+
+/*
+  50% up from the 72px base, desktop only — 768-1024 keeps 72px. This sits
+  after the base rule on purpose: both are one class deep, so source order
+  decides and a media query adds no specificity of its own.
+*/
+@media (min-width: 1025px) {
+  /*
+    108px is the target. It only clears the right-hand slide arrow from about
+    1150px up: slide 03's COMPENSATION is ~800px wide at 108px and cannot wrap,
+    so at 1025 it ran under the arrow. The ramp holds it clear below that.
+  */
+  .hero__label {
+    font-size: clamp(88px, 9.4vw, 108px);
+  }
 }
 
 .hero__desc {

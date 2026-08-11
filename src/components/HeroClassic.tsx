@@ -220,6 +220,23 @@ export function HeroClassic() {
     }
   }, [animKey])
 
+  /*
+    The label animates per character like the title, but a single CharReveal
+    over the whole string would let the line break between any two characters —
+    every char is its own atomic inline box, so `COMPENSATION` could split
+    across lines. One CharReveal per word inside a nowrap span keeps the words
+    whole; `offset` carries the character index through so the stagger still
+    runs continuously across the whole label.
+  */
+  const labelWords = useMemo(() => {
+    let offset = 0
+    return slide.label.split(' ').map((word) => {
+      const entry = { word, offset }
+      offset += Array.from(word).length + 1
+      return entry
+    })
+  }, [slide.label])
+
   const titleBlocks = useMemo(
     () =>
       slide.titleLines.map((line, lineIndex) => {
@@ -302,12 +319,16 @@ export function HeroClassic() {
               />
             </p>
             <div className="hero__label">
-              <LineReveal
-                key={`${animKey}-label`}
-                lines={[slide.label]}
-                baseDelay={100 * REVEAL_PACE}
-                step={0}
-              />
+              {labelWords.map(({ word, offset }, index) => (
+                <span className="hero__label-word" key={`${animKey}-label-${index}`}>
+                  <CharReveal
+                    key={`${animKey}-label-chars-${index}`}
+                    text={word}
+                    baseDelay={(100 + offset * 34) * REVEAL_PACE}
+                    step={34 * REVEAL_PACE}
+                  />
+                </span>
+              ))}
             </div>
             <div className="hero__title">{titleBlocks}</div>
           </div>
