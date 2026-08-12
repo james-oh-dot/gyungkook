@@ -58,6 +58,35 @@ python3 scripts/generate-progressive-images.py profile-2.jpg   # 일부만
 홈 카드는 얼굴 위치를 `imagePosition`(`content.ts`)으로 따로 잡습니다
 (예: 박효영 `50% 18%`). 사진을 교체하면 이 값도 함께 확인해야 합니다.
 
+## 2-1. 예시 — 공대호 변호사 파일
+
+`public/assets/lawyers/`에 6개, `public/assets/`에 3개, 합쳐서 **9개**입니다.
+사진 3장이 각각 마스터 + webp 2장으로 존재하는 구조입니다.
+
+| 파일 | 사진 | 쓰이는 화면 |
+|---|---|---|
+| `lawyers/gongdaeho.png` | ① | 마스터 (로드 안 함) |
+| `lawyers/gongdaeho.webp` | ① | **변호사 개인 프로필 페이지**의 인물 사진 |
+| `lawyers/gongdaeho.preview.webp` | ① | 위 이미지의 프리뷰 |
+| `lawyers/gongdaeho-card.jpg` | ② | 마스터 (로드 안 함) |
+| `lawyers/gongdaeho-card.webp` | ② | **변호사·자문단 목록 페이지**의 카드 |
+| `lawyers/gongdaeho-card.preview.webp` | ② | 위 이미지의 프리뷰 |
+| `profile-2.jpg` | ③ | 마스터 (로드 안 함) |
+| `profile-2.webp` | ③ | **홈** `PROFESSIONALS & ADVISORS` 카드 |
+| `profile-2.preview.webp` | ③ | 위 이미지의 프리뷰 |
+
+**`-card`는 홈이 아니라 목록 페이지입니다.** 그리고 홈에서 읽는 파일은
+`lawyers/` 폴더 안에 아예 없습니다 — `public/assets/profile-2.*`입니다.
+
+```
+홈 카드           → assets/profile-2
+목록 페이지 카드    → assets/lawyers/gongdaeho-card
+개인 프로필 인물    → assets/lawyers/gongdaeho
+```
+
+정의 위치: 홈은 `src/data/content.ts`의 `professionals`, 목록 카드는
+`src/data/lawyers.ts`의 `LAWYER_CARDS`, 개인 프로필은 같은 파일의 `Lawyer.photo`.
+
 ## 3. 서브비주얼은 인물 사진이 아닙니다
 
 `assets/sub/sub-XX-YY`는 **페이지 상단 가로 띠 배경**입니다. 가로 1920 × 세로 620
